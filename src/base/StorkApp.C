@@ -1,6 +1,5 @@
 #include "StorkApp.h"
 #include "Moose.h"
-#include "ElkApp.h"
 #include "AppFactory.h"
 
 template<>
@@ -16,19 +15,15 @@ StorkApp::StorkApp(const std::string & name, InputParameters parameters) :
   srand(libMesh::processor_id());
   
   Moose::registerObjects(_factory);
-  ElkApp::registerObjects(_factory);
   StorkApp::registerObjects(_factory);
 
   Moose::associateSyntax(_syntax, _action_factory);
-  ElkApp::associateSyntax(_syntax, _action_factory);
   StorkApp::associateSyntax(_syntax, _action_factory);
 }
 
 StorkApp::~StorkApp()
 {
 }
-
-
 
 void
 StorkApp::registerApps()

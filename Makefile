@@ -3,44 +3,27 @@
 ###############################################################################
 #
 # Required Make variables
-# APP_NAME	- the name of this application (all lower case)
-# MOOSE_DIR	- location of the MOOSE framework
-# ELK_DIR	- location of ELK (if enabled)
-# BISON_DIR	- location of BISON
-# MARMOT_DIR	- location of MARMOT
+# APPLICATION_NAME  - the name of this application (all lower case)
+# CURR_DIR	    - current directory (DO NOT MODIFY THIS VARIABLE)
 #
 # Optional Environment variables
-# CURR_DIR	- current directory (DO NOT MODIFY THIS VARIABLE)
+# MOOSE_REPO        - location of the cloned MOOSE repository
+# MOOSE_DIR	    - location of the MOOSE framework
+# ELK_DIR	    - location of ELK (if required)
 #
-#
-# Note: Make sure that there is no whitespace after the word 'yes' if enabling
-# an application
 ###############################################################################
-CURR_DIR        ?= $(shell pwd)
-ROOT_DIR        ?= $(shell dirname `pwd`)
+APPLICATION_NAME           := stork
+CURR_DIR                   := $(shell pwd)
 
-ifeq ($(MOOSE_DEV),true)
-	MOOSE_DIR ?= $(ROOT_DIR)/devel/moose
-else
-	MOOSE_DIR ?= $(ROOT_DIR)/moose
-endif
+ELK_DIR                    ?= $(shell dirname `pwd`)
+MOOSE_REPO                 ?= $(shell dirname $ELK_DIR)
+MOOSE_DIR                  ?= $(MOOSE_REPO)/moose
 
-ELK_DIR         ?= $(ROOT_DIR)/elk
-STORK_DIR     ?= $(ROOT_DIR)/stork
+DEP_APPS                   ?= $(shell $(MOOSE_DIR)/scripts/find_dep_apps.py $(APPLICATION_NAME))
 
-APPLICATION_NAME := stork
-
-DEP_APPS    ?= $(shell $(MOOSE_DIR)/scripts/find_dep_apps.py $(APPLICATION_NAME))
-
-################################## ELK MODULES ################################
-ALL_ELK_MODULES := yes
-###############################################################################
-
-
+STORK_DIR ?= $(ELK_DIR)/stork
 include $(MOOSE_DIR)/build.mk
-
 include $(MOOSE_DIR)/moose.mk
-include $(ELK_DIR)/elk.mk
 include $(STORK_DIR)/stork.mk
 
 ###############################################################################

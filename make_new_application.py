@@ -5,11 +5,11 @@
 # create a complete application template built with support for both
 # MOOSE and ELK.  Enjoy!
 
-import os, sys, string, re
+import os, sys, string, re, subprocess
 from optparse import OptionParser
 from shutil import copytree, ignore_patterns
 
-global_ignores = ['.svn']
+global_ignores = ['.svn', '.git']
 global_app_name = ''
 
 def renameFiles(app_path):
@@ -43,7 +43,7 @@ def replaceNameInContents(filename):
   text = pattern.sub(replacementFunction, text)
 
   # Retrieve original file attribute to be applied later
-  mode = os.stat(filename.replace(global_app_name, 'stork')).st_mode
+  mode = os.stat(filename).st_mode
 
   # Now write the file back out
   f = open(filename + '~tmp', 'w')
@@ -83,14 +83,14 @@ if __name__ == '__main__':
   if len(args) != 1:
     printUsage()
   
-  # Get the trunk directory - ASSUMPTION - it should be one up from here ;)
-  trunk_path = os.path.abspath('../')
   global_app_name = string.lower(args[0])
-  app_path = trunk_path + '/' + global_app_name
+  renameFiles('.')
 
-  # Copy the directory
-  copytree('.', app_path, ignore=ignore_patterns('.svn', 'make_new_application*'))
- 
-  renameFiles(app_path)
+  # Add the newline created untracked files
+  subprocess.call("git add *", shell=True)
 
-  print 'Your application should be ready:\n' + app_path
+  print 'Your application should be ready'
+
+  # Delete this script!
+  os.remove(__file__)
+
