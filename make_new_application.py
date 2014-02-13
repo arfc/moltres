@@ -59,14 +59,15 @@ def replacementFunction(match):
     return global_app_name
 
   # Case 2: all upper case
-  return_string = string.upper(global_app_name)
   if match.group(1) == 'STORK':
     return string.upper(global_app_name)
 
   # Case 3: First letter is capitalized
-  return_string = string.capitalize(global_app_name)
   if match.group(1) == 'Stork':
-    return string.capitalize(return_string)
+    name = global_app_name.replace("_", " ")
+    name = name.title()
+    name = name.replace(" ", "")
+    return name
   
   print match.group(0) + "\nBad Case Detected!"
   sys.exit(1)
