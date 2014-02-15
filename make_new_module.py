@@ -76,9 +76,6 @@ def printUsage():
   print './make_new_elk_module.py <module name> <elk dir>'
   sys.exit()
 
-def makeElkModule(elk_dir):
-  copytree('.', elk_dir + "/" + global_app_name, ignore=ignore_patterns('.svn', '.git', 'make_new*'))
-
 if __name__ == '__main__':
   parser = OptionParser()
   (global_options, args) = parser.parse_args()
@@ -87,13 +84,18 @@ if __name__ == '__main__':
   if len(args) != 2:
     printUsage()
 
-  if not os.path.exists(args[1]):
-    print "Unable to access ", args[1]
+  modules_dir = args[1] + '/modules/'
+  if not os.path.exists(modules_dir):
+    print "Unable to access ", modules_dir
     sys.exit()
-  
+
   global_app_name = string.lower(args[0])
-  renameFiles('.')
 
-  makeElkModule(args[1])
+  # Copy the directory
+  copytree('.', modules_dir + global_app_name, ignore=ignore_patterns('.svn', '.git', 'make_new*'))
 
-  print 'Your elk module should be ready!\nYou need to edit the following files to include your new module in elk:\n\t$(ELK_DIR)/elk_modules.mk\n\t$(ELK_DIR)/src/base/ElkApp.C\n'
+  renameFiles(modules_dir + global_app_name)
+
+  print 'Your new module should be ready!\nYou need to edit the following files to include your new module into MOOSE:'
+  print  modules_dir + 'modules_list.mk'
+  print  modules_dir + 'src/base/ModulesApp.C'
