@@ -14,16 +14,15 @@
 ###############################################################################
 APPLICATION_NAME           := stork
 CURR_DIR                   := $(shell pwd)
+STORK_DIR                  := $(CURR_DIR)
+ROOT_DIR                   := $(shell dirname `pwd`)
 
-ELK_DIR                    ?= $(shell dirname `pwd`)
-MOOSE_REPO                 ?= $(shell dirname $ELK_DIR)
-MOOSE_DIR                  ?= $(MOOSE_REPO)/moose
+MOOSE_DIR                  ?= $(ROOT_DIR)/moose
 
-DEP_APPS                   ?= $(shell $(MOOSE_DIR)/scripts/find_dep_apps.py $(APPLICATION_NAME))
+DEP_APPS                   ?= $(shell $(MOOSE_DIR)/framework/scripts/find_dep_apps.py $(APPLICATION_NAME))
 
-STORK_DIR ?= $(ELK_DIR)/stork
-include $(MOOSE_DIR)/build.mk
-include $(MOOSE_DIR)/moose.mk
+include $(MOOSE_DIR)/framework/build.mk
+include $(MOOSE_DIR)/framework/moose.mk
 include $(STORK_DIR)/stork.mk
 
 ###############################################################################
