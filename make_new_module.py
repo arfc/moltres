@@ -73,7 +73,7 @@ def replacementFunction(match):
   sys.exit(1)
 
 def printUsage():
-  print './make_new_elk_module.py <module name> <elk dir>'
+  print './make_new_module.py <module name> <moose dir>'
   sys.exit()
 
 if __name__ == '__main__':
