@@ -96,6 +96,13 @@ if __name__ == '__main__':
 
   renameFiles(modules_dir + global_app_name)
 
+  os.rename(modules_dir + global_app_name + '/Makefile.module', modules_dir + global_app_name + '/Makefile')
+  try:
+    os.remove(modules_dir + global_app_name + '/Makefile.app')
+  except:
+    pass
+
+
   print 'Your new module should be ready!\nYou need to edit the following files to include your new module into MOOSE:'
-  print  modules_dir + 'modules_list.mk'
+  print  modules_dir + 'modules.mk'
   print  modules_dir + 'src/base/ModulesApp.C'
