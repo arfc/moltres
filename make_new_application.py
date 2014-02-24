@@ -87,14 +87,16 @@ if __name__ == '__main__':
   global_app_name = string.lower(args[0])
   renameFiles('.')
 
+  os.rename('Makefile.app', 'Makefile')
   try:
+    os.remove('Makefile.module')
     os.remove('make_new_application.py')
     os.remove('make_new_module.py')
   except:
     pass
 
   # Add the newly created untracked files and delete the removed ones
-  subprocess.check_output("git rm -f *.py stork.mk", shell=True)
+  subprocess.check_output("git rm -f *.py Makefile.app Makefile.module", shell=True)
   subprocess.call("git add --all *", shell=True)
 
   print 'Your application should be ready!\nCommit this directory to your local repository and push.'
