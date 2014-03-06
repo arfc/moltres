@@ -11,6 +11,7 @@ from shutil import copytree, ignore_patterns
 
 global_ignores = ['.svn', '.git']
 global_app_name = ''
+global_app_name_stripped = ''
 
 def renameFiles(app_path):
   pattern = re.compile(r'(stork)(.*)', re.I)
@@ -56,15 +57,15 @@ def replacementFunction(match):
   # There are 3 "case" cases
   # Case 1: all lower case
   if match.group(1) == 'stork':
-    return global_app_name
+    return global_app_name_stripped
 
   # Case 2: all upper case
   if match.group(1) == 'STORK':
-    return string.upper(global_app_name)
+    return string.upper(global_app_name_stripped)
 
   # Case 3: First letter is capitalized
   if match.group(1) == 'Stork':
-    name = global_app_name.replace("_", " ")
+    name = global_app_name_stripped.replace("_", " ")
     name = name.title()
     name = name.replace(" ", "")
     return name
@@ -90,6 +91,10 @@ if __name__ == '__main__':
     sys.exit()
 
   global_app_name = string.lower(args[0])
+  global_app_name_stripped = global_app_name
+  m = re.search(r'(\D*)', global_app_name)
+  if m != None:
+    global_app_name_stripped = m.group(1)
 
   # Copy the directory
   copytree('.', modules_dir + global_app_name, ignore=ignore_patterns('.svn', '.git', 'make_new*'))
