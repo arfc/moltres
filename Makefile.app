@@ -17,9 +17,9 @@ FRAMEWORK_DIR      ?= $(MOOSE_DIR)/framework
 include $(FRAMEWORK_DIR)/build.mk
 include $(FRAMEWORK_DIR)/moose.mk
 
-################################## ELK MODULES ################################
-ALL_ELK_MODULES := yes
-include modules.mk
+################################## MODULES ####################################
+ALL_MODULES := yes
+include $(MOOSE_DIR)/modules/modules.mk
 ###############################################################################
 
 # dep apps
