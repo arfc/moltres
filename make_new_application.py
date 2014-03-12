@@ -9,11 +9,16 @@ import os, sys, string, re, subprocess
 from optparse import OptionParser
 from shutil import copytree, ignore_patterns
 
+# DO NOT MODIFY 
+# This value should be set to true if this stork is within the svn herd repository
+global_in_herd = False
 global_ignores = ['.svn', '.git']
 global_app_name = ''
+global_rename_suffix = 'app'
 
 def renameFiles(app_path):
-  pattern = re.compile(r'(stork)(.*)', re.I)
+  rename_pattern = re.compile(r'(stork)(.*)', re.I)
+  suffix_pattern = re.compile(r'([^.]+)\.' + global_rename_suffix + '$')
 
   for dirpath, dirnames, filenames in os.walk(app_path):
     # Don't traverse into ignored directories
@@ -22,7 +27,7 @@ def renameFiles(app_path):
         dirnames.remove(ignore)
 
     for file in filenames:
-      match = pattern.match(file)
+      match = rename_pattern.match(file)
 
       # Replace 'stork' in the contents
       replaceNameInContents(dirpath + '/' + file)
@@ -32,6 +37,10 @@ def renameFiles(app_path):
         replace_string = replacementFunction(match)
         os.rename(dirpath + '/' + file, dirpath + '/' + replace_string + match.group(2))
 
+      # If there are files with .app suffixes drop the suffix
+      match = suffix_pattern.search(file)
+      if match != None:
+        os.rename(dirpath + '/' + file, dirpath + '/' + match.group(1))
 
 def replaceNameInContents(filename):
   f = open(filename)
@@ -85,18 +94,25 @@ if __name__ == '__main__':
     printUsage()
   
   global_app_name = string.lower(args[0])
-  renameFiles('.')
+  
+  if global_in_herd:
+    copytree('.', '../' + global_app_name, ignore=ignore_patterns('.svn', '.git', '*.module', 'make_new*', 'LICENSE'))
+    renameFiles('../' + global_app_name)
 
-  os.rename('Makefile.app', 'Makefile')
-  try:
-    os.remove('Makefile.module')
-    os.remove('make_new_application.py')
-    os.remove('make_new_module.py')
-  except:
-    pass
+    print 'Your application should be ready!\nAdd the directory ../' + global_app_name + ' to your checkout and commit.'
+  else:
+    # We are in a git clone
+    renameFiles('.')
+    try:
+      os.remove('Makefile.module')
+      os.remove('run_tests.module')
+      os.remove('make_new_application.py')
+      os.remove('make_new_module.py')
+    except:
+      pass
 
-  # Add the newly created untracked files and delete the removed ones
-  subprocess.check_output("git rm -f *.py Makefile.app Makefile.module", shell=True)
-  subprocess.call("git add --all *", shell=True)
+    # Add the newly created untracked files and delete the removed ones
+    subprocess.check_output("git rm -f *.py Makefile.* run_tests.*", shell=True)
+    subprocess.call("git add --all *", shell=True)
 
-  print 'Your application should be ready!\nCommit this directory to your local repository and push.'
+    print 'Your application should be ready!\nCommit this directory to your local repository and push.'

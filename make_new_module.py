@@ -12,9 +12,11 @@ from shutil import copytree, ignore_patterns
 global_ignores = ['.svn', '.git']
 global_app_name = ''
 global_app_name_stripped = ''
+global_rename_suffix = 'module'
 
 def renameFiles(app_path):
-  pattern = re.compile(r'(stork)(.*)', re.I)
+  rename_pattern = re.compile(r'(stork)(.*)', re.I)
+  suffix_pattern = re.compile(r'([^.]+)\.' + global_rename_suffix + '$')
 
   for dirpath, dirnames, filenames in os.walk(app_path):
     # Don't traverse into ignored directories
@@ -23,7 +25,7 @@ def renameFiles(app_path):
         dirnames.remove(ignore)
 
     for file in filenames:
-      match = pattern.match(file)
+      match = rename_pattern.match(file)
 
       # Replace 'stork' in the contents
       replaceNameInContents(dirpath + '/' + file)
@@ -32,6 +34,11 @@ def renameFiles(app_path):
       if match != None:
         replace_string = replacementFunction(match)
         os.rename(dirpath + '/' + file, dirpath + '/' + replace_string + match.group(2))
+
+      # If there are files with .app suffixes drop the suffix
+      match = suffix_pattern.search(file)
+      if match != None:
+        os.rename(dirpath + '/' + file, dirpath + '/' + match.group(1))
 
 
 def replaceNameInContents(filename):
@@ -97,17 +104,10 @@ if __name__ == '__main__':
     global_app_name_stripped = m.group(1)
 
   # Copy the directory
-  copytree('.', modules_dir + global_app_name, ignore=ignore_patterns('.svn', '.git', 'make_new*'))
+  copytree('.', modules_dir + global_app_name, ignore=ignore_patterns('.svn', '.git', '*.app', 'make_new*', 'LICENSE'))
 
   renameFiles(modules_dir + global_app_name)
 
-  os.rename(modules_dir + global_app_name + '/Makefile.module', modules_dir + global_app_name + '/Makefile')
-  try:
-    os.remove(modules_dir + global_app_name + '/Makefile.app')
-  except:
-    pass
-
-
   print 'Your new module should be ready!\nYou need to edit the following files to include your new module into MOOSE:'
   print  modules_dir + 'modules.mk'
-  print  modules_dir + 'src/base/ModulesApp.C'
+  print  modules_dir + 'combined/src/base/ModulesApp.C'
