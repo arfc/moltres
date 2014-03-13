@@ -95,7 +95,7 @@ if __name__ == '__main__':
     if len(args) != 0:
       print 'Usage: ./make_new_application.py'
       sys.exit()
-    global_app_name = os.path.basename(os.path.realpath(__file__))
+    global_app_name = os.path.basename(os.path.dirname(os.path.realpath(__file__)))
   
   # Make the new application
   if global_in_herd:
