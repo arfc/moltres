@@ -81,20 +81,23 @@ def replacementFunction(match):
   print match.group(0) + "\nBad Case Detected!"
   sys.exit(1)
 
-def printUsage():
-  print './make_new_application.py <animal name>'
-  sys.exit()
-
 if __name__ == '__main__':
   parser = OptionParser()
   (global_options, args) = parser.parse_args()
 
-  # Make sure an animal name was supplied (args[0])
-  if len(args) != 1:
-    printUsage()
+  # Get the animal name
+  if global_in_herd:
+    if len(args) != 1:
+      print 'Usage: ./make_new_application.py <animal name>'
+      sys.exit()
+    global_app_name = string.lower(args[0])
+  else:
+    if len(args) != 0:
+      print 'Usage: ./make_new_application.py'
+      sys.exit()
+    global_app_name = os.path.basename(os.path.realpath(__file__))
   
-  global_app_name = string.lower(args[0])
-  
+  # Make the new application
   if global_in_herd:
     copytree('.', '../' + global_app_name, ignore=ignore_patterns('.svn', '.git', '*.module', 'make_new*', 'LICENSE'))
     renameFiles('../' + global_app_name)
