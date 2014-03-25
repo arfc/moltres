@@ -16,7 +16,7 @@ global_rename_suffix = 'module'
 
 def renameFiles(app_path):
   rename_pattern = re.compile(r'(stork)(.*)', re.I)
-  suffix_pattern = re.compile(r'([^.]+)\.' + global_rename_suffix + '$')
+  suffix_pattern = re.compile(r'(.*)\.' + global_rename_suffix + '$')
 
   for dirpath, dirnames, filenames in os.walk(app_path):
     # Don't traverse into ignored directories
@@ -34,6 +34,8 @@ def renameFiles(app_path):
       if match != None:
         replace_string = replacementFunction(match)
         os.rename(dirpath + '/' + file, dirpath + '/' + replace_string + match.group(2))
+        # update the file
+        file = replace_string + match.group(2)
 
       # If there are files with .app suffixes drop the suffix
       match = suffix_pattern.search(file)
