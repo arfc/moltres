@@ -19,6 +19,9 @@ int main(int argc, char *argv[])
   // This creates dynamic memory that we're responsible for deleting
   MooseApp * app = AppFactory::createApp("StorkApp", argc, argv);
 
+  app->legacyUoInitializationDefault() = false;
+  app->legacyUoAuxComputationDefault() = false;
+
   // Execute the application
   app->run();
 
