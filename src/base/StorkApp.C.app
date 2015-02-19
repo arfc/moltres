@@ -31,6 +31,7 @@ StorkApp::~StorkApp()
 {
 }
 
+extern "C" void StorkApp__registerApps() { StorkApp::registerApps(); }
 void
 StorkApp::registerApps()
 {
