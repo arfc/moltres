@@ -31,6 +31,7 @@ StorkApp::~StorkApp()
 {
 }
 
+// External entry point for dynamic application loading
 extern "C" void StorkApp__registerApps() { StorkApp::registerApps(); }
 void
 StorkApp::registerApps()
@@ -38,11 +39,15 @@ StorkApp::registerApps()
   registerApp(StorkApp);
 }
 
+// External entry point for dynamic object registration
+extern "C" void StorkApp__registerObjects(Factory & factory) { StorkApp::registerObjects(factory); }
 void
 StorkApp::registerObjects(Factory & factory)
 {
 }
 
+// External entry point for dynamic syntax association
+extern "C" void StorkApp__associateSyntax(Syntax & syntax, ActionFactory & action_factory) { StorkApp::associateSyntax(syntax, action_factory); }
 void
 StorkApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
 {
