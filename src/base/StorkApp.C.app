@@ -13,8 +13,8 @@ InputParameters validParams<StorkApp>()
   return params;
 }
 
-StorkApp::StorkApp(const std::string & name, InputParameters parameters) :
-    MooseApp(name, parameters)
+StorkApp::StorkApp(InputParameters parameters) :
+    MooseApp(parameters)
 {
   Moose::registerObjects(_factory);
   ModulesApp::registerObjects(_factory);
