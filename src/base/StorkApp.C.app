@@ -13,11 +13,9 @@ InputParameters validParams<StorkApp>()
   return params;
 }
 
-StorkApp::StorkApp(const std::string & name, InputParameters parameters) :
-    MooseApp(name, parameters)
+StorkApp::StorkApp(InputParameters parameters) :
+    MooseApp(parameters)
 {
-  srand(processor_id());
-
   Moose::registerObjects(_factory);
   ModulesApp::registerObjects(_factory);
   StorkApp::registerObjects(_factory);

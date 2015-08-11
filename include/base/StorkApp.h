@@ -11,7 +11,7 @@ InputParameters validParams<StorkApp>();
 class StorkApp : public MooseApp
 {
 public:
-  StorkApp(const std::string & name, InputParameters parameters);
+  StorkApp(InputParameters parameters);
   virtual ~StorkApp();
 
   static void registerApps();
