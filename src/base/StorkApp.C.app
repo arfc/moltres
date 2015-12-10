@@ -2,6 +2,7 @@
 #include "Moose.h"
 #include "AppFactory.h"
 #include "ModulesApp.h"
+#include "MooseSyntax.h"
 
 template<>
 InputParameters validParams<StorkApp>()
