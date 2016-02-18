@@ -11,7 +11,7 @@ from shutil import copytree, ignore_patterns
 
 # DO NOT MODIFY
 # This value should be set to true if this stork is within the svn herd repository
-global_in_herd = True
+global_in_herd = False
 global_ignores = ['.svn', '.git']
 global_app_name = ''
 global_rename_suffix = 'app'
