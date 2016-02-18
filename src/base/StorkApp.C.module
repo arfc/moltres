@@ -10,14 +10,14 @@ InputParameters validParams<StorkApp>()
 
   params.set<bool>("use_legacy_uo_initialization") = false;
   params.set<bool>("use_legacy_uo_aux_computation") = false;
+  params.set<bool>("use_legacy_output_syntax") = false;
+
   return params;
 }
 
-StorkApp::StorkApp(const std::string & name, InputParameters parameters) :
+StorkApp::StorkApp(InputParameters parameters) :
     MooseApp(name, parameters)
 {
-  srand(processor_id());
-
   Moose::registerObjects(_factory);
   StorkApp::registerObjects(_factory);
 
