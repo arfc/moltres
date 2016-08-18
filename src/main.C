@@ -1,11 +1,11 @@
-#include "StorkApp.h"
+#include "MagmarApp.h"
 #include "MooseInit.h"
 #include "Moose.h"
 #include "MooseApp.h"
 #include "AppFactory.h"
 
 // Create a performance log
-PerfLog Moose::perf_log("Stork");
+PerfLog Moose::perf_log("Magmar");
 
 // Begin the main program.
 int main(int argc, char *argv[])
@@ -14,10 +14,10 @@ int main(int argc, char *argv[])
   MooseInit init(argc, argv);
 
   // Register this application's MooseApp and any it depends on
-  StorkApp::registerApps();
+  MagmarApp::registerApps();
 
   // This creates dynamic memory that we're responsible for deleting
-  MooseApp * app = AppFactory::createApp("StorkApp", argc, argv);
+  MooseApp * app = AppFactory::createApp("MagmarApp", argc, argv);
 
   // Execute the application
   app->run();
