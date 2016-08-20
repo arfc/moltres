@@ -1,11 +1,11 @@
 # Model emulating Cammi et. al.
 
 [Variables]
-  [./uz]
+  [./u]
     family = LAGRANGE
     order = SECOND
   [../]
-  [./ur]
+  [./v]
     family = LAGRANGE
     order = SECOND
   [../]
@@ -34,15 +34,15 @@
     boundary = fuel_inlet
     variable = k
     value = .007 # m^2/s^2
-  [./uz_in]
+  [./v_in]
     type = DirichletBC
     boundary = fuel_inlet
-    variable = uz
+    variable = v
     value = 1.47 # m/s
-  [./ur_in]
+  [./u_in]
     type = DirichletBC
     boundary = fuel_inlet
-    variable = ur
+    variable = u
     value = 0
   [../]
 []

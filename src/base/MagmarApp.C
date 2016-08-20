@@ -4,6 +4,9 @@
 #include "ModulesApp.h"
 #include "MooseSyntax.h"
 
+// Kernels
+#include "INSMomentumKEpsilon.h"
+
 template<>
 InputParameters validParams<MagmarApp>()
 {
@@ -45,6 +48,7 @@ extern "C" void MagmarApp__registerObjects(Factory & factory) { MagmarApp::regis
 void
 MagmarApp::registerObjects(Factory & factory)
 {
+  registerKernel(INSMomentumKEpsilon);
 }
 
 // External entry point for dynamic syntax association
