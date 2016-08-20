@@ -1,5 +1,5 @@
-#ifndef INSK_H
-#define INSK_H
+#ifndef INSMOMENTUMKEPSILON_H
+#define INSMOMENTUMKEPSILON_H
 
 #include "Kernel.h"
 
@@ -12,7 +12,7 @@ InputParameters validParams<INSMomentumKEpsilon>();
 /**
  * This class computes momentum equation residual and Jacobian
  * contributions for the incompressible Navier-Stokes momentum
- * equation.
+ * equation with a standard k-epsilon turbulence model.
  */
 class INSMomentumKEpsilon : public Kernel
 {
@@ -59,4 +59,4 @@ protected:
 };
 
 
-#endif // INSK_H
+#endif // INSMOMENTUMKEPSILON_H

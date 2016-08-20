@@ -6,6 +6,7 @@
 
 // Kernels
 #include "INSMomentumKEpsilon.h"
+#include "INSK.h"
 
 template<>
 InputParameters validParams<MagmarApp>()
@@ -49,6 +50,7 @@ void
 MagmarApp::registerObjects(Factory & factory)
 {
   registerKernel(INSMomentumKEpsilon);
+  registerKernel(INSK);
 }
 
 // External entry point for dynamic syntax association
