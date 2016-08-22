@@ -8,6 +8,10 @@
 #include "INSMomentumKEpsilon.h"
 #include "INSK.h"
 
+// Boundary conditions
+#include "INSOutflowBC.h"
+#include "INSSymmetryAxisBC.h"
+
 template<>
 InputParameters validParams<MagmarApp>()
 {
@@ -51,6 +55,8 @@ MagmarApp::registerObjects(Factory & factory)
 {
   registerKernel(INSMomentumKEpsilon);
   registerKernel(INSK);
+  registerBoundaryCondition(INSOutflowBC);
+  registerBoundaryCondition(INSSymmetryAxisBC);
 }
 
 // External entry point for dynamic syntax association
