@@ -31,19 +31,19 @@ ADDITIONAL_LIBS 	:= -L$(CPPUNIT_DIR)/lib -lcppunit
 
 # dep apps
 APPLICATION_DIR    := $(CURRENT_DIR)/..
-APPLICATION_NAME   := magmar
+APPLICATION_NAME   := moltres
 include            $(FRAMEWORK_DIR)/app.mk
 
 APPLICATION_DIR    := $(CURRENT_DIR)
-APPLICATION_NAME   := magmar-unit
+APPLICATION_NAME   := moltres-unit
 BUILD_EXEC         := yes
 DEP_APPS    ?= $(shell $(FRAMEWORK_DIR)/scripts/find_dep_apps.py $(APPLICATION_NAME))
 include $(FRAMEWORK_DIR)/app.mk
 
 # Find all the MAGMAR unit test source files and include their dependencies.
-magmar-unit_srcfiles := $(shell find $(CURRENT_DIR) -name "*.C")
-magmar-unit_deps := $(patsubst %.C, %.$(obj-suffix).d, $(magmar-unit_srcfiles))
--include $(magmar-unit_deps)
+moltres-unit_srcfiles := $(shell find $(CURRENT_DIR) -name "*.C")
+moltres-unit_deps := $(patsubst %.C, %.$(obj-suffix).d, $(moltres-unit_srcfiles))
+-include $(moltres-unit_deps)
 
 ###############################################################################
 # Additional special case targets should be added here
