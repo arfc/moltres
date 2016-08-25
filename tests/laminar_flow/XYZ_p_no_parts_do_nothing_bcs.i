@@ -6,7 +6,7 @@
   mu = 1
   integrate_p_by_parts = false
   gravity = '0 0 0'
-  coord_type = RZ
+  coord_type = XYZ
 []
 
 [Mesh]
@@ -211,8 +211,8 @@
   [../]
   [./v_walls]
     type = DirichletBC
-    boundary = right
-    # boundary = 'left right'
+    # boundary = right
+    boundary = 'left right'
     variable = v
     value = 0
   [../]
@@ -271,7 +271,7 @@
 [Functions]
   [./inlet_func]
     type = ParsedFunction
-    value = '-4 * x^2 + 1'
-    # value = '-16 * (x - 0.25)^2 + 1'
+    # value = '-4 * x^2 + 1'
+    value = '-16 * (x - 0.25)^2 + 1'
   [../]
 []

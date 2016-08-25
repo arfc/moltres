@@ -4,9 +4,8 @@
   # mu = 0.01 # kg/(m*s)
   rho = 1
   mu = 1
-  integrate_p_by_parts = false
+  integrate_p_by_parts = true
   gravity = '0 0 0'
-  coord_type = RZ
 []
 
 [Mesh]
@@ -18,7 +17,7 @@
   # ymax = .05
   xmax = .5
   ymax = 1
-  nx = 25
+  nx = 50
   ny = 25
   elem_type = QUAD9
   # file = '2d.msh'
@@ -34,7 +33,7 @@
 
 
 [Problem]
-  # coord_type = RZ
+  coord_type = RZ
 []
 
 [Preconditioning]
@@ -166,26 +165,8 @@
   #   variable = p
   #   value = 0
   # [../]
-  [./u_out]
-    type = INSMomentumNoBCBC
-    boundary = top
-    variable = u
-    u = u
-    v = v
-    p = p
-    component = 0
-  [../]
-  [./v_out]
-    type = INSMomentumNoBCBC
-    boundary = top
-    variable = v
-    u = u
-    v = v
-    p = p
-    component = 1
-  [../]
   # [./u_out]
-  #   type = INSOutflowBC
+  #   type = INSMomentumNoBCBC
   #   boundary = top
   #   variable = u
   #   u = u
@@ -194,7 +175,7 @@
   #   component = 0
   # [../]
   # [./v_out]
-  #   type = INSOutflowBC
+  #   type = INSMomentumNoBCBC
   #   boundary = top
   #   variable = v
   #   u = u
@@ -202,6 +183,24 @@
   #   p = p
   #   component = 1
   # [../]
+  [./u_out]
+    type = INSOutflowBC
+    boundary = top
+    variable = u
+    u = u
+    v = v
+    p = p
+    component = 0
+  [../]
+  [./v_out]
+    type = INSOutflowBC
+    boundary = top
+    variable = v
+    u = u
+    v = v
+    p = p
+    component = 1
+  [../]
   [./u_axis_and_walls]
     type = DirichletBC
     boundary = 'left right'
@@ -236,7 +235,6 @@
     u = u
     v = v
     p = p
-    # coord_type = RZ
   [../]
   # # r-momentum, time
   # [./x_momentum_time]
@@ -271,7 +269,7 @@
 [Functions]
   [./inlet_func]
     type = ParsedFunction
-    value = '-4 * x^2 + 1'
+    value = '4 * (.5 - x)^2'
     # value = '-16 * (x - 0.25)^2 + 1'
   [../]
 []

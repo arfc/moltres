@@ -4,9 +4,9 @@
   # mu = 0.01 # kg/(m*s)
   rho = 1
   mu = 1
-  integrate_p_by_parts = false
+  integrate_p_by_parts = true
   gravity = '0 0 0'
-  coord_type = RZ
+  coord_type = XYZ
 []
 
 [Mesh]
@@ -166,24 +166,24 @@
   #   variable = p
   #   value = 0
   # [../]
-  [./u_out]
-    type = INSMomentumNoBCBC
-    boundary = top
-    variable = u
-    u = u
-    v = v
-    p = p
-    component = 0
-  [../]
-  [./v_out]
-    type = INSMomentumNoBCBC
-    boundary = top
-    variable = v
-    u = u
-    v = v
-    p = p
-    component = 1
-  [../]
+  # [./u_out]
+  #   type = INSMomentumNoBCBC
+  #   boundary = top
+  #   variable = u
+  #   u = u
+  #   v = v
+  #   p = p
+  #   component = 0
+  # [../]
+  # [./v_out]
+  #   type = INSMomentumNoBCBC
+  #   boundary = top
+  #   variable = v
+  #   u = u
+  #   v = v
+  #   p = p
+  #   component = 1
+  # [../]
   # [./u_out]
   #   type = INSOutflowBC
   #   boundary = top
@@ -211,8 +211,8 @@
   [../]
   [./v_walls]
     type = DirichletBC
-    boundary = right
-    # boundary = 'left right'
+    # boundary = right
+    boundary = 'left right'
     variable = v
     value = 0
   [../]
@@ -271,7 +271,7 @@
 [Functions]
   [./inlet_func]
     type = ParsedFunction
-    value = '-4 * x^2 + 1'
-    # value = '-16 * (x - 0.25)^2 + 1'
+    # value = '4 * (.5 - x)^2'
+    value = '-16 * (x - 0.25)^2 + 1'
   [../]
 []
