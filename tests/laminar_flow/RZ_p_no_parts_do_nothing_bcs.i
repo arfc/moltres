@@ -1,7 +1,5 @@
 # Model emulating Cammi et. al.
 [GlobalParams]
-  # rho = 3327 # kg/m^3
-  # mu = 0.01 # kg/(m*s)
   rho = 1
   mu = 1
   integrate_p_by_parts = false
@@ -14,8 +12,6 @@
   dim = 2
   xmin = 0
   ymin = 0
-  # xmax = .0208
-  # ymax = .05
   xmax = .5
   ymax = 1
   nx = 25
@@ -113,29 +109,11 @@
   [../]
   [./p]
     family = LAGRANGE
-    # order = SECOND
+    order = FIRST
   [../]
-  # [./k]
-  #   family = LAGRANGE
-  #   order = SECOND
-  # [../]
-  # [./eps]
-  #   family = LAGRANGE
-  #   order = SECOND
-  # [../]
 []
 
 [BCs]
-  # [./eps_in]
-  #   type = DirichletBC
-  #   boundary = bottom
-  #   variable = eps
-  #   value = .033 # m^2/s^2
-  # [./k_in]
-  #   type = DirichletBC
-  #   boundary = bottom
-  #   variable = k
-  #   value = .007 # m^2/s^2
   [./u_in]
     type = DirichletBC
     boundary = bottom
@@ -148,24 +126,6 @@
     variable = v
     function = 'inlet_func'
   [../]
-  # [./p_in]
-  #   type = DirichletBC
-  #   boundary = bottom
-  #   variable = p
-  #   value = 1
-  # [../]
-  # [./p_out]
-  #   type = DirichletBC
-  #   boundary = top
-  #   variable = p
-  #   value = 0
-  # [../]
-  # [./p_corner]
-  #   type = DirichletBC
-  #   boundary = bottom_left
-  #   variable = p
-  #   value = 0
-  # [../]
   [./u_out]
     type = INSMomentumNoBCBC
     boundary = top
@@ -184,24 +144,6 @@
     p = p
     component = 1
   [../]
-  # [./u_out]
-  #   type = INSOutflowBC
-  #   boundary = top
-  #   variable = u
-  #   u = u
-  #   v = v
-  #   p = p
-  #   component = 0
-  # [../]
-  # [./v_out]
-  #   type = INSOutflowBC
-  #   boundary = top
-  #   variable = v
-  #   u = u
-  #   v = v
-  #   p = p
-  #   component = 1
-  # [../]
   [./u_axis_and_walls]
     type = DirichletBC
     boundary = 'left right'
@@ -236,19 +178,8 @@
     u = u
     v = v
     p = p
-    # coord_type = RZ
+    # coord_type = XYZ
   [../]
-  # # r-momentum, time
-  # [./x_momentum_time]
-  #   type = INSMomentumTimeDerivative
-  #   variable = u
-  # [../]
-  # # z-momentum, time
-  # [./y_momentum_time]
-  #   type = INSMomentumTimeDerivative
-  #   variable = v
-  # [../]
-  # r-momentum, space
   [./x_momentum_space]
     type = INSMomentum
     variable = u
