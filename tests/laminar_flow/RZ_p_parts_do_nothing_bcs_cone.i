@@ -2,7 +2,7 @@
 [GlobalParams]
   rho = 1
   mu = 1
-  integrate_p_by_parts = false
+  integrate_p_by_parts = true
   gravity = '0 0 0'
   coord_type = RZ
 []

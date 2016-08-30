@@ -2,14 +2,32 @@
 [GlobalParams]
   rho = 1
   mu = 1
-  integrate_p_by_parts = false
+  integrate_p_by_parts = true
   gravity = '0 0 0'
   coord_type = RZ
 []
 
 [Mesh]
-  file = 'gold/2d_cone.msh'
+  type = GeneratedMesh
+  dim = 2
+  xmin = 0
+  ymin = 0
+  xmax = .5
+  ymax = 1
+  nx = 25
+  ny = 25
+  elem_type = QUAD9
+  # file = '2d.msh'
 []
+
+[MeshModifiers]
+  [./bottom_left]
+    type = AddExtraNodeset
+    new_boundary = bottom_left
+    coord = '0 0'
+  [../]
+[]
+
 
 [Problem]
 []
@@ -95,17 +113,11 @@
 []
 
 [BCs]
-  [./p_corner]
-    type = DirichletBC
-    boundary = top_right
-    value = 0
-    variable = p
-  [../]
   [./u_in]
     type = DirichletBC
     boundary = bottom
     variable = u
-    value = 0
+    value = 0 # m/s
   [../]
   [./v_in]
     type = FunctionDirichletBC
@@ -134,12 +146,14 @@
   [./u_axis_and_walls]
     type = DirichletBC
     boundary = 'left right'
+    # boundary = right
     variable = u
     value = 0
   [../]
-  [./v_no_slip]
+  [./v_walls]
     type = DirichletBC
-    boundary = 'right'
+    boundary = right
+    # boundary = 'left right'
     variable = v
     value = 0
   [../]
