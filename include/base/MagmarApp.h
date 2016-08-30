@@ -3,16 +3,16 @@
 
 #include "MooseApp.h"
 
-class MagmarApp;
+class MoltresApp;
 
 template<>
-InputParameters validParams<MagmarApp>();
+InputParameters validParams<MoltresApp>();
 
-class MagmarApp : public MooseApp
+class MoltresApp : public MooseApp
 {
 public:
-  MagmarApp(InputParameters parameters);
-  virtual ~MagmarApp();
+  MoltresApp(InputParameters parameters);
+  virtual ~MoltresApp();
 
   static void registerApps();
   static void registerObjects(Factory & factory);

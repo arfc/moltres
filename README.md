@@ -1,6 +1,6 @@
-Magmar
+Moltres
 =====
 
-"Fork Magmar" to create a new MOOSE-based application.
+"Fork Moltres" to create a new MOOSE-based application.
 
 For more information see: [http://mooseframework.org/create-an-app/](http://mooseframework.org/create-an-app/)

@@ -1,4 +1,4 @@
-#include "MagmarApp.h"
+#include "MoltresApp.h"
 #include "Moose.h"
 #include "AppFactory.h"
 #include "ModulesApp.h"
@@ -13,7 +13,7 @@
 #include "INSSymmetryAxisBC.h"
 
 template<>
-InputParameters validParams<MagmarApp>()
+InputParameters validParams<MoltresApp>()
 {
   InputParameters params = validParams<MooseApp>();
 
@@ -24,34 +24,34 @@ InputParameters validParams<MagmarApp>()
   return params;
 }
 
-MagmarApp::MagmarApp(InputParameters parameters) :
+MoltresApp::MoltresApp(InputParameters parameters) :
     MooseApp(parameters)
 {
   Moose::registerObjects(_factory);
   ModulesApp::registerObjects(_factory);
-  MagmarApp::registerObjects(_factory);
+  MoltresApp::registerObjects(_factory);
 
   Moose::associateSyntax(_syntax, _action_factory);
   ModulesApp::associateSyntax(_syntax, _action_factory);
-  MagmarApp::associateSyntax(_syntax, _action_factory);
+  MoltresApp::associateSyntax(_syntax, _action_factory);
 }
 
-MagmarApp::~MagmarApp()
+MoltresApp::~MoltresApp()
 {
 }
 
 // External entry point for dynamic application loading
-extern "C" void MagmarApp__registerApps() { MagmarApp::registerApps(); }
+extern "C" void MoltresApp__registerApps() { MoltresApp::registerApps(); }
 void
-MagmarApp::registerApps()
+MoltresApp::registerApps()
 {
-  registerApp(MagmarApp);
+  registerApp(MoltresApp);
 }
 
 // External entry point for dynamic object registration
-extern "C" void MagmarApp__registerObjects(Factory & factory) { MagmarApp::registerObjects(factory); }
+extern "C" void MoltresApp__registerObjects(Factory & factory) { MoltresApp::registerObjects(factory); }
 void
-MagmarApp::registerObjects(Factory & factory)
+MoltresApp::registerObjects(Factory & factory)
 {
   registerKernel(INSMomentumKEpsilon);
   registerKernel(INSK);
@@ -60,8 +60,8 @@ MagmarApp::registerObjects(Factory & factory)
 }
 
 // External entry point for dynamic syntax association
-extern "C" void MagmarApp__associateSyntax(Syntax & syntax, ActionFactory & action_factory) { MagmarApp::associateSyntax(syntax, action_factory); }
+extern "C" void MoltresApp__associateSyntax(Syntax & syntax, ActionFactory & action_factory) { MoltresApp::associateSyntax(syntax, action_factory); }
 void
-MagmarApp::associateSyntax(Syntax & /*syntax*/, ActionFactory & /*action_factory*/)
+MoltresApp::associateSyntax(Syntax & /*syntax*/, ActionFactory & /*action_factory*/)
 {
 }

@@ -24,7 +24,7 @@
 
 #include "Factory.h"
 #include "AppFactory.h"
-#include "MagmarApp.h"
+#include "MoltresApp.h"
 
 #include <fstream>
 #include <string>
@@ -35,7 +35,7 @@ int main(int argc, char **argv)
 {
   MooseInit init(argc, argv);
 
-  registerApp(MagmarApp);
+  registerApp(MoltresApp);
 
   CppUnit::Test *suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
 
