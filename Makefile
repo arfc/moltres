@@ -26,6 +26,10 @@ FLUID_PROPERTIES := yes
 include $(MOOSE_DIR)/modules/modules.mk
 ###############################################################################
 
+APPLICATION_DIR    := $(MOOSE_DIR)/test
+APPLICATION_NAME   := moose_tests
+include            $(FRAMEWORK_DIR)/app.mk
+
 # dep apps
 APPLICATION_DIR    := $(CURDIR)
 APPLICATION_NAME   := moltres

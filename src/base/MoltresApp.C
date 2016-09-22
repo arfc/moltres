@@ -3,11 +3,13 @@
 #include "AppFactory.h"
 #include "NavierStokesApp.h"
 #include "FluidPropertiesApp.h"
+#include "MooseTestApp.h"
 #include "MooseSyntax.h"
 
 // Kernels
 #include "INSMomentumKEpsilon.h"
 #include "INSK.h"
+#include "SigmaT.h"
 
 // Boundary conditions
 #include "INSOutflowBC.h"
@@ -31,11 +33,13 @@ MoltresApp::MoltresApp(InputParameters parameters) :
   Moose::registerObjects(_factory);
   NavierStokesApp::registerObjects(_factory);
   FluidPropertiesApp::registerObjects(_factory);
+  MooseTestApp::registerObjects(_factory);
   MoltresApp::registerObjects(_factory);
 
   Moose::associateSyntax(_syntax, _action_factory);
   NavierStokesApp::associateSyntax(_syntax, _action_factory);
   FluidPropertiesApp::associateSyntax(_syntax, _action_factory);
+  MooseTestApp::associateSyntax(_syntax, _action_factory);
   MoltresApp::associateSyntax(_syntax, _action_factory);
 }
 
@@ -56,6 +60,7 @@ extern "C" void MoltresApp__registerObjects(Factory & factory) { MoltresApp::reg
 void
 MoltresApp::registerObjects(Factory & factory)
 {
+  registerKernel(SigmaT);
   registerKernel(INSMomentumKEpsilon);
   registerKernel(INSK);
   registerBoundaryCondition(INSOutflowBC);
