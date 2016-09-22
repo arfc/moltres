@@ -9,7 +9,9 @@
 // Kernels
 #include "INSMomentumKEpsilon.h"
 #include "INSK.h"
-#include "SigmaT.h"
+#include "SigmaR.h"
+#include "CoupledFissionEigenKernel.h"
+#include "InScatter.h"
 
 // Boundary conditions
 #include "INSOutflowBC.h"
@@ -60,7 +62,9 @@ extern "C" void MoltresApp__registerObjects(Factory & factory) { MoltresApp::reg
 void
 MoltresApp::registerObjects(Factory & factory)
 {
-  registerKernel(SigmaT);
+  registerKernel(SigmaR);
+  registerKernel(InScatter);
+  registerKernel(CoupledFissionEigenKernel);
   registerKernel(INSMomentumKEpsilon);
   registerKernel(INSK);
   registerBoundaryCondition(INSOutflowBC);
