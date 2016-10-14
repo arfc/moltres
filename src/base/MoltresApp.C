@@ -11,6 +11,7 @@
 #include "INSK.h"
 #include "SigmaR.h"
 #include "CoupledFissionEigenKernel.h"
+#include "SelfFissionEigenKernel.h"
 #include "InScatter.h"
 
 // Boundary conditions
@@ -65,6 +66,7 @@ MoltresApp::registerObjects(Factory & factory)
   registerKernel(SigmaR);
   registerKernel(InScatter);
   registerKernel(CoupledFissionEigenKernel);
+  registerKernel(SelfFissionEigenKernel);
   registerKernel(INSMomentumKEpsilon);
   registerKernel(INSK);
   registerBoundaryCondition(INSOutflowBC);
