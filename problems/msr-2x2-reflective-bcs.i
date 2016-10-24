@@ -1,5 +1,5 @@
 [Mesh]
-  file = '/home/lindsayad/gdrive/gmsh-scripts/msr.msh'
+  file = '/home/lindsayad/gdrive/gmsh-scripts/msr-small.msh'
 [../]
 
 [Variables]

@@ -1,5 +1,5 @@
 [Mesh]
-  file = '/home/lindsayad/gdrive/gmsh-scripts/msr.msh'
+  file = '/home/lindsayad/gdrive/gmsh-scripts/msr-10x10.msh'
 [../]
 
 [Variables]
@@ -72,31 +72,40 @@
   [../]
 []
 
-# [BCs]
-#   [./homogeneous_u]
-#     type = DirichletBC
-#     variable = u
-#     boundary = 'boundary'
-#     value = 0
-#   [../]
-#   [./homogeneous_v]
-#     type = DirichletBC
-#     variable = v
-#     boundary = 'boundary'
-#     value = 0
-#   [../]
-# []
+[BCs]
+  [./homogeneous_u]
+    type = VacuumBC
+    variable = u
+    boundary = 'boundary'
+    alpha = .5941650
+  [../]
+  [./homogeneous_v]
+    type = VacuumBC
+    variable = v
+    boundary = 'boundary'
+    alpha = .9912190
+  [../]
+[]
 
 [Executioner]
-  type = NonlinearEigen
+  # type = NonlinearEigen
+  type = InversePowerMethod
 
   bx_norm = 'vnorm'
 
-  free_power_iterations = 2
-  source_abs_tol = 1e-12
-  source_rel_tol = 1e-50
+  # free_power_iterations = 2
+  # source_abs_tol = 1e-12
+  # source_rel_tol = 1e-50
+  # output_after_power_iterations = false
+  # l_max_its = 25
+
   k0 = 1.0
-  output_after_power_iterations = true
+  min_power_iterations = 11
+  max_power_iterations = 400
+  eig_check_tol = 1e-12
+  Chebyshev_acceleration_on = true
+  xdiff = 'udiff'
+  normalization = 'vnorm'
 
   #Preconditioned JFNK (default)
   solve_type = 'PJFNK'
@@ -114,6 +123,7 @@
     type = ElementL2Diff
     variable = u
     outputs = console
+    execute_on = 'linear timestep_end'
   [../]
 []
 
