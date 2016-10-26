@@ -13,10 +13,14 @@
 #include "CoupledFissionEigenKernel.h"
 #include "SelfFissionEigenKernel.h"
 #include "InScatter.h"
+#include "GroupDiffusion.h"
 
 // Boundary conditions
 #include "INSOutflowBC.h"
 #include "INSSymmetryAxisBC.h"
+
+// Materials
+#include "GenericMoltresMaterial.h"
 
 template<>
 InputParameters validParams<MoltresApp>()
@@ -69,8 +73,10 @@ MoltresApp::registerObjects(Factory & factory)
   registerKernel(SelfFissionEigenKernel);
   registerKernel(INSMomentumKEpsilon);
   registerKernel(INSK);
+  registerKernel(GroupDiffusion);
   registerBoundaryCondition(INSOutflowBC);
   registerBoundaryCondition(INSSymmetryAxisBC);
+  registerMaterial(GenericMoltresMaterial);
 }
 
 // External entry point for dynamic syntax association

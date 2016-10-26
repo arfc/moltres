@@ -1,97 +1,128 @@
-#include "NukeMaterial.h"
+#include "GenericMoltresMaterial.h"
 #include "MooseUtils.h"
-#define PRINT(var) #var
+// #define PRINT(var) #var
 
 template<>
-InputParameters validParams<NukeMaterial>()
+InputParameters validParams<GenericMoltresMaterial>()
 {
   InputParameters params = validParams<Material>();
   params.addRequiredParam<std::string>("property_tables_root", "The file root name containing interpolation tables for material properties.");
   params.addRequiredParam<int>("num_groups", "The number of groups the energy spectrum is divided into.");
+  params.addRequiredCoupledVar("temperature", "The temperature field for determining group constants.");
   return params;
 }
 
 
-NukeMaterial::NukeMaterial(const InputParameters & parameters) :
+GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameters) :
     Material(parameters),
-{
-  std::vector<std::vector<float> > flux;
-  std::vector<std::vector<float> > remxs;
-  std::vector<std::vector<float> > fissxs;
-  std::vector<std::vector<float> > nubar;
-  std::vector<std::vector<float> > nsf;
-  std::vector<std::vector<float> > fisse;
-  std::vector<std::vector<float> > diffcoef;
-  std::vector<std::vector<float> > chi;
-  std::vector<std::vector<float> > gtransfxs;
+    _temperature(coupledValue("temperature")),
+    _remxs(declareProperty<std::vector<Real> >("remxs")),
+    _fissxs(declareProperty<std::vector<Real> >("fissxs")),
+    _nsf(declareProperty<std::vector<Real> >("nsf")),
+    _fisse(declareProperty<std::vector<Real> >("fisse")),
+    _diffcoef(declareProperty<std::vector<Real> >("diffcoef")),
+    _chi(declareProperty<std::vector<Real> >("chi")),
+    _gtransfxs(declareProperty<std::vector<Real> >("gtransfxs")),
+    _d_remxs_d_temp(declareProperty<std::vector<Real> >("d_remxs_d_temp")),
+    _d_fissxs_d_temp(declareProperty<std::vector<Real> >("d_fissxs_d_temp")),
+    _d_nsf_d_temp(declareProperty<std::vector<Real> >("d_nsf_d_temp")),
+    _d_fisse_d_temp(declareProperty<std::vector<Real> >("d_fisse_d_temp")),
+    _d_diffcoef_d_temp(declareProperty<std::vector<Real> >("d_diffcoef_d_temp")),
+    _d_chi_d_temp(declareProperty<std::vector<Real> >("d_chi_d_temp")),
+    _d_gtransfxs_d_temp(declareProperty<std::vector<Real> >("d_gtransfxs_d_temp"))
 
-  int _num_groups = 2;
-  std::string property_tables_root = "some_name";
-  std::vector<std::vector<std::vector<Real> > > xsec_vars {flux, remxs, fissxs, nubar, nsf, fisse, diffcoef, chi, gtransfxs};
-  std::vector<int> xsec_column_lengths;
-  for (i=0; i<= {_num_groups, _num_groups, _num_groups, _num_groups,
-  for (const auto &i : xsec_vars)
-    for (const auto &j : i)
-      for (const auto &k : j)
-        std::cout << k << std::endl;
-  const char *charPath = property_tables_root.c_str();
-  std::ifstream myfile (charPath);
+{
+  int i, j, k;
   Real value;
 
+  _num_groups = getParam<int>("num_groups");
+  std::string property_tables_root = getParam<std::string>("property_tables_root");
+  std::vector<std::string> xsec_names {"FLUX", "REMXS", "FISSXS", "NUBAR", "NSF", "FISSE", "DIFFCOEF", "CHI", "GTRANSFXS"};
+
+  std::vector<Real> temperature;
+  std::string file_name = property_tables_root + "DIFFCOEF.txt";
+  const std::string & file_name_ref = file_name;
+  std::ifstream myfile (file_name_ref.c_str());
   if (myfile.is_open())
   {
-    while ( myfile >> value )
+    while (myfile >> value)
     {
-      actual_mean_energy.push_back(value);
-      myfile >> value;
-      alpha.push_back(value);
-      myfile >> value;
-      alphaEx.push_back(value);
-      myfile >> value;
-      alphaEl.push_back(value);
-      myfile >> value;
-      mu.push_back(value);
-      myfile >> value;
-      diff.push_back(value);
+      temperature.push_back(value);
+      for (k = 0; k < _num_groups; ++k)
+        myfile >> value;
     }
     myfile.close();
   }
+  else std::cerr << "Unable to open file " << file_name << std::endl;
 
-  else std::cerr << "Unable to open file" << std::endl;
-
-  _alpha_interpolation.setData(actual_mean_energy, alpha);
-  _alphaEx_interpolation.setData(actual_mean_energy, alphaEx);
-  _alphaEl_interpolation.setData(actual_mean_energy, alphaEl);
-  _mu_interpolation.setData(actual_mean_energy, mu);
-  _diff_interpolation.setData(actual_mean_energy, diff);
+  std::map<std::string, std::vector<std::vector<Real> > > xsec_map;
+  for (j = 0; j < xsec_names.size(); ++j)
+  {
+    std::string file_name = property_tables_root + xsec_names[j] + ".txt";
+    const std::string & file_name_ref = file_name;
+    std::ifstream myfile (file_name_ref.c_str());
+    if (xsec_names[j].compare("GTRANSFXS") == 0)
+      _vec_lengths[xsec_names[j]] = _num_groups * _num_groups;
+    else
+      _vec_lengths[xsec_names[j]] = _num_groups;
+    xsec_map[xsec_names[j]].resize(_vec_lengths[xsec_names[j]]);
+    _xsec_interpolators[xsec_names[j]].resize(_vec_lengths[xsec_names[j]]);
+    if (myfile.is_open())
+    {
+      while (myfile >> value)
+      {
+        for (k = 0; k < _vec_lengths[xsec_names[j]]; ++k)
+        {
+          myfile >> value;
+          xsec_map[xsec_names[j]][k].push_back(value);
+        }
+      }
+      myfile.close();
+      for (k = 0; k < _vec_lengths[xsec_names[j]]; ++k)
+        _xsec_interpolators[xsec_names[j]][k].setData(temperature, xsec_map[xsec_names[j]][k]);
+    }
+    else std::cerr << "Unable to open file " << file_name << std::endl;
+  }
 }
 
 void
-NukeMaterial::computeQpProperties()
+GenericMoltresMaterial::computeQpProperties()
 {
-  if (_interp_trans_coeffs)
+
+  _remxs[_qp].resize(_vec_lengths["REMXS"]);
+  _fissxs[_qp].resize(_vec_lengths["FISSXS"]);
+  _nsf[_qp].resize(_vec_lengths["NSF"]);
+  _fisse[_qp].resize(_vec_lengths["FISSE"]);
+  _diffcoef[_qp].resize(_vec_lengths["DIFFCOEF"]);
+  _chi[_qp].resize(_vec_lengths["CHI"]);
+  _gtransfxs[_qp].resize(_vec_lengths["GTRANSFXS"]);
+  _d_remxs_d_temp[_qp].resize(_vec_lengths["REMXS"]);
+  _d_fissxs_d_temp[_qp].resize(_vec_lengths["FISSXS"]);
+  _d_nsf_d_temp[_qp].resize(_vec_lengths["NSF"]);
+  _d_fisse_d_temp[_qp].resize(_vec_lengths["FISSE"]);
+  _d_diffcoef_d_temp[_qp].resize(_vec_lengths["DIFFCOEF"]);
+  _d_chi_d_temp[_qp].resize(_vec_lengths["CHI"]);
+  _d_gtransfxs_d_temp[_qp].resize(_vec_lengths["GTRANSFXS"]);
+
+  for (unsigned int i = 0; i < _num_groups; ++i)
   {
-    if (_ramp_trans_coeffs)
-    {
-      _muem[_qp] = (std::tanh(_t / 1e-6) * _mu_interpolation.sample(std::exp(_mean_en[_qp]-_em[_qp])) + (1. - std::tanh(_t / 1e-6)) * .0352) * _voltage_scaling;
-      _d_muem_d_actual_mean_en[_qp] = std::tanh(_t / 1e-6) * _mu_interpolation.sampleDerivative(std::exp(_mean_en[_qp]-_em[_qp])) * _voltage_scaling;
-      _diffem[_qp] = std::tanh(_t / 1e-6) * _diff_interpolation.sample(std::exp(_mean_en[_qp]-_em[_qp])) + (1. - std::tanh(_t / 1e-6)) * .30;
-      _d_diffem_d_actual_mean_en[_qp] = std::tanh(_t / 1e-6) * _diff_interpolation.sampleDerivative(std::exp(_mean_en[_qp]-_em[_qp]));
-    }
-    else
-    {
-      _muem[_qp] = _mu_interpolation.sample(std::exp(_mean_en[_qp]-_em[_qp])) * _voltage_scaling;
-      _d_muem_d_actual_mean_en[_qp] = _mu_interpolation.sampleDerivative(std::exp(_mean_en[_qp]-_em[_qp])) * _voltage_scaling;
-      _diffem[_qp] = _diff_interpolation.sample(std::exp(_mean_en[_qp]-_em[_qp]));
-      _d_diffem_d_actual_mean_en[_qp] = _diff_interpolation.sampleDerivative(std::exp(_mean_en[_qp]-_em[_qp]));
-    }
+    _remxs[_qp][i] = _xsec_interpolators["REMXS"][i].sample(_temperature[_qp]);
+    _fissxs[_qp][i] = _xsec_interpolators["FISSXS"][i].sample(_temperature[_qp]);
+    _nsf[_qp][i] = _xsec_interpolators["NSF"][i].sample(_temperature[_qp]);
+    _fisse[_qp][i] = _xsec_interpolators["FISSE"][i].sample(_temperature[_qp]);
+    _diffcoef[_qp][i] = _xsec_interpolators["DIFFCOEF"][i].sample(_temperature[_qp]);
+    _chi[_qp][i] = _xsec_interpolators["CHI"][i].sample(_temperature[_qp]);
+    _d_remxs_d_temp[_qp][i] = _xsec_interpolators["REMXS"][i].sampleDerivative(_temperature[_qp]);
+    _d_fissxs_d_temp[_qp][i] = _xsec_interpolators["FISSXS"][i].sampleDerivative(_temperature[_qp]);
+    _d_nsf_d_temp[_qp][i] = _xsec_interpolators["NSF"][i].sampleDerivative(_temperature[_qp]);
+    _d_fisse_d_temp[_qp][i] = _xsec_interpolators["FISSE"][i].sampleDerivative(_temperature[_qp]);
+    _d_diffcoef_d_temp[_qp][i] = _xsec_interpolators["DIFFCOEF"][i].sampleDerivative(_temperature[_qp]);
+    _d_chi_d_temp[_qp][i] = _xsec_interpolators["CHI"][i].sampleDerivative(_temperature[_qp]);
   }
-  else
+  for (unsigned int i = 0; i < _num_groups * _num_groups; ++i)
   {
-    // From bolos at atmospheric pressure and an EField of 2e5 V/m
-    _muem[_qp] = 0.0352103411399 * _voltage_scaling; // units of m^2/(kV*s) if _voltage_scaling = 1000
-    _d_muem_d_actual_mean_en[_qp] = 0.0;
-    _diffem[_qp] = 0.297951680159;
-    _d_diffem_d_actual_mean_en[_qp] = 0.0;
+    _gtransfxs[_qp][i] = _xsec_interpolators["GTRANSFXS"][i].sample(_temperature[_qp]);
+    _d_gtransfxs_d_temp[_qp][i] = _xsec_interpolators["GTRANSFXS"][i].sampleDerivative(_temperature[_qp]);
   }
+
 }
