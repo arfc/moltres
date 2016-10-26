@@ -14,7 +14,7 @@ GroupDiffusion::GroupDiffusion(const InputParameters & parameters) :
     Kernel(parameters),
     _diffcoef(getMaterialProperty<std::vector<Real> >("diffcoef")),
     _d_diffcoef_d_temp(getMaterialProperty<std::vector<Real> >("d_diffcoef_d_temp")),
-    _group(getParam<int>("group_number")),
+    _group(getParam<int>("group_number") - 1),
     _temp_id(coupled("temperature"))
 {
 }
