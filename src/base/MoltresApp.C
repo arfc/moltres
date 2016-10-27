@@ -22,6 +22,9 @@
 // Materials
 #include "GenericMoltresMaterial.h"
 
+// Postprocessors
+#include "ElementIntegralTotFissionSrcPostprocessor.h"
+
 template<>
 InputParameters validParams<MoltresApp>()
 {
@@ -77,6 +80,7 @@ MoltresApp::registerObjects(Factory & factory)
   registerBoundaryCondition(INSOutflowBC);
   registerBoundaryCondition(INSSymmetryAxisBC);
   registerMaterial(GenericMoltresMaterial);
+  registerPostprocessor(ElementIntegralTotFissionSrcPostprocessor);
 }
 
 // External entry point for dynamic syntax association

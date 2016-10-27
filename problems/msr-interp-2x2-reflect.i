@@ -1,3 +1,8 @@
+[GlobalParams]
+  num_groups = 2
+[../]
+
+
 [Mesh]
   file = '/home/lindsayad/gdrive/gmsh-scripts/msr-small.msh'
 [../]
@@ -10,7 +15,6 @@
   [./group2]
     order = FIRST
     family = LAGRANGE
-    eigen = true
   [../]
 []
 
@@ -99,7 +103,7 @@
 [Executioner]
   type = NonlinearEigen
 
-  bx_norm = 'vnorm'
+  bx_norm = 'bnorm'
 
   free_power_iterations = 2
   source_abs_tol = 1e-12
@@ -119,17 +123,10 @@
 []
 
 [Postprocessors]
-  [./vnorm]
-    type = ElementIntegralVariablePostprocessor
-    variable = group2
-    # execute on residual is important for nonlinear eigen solver!
+  [./bnorm]
+    type = ElementIntegralTotFissionSrcPostprocessor
+    group_fluxes = 'group1 group2'
     execute_on = linear
-  [../]
-
-  [./udiff]
-    type = ElementL2Diff
-    variable = group1
-    outputs = console
   [../]
 []
 
