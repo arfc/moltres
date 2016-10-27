@@ -8,7 +8,7 @@ InputParameters validParams<GenericMoltresMaterial>()
   InputParameters params = validParams<Material>();
   params.addRequiredParam<std::string>("property_tables_root", "The file root name containing interpolation tables for material properties.");
   params.addRequiredParam<int>("num_groups", "The number of groups the energy spectrum is divided into.");
-  params.addRequiredCoupledVar("temperature", "The temperature field for determining group constants.");
+  params.addCoupledVar("temperature", 937, "The temperature field for determining group constants.");
   return params;
 }
 
@@ -53,7 +53,8 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     }
     myfile.close();
   }
-  else std::cerr << "Unable to open file " << file_name << std::endl;
+  else
+    mooseError("Unable to open file " << file_name);
 
   std::map<std::string, std::vector<std::vector<Real> > > xsec_map;
   for (j = 0; j < xsec_names.size(); ++j)
@@ -81,7 +82,8 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
       for (k = 0; k < _vec_lengths[xsec_names[j]]; ++k)
         _xsec_interpolators[xsec_names[j]][k].setData(temperature, xsec_map[xsec_names[j]][k]);
     }
-    else std::cerr << "Unable to open file " << file_name << std::endl;
+    else
+      mooseError("Unable to open file " << file_name);
   }
 }
 

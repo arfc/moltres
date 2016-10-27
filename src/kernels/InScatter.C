@@ -6,7 +6,7 @@ InputParameters validParams<InScatter>()
   InputParameters params = validParams<Kernel>();
   params.addRequiredParam<int>("group_number", "The current energy group");
   params.addRequiredParam<int>("num_groups", "The total numer of energy groups");
-  params.addRequiredCoupledVar("temperature", "The temperature used to interpolate material properties");
+  params.addCoupledVar("temperature", 937, "The temperature used to interpolate material properties");
   params.addRequiredCoupledVar("group_fluxes", "All the variables that hold the group fluxes. These MUST be listed by decreasing energy/increasing group number.");
   return params;
 }
@@ -20,11 +20,10 @@ InScatter::InScatter(const InputParameters & parameters) :
     _num_groups(getParam<int>("num_groups")),
     _temp_id(coupled("temperature"))
 {
-  int n = coupledComponents("coupled_vars");
+  int n = coupledComponents("group_fluxes");
   if (!(n == _num_groups))
   {
-    std::cerr << "The number of coupled variables doesn't match the number of groups." << std::endl;
-    std::abort();
+    mooseError("The number of coupled variables doesn't match the number of groups.");
   }
   _group_fluxes.resize(n);
   _flux_ids.resize(n);

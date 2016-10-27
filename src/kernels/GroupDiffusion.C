@@ -5,7 +5,7 @@ InputParameters validParams<GroupDiffusion>()
 {
   InputParameters params = validParams<Kernel>();
   params.addRequiredParam<int>("group_number", "The group for which this kernel controls diffusion");
-  params.addRequiredCoupledVar("temperature", "The temperature used to interpolate the diffusion coefficient");
+  params.addCoupledVar("temperature", 937, "The temperature used to interpolate the diffusion coefficient");
   return params;
 }
 
