@@ -58,10 +58,19 @@ InScatter::computeQpJacobian()
 Real
 InScatter::computeQpOffDiagJacobian(unsigned int jvar)
 {
-  if (jvar == _v_id)
+  Real jac = 0;
+  for (int i = 0; i < _num_groups; ++i)
   {
-    return -_test[_i][_qp] * _sigma_s[_qp] * _phi[_j][_qp];
+    if (jvar == _flux_ids[i])
+    {
+      jac += -_test[_i][_qp] * _gtransfxs[_qp][i + _group * _num_groups] * _phi[_j][_qp];
+      break;
+    }
   }
-  else
-    return 0.;
+
+  if (jvar == _temp_id)
+    for (int i = 0; i < _num_groups; ++i)
+      jac += -_test[_i][_qp] * _d_gtransfxs_d_temp[_qp][i + _group * _num_groups] * (*_group_fluxes[i])[_qp];
+
+  return jac;
 }
