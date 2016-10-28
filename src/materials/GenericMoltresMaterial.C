@@ -5,7 +5,7 @@
 template<>
 InputParameters validParams<GenericMoltresMaterial>()
 {
-  InputParameters params = validParams<Material>();
+  InputParameters params = validParams<GenericConstantMaterial>();
   params.addRequiredParam<std::string>("property_tables_root", "The file root name containing interpolation tables for material properties.");
   params.addRequiredParam<int>("num_groups", "The number of groups the energy spectrum is divided into.");
   params.addCoupledVar("temperature", 937, "The temperature field for determining group constants.");
@@ -14,7 +14,7 @@ InputParameters validParams<GenericMoltresMaterial>()
 
 
 GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameters) :
-    Material(parameters),
+    GenericConstantMaterial(parameters),
     _temperature(coupledValue("temperature")),
     _remxs(declareProperty<std::vector<Real> >("remxs")),
     _fissxs(declareProperty<std::vector<Real> >("fissxs")),
@@ -90,6 +90,8 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
 void
 GenericMoltresMaterial::computeQpProperties()
 {
+  for (unsigned int i=0; i<_num_props; i++)
+    (*_properties[i])[_qp] = _prop_values[i];
 
   _remxs[_qp].resize(_vec_lengths["REMXS"]);
   _fissxs[_qp].resize(_vec_lengths["FISSXS"]);

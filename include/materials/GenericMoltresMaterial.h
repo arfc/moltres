@@ -1,7 +1,7 @@
 #ifndef GENERICMOLTRESMATERIAL_H_
 #define GENERICMOLTRESMATERIAL_H_
 
-#include "Material.h"
+#include "GenericConstantMaterial.h"
 #include "SplineInterpolation.h"
 
 class GenericMoltresMaterial;
@@ -9,7 +9,7 @@ class GenericMoltresMaterial;
 template<>
 InputParameters validParams<GenericMoltresMaterial>();
 
-class GenericMoltresMaterial : public Material
+class GenericMoltresMaterial : public GenericConstantMaterial
 {
 public:
   GenericMoltresMaterial(const InputParameters & parameters);

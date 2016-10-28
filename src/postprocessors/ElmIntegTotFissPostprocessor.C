@@ -1,7 +1,7 @@
-#include "ElementIntegralTotFissionSrcPostprocessor.h"
+#include "ElmIntegTotFissPostprocessor.h"
 
 template<>
-InputParameters validParams<ElementIntegralTotFissionSrcPostprocessor>()
+InputParameters validParams<ElmIntegTotFissPostprocessor>()
 {
   InputParameters params = validParams<ElementIntegralPostprocessor>();
   params.addRequiredCoupledVar("group_fluxes", "The group fluxes. MUST be arranged by decreasing energy/increasing group number.");
@@ -9,11 +9,11 @@ InputParameters validParams<ElementIntegralTotFissionSrcPostprocessor>()
   return params;
 }
 
-ElementIntegralTotFissionSrcPostprocessor::ElementIntegralTotFissionSrcPostprocessor(const InputParameters & parameters) :
+ElmIntegTotFissPostprocessor::ElmIntegTotFissPostprocessor(const InputParameters & parameters) :
     ElementIntegralPostprocessor(parameters),
     // MooseVariableInterface(this, false),
     _num_groups(getParam<int>("num_groups")),
-    _nsf(getMaterialProperty<std::vector<Real> >("nsf")),
+    _fissxs(getMaterialProperty<std::vector<Real> >("fissxs")),
     _vars(getCoupledMooseVars())
 {
   addMooseVariableDependency(_vars);
@@ -29,11 +29,11 @@ ElementIntegralTotFissionSrcPostprocessor::ElementIntegralTotFissionSrcPostproce
 }
 
 Real
-ElementIntegralTotFissionSrcPostprocessor::computeQpIntegral()
+ElmIntegTotFissPostprocessor::computeQpIntegral()
 {
   Real sum = 0;
   for (int i = 0; i < _num_groups; ++i)
-    sum += _nsf[_qp][i] * (*_group_fluxes[i])[_qp];
+    sum += _fissxs[_qp][i] * (*_group_fluxes[i])[_qp];
 
   return sum;
 }
