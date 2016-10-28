@@ -20,6 +20,7 @@
   [./temp]
     order = FIRST
     family = LAGRANGE
+    # scaling = 1e-3
   [../]
 []
 
@@ -180,24 +181,31 @@
 
 [Executioner]
   type = NonlinearEigen
-
-  bx_norm = 'bnorm'
-
-  free_power_iterations = 2
+  free_power_iterations = 4
   source_abs_tol = 1e-12
   source_rel_tol = 1e-8
-  k0 = 1.0
   output_after_power_iterations = true
+  l_max_its = 10
 
-  # solve_type = 'PJFNK'
-  solve_type = 'NEWTON'
+  # type = InversePowerMethod
+  # max_power_iterations = 50
+  # xdiff = 'group1diff'
+
+  bx_norm = 'bnorm'
+  k0 = 1.0
+  pfactor = 1e-2
+
+  solve_type = 'PJFNK'
+  # solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
+  # petsc_options_iname = '-pc_type -sub_pc_type'
+  # petsc_options_value = 'asm lu'
 []
 
 [Preconditioning]
   [./SMP]
     type = SMP
-    full = true
+    # full = true
   [../]
 []
 
@@ -250,6 +258,12 @@
     type = NodalL2Norm
     variable = tot_resid
     execute_on = nonlinear
+  [../]
+  [./group1diff]
+    type = ElementL2Diff
+    variable = group1
+    execute_on = 'linear timestep_end'
+    use_displaced_mesh = false
   [../]
 []
 
