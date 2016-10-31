@@ -149,7 +149,7 @@
   [./fuel]
     type = GenericMoltresMaterial
     block = 0
-    property_tables_root = '/home/lindsayad/serpent/core/examples/serpent-input/msre/msr2g_enrU_mod_953_fuel_interp_'
+    property_tables_root = 'msr2g_enrU_mod_953_fuel_interp_'
     num_groups = 2
     prop_names = 'k'
     prop_values = '.0123' # Cammi 2011 at 908 K
