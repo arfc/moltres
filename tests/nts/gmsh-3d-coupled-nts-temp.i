@@ -7,7 +7,7 @@
 [../]
 
 [Mesh]
-  file = '/home/lindsayad/gdrive/gmsh-scripts/msr-small.msh'
+  file = 'msr-small.msh'
 [../]
 
 [Variables]
@@ -144,7 +144,7 @@
   [./fuel]
     type = GenericMoltresMaterial
     block = 'fuel'
-    property_tables_root = '/home/lindsayad/serpent/core/examples/serpent-input/msre/msr2g_enrU_mod_953_fuel_interp_'
+    property_tables_root = 'msr2g_enrU_mod_953_fuel_interp_'
     num_groups = 2
     prop_names = 'k'
     prop_values = '.0123' # Cammi 2011 at 908 K
@@ -154,7 +154,7 @@
   [./moder]
     type = GenericMoltresMaterial
     block = 'moder'
-    property_tables_root = '/home/lindsayad/serpent/core/examples/serpent-input/msre/msr2g_enrU_fuel_922_mod_interp_'
+    property_tables_root = 'msr2g_enrU_fuel_922_mod_interp_'
     num_groups = 2
     prop_names = 'k'
     prop_values = '.312' # Cammi 2011 at 908 K
@@ -190,12 +190,12 @@
   # xdiff = 'group1diff'
 
   bx_norm = 'bnorm'
-  k0 = 1.0
+  k0 = 2
   pfactor = 1e-2
   l_max_its = 100
 
-  # solve_type = 'PJFNK'
-  solve_type = 'NEWTON'
+  solve_type = 'PJFNK'
+  # solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   petsc_options_iname = '-pc_type -sub_pc_type'
   petsc_options_value = 'asm lu'
@@ -238,32 +238,32 @@
     variable = group2
     execute_on = timestep_end
   [../]
-  [./src_resid_post]
-    type = NodalL2Norm
-    variable = src_resid
-    execute_on = nonlinear
-  [../]
-  [./diffus_resid_post]
-    type = NodalL2Norm
-    variable = diffus_resid
-    execute_on = nonlinear
-  [../]
-  [./bc_resid_post]
-    type = NodalL2Norm
-    variable = bc_resid
-    execute_on = nonlinear
-  [../]
-  [./tot_resid_post]
-    type = NodalL2Norm
-    variable = tot_resid
-    execute_on = nonlinear
-  [../]
-  [./group1diff]
-    type = ElementL2Diff
-    variable = group1
-    execute_on = 'linear timestep_end'
-    use_displaced_mesh = false
-  [../]
+  # [./src_resid_post]
+  #   type = NodalL2Norm
+  #   variable = src_resid
+  #   execute_on = nonlinear
+  # [../]
+  # [./diffus_resid_post]
+  #   type = NodalL2Norm
+  #   variable = diffus_resid
+  #   execute_on = nonlinear
+  # [../]
+  # [./bc_resid_post]
+  #   type = NodalL2Norm
+  #   variable = bc_resid
+  #   execute_on = nonlinear
+  # [../]
+  # [./tot_resid_post]
+  #   type = NodalL2Norm
+  #   variable = tot_resid
+  #   execute_on = nonlinear
+  # [../]
+  # [./group1diff]
+  #   type = ElementL2Diff
+  #   variable = group1
+  #   execute_on = 'linear timestep_end'
+  #   use_displaced_mesh = false
+  # [../]
 []
 
 [Outputs]
