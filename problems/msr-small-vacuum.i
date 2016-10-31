@@ -1,5 +1,5 @@
 [Mesh]
-  file = '/home/lindsayad/gdrive/gmsh-scripts/msr.msh'
+  file = '/home/lindsayad/gdrive/gmsh-scripts/msr-small.msh'
 [../]
 
 [Variables]
@@ -72,20 +72,20 @@
   [../]
 []
 
-# [BCs]
-#   [./homogeneous_u]
-#     type = DirichletBC
-#     variable = u
-#     boundary = 'boundary'
-#     value = 0
-#   [../]
-#   [./homogeneous_v]
-#     type = DirichletBC
-#     variable = v
-#     boundary = 'boundary'
-#     value = 0
-#   [../]
-# []
+[BCs]
+  [./homogeneous_u]
+    type = VacuumBC
+    variable = u
+    boundary = 'boundary'
+    alpha = .5941650
+  [../]
+  [./homogeneous_v]
+    type = VacuumBC
+    variable = v
+    boundary = 'boundary'
+    alpha = .9912190
+  [../]
+[]
 
 [Executioner]
   type = NonlinearEigen

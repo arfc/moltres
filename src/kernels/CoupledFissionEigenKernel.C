@@ -4,35 +4,81 @@ template<>
 InputParameters validParams<CoupledFissionEigenKernel>()
 {
   InputParameters params = validParams<EigenKernel>();
-  params.addRequiredParam<MaterialPropertyName>("nu_f", "The number of neutrons produced per fission.");
-  params.addRequiredParam<MaterialPropertyName>("sigma_f", "The macroscopic fission cross section.");
-  params.addRequiredCoupledVar("fissioning_group", "The group that is fissioning.");
+  params.addRequiredParam<int>("group_number", "The current energy group");
+  params.addRequiredParam<int>("num_groups", "The total numer of energy groups");
+  params.addCoupledVar("temperature", 937, "The temperature used to interpolate material properties");
+  params.addRequiredCoupledVar("group_fluxes", "All the variables that hold the group fluxes. These MUST be listed by decreasing energy/increasing group number.");
   return params;
 }
 
 CoupledFissionEigenKernel::CoupledFissionEigenKernel(const InputParameters & parameters) :
     EigenKernel(parameters),
-    _v(coupledValue("fissioning_group")),
-    _v_id(coupled("fissioning_group")),
-    _nu_f(getMaterialProperty<Real>("nu_f")),
-    _sigma_f(getMaterialProperty<Real>("sigma_f"))
+    _nsf(getMaterialProperty<std::vector<Real> >("nsf")),
+    _d_nsf_d_temp(getMaterialProperty<std::vector<Real> >("d_nsf_d_temp")),
+    _chi(getMaterialProperty<std::vector<Real> >("chi")),
+    _d_chi_d_temp(getMaterialProperty<std::vector<Real> >("d_chi_d_temp")),
+    _group(getParam<int>("group_number") - 1),
+    _num_groups(getParam<int>("num_groups")),
+    _temp_id(coupled("temperature"))
 {
+  int n = coupledComponents("group_fluxes");
+  if (!(n == _num_groups))
+  {
+    mooseError("The number of coupled variables doesn't match the number of groups.");
+  }
+  _group_fluxes.resize(n);
+  _flux_ids.resize(n);
+  for (int i = 0; i < _group_fluxes.size(); ++i)
+  {
+    _group_fluxes[i] = &coupledValue("group_fluxes", i);
+    _flux_ids[i] = coupled("group_fluxes", i);
+  }
 }
 
 Real
 CoupledFissionEigenKernel::computeQpResidual()
 {
-  return -_nu_f[_qp] * _sigma_f[_qp] * _v[_qp] * _test[_i][_qp];
+  Real r = 0;
+  for (int i = 0; i < _num_groups; ++i)
+  {
+    r += -_test[_i][_qp] * _chi[_qp][_group] * _nsf[_qp][i] * (*_group_fluxes[i])[_qp];
+  }
+
+  return r;
+}
+
+Real
+CoupledFissionEigenKernel::computeQpJacobian()
+{
+  Real jac = 0;
+  for (int i = 0; i < _num_groups; ++i)
+  {
+    if (i == _group)
+    {
+      jac += -_test[_i][_qp] * _chi[_qp][_group] * _nsf[_qp][i] * _phi[_j][_qp];
+      break;
+    }
+  }
+
+  return jac;
 }
 
 Real
 CoupledFissionEigenKernel::computeQpOffDiagJacobian(unsigned int jvar)
 {
-  if (jvar == _v_id)
+  Real jac = 0;
+  for (int i = 0; i < _num_groups; ++i)
   {
-    return -_nu_f[_qp] * _sigma_f[_qp] * _phi[_j][_qp] * _test[_i][_qp];
+    if (jvar == _flux_ids[i])
+    {
+      jac += -_test[_i][_qp] * _chi[_qp][_group] * _nsf[_qp][i] * _phi[_j][_qp];
+      break;
+    }
   }
 
-  else
-    return 0.;
+  if (jvar == _temp_id)
+    for (int i = 0; i < _num_groups; ++i)
+      jac += -_test[_i][_qp] * (*_group_fluxes[i])[_qp] * (_d_chi_d_temp[_qp][_group] * _phi[_j][_qp] * _nsf[_qp][i] + _chi[_qp][_group] * _d_nsf_d_temp[_qp][i] * _phi[_j][_qp]);
+
+  return jac;
 }

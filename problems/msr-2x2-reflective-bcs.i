@@ -1,25 +1,6 @@
 [Mesh]
- type = GeneratedMesh
- dim = 1
- xmin = 0
- xmax = 1.25
- nx = 16
-[]
-
-[MeshModifiers]
-  [./uranium]
-    type = SubdomainBoundingBox
-    bottom_left = '.3125 0 0 '
-    top_right = '.9375 1 0'
-    block_id = 1
-  [../]
-  [./right_water]
-    type = SubdomainBoundingBox
-    bottom_left = '.9375 0 0'
-    top_right = '1.25 1 0'
-    block_id = 2
-  [../]
-[]
+  file = '/home/lindsayad/gdrive/gmsh-scripts/msr-small.msh'
+[../]
 
 [Variables]
   [./u]
@@ -61,27 +42,33 @@
     sigma_s = sigma_12
   [../]
 
-  [./fission_source_u]
+  [./fission_source_u_from_v]
     type = CoupledFissionEigenKernel
     variable = u
     fissioning_group = v
     nu_f = nu_f_v
     sigma_f = sigma_f_v
   [../]
+  [./fission_source_u_from_u]
+    type = SelfFissionEigenKernel
+    variable = u
+    nu_f = nu_f_u
+    sigma_f = sigma_f_u
+  [../]
 []
 
 [Materials]
-  [./water]
-    type = GenericConstantMaterial
-    block = '0 2'
-    prop_names   =  'd_u   d_v     sigma_r_u  sigma_r_v  sigma_12  nu_f_v  sigma_f_v'
-    prop_values  =  '1.67  .30303  .03        0          .03       0       0'
-  [../]
   [./fuel]
     type = GenericConstantMaterial
-    block = 1
-    prop_names   =  'd_u   d_v    sigma_r_u  sigma_r_v  sigma_12  nu_f_v  sigma_f_v'
-    prop_values  =  '1.67  .3333  .015       .1         .015      1.5     .1'
+    block = 'fuel'
+    prop_names   =  'd_u       d_v       sigma_r_u  sigma_r_v  sigma_12   nu_f_u   sigma_f_u  nu_f_v   sigma_f_v'
+    prop_values  =  '.5941650  .9912190  3.2802e-3  1.8537e-2  1.6001e-3  2.43575  8.7632e-4  2.43620  1.3699e-2'
+  [../]
+  [./moder]
+    type = GenericConstantMaterial
+    block = 'moder'
+    prop_names   =  'd_u       d_v       sigma_r_u  sigma_r_v  sigma_12   nu_f_u  sigma_f_u  nu_f_v  sigma_f_v'
+    prop_values  =  '.8277580  .0307684  3.0658e-3  2.3705e-3  2.2285e-3  0       0          0       0'
   [../]
 []
 
@@ -89,13 +76,13 @@
 #   [./homogeneous_u]
 #     type = DirichletBC
 #     variable = u
-#     boundary = '0 1 2 3'
+#     boundary = 'boundary'
 #     value = 0
 #   [../]
 #   [./homogeneous_v]
 #     type = DirichletBC
 #     variable = v
-#     boundary = '0 1 2 3'
+#     boundary = 'boundary'
 #     value = 0
 #   [../]
 # []
@@ -109,7 +96,7 @@
   source_abs_tol = 1e-12
   source_rel_tol = 1e-50
   k0 = 1.0
-  output_after_power_iterations = false
+  output_after_power_iterations = true
 
   #Preconditioned JFNK (default)
   solve_type = 'PJFNK'
@@ -131,7 +118,8 @@
 []
 
 [Outputs]
-  execute_on = 'timestep_end'
-  file_base = ne_deficient_b
-  exodus = true
+  [./out]
+    type = Exodus
+    execute_on = 'timestep_end'
+  [../]
 []

@@ -22,9 +22,13 @@ protected:
   virtual Real computeQpJacobian();
   virtual Real computeQpOffDiagJacobian(unsigned int jvar);
 
-  const MaterialProperty<Real> & _sigma_s;
-  const VariableValue & _v;
-  unsigned int _v_id;
+  const MaterialProperty<std::vector<Real> > & _gtransfxs;
+  const MaterialProperty<std::vector<Real> > & _d_gtransfxs_d_temp;
+  int _group;
+  int _num_groups;
+  unsigned int _temp_id;
+  std::vector<const VariableValue *> _group_fluxes;
+  std::vector<unsigned int> _flux_ids;
 };
 
 #endif //INSCATTER_H

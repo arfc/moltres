@@ -3,20 +3,35 @@
 #include "AppFactory.h"
 #include "NavierStokesApp.h"
 #include "FluidPropertiesApp.h"
+#include "HeatConductionApp.h"
 #include "MooseTestApp.h"
 #include "MooseSyntax.h"
 
 // Kernels
+#include "FissionHeatSource.h"
 #include "INSMomentumKEpsilon.h"
 #include "INSK.h"
 #include "SigmaR.h"
 #include "CoupledFissionEigenKernel.h"
 #include "SelfFissionEigenKernel.h"
 #include "InScatter.h"
+#include "GroupDiffusion.h"
 
 // Boundary conditions
 #include "INSOutflowBC.h"
 #include "INSSymmetryAxisBC.h"
+#include "MatDiffusionFluxBC.h"
+
+// Materials
+#include "GenericMoltresMaterial.h"
+
+// Postprocessors
+#include "ElmIntegTotFissPostprocessor.h"
+#include "ElmIntegTotFissNtsPostprocessor.h"
+
+//AuxKernels
+#include "FissionHeatSourceAux.h"
+#include "MatDiffusionAux.h"
 
 template<>
 InputParameters validParams<MoltresApp>()
@@ -36,12 +51,14 @@ MoltresApp::MoltresApp(InputParameters parameters) :
   Moose::registerObjects(_factory);
   NavierStokesApp::registerObjects(_factory);
   FluidPropertiesApp::registerObjects(_factory);
+  HeatConductionApp::registerObjects(_factory);
   MooseTestApp::registerObjects(_factory);
   MoltresApp::registerObjects(_factory);
 
   Moose::associateSyntax(_syntax, _action_factory);
   NavierStokesApp::associateSyntax(_syntax, _action_factory);
   FluidPropertiesApp::associateSyntax(_syntax, _action_factory);
+  HeatConductionApp::associateSyntax(_syntax, _action_factory);
   MooseTestApp::associateSyntax(_syntax, _action_factory);
   MoltresApp::associateSyntax(_syntax, _action_factory);
 }
@@ -64,13 +81,21 @@ void
 MoltresApp::registerObjects(Factory & factory)
 {
   registerKernel(SigmaR);
+  registerKernel(FissionHeatSource);
   registerKernel(InScatter);
   registerKernel(CoupledFissionEigenKernel);
   registerKernel(SelfFissionEigenKernel);
   registerKernel(INSMomentumKEpsilon);
   registerKernel(INSK);
+  registerKernel(GroupDiffusion);
   registerBoundaryCondition(INSOutflowBC);
   registerBoundaryCondition(INSSymmetryAxisBC);
+  registerBoundaryCondition(MatDiffusionFluxBC);
+  registerMaterial(GenericMoltresMaterial);
+  registerPostprocessor(ElmIntegTotFissPostprocessor);
+  registerPostprocessor(ElmIntegTotFissNtsPostprocessor);
+  registerAux(FissionHeatSourceAux);
+  registerAux(MatDiffusionAux);
 }
 
 // External entry point for dynamic syntax association

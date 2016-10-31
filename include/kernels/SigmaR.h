@@ -18,10 +18,13 @@ public:
 
 protected:
   virtual Real computeQpResidual();
-
   virtual Real computeQpJacobian();
+  virtual Real computeQpOffDiagJacobian(unsigned int jvar);
 
-  const MaterialProperty<Real> & _sigma_r;
+  const MaterialProperty<std::vector<Real> > & _remxs;
+  const MaterialProperty<std::vector<Real> > & _d_remxs_d_temp;
+  int _group;
+  unsigned int _temp_id;
 };
 
 #endif //SIGMAR_H
