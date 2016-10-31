@@ -3,11 +3,11 @@
   temperature = temp
   group_fluxes = 'group1 group2'
   # MSRE full power = 10 MW; core volume 90 ft3
-  power = 20
+  power = 10
 [../]
 
 [Mesh]
-  file = '/home/lindsayad/gdrive/gmsh-scripts/msr-small.msh'
+  file = '/home/lindsayad/gdrive/gmsh-scripts/2d-msr.msh'
 [../]
 
 [Variables]
@@ -22,7 +22,7 @@
   [./temp]
     order = FIRST
     family = LAGRANGE
-    # scaling = 1e-3
+    scaling = 1e-6
   [../]
 []
 
@@ -151,7 +151,7 @@
     # prop_names = 'k d_k_d_temp'
     # prop_values = '.0123 0' # Cammi 2011 at 908 K
   [../]
-  [./moder]
+    [./moder]
     type = GenericMoltresMaterial
     block = 'moder'
     property_tables_root = '/home/lindsayad/serpent/core/examples/serpent-input/msre/msr2g_enrU_fuel_922_mod_interp_'
@@ -161,11 +161,12 @@
     # prop_names = 'k d_k_d_temp'
     # prop_values = '.312 0' # Cammi 2011 at 908 K
   [../]
+
 []
 
 [BCs]
   [./temp]
-    boundary = boundary
+    boundary = 'boundary'
     type = DirichletBC
     variable = temp
     value = 900
@@ -179,32 +180,33 @@
 []
 
 [Executioner]
-  type = NonlinearEigen
-  free_power_iterations = 2
-  source_abs_tol = 1e-12
-  source_rel_tol = 1e-8
-  output_after_power_iterations = false
+  # type = NonlinearEigen
+  # free_power_iterations = 4
+  # source_abs_tol = 1e-12
+  # source_rel_tol = 1e-8
+  # output_after_power_iterations = true
 
-  # type = InversePowerMethod
-  # max_power_iterations = 50
-  # xdiff = 'group1diff'
+
+  type = InversePowerMethod
+  max_power_iterations = 50
+  xdiff = 'group1diff'
 
   bx_norm = 'bnorm'
   k0 = 1.0
   pfactor = 1e-2
   l_max_its = 100
 
-  # solve_type = 'PJFNK'
-  solve_type = 'NEWTON'
+  solve_type = 'PJFNK'
+  # solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  petsc_options_iname = '-pc_type -sub_pc_type'
-  petsc_options_value = 'asm lu'
+  # petsc_options_iname = '-pc_type -sub_pc_type'
+  # petsc_options_value = 'asm lu'
 []
 
 [Preconditioning]
   [./SMP]
     type = SMP
-    full = true
+    # full = true
   [../]
 []
 
@@ -277,10 +279,10 @@
   show_var_residual_norms = true
 []
 
-# [ICs]
-#   [./temp_ic]
-#     type = ConstantIC
-#     variable = temp
-#     value = 900
-#   [../]
-# []
+[ICs]
+  [./temp_ic]
+    type = ConstantIC
+    variable = temp
+    value = 900
+  [../]
+[]
