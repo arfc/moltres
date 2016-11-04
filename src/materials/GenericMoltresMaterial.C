@@ -21,6 +21,7 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     _nsf(declareProperty<std::vector<Real> >("nsf")),
     _fisse(declareProperty<std::vector<Real> >("fisse")),
     _diffcoef(declareProperty<std::vector<Real> >("diffcoef")),
+    _recipvel(declareProperty<std::vector<Real> >("recipvel")),
     _chi(declareProperty<std::vector<Real> >("chi")),
     _gtransfxs(declareProperty<std::vector<Real> >("gtransfxs")),
     _d_remxs_d_temp(declareProperty<std::vector<Real> >("d_remxs_d_temp")),
@@ -28,6 +29,7 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     _d_nsf_d_temp(declareProperty<std::vector<Real> >("d_nsf_d_temp")),
     _d_fisse_d_temp(declareProperty<std::vector<Real> >("d_fisse_d_temp")),
     _d_diffcoef_d_temp(declareProperty<std::vector<Real> >("d_diffcoef_d_temp")),
+    _d_recipvel_d_temp(declareProperty<std::vector<Real> >("d_recipvel_d_temp")),
     _d_chi_d_temp(declareProperty<std::vector<Real> >("d_chi_d_temp")),
     _d_gtransfxs_d_temp(declareProperty<std::vector<Real> >("d_gtransfxs_d_temp"))
 
@@ -37,7 +39,7 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
 
   _num_groups = getParam<int>("num_groups");
   std::string property_tables_root = getParam<std::string>("property_tables_root");
-  std::vector<std::string> xsec_names {"FLUX", "REMXS", "FISSXS", "NUBAR", "NSF", "FISSE", "DIFFCOEF", "CHI", "GTRANSFXS"};
+  std::vector<std::string> xsec_names {"FLUX", "REMXS", "FISSXS", "NUBAR", "NSF", "FISSE", "DIFFCOEF", "RECIPVEL", "CHI", "GTRANSFXS"};
 
   std::vector<Real> temperature;
   std::string file_name = property_tables_root + "DIFFCOEF.txt";
@@ -98,6 +100,7 @@ GenericMoltresMaterial::computeQpProperties()
   _nsf[_qp].resize(_vec_lengths["NSF"]);
   _fisse[_qp].resize(_vec_lengths["FISSE"]);
   _diffcoef[_qp].resize(_vec_lengths["DIFFCOEF"]);
+  _recipvel[_qp].resize(_vec_lengths["RECIPVEL"]);
   _chi[_qp].resize(_vec_lengths["CHI"]);
   _gtransfxs[_qp].resize(_vec_lengths["GTRANSFXS"]);
   _d_remxs_d_temp[_qp].resize(_vec_lengths["REMXS"]);
@@ -105,6 +108,7 @@ GenericMoltresMaterial::computeQpProperties()
   _d_nsf_d_temp[_qp].resize(_vec_lengths["NSF"]);
   _d_fisse_d_temp[_qp].resize(_vec_lengths["FISSE"]);
   _d_diffcoef_d_temp[_qp].resize(_vec_lengths["DIFFCOEF"]);
+  _d_recipvel_d_temp[_qp].resize(_vec_lengths["RECIPVEL"]);
   _d_chi_d_temp[_qp].resize(_vec_lengths["CHI"]);
   _d_gtransfxs_d_temp[_qp].resize(_vec_lengths["GTRANSFXS"]);
 
@@ -115,12 +119,14 @@ GenericMoltresMaterial::computeQpProperties()
     _nsf[_qp][i] = _xsec_interpolators["NSF"][i].sample(_temperature[_qp]);
     _fisse[_qp][i] = _xsec_interpolators["FISSE"][i].sample(_temperature[_qp]);
     _diffcoef[_qp][i] = _xsec_interpolators["DIFFCOEF"][i].sample(_temperature[_qp]);
+    _recipvel[_qp][i] = _xsec_interpolators["RECIPVEL"][i].sample(_temperature[_qp]);
     _chi[_qp][i] = _xsec_interpolators["CHI"][i].sample(_temperature[_qp]);
     _d_remxs_d_temp[_qp][i] = _xsec_interpolators["REMXS"][i].sampleDerivative(_temperature[_qp]);
     _d_fissxs_d_temp[_qp][i] = _xsec_interpolators["FISSXS"][i].sampleDerivative(_temperature[_qp]);
     _d_nsf_d_temp[_qp][i] = _xsec_interpolators["NSF"][i].sampleDerivative(_temperature[_qp]);
     _d_fisse_d_temp[_qp][i] = _xsec_interpolators["FISSE"][i].sampleDerivative(_temperature[_qp]);
     _d_diffcoef_d_temp[_qp][i] = _xsec_interpolators["DIFFCOEF"][i].sampleDerivative(_temperature[_qp]);
+    _d_recipvel_d_temp[_qp][i] = _xsec_interpolators["RECIPVEL"][i].sampleDerivative(_temperature[_qp]);
     _d_chi_d_temp[_qp][i] = _xsec_interpolators["CHI"][i].sampleDerivative(_temperature[_qp]);
   }
   for (unsigned int i = 0; i < _num_groups * _num_groups; ++i)

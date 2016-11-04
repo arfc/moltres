@@ -8,6 +8,8 @@
 #include "MooseSyntax.h"
 
 // Kernels
+#include "NtTimeDerivative.h"
+#include "PrecursorSource.h"
 #include "FissionHeatSource.h"
 #include "INSMomentumKEpsilon.h"
 #include "INSK.h"
@@ -16,6 +18,7 @@
 #include "SelfFissionEigenKernel.h"
 #include "InScatter.h"
 #include "GroupDiffusion.h"
+#include "CoupledScalarAdvection.h"
 
 // Boundary conditions
 #include "INSOutflowBC.h"
@@ -81,6 +84,9 @@ void
 MoltresApp::registerObjects(Factory & factory)
 {
   registerKernel(SigmaR);
+  registerKernel(PrecursorSource);
+  registerKernel(CoupledScalarAdvection);
+  registerKernel(NtTimeDerivative);
   registerKernel(FissionHeatSource);
   registerKernel(InScatter);
   registerKernel(CoupledFissionEigenKernel);
