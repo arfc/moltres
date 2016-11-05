@@ -7,7 +7,7 @@ InputParameters validParams<CoupledScalarAdvection>()
   InputParameters params = validParams<Kernel>();
 
   // Coupled variables
-  params.addRequiredCoupledVar("u", "x-velocity");
+  params.addCoupledVar("u", "x-velocity");
   params.addCoupledVar("v", "y-velocity"); // only required in 2D and 3D
   params.addCoupledVar("w", "z-velocity"); // only required in 3D
   return params;

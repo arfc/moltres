@@ -7,7 +7,8 @@ InputParameters validParams<GenericMoltresMaterial>()
 {
   InputParameters params = validParams<GenericConstantMaterial>();
   params.addRequiredParam<std::string>("property_tables_root", "The file root name containing interpolation tables for material properties.");
-  params.addRequiredParam<int>("num_groups", "The number of groups the energy spectrum is divided into.");
+  params.addRequiredParam<unsigned int>("num_groups", "The number of groups the energy spectrum is divided into.");
+  params.addRequiredParam<unsigned int>("num_precursor_groups", "The number of delayed neutron precursor groups.");
   params.addCoupledVar("temperature", 937, "The temperature field for determining group constants.");
   return params;
 }
@@ -24,6 +25,8 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     _recipvel(declareProperty<std::vector<Real> >("recipvel")),
     _chi(declareProperty<std::vector<Real> >("chi")),
     _gtransfxs(declareProperty<std::vector<Real> >("gtransfxs")),
+    _beta_eff(declareProperty<std::vector<Real> >("beta_eff")),
+    _decay_constant(declareProperty<std::vector<Real> >("decay_constant")),
     _d_remxs_d_temp(declareProperty<std::vector<Real> >("d_remxs_d_temp")),
     _d_fissxs_d_temp(declareProperty<std::vector<Real> >("d_fissxs_d_temp")),
     _d_nsf_d_temp(declareProperty<std::vector<Real> >("d_nsf_d_temp")),
@@ -31,15 +34,20 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     _d_diffcoef_d_temp(declareProperty<std::vector<Real> >("d_diffcoef_d_temp")),
     _d_recipvel_d_temp(declareProperty<std::vector<Real> >("d_recipvel_d_temp")),
     _d_chi_d_temp(declareProperty<std::vector<Real> >("d_chi_d_temp")),
-    _d_gtransfxs_d_temp(declareProperty<std::vector<Real> >("d_gtransfxs_d_temp"))
+    _d_gtransfxs_d_temp(declareProperty<std::vector<Real> >("d_gtransfxs_d_temp")),
+    _d_beta_eff_d_temp(declareProperty<std::vector<Real> >("d_beta_eff_d_temp")),
+    _d_decay_constant_d_temp(declareProperty<std::vector<Real> >("d_decay_constant_d_temp"))
 
 {
   int i, j, k;
   Real value;
 
   _num_groups = getParam<int>("num_groups");
+  _num_precursor_groups = getParam<int>("num_precursor_groups");
+
   std::string property_tables_root = getParam<std::string>("property_tables_root");
-  std::vector<std::string> xsec_names {"FLUX", "REMXS", "FISSXS", "NUBAR", "NSF", "FISSE", "DIFFCOEF", "RECIPVEL", "CHI", "GTRANSFXS"};
+  std::vector<std::string> xsec_names {"FLUX", "REMXS", "FISSXS", "NUBAR", "NSF", "FISSE", "DIFFCOEF",
+      "RECIPVEL", "CHI", "GTRANSFXS", "BETA_EFF", "DECAY_CONSTANT"};
 
   std::vector<Real> temperature;
   std::string file_name = property_tables_root + "DIFFCOEF.txt";
@@ -66,6 +74,8 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     std::ifstream myfile (file_name_ref.c_str());
     if (xsec_names[j].compare("GTRANSFXS") == 0)
       _vec_lengths[xsec_names[j]] = _num_groups * _num_groups;
+    else if (xsec_names[j].compare("BETA_EFF") == 0 || xsec_names[j].compare("DECAY_CONSTANT") == 0)
+      _vec_lengths[xsec_names[j]] = _num_precursor_groups;
     else
       _vec_lengths[xsec_names[j]] = _num_groups;
     xsec_map[xsec_names[j]].resize(_vec_lengths[xsec_names[j]]);
@@ -103,6 +113,8 @@ GenericMoltresMaterial::computeQpProperties()
   _recipvel[_qp].resize(_vec_lengths["RECIPVEL"]);
   _chi[_qp].resize(_vec_lengths["CHI"]);
   _gtransfxs[_qp].resize(_vec_lengths["GTRANSFXS"]);
+  _beta_eff[_qp].resize(_vec_lengths["BETA_EFF"]);
+  _decay_constant[_qp].resize(_vec_lengths["DECAY_CONSTANT"]);
   _d_remxs_d_temp[_qp].resize(_vec_lengths["REMXS"]);
   _d_fissxs_d_temp[_qp].resize(_vec_lengths["FISSXS"]);
   _d_nsf_d_temp[_qp].resize(_vec_lengths["NSF"]);
@@ -111,6 +123,8 @@ GenericMoltresMaterial::computeQpProperties()
   _d_recipvel_d_temp[_qp].resize(_vec_lengths["RECIPVEL"]);
   _d_chi_d_temp[_qp].resize(_vec_lengths["CHI"]);
   _d_gtransfxs_d_temp[_qp].resize(_vec_lengths["GTRANSFXS"]);
+  _d_beta_eff_d_temp[_qp].resize(_vec_lengths["BETA_EFF"]);
+  _d_decay_constant_d_temp[_qp].resize(_vec_lengths["DECAY_CONSTANT"]);
 
   for (unsigned int i = 0; i < _num_groups; ++i)
   {
@@ -134,5 +148,11 @@ GenericMoltresMaterial::computeQpProperties()
     _gtransfxs[_qp][i] = _xsec_interpolators["GTRANSFXS"][i].sample(_temperature[_qp]);
     _d_gtransfxs_d_temp[_qp][i] = _xsec_interpolators["GTRANSFXS"][i].sampleDerivative(_temperature[_qp]);
   }
-
+  for (unsigned int i = 0; i < _num_precursor_groups; ++i)
+  {
+    _beta_eff[_qp][i] = _xsec_interpolators["BETA_EFF"][i].sample(_temperature[_qp]);
+    _d_beta_eff_d_temp[_qp][i] = _xsec_interpolators["BETA_EFF"][i].sampleDerivative(_temperature[_qp]);
+    _decay_constant[_qp][i] = _xsec_interpolators["DECAY_CONSTANT"][i].sample(_temperature[_qp]);
+    _d_decay_constant_d_temp[_qp][i] = _xsec_interpolators["DECAY_CONSTANT"][i].sampleDerivative(_temperature[_qp]);
+  }
 }

@@ -8,6 +8,7 @@
 #include "MooseSyntax.h"
 
 // Kernels
+#include "PrecursorDecay.h"
 #include "NtTimeDerivative.h"
 #include "PrecursorSource.h"
 #include "FissionHeatSource.h"
@@ -85,6 +86,7 @@ MoltresApp::registerObjects(Factory & factory)
 {
   registerKernel(SigmaR);
   registerKernel(PrecursorSource);
+  registerKernel(PrecursorDecay);
   registerKernel(CoupledScalarAdvection);
   registerKernel(NtTimeDerivative);
   registerKernel(FissionHeatSource);
