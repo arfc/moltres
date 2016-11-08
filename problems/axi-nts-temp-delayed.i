@@ -1,9 +1,9 @@
 [GlobalParams]
   num_groups = 2
-  # temperature = temp
+  temperature = temp
   group_fluxes = 'group1 group2'
   # MSRE full power = 10 MW; core volume 90 ft3
-  # power = 20
+  power = 200000
 [../]
 
 [Mesh]
@@ -19,11 +19,11 @@
     order = FIRST
     family = LAGRANGE
   [../]
-  # [./temp]
-  #   order = FIRST
-  #   family = LAGRANGE
-  #   # scaling = 1e-3
-  # [../]
+  [./temp]
+    order = FIRST
+    family = LAGRANGE
+    scaling = 1e-3
+  [../]
 []
 
 [Kernels]
@@ -101,26 +101,41 @@
   #   group_fluxes = 'group1 group2'
   # [../]
 
-  # # Temperature
+  # Temperature
   # [./temp_cond]
   #   type = MatDiffusion
   #   variable = temp
   #   prop_name = 'k'
-  #   save_in = 'diffus_resid tot_resid'
   # [../]
-  # [./temp_source]
-  #   type = FissionHeatSource
-  #   tot_fissions = tot_fissions
-  #   variable = temp
-  #   save_in = 'src_resid tot_resid'
-  # [../]
+  [./temp_flow_fuel]
+    block = 'fuel'
+    type = MatINSTemperatureRZ
+    variable = temp
+    rho = 'rho'
+    k = 'k'
+    cp = 'cp'
+    uz = 147
+  [../]
+  [./temp_flow_moder]
+    block = 'moder'
+    type = MatINSTemperatureRZ
+    variable = temp
+    rho = 'rho'
+    k = 'k'
+    cp = 'cp'
+  [../]
+  [./temp_source]
+    type = FissionHeatSource
+    tot_fissions = tot_fissions
+    variable = temp
+  [../]
 []
 
 [AuxVariables]
-  # [./Qf]
-  #   family = MONOMIAL
-  #   order = CONSTANT
-  # [../]
+  [./Qf]
+    family = MONOMIAL
+    order = CONSTANT
+  [../]
   # [./diffus_temp]
   #   family = MONOMIAL
   #   order = CONSTANT
@@ -144,11 +159,11 @@
 [../]
 
 [AuxKernels]
-  # [./Qf]
-  #   type = FissionHeatSourceAux
-  #   variable = Qf
-  #   tot_fissions = tot_fissions
-  # [../]
+  [./Qf]
+    type = FissionHeatSourceAux
+    variable = Qf
+    tot_fissions = tot_fissions
+  [../]
   # [./diffus_temp]
   #   type = MatDiffusionAux
   #   variable = diffus_temp
@@ -164,10 +179,8 @@
     property_tables_root = 'msr2g_enrU_mod_953_fuel_interp_'
     num_groups = 2
     num_precursor_groups = 8
-    prop_names = 'k'
-    prop_values = '.0123' # Cammi 2011 at 908 K
-    # prop_names = 'k d_k_d_temp'
-    # prop_values = '.0123 0' # Cammi 2011 at 908 K
+    prop_names = 'k rho cp'
+    prop_values = '.0123 3.327e-3 1357' # Cammi 2011 at 908 K
   [../]
   [./moder]
     type = GenericMoltresMaterial
@@ -175,21 +188,24 @@
     property_tables_root = 'msr2g_enrU_fuel_922_mod_interp_'
     num_groups = 2
     num_precursor_groups = 8
-    prop_names = 'k'
-    prop_values = '.312' # Cammi 2011 at 908 K
-    # prop_names = 'k d_k_d_temp'
-    # prop_values = '.312 0' # Cammi 2011 at 908 K
+    prop_names = 'k rho cp'
+    prop_values = '.312 1.843e-3 1760' # Cammi 2011 at 908 K
   [../]
 []
 
 [BCs]
-  # [./temp]
-  #   boundary = boundary
-  #   type = DirichletBC
-  #   variable = temp
-  #   value = 900
-  #   save_in = 'bc_resid tot_resid'
-  # [../]
+  [./temp_inlet]
+    boundary = 'all_bottom'
+    type = DirichletBC
+    variable = temp
+    value = 900
+  [../]
+  [./temp_outlet]
+    boundary = 'all_top'
+    type = MatINSTemperatureNoBCBC
+    variable = temp
+    k = 'k'
+  [../]
   [./group1_vacuum]
     type = VacuumBC
     variable = group1
@@ -223,8 +239,8 @@
   pfactor = 1e-2
   l_max_its = 100
 
-  # solve_type = 'PJFNK'
-  solve_type = 'NEWTON'
+  solve_type = 'PJFNK'
+  # solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   petsc_options_iname = '-pc_type -sub_pc_type'
   petsc_options_value = 'asm lu'
@@ -286,10 +302,10 @@
   show_var_residual_norms = true
 []
 
-# [ICs]
-#   [./temp_ic]
-#     type = ConstantIC
-#     variable = temp
-#     value = 900
-#   [../]
-# []
+[ICs]
+  [./temp_ic]
+    type = ConstantIC
+    variable = temp
+    value = 900
+  [../]
+[]

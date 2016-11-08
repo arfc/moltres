@@ -8,6 +8,7 @@
 #include "MooseSyntax.h"
 
 // Kernels
+#include "MatINSTemperatureRZ.h"
 #include "PrecursorDecay.h"
 #include "NtTimeDerivative.h"
 #include "PrecursorSource.h"
@@ -24,6 +25,7 @@
 #include "CoupledScalarAdvection.h"
 
 // Boundary conditions
+#include "MatINSTemperatureNoBCBC.h"
 #include "INSOutflowBC.h"
 #include "INSSymmetryAxisBC.h"
 #include "MatDiffusionFluxBC.h"
@@ -87,6 +89,7 @@ void
 MoltresApp::registerObjects(Factory & factory)
 {
   registerKernel(SigmaR);
+  registerKernel(MatINSTemperatureRZ);
   registerKernel(PrecursorSource);
   registerKernel(PrecursorDecay);
   registerKernel(CoupledScalarAdvection);
@@ -100,6 +103,7 @@ MoltresApp::registerObjects(Factory & factory)
   registerKernel(INSMomentumKEpsilon);
   registerKernel(INSK);
   registerKernel(GroupDiffusion);
+  registerBoundaryCondition(MatINSTemperatureNoBCBC);
   registerBoundaryCondition(INSOutflowBC);
   registerBoundaryCondition(INSSymmetryAxisBC);
   registerBoundaryCondition(MatDiffusionFluxBC);
