@@ -7,8 +7,8 @@ InputParameters validParams<GenericMoltresMaterial>()
 {
   InputParameters params = validParams<GenericConstantMaterial>();
   params.addRequiredParam<std::string>("property_tables_root", "The file root name containing interpolation tables for material properties.");
-  params.addRequiredParam<unsigned int>("num_groups", "The number of groups the energy spectrum is divided into.");
-  params.addRequiredParam<unsigned int>("num_precursor_groups", "The number of delayed neutron precursor groups.");
+  params.addRequiredParam<int>("num_groups", "The number of groups the energy spectrum is divided into.");
+  params.addRequiredParam<int>("num_precursor_groups", "The number of delayed neutron precursor groups.");
   params.addCoupledVar("temperature", 937, "The temperature field for determining group constants.");
   return params;
 }

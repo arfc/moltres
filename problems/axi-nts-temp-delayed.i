@@ -7,7 +7,7 @@
 [../]
 
 [Mesh]
-  file = 'cylinder.msh'
+  file = 'axisymm_cylinder.msh'
 [../]
 
 [Variables]
@@ -201,6 +201,11 @@
     boundary = 'all_top all_bottom'
   [../]
 []
+
+[Problem]
+  type = FEProblem
+  coord_type = RZ
+[../]
 
 [Executioner]
   # type = NonlinearEigen

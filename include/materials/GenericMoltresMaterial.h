@@ -40,8 +40,8 @@ protected:
   MaterialProperty<std::vector<Real> > & _d_beta_eff_d_temp;
   MaterialProperty<std::vector<Real> > & _d_decay_constant_d_temp;
 
-  unsigned int _num_groups;
-  unsigned int _num_precursor_groups;
+  int _num_groups;
+  int _num_precursor_groups;
   std::map<std::string, std::vector<SplineInterpolation> > _xsec_interpolators;
   std::map<std::string, int> _vec_lengths;
 };
