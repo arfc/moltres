@@ -27,6 +27,7 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     _gtransfxs(declareProperty<std::vector<Real> >("gtransfxs")),
     _beta_eff(declareProperty<std::vector<Real> >("beta_eff")),
     _decay_constant(declareProperty<std::vector<Real> >("decay_constant")),
+
     _d_remxs_d_temp(declareProperty<std::vector<Real> >("d_remxs_d_temp")),
     _d_fissxs_d_temp(declareProperty<std::vector<Real> >("d_fissxs_d_temp")),
     _d_nsf_d_temp(declareProperty<std::vector<Real> >("d_nsf_d_temp")),

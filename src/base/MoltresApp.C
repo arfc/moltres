@@ -12,10 +12,12 @@
 #include "NtTimeDerivative.h"
 #include "PrecursorSource.h"
 #include "FissionHeatSource.h"
+#include "TransientFissionHeatSource.h"
 #include "INSMomentumKEpsilon.h"
 #include "INSK.h"
 #include "SigmaR.h"
 #include "CoupledFissionEigenKernel.h"
+#include "CoupledFissionKernel.h"
 #include "SelfFissionEigenKernel.h"
 #include "InScatter.h"
 #include "GroupDiffusion.h"
@@ -90,8 +92,10 @@ MoltresApp::registerObjects(Factory & factory)
   registerKernel(CoupledScalarAdvection);
   registerKernel(NtTimeDerivative);
   registerKernel(FissionHeatSource);
+  registerKernel(TransientFissionHeatSource);
   registerKernel(InScatter);
   registerKernel(CoupledFissionEigenKernel);
+  registerKernel(CoupledFissionKernel);
   registerKernel(SelfFissionEigenKernel);
   registerKernel(INSMomentumKEpsilon);
   registerKernel(INSK);
