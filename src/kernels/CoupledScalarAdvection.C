@@ -7,9 +7,9 @@ InputParameters validParams<CoupledScalarAdvection>()
   InputParameters params = validParams<Kernel>();
 
   // Coupled variables
-  params.addCoupledVar("u", "x-velocity");
-  params.addCoupledVar("v", "y-velocity"); // only required in 2D and 3D
-  params.addCoupledVar("w", "z-velocity"); // only required in 3D
+  params.addCoupledVar("u", 0, "x-velocity");
+  params.addCoupledVar("v", 0, "y-velocity"); // only required in 2D and 3D
+  params.addCoupledVar("w", 0, "z-velocity"); // only required in 3D
   return params;
 }
 
@@ -20,13 +20,13 @@ CoupledScalarAdvection::CoupledScalarAdvection(const InputParameters & parameter
 
   // Coupled variables
   _u_vel(coupledValue("u")),
-  _v_vel(_mesh.dimension() >= 2 ? coupledValue("v") : _zero),
-  _w_vel(_mesh.dimension() == 3 ? coupledValue("w") : _zero),
+  _v_vel(coupledValue("v")),
+  _w_vel(coupledValue("w")),
 
   // Variable numberings
   _u_vel_var_number(coupled("u")),
-  _v_vel_var_number(_mesh.dimension() >= 2 ? coupled("v") : libMesh::invalid_uint),
-  _w_vel_var_number(_mesh.dimension() == 3 ? coupled("w") : libMesh::invalid_uint)
+  _v_vel_var_number(coupled("v")),
+  _w_vel_var_number(coupled("w"))
 {
 }
 

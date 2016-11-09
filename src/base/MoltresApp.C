@@ -37,9 +37,13 @@
 #include "ElmIntegTotFissPostprocessor.h"
 #include "ElmIntegTotFissNtsPostprocessor.h"
 
-//AuxKernels
+// AuxKernels
 #include "FissionHeatSourceAux.h"
 #include "MatDiffusionAux.h"
+
+// Actions
+
+#include "PrecursorKernelAction.h"
 
 template<>
 InputParameters validParams<MoltresApp>()
@@ -117,6 +121,9 @@ MoltresApp::registerObjects(Factory & factory)
 // External entry point for dynamic syntax association
 extern "C" void MoltresApp__associateSyntax(Syntax & syntax, ActionFactory & action_factory) { MoltresApp::associateSyntax(syntax, action_factory); }
 void
-MoltresApp::associateSyntax(Syntax & /*syntax*/, ActionFactory & /*action_factory*/)
+MoltresApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
 {
+  syntax.registerActionSyntax("PrecursorKernelAction", "Kernels/PrecursorKernel");
+
+  registerAction(PrecursorKernelAction, "add_kernel");
 }

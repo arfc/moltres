@@ -1,3 +1,5 @@
+flow_velocity=147
+
 [GlobalParams]
   num_groups = 2
   temperature = temp
@@ -114,7 +116,7 @@
     rho = 'rho'
     k = 'k'
     cp = 'cp'
-    uz = 147
+    uz = ${flow_velocity}
   [../]
   [./temp_flow_moder]
     block = 'moder'
@@ -129,6 +131,14 @@
     tot_fissions = tot_fissions
     variable = temp
   [../]
+
+  # Delayed neutron precursors
+  [./advection]
+    type = CoupledScalarAdvection
+    variable = pre1
+    v = ${flow_velocity}
+  [../]
+
 []
 
 [AuxVariables]
