@@ -1,9 +1,9 @@
 #ifndef PRECURSORKERNELACTION_H
 #define PRECURSORKERNELACTION_H
 
-#include "Action.h"
+#include "AddVariableAction.h"
 
-class PrecursorKernelAction: public Action
+class PrecursorKernelAction: public AddVariableAction
 {
 public:
   PrecursorKernelAction(const InputParameters & params);

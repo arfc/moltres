@@ -1,24 +1,24 @@
-#ifndef COUPLEDSCALARADVECTION_H
-#define COUPLEDSCALARADVECTION_H
+#ifndef COUPLEDSCALARADVECTIONNOBCBC_H
+#define COUPLEDSCALARADVECTIONNOBCBC_H
 
-#include "Kernel.h"
+#include "IntegratedBC.h"
 
 // Forward Declarations
-class CoupledScalarAdvection;
+class CoupledScalarAdvectionNoBCBC;
 
 template<>
-InputParameters validParams<CoupledScalarAdvection>();
+InputParameters validParams<CoupledScalarAdvectionNoBCBC>();
 
 /**
  * This class computes the residual and Jacobian contributions for the
  * incompressible Navier-Stokes temperature (energy) equation.
  */
-class CoupledScalarAdvection : public Kernel
+class CoupledScalarAdvectionNoBCBC : public IntegratedBC
 {
 public:
-  CoupledScalarAdvection(const InputParameters & parameters);
+  CoupledScalarAdvectionNoBCBC(const InputParameters & parameters);
 
-  virtual ~CoupledScalarAdvection(){}
+  virtual ~CoupledScalarAdvectionNoBCBC(){}
 
 protected:
   virtual Real computeQpResidual();
@@ -41,4 +41,4 @@ protected:
 };
 
 
-#endif // COUPLEDSCALARADVECTION_H
+#endif // COUPLEDSCALARADVECTIONNOBCBC_H

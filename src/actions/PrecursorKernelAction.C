@@ -7,23 +7,31 @@
 template<>
 InputParameters validParams<PrecursorKernelAction>()
 {
-  InputParameters params = validParams<Action>();
+  InputParameters params = validParams<AddVariableAction>();
   params.addRequiredParam<int>("num_precursor_groups", "specifies the total number of precursors to create");
   params.addRequiredParam<std::string>("var_name_base", "specifies the base name of the variables");
-  params.addParam<VariableName>("c", "Name of coupled concentration variable");
   params.addParam<VariableName>("T", "Name of temperature variable");
   params.addParam<VariableName>("u", "Name of x-component of velocity");
   params.addParam<VariableName>("v", "Name of y-component of velocity");
   params.addParam<VariableName>("w", "Name of z-component of velocity");
-  params.addRequiredParam<VariableName>("group_fluxes", "All the variables that hold the group fluxes. These MUST be listed by decreasing energy/increasing group number.");
+  params.addParam<Real>("u_def", "Allows user to specify constant value for u component of velocity.");
+  params.addParam<Real>("v_def", "Allows user to specify constant value for v component of velocity.");
+  params.addParam<Real>("w_def", "Allows user to specify constant value for w component of velocity.");
+  params.addRequiredParam<std::vector<VariableName> >("group_fluxes", "All the variables that hold the group fluxes. These MUST be listed by decreasing energy/increasing group number.");
   params.addRequiredParam<int>("num_groups", "The total number of energy groups.");
   params.addParam<bool>("transient_simulation", false, "Whether to conduct a transient simulation.");
+  params.addParam<std::vector<SubdomainName> >("block", "The list of block ids (SubdomainID) that this object will be applied to");
+  params.addRequiredParam<std::vector<BoundaryName> >("inlet_boundary", "The inlet boundary for the precursors.");
+  params.addRequiredParam<std::string>("inlet_boundary_condition", "The type of boundary condition to apply at the inlet.");
+  params.addParam<Real>("inlet_dirichlet_value", "If inlet_boundary_condition is DirichletBC, specify the value.");
+  params.addRequiredParam<std::vector<BoundaryName> >("outlet_boundary", "The outlet boundary for the precursors.");
+  params.addParam<bool>("add_artificial_diffusion", true, "Whether to add artificial diffusion");
   return params;
 }
 
 PrecursorKernelAction::PrecursorKernelAction(const InputParameters & params) :
-    Action(params),
-    _num_precursor_groups(getParam<unsigned int>("num_precursor_groups")),
+    AddVariableAction(params),
+    _num_precursor_groups(getParam<int>("num_precursor_groups")),
     _var_name_base(getParam<std::string>("var_name_base")),
     _num_groups(getParam<int>("num_groups"))
 {
@@ -32,7 +40,7 @@ PrecursorKernelAction::PrecursorKernelAction(const InputParameters & params) :
 void
 PrecursorKernelAction::act()
 {
-  for (unsigned int op = 1; op <= _num_precursor_groups; ++op)
+  for (int op = 1; op <= _num_precursor_groups; ++op)
   {
     //
     // Create variable names
@@ -40,67 +48,179 @@ PrecursorKernelAction::act()
 
     std::string var_name = _var_name_base + Moose::stringify(op);
 
-    //
-    // Set up advection kernels
-    //
+    if (_current_task == "add_variable")
+      addVariable(var_name);
 
+    if (_current_task == "add_kernel")
     {
-      InputParameters params = _factory.getValidParams("CoupledScalarAdvection");
-      params.set<NonlinearVariableName>("variable") = var_name;
-      if (isParamValid("u"))
-        params.set<std::vector<VariableName> >("u") = {getParam<VariableName>("u")};
-      if (isParamValid("v"))
-        params.set<std::vector<VariableName> >("v") = {getParam<VariableName>("v")};
-      if (isParamValid("w"))
-        params.set<std::vector<VariableName> >("w") = {getParam<VariableName>("w")};
+      //
+      // Set up advection kernels
+      //
 
-      std::string kernel_name = "CoupledScalarAdvection_" + var_name;
-      _problem->addKernel("CoupledScalarAdvection", kernel_name, params);
+      {
+        InputParameters params = _factory.getValidParams("CoupledScalarAdvection");
+        params.set<NonlinearVariableName>("variable") = var_name;
+        if (isParamValid("u"))
+          params.set<std::vector<VariableName> >("u") = {getParam<VariableName>("u")};
+        else if (isParamValid("u_def"))
+          params.set<Real>("u_def") = getParam<Real>("u_def");
+        if (isParamValid("v"))
+          params.set<std::vector<VariableName> >("v") = {getParam<VariableName>("v")};
+        else if (isParamValid("v_def"))
+          params.set<Real>("v_def") = getParam<Real>("v_def");
+        if (isParamValid("w"))
+          params.set<std::vector<VariableName> >("w") = {getParam<VariableName>("w")};
+        else if (isParamValid("w_def"))
+          params.set<Real>("w_def") = getParam<Real>("w_def");
+        if (isParamValid("block"))
+          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+
+        std::string kernel_name = "CoupledScalarAdvection_" + var_name;
+        _problem->addKernel("CoupledScalarAdvection", kernel_name, params);
+      }
+
+
+      // Set up PrecursorSource kernels
+
+      {
+        InputParameters params = _factory.getValidParams("PrecursorSource");
+        params.set<NonlinearVariableName>("variable") = var_name;
+        params.set<int>("num_groups") = _num_groups;
+        params.set<std::vector<VariableName> >("group_fluxes") = getParam<std::vector<VariableName> >("group_fluxes");
+        params.set<int>("precursor_group_number") = op;
+        if (isParamValid("T"))
+          params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("T")};
+        if (isParamValid("block"))
+          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+
+        std::string kernel_name = "PrecursorSource_" + var_name;
+        _problem->addKernel("PrecursorSource", kernel_name, params);
+      }
+
+      //
+      // Set up PrecursorDecay kernels
+      //
+
+      {
+        InputParameters params = _factory.getValidParams("PrecursorDecay");
+        params.set<NonlinearVariableName>("variable") = var_name;
+        params.set<int>("precursor_group_number") = op;
+        if (isParamValid("T"))
+          params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("T")};
+        if (isParamValid("block"))
+          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+
+        std::string kernel_name = "PrecursorDecay_" + var_name;
+        _problem->addKernel("PrecursorDecay", kernel_name, params);
+      }
+
+      //
+      // If doing a transient simulation, set up TimeDerivative kernels
+      //
+
+      if (getParam<bool>("transient_simulation"))
+      {
+        InputParameters params = _factory.getValidParams("TimeDerivative");
+        params.set<NonlinearVariableName>("variable") = var_name;
+        params.set<bool>("implicit") = true;
+        if (isParamValid("block"))
+          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+
+        std::string kernel_name = "TimeDerivative_" + var_name;
+        _problem->addKernel("TimeDerivative", kernel_name, params);
+      }
+
+      // Set up artificial diffusion
+
+      if (getParam<bool>("add_artificial_diffusion"))
+      {
+        InputParameters params = _factory.getValidParams("ScalarAdvectionArtDiff");
+        params.set<NonlinearVariableName>("variable") = var_name;
+        if (isParamValid("u"))
+          params.set<std::vector<VariableName> >("u") = {getParam<VariableName>("u")};
+        else if (isParamValid("u_def"))
+          params.set<Real>("u_def") = getParam<Real>("u_def");
+        if (isParamValid("v"))
+          params.set<std::vector<VariableName> >("v") = {getParam<VariableName>("v")};
+        else if (isParamValid("v_def"))
+          params.set<Real>("v_def") = getParam<Real>("v_def");
+        if (isParamValid("w"))
+          params.set<std::vector<VariableName> >("w") = {getParam<VariableName>("w")};
+        else if (isParamValid("w_def"))
+          params.set<Real>("w_def") = getParam<Real>("w_def");
+        if (isParamValid("block"))
+          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+
+        std::string kernel_name = "ScalarAdvectionArtDiff_" + var_name;
+        _problem->addKernel("ScalarAdvectionArtDiff", kernel_name, params);
+      }
     }
 
-    //
-    // Set up PrecursorSource kernels
-    //
-
+    if (_current_task == "add_bc")
     {
-      InputParameters params = _factory.getValidParams("PrecursorSource");
-      params.set<NonlinearVariableName>("variable") = var_name;
-      params.set<int>("num_groups") = _num_groups;
-      params.set<std::vector<VariableName> >("group_fluxes") = {getParam<VariableName>("group_fluxes")};
-      params.set<int>("precursor_group_number") = op - 1;
-      if (isParamValid("T"))
-        params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("T")};
 
-      std::string kernel_name = "PrecursorSource_" + var_name;
-      _problem->addKernel("PrecursorSource", kernel_name, params);
-    }
+      // Set up precursor inlet boundary conditions
 
-    //
-    // Set up PrecursorDecay kernels
-    //
 
-    {
-      InputParameters params = _factory.getValidParams("PrecursorDecay");
-      params.set<NonlinearVariableName>("variable") = var_name;
-      params.set<int>("precursor_group_number") = op - 1;
-      if (isParamValid("T"))
-        params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("T")};
+      {
+        std::string bc_type_name = getParam<std::string>("inlet_boundary_condition");
+        InputParameters params = _factory.getValidParams(bc_type_name);
+        params.set<std::vector<BoundaryName> >("boundary") = getParam<std::vector<BoundaryName> >("inlet_boundary");
+        params.set<NonlinearVariableName>("variable") = var_name;
+        if (bc_type_name == "DirichletBC")
+          params.set<Real>("value") = getParam<Real>("inlet_dirichlet_value");
+        std::string bc_name = bc_type_name + "_" + var_name;
+        _problem->addBoundaryCondition(bc_type_name, bc_name, params);
+      }
 
-      std::string kernel_name = "PrecursorDecay_" + var_name;
-      _problem->addKernel("PrecursorDecay", kernel_name, params);
-    }
+      //
+      // Set up precursor outlet boundary conditions
+      //
 
-    //
-    // If doing a transient simulation, set up TimeDerivative kernels
-    //
+      {
+        InputParameters params = _factory.getValidParams("CoupledScalarAdvectionNoBCBC");
+        params.set<std::vector<BoundaryName> >("boundary") = getParam<std::vector<BoundaryName> >("outlet_boundary");
+        params.set<NonlinearVariableName>("variable") = var_name;
+        if (isParamValid("u"))
+          params.set<std::vector<VariableName> >("u") = {getParam<VariableName>("u")};
+        else if (isParamValid("u_def"))
+          params.set<Real>("u_def") = getParam<Real>("u_def");
+        if (isParamValid("v"))
+          params.set<std::vector<VariableName> >("v") = {getParam<VariableName>("v")};
+        else if (isParamValid("v_def"))
+          params.set<Real>("v_def") = getParam<Real>("v_def");
+        if (isParamValid("w"))
+          params.set<std::vector<VariableName> >("w") = {getParam<VariableName>("w")};
+        else if (isParamValid("w_def"))
+          params.set<Real>("w_def") = getParam<Real>("w_def");
 
-    if (getParam<bool>("transient_simulation"))
-    {
-      InputParameters params = _factory.getValidParams("TimeDerivative");
-      params.set<NonlinearVariableName>("variable") = var_name;
-      params.set<bool>("implicit") = true;
-      std::string kernel_name = "TimeDerivative_" + var_name;
-      _problem->addKernel("TimeDerivative", kernel_name, params);
+        std::string bc_name = "CoupledScalarAdvectionNoBCBC_" + var_name;
+        _problem->addBoundaryCondition("CoupledScalarAdvectionNoBCBC", bc_name, params);
+      }
+      // Set up artificial diffusion
+
+      // if (getParam<bool>("add_artificial_diffusion"))
+      // {
+      //   InputParameters params = _factory.getValidParams("ScalarAdvectionArtDiffNoBCBC");
+      //   params.set<std::vector<BoundaryName> >("boundary") = getParam<std::vector<BoundaryName> >("outlet_boundary");
+      //   params.set<NonlinearVariableName>("variable") = var_name;
+      //   if (isParamValid("u"))
+      //     params.set<std::vector<VariableName> >("u") = {getParam<VariableName>("u")};
+      //   else if (isParamValid("u_def"))
+      //     params.set<Real>("u_def") = getParam<Real>("u_def");
+      //   if (isParamValid("v"))
+      //     params.set<std::vector<VariableName> >("v") = {getParam<VariableName>("v")};
+      //   else if (isParamValid("v_def"))
+      //     params.set<Real>("v_def") = getParam<Real>("v_def");
+      //   if (isParamValid("w"))
+      //     params.set<std::vector<VariableName> >("w") = {getParam<VariableName>("w")};
+      //   else if (isParamValid("w_def"))
+      //     params.set<Real>("w_def") = getParam<Real>("w_def");
+
+      //   std::string bc_name = "ScalarAdvectionArtDiffNoBCBC_" + var_name;
+      //   _problem->addBoundaryCondition("ScalarAdvectionArtDiffNoBCBC", bc_name, params);
+      // }
+
     }
   }
 }

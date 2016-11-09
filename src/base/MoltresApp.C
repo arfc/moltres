@@ -8,6 +8,7 @@
 #include "MooseSyntax.h"
 
 // Kernels
+#include "ScalarAdvectionArtDiff.h"
 #include "MatINSTemperatureRZ.h"
 #include "PrecursorDecay.h"
 #include "NtTimeDerivative.h"
@@ -25,10 +26,12 @@
 #include "CoupledScalarAdvection.h"
 
 // Boundary conditions
+#include "ScalarAdvectionArtDiffNoBCBC.h"
 #include "MatINSTemperatureNoBCBC.h"
 #include "INSOutflowBC.h"
 #include "INSSymmetryAxisBC.h"
 #include "MatDiffusionFluxBC.h"
+#include "CoupledScalarAdvectionNoBCBC.h"
 
 // Materials
 #include "GenericMoltresMaterial.h"
@@ -102,11 +105,14 @@ MoltresApp::registerObjects(Factory & factory)
   registerKernel(TransientFissionHeatSource);
   registerKernel(InScatter);
   registerKernel(CoupledFissionEigenKernel);
+  registerKernel(ScalarAdvectionArtDiff);
   registerKernel(CoupledFissionKernel);
   registerKernel(SelfFissionEigenKernel);
   registerKernel(INSMomentumKEpsilon);
   registerKernel(INSK);
   registerKernel(GroupDiffusion);
+  registerBoundaryCondition(ScalarAdvectionArtDiffNoBCBC);
+  registerBoundaryCondition(CoupledScalarAdvectionNoBCBC);
   registerBoundaryCondition(MatINSTemperatureNoBCBC);
   registerBoundaryCondition(INSOutflowBC);
   registerBoundaryCondition(INSSymmetryAxisBC);
@@ -123,7 +129,9 @@ extern "C" void MoltresApp__associateSyntax(Syntax & syntax, ActionFactory & act
 void
 MoltresApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
 {
-  syntax.registerActionSyntax("PrecursorKernelAction", "Kernels/PrecursorKernel");
+  syntax.registerActionSyntax("PrecursorKernelAction", "PrecursorKernel");
 
   registerAction(PrecursorKernelAction, "add_kernel");
+  registerAction(PrecursorKernelAction, "add_bc");
+  registerAction(PrecursorKernelAction, "add_variable");
 }

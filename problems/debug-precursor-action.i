@@ -2,15 +2,30 @@ flow_velocity=147 # Cammi 147 cm/s
 
 [GlobalParams]
   num_groups = 2
-  num_precursor_groups = 8
+  num_precursor_groups = 1
   group_fluxes = 'group1 group2'
   # MSRE full power = 10 MW; core volume 90 ft3
   power = 200000
 [../]
 
 [Mesh]
-  file = 'axisymm_cylinder.msh'
+  type = GeneratedMesh
+  dim = 2
+  nx = 2
+  ny = 2
+  block_id = 0
+  block_name = 'fuel'
 [../]
+
+[MeshModifiers]
+  [./mod]
+    type = SubdomainBoundingBox
+    bottom_left = '0.5 0 0'
+    top_right = '1 1 0'
+    block_id = 1
+    block_name = 'moder'
+  [../]
+[]
 
 [Variables]
   # [./pre1]
@@ -144,7 +159,7 @@ flow_velocity=147 # Cammi 147 cm/s
     variable = temp
   [../]
 
-  # Delayed neutron precursors
+#   # Delayed neutron precursors
   # [./pre1_source]
   #   type = PrecursorSource
   #   variable = pre1
@@ -161,12 +176,12 @@ flow_velocity=147 # Cammi 147 cm/s
 
 [PrecursorKernel]
   var_name_base = pre
-  v_def = ${flow_velocity}
-  block = 'fuel'
-  inlet_boundary = 'fuel_bottom'
+  # v_def = ${flow_velocity}
+  # block = 'fuel'
+  inlet_boundary = 'bottom'
   inlet_boundary_condition = 'DirichletBC'
   inlet_dirichlet_value = 0
-  outlet_boundary = 'fuel_top'
+  outlet_boundary = 'top'
   T = temp
 []
 
@@ -236,13 +251,13 @@ flow_velocity=147 # Cammi 147 cm/s
 
 [BCs]
   [./temp_inlet]
-    boundary = 'all_bottom'
+    boundary = 'bottom'
     type = DirichletBC
     variable = temp
     value = 900
   [../]
   [./temp_outlet]
-    boundary = 'all_top'
+    boundary = 'top'
     type = MatINSTemperatureNoBCBC
     variable = temp
     k = 'k'
@@ -250,12 +265,12 @@ flow_velocity=147 # Cammi 147 cm/s
   [./group1_vacuum]
     type = VacuumBC
     variable = group1
-    boundary = 'all_top all_bottom'
+    boundary = 'top bottom'
   [../]
   [./group2_vacuum]
     type = VacuumBC
     variable = group2
-    boundary = 'all_top all_bottom'
+    boundary = 'top bottom'
   [../]
 []
 
@@ -280,13 +295,15 @@ flow_velocity=147 # Cammi 147 cm/s
   pfactor = 1e-2
   l_max_its = 100
 
-  # line_search = none
-  solve_type = 'PJFNK'
-  # solve_type = 'NEWTON'
-  petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
+  line_search = none
+  # solve_type = 'PJFNK'
+  solve_type = 'NEWTON'
+  petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor -snes_test_display'
   # This system will not converge with default preconditioning; need to use asm
   petsc_options_iname = '-pc_type -sub_pc_type -sub_ksp_type -pc_asm_overlap -ksp_gmres_restart'
   petsc_options_value = 'asm lu preonly 2 31'
+  # petsc_options_iname = '-snes_type'
+  # petsc_options_value = 'test'
 []
 
 [Preconditioning]

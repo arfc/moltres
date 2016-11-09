@@ -1,7 +1,7 @@
 // Cammi geometry
 r1 = 2.08; // cm
 r2 = 5.73;
-H = 396;
+H = 396; // cammi 396
 lc = 1;
 
 Point(1) = {0,0,0,lc};
@@ -26,3 +26,5 @@ Physical Surface("moder") = {11};
 Physical Line("outer_wall") = {3};
 Physical Line("all_top") = {1, 2};
 Physical Line("all_bottom") = {5, 4};
+Physical Line("fuel_bottom") = {5};
+Physical Line("fuel_top") = {1};

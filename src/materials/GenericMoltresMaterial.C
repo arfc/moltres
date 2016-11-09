@@ -40,7 +40,6 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     _d_decay_constant_d_temp(declareProperty<std::vector<Real> >("d_decay_constant_d_temp"))
 
 {
-  int i, j, k;
   Real value;
 
   _num_groups = getParam<int>("num_groups");
@@ -59,7 +58,7 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     while (myfile >> value)
     {
       temperature.push_back(value);
-      for (k = 0; k < _num_groups; ++k)
+      for (int k = 0; k < _num_groups; ++k)
         myfile >> value;
     }
     myfile.close();
@@ -68,7 +67,7 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     mooseError("Unable to open file " << file_name);
 
   std::map<std::string, std::vector<std::vector<Real> > > xsec_map;
-  for (j = 0; j < xsec_names.size(); ++j)
+  for (int j = 0; j < xsec_names.size(); ++j)
   {
     std::string file_name = property_tables_root + xsec_names[j] + ".txt";
     const std::string & file_name_ref = file_name;
@@ -85,14 +84,14 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     {
       while (myfile >> value)
       {
-        for (k = 0; k < _vec_lengths[xsec_names[j]]; ++k)
+        for (int k = 0; k < _vec_lengths[xsec_names[j]]; ++k)
         {
           myfile >> value;
           xsec_map[xsec_names[j]][k].push_back(value);
         }
       }
       myfile.close();
-      for (k = 0; k < _vec_lengths[xsec_names[j]]; ++k)
+      for (int k = 0; k < _vec_lengths[xsec_names[j]]; ++k)
         _xsec_interpolators[xsec_names[j]][k].setData(temperature, xsec_map[xsec_names[j]][k]);
     }
     else
@@ -127,7 +126,7 @@ GenericMoltresMaterial::computeQpProperties()
   _d_beta_eff_d_temp[_qp].resize(_vec_lengths["BETA_EFF"]);
   _d_decay_constant_d_temp[_qp].resize(_vec_lengths["DECAY_CONSTANT"]);
 
-  for (unsigned int i = 0; i < _num_groups; ++i)
+  for (int i = 0; i < _num_groups; ++i)
   {
     _remxs[_qp][i] = _xsec_interpolators["REMXS"][i].sample(_temperature[_qp]);
     _fissxs[_qp][i] = _xsec_interpolators["FISSXS"][i].sample(_temperature[_qp]);
@@ -144,12 +143,12 @@ GenericMoltresMaterial::computeQpProperties()
     _d_recipvel_d_temp[_qp][i] = _xsec_interpolators["RECIPVEL"][i].sampleDerivative(_temperature[_qp]);
     _d_chi_d_temp[_qp][i] = _xsec_interpolators["CHI"][i].sampleDerivative(_temperature[_qp]);
   }
-  for (unsigned int i = 0; i < _num_groups * _num_groups; ++i)
+  for (int i = 0; i < _num_groups * _num_groups; ++i)
   {
     _gtransfxs[_qp][i] = _xsec_interpolators["GTRANSFXS"][i].sample(_temperature[_qp]);
     _d_gtransfxs_d_temp[_qp][i] = _xsec_interpolators["GTRANSFXS"][i].sampleDerivative(_temperature[_qp]);
   }
-  for (unsigned int i = 0; i < _num_precursor_groups; ++i)
+  for (int i = 0; i < _num_precursor_groups; ++i)
   {
     _beta_eff[_qp][i] = _xsec_interpolators["BETA_EFF"][i].sample(_temperature[_qp]);
     _d_beta_eff_d_temp[_qp][i] = _xsec_interpolators["BETA_EFF"][i].sampleDerivative(_temperature[_qp]);

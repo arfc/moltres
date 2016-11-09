@@ -1,10 +1,10 @@
-#include "CoupledScalarAdvection.h"
+#include "CoupledScalarAdvectionNoBCBC.h"
 #include "MooseMesh.h"
 
 template<>
-InputParameters validParams<CoupledScalarAdvection>()
+InputParameters validParams<CoupledScalarAdvectionNoBCBC>()
 {
-  InputParameters params = validParams<Kernel>();
+  InputParameters params = validParams<IntegratedBC>();
 
   // Coupled variables
   params.addCoupledVar("u", "x-velocity");
@@ -18,8 +18,8 @@ InputParameters validParams<CoupledScalarAdvection>()
 
 
 
-CoupledScalarAdvection::CoupledScalarAdvection(const InputParameters & parameters) :
-    Kernel(parameters),
+CoupledScalarAdvectionNoBCBC::CoupledScalarAdvectionNoBCBC(const InputParameters & parameters) :
+    IntegratedBC(parameters),
 
     // Coupled variables
     _u_vel(isCoupled("u") ? coupledValue("u") : _u_def),
@@ -41,36 +41,36 @@ CoupledScalarAdvection::CoupledScalarAdvection(const InputParameters & parameter
 
 
 
-Real CoupledScalarAdvection::computeQpResidual()
+Real CoupledScalarAdvectionNoBCBC::computeQpResidual()
 {
-  return -(_grad_test[_i][_qp](0) * _u_vel[_qp] +
-           _grad_test[_i][_qp](1) * _v_vel[_qp] +
-           _grad_test[_i][_qp](2) * _w_vel[_qp]) * _u[_qp];
+  return (_normals[_qp](0) * _u_vel[_qp] +
+           _normals[_qp](1) * _v_vel[_qp] +
+           _normals[_qp](2) * _w_vel[_qp]) * _u[_qp];
 }
 
 
 
 
-Real CoupledScalarAdvection::computeQpJacobian()
+Real CoupledScalarAdvectionNoBCBC::computeQpJacobian()
 {
-  return -(_grad_test[_i][_qp](0) * _u_vel[_qp] +
-           _grad_test[_i][_qp](1) * _v_vel[_qp] +
-           _grad_test[_i][_qp](2) * _w_vel[_qp]) * _phi[_j][_qp];
+  return (_normals[_qp](0) * _u_vel[_qp] +
+           _normals[_qp](1) * _v_vel[_qp] +
+           _normals[_qp](2) * _w_vel[_qp]) * _phi[_j][_qp];
 }
 
 
 
 
-Real CoupledScalarAdvection::computeQpOffDiagJacobian(unsigned jvar)
+Real CoupledScalarAdvectionNoBCBC::computeQpOffDiagJacobian(unsigned jvar)
 {
   if (jvar == _u_vel_var_number)
-    return -_grad_test[_i][_qp](0) * _phi[_j][_qp] * _u[_qp];
+    return _normals[_qp](0) * _phi[_j][_qp] * _u[_qp];
 
   else if (jvar == _v_vel_var_number)
-    return -_grad_test[_i][_qp](1) * _phi[_j][_qp] * _u[_qp];
+    return _normals[_qp](1) * _phi[_j][_qp] * _u[_qp];
 
   else if (jvar == _w_vel_var_number)
-    return -_grad_test[_i][_qp](2) * _phi[_j][_qp] * _u[_qp];
+    return _normals[_qp](2) * _phi[_j][_qp] * _u[_qp];
 
   else
     return 0;
