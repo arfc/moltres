@@ -24,8 +24,10 @@
 #include "InScatter.h"
 #include "GroupDiffusion.h"
 #include "CoupledScalarAdvection.h"
+#include "DivFreeCoupledScalarAdvection.h"
 
 // Boundary conditions
+#include "DiffusionNoBCBC.h"
 #include "ScalarAdvectionArtDiffNoBCBC.h"
 #include "MatINSTemperatureNoBCBC.h"
 #include "INSOutflowBC.h"
@@ -100,6 +102,7 @@ MoltresApp::registerObjects(Factory & factory)
   registerKernel(PrecursorSource);
   registerKernel(PrecursorDecay);
   registerKernel(CoupledScalarAdvection);
+  registerKernel(DivFreeCoupledScalarAdvection);
   registerKernel(NtTimeDerivative);
   registerKernel(FissionHeatSource);
   registerKernel(TransientFissionHeatSource);
@@ -112,6 +115,7 @@ MoltresApp::registerObjects(Factory & factory)
   registerKernel(INSK);
   registerKernel(GroupDiffusion);
   registerBoundaryCondition(ScalarAdvectionArtDiffNoBCBC);
+  registerBoundaryCondition(DiffusionNoBCBC);
   registerBoundaryCondition(CoupledScalarAdvectionNoBCBC);
   registerBoundaryCondition(MatINSTemperatureNoBCBC);
   registerBoundaryCondition(INSOutflowBC);

@@ -26,6 +26,7 @@ InputParameters validParams<PrecursorKernelAction>()
   params.addParam<Real>("inlet_dirichlet_value", "If inlet_boundary_condition is DirichletBC, specify the value.");
   params.addRequiredParam<std::vector<BoundaryName> >("outlet_boundary", "The outlet boundary for the precursors.");
   params.addParam<bool>("add_artificial_diffusion", true, "Whether to add artificial diffusion");
+  params.addParam<bool>("incompressible_flow", true, "Determines whether we use a divergence-free form of the advecting velocity.");
   return params;
 }
 
@@ -56,7 +57,29 @@ PrecursorKernelAction::act()
       //
       // Set up advection kernels
       //
+      if (getParam<bool>("incompressible_flow"))
+      {
+        InputParameters params = _factory.getValidParams("DivFreeCoupledScalarAdvection");
+        params.set<NonlinearVariableName>("variable") = var_name;
+        if (isParamValid("u"))
+          params.set<std::vector<VariableName> >("u") = {getParam<VariableName>("u")};
+        else if (isParamValid("u_def"))
+          params.set<Real>("u_def") = getParam<Real>("u_def");
+        if (isParamValid("v"))
+          params.set<std::vector<VariableName> >("v") = {getParam<VariableName>("v")};
+        else if (isParamValid("v_def"))
+          params.set<Real>("v_def") = getParam<Real>("v_def");
+        if (isParamValid("w"))
+          params.set<std::vector<VariableName> >("w") = {getParam<VariableName>("w")};
+        else if (isParamValid("w_def"))
+          params.set<Real>("w_def") = getParam<Real>("w_def");
+        if (isParamValid("block"))
+          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
 
+        std::string kernel_name = "DivFreeCoupledScalarAdvection_" + var_name;
+        _problem->addKernel("DivFreeCoupledScalarAdvection", kernel_name, params);
+      }
+      else
       {
         InputParameters params = _factory.getValidParams("CoupledScalarAdvection");
         params.set<NonlinearVariableName>("variable") = var_name;
@@ -177,6 +200,7 @@ PrecursorKernelAction::act()
       // Set up precursor outlet boundary conditions
       //
 
+      if (!(getParam<bool>("incompressible_flow")))
       {
         InputParameters params = _factory.getValidParams("CoupledScalarAdvectionNoBCBC");
         params.set<std::vector<BoundaryName> >("boundary") = getParam<std::vector<BoundaryName> >("outlet_boundary");
@@ -197,29 +221,30 @@ PrecursorKernelAction::act()
         std::string bc_name = "CoupledScalarAdvectionNoBCBC_" + var_name;
         _problem->addBoundaryCondition("CoupledScalarAdvectionNoBCBC", bc_name, params);
       }
+
       // Set up artificial diffusion
 
-      // if (getParam<bool>("add_artificial_diffusion"))
-      // {
-      //   InputParameters params = _factory.getValidParams("ScalarAdvectionArtDiffNoBCBC");
-      //   params.set<std::vector<BoundaryName> >("boundary") = getParam<std::vector<BoundaryName> >("outlet_boundary");
-      //   params.set<NonlinearVariableName>("variable") = var_name;
-      //   if (isParamValid("u"))
-      //     params.set<std::vector<VariableName> >("u") = {getParam<VariableName>("u")};
-      //   else if (isParamValid("u_def"))
-      //     params.set<Real>("u_def") = getParam<Real>("u_def");
-      //   if (isParamValid("v"))
-      //     params.set<std::vector<VariableName> >("v") = {getParam<VariableName>("v")};
-      //   else if (isParamValid("v_def"))
-      //     params.set<Real>("v_def") = getParam<Real>("v_def");
-      //   if (isParamValid("w"))
-      //     params.set<std::vector<VariableName> >("w") = {getParam<VariableName>("w")};
-      //   else if (isParamValid("w_def"))
-      //     params.set<Real>("w_def") = getParam<Real>("w_def");
+      if (getParam<bool>("add_artificial_diffusion"))
+      {
+        InputParameters params = _factory.getValidParams("ScalarAdvectionArtDiffNoBCBC");
+        params.set<std::vector<BoundaryName> >("boundary") = getParam<std::vector<BoundaryName> >("outlet_boundary");
+        params.set<NonlinearVariableName>("variable") = var_name;
+        if (isParamValid("u"))
+          params.set<std::vector<VariableName> >("u") = {getParam<VariableName>("u")};
+        else if (isParamValid("u_def"))
+          params.set<Real>("u_def") = getParam<Real>("u_def");
+        if (isParamValid("v"))
+          params.set<std::vector<VariableName> >("v") = {getParam<VariableName>("v")};
+        else if (isParamValid("v_def"))
+          params.set<Real>("v_def") = getParam<Real>("v_def");
+        if (isParamValid("w"))
+          params.set<std::vector<VariableName> >("w") = {getParam<VariableName>("w")};
+        else if (isParamValid("w_def"))
+          params.set<Real>("w_def") = getParam<Real>("w_def");
 
-      //   std::string bc_name = "ScalarAdvectionArtDiffNoBCBC_" + var_name;
-      //   _problem->addBoundaryCondition("ScalarAdvectionArtDiffNoBCBC", bc_name, params);
-      // }
+        std::string bc_name = "ScalarAdvectionArtDiffNoBCBC_" + var_name;
+        _problem->addBoundaryCondition("ScalarAdvectionArtDiffNoBCBC", bc_name, params);
+      }
 
     }
   }
