@@ -168,7 +168,7 @@ flow_velocity=147 # Cammi 147 cm/s
   inlet_dirichlet_value = 0
   outlet_boundary = 'fuel_top'
   T = temp
-  incompressible_flow = true
+  incompressible_flow = false
 []
 
 [AuxVariables]

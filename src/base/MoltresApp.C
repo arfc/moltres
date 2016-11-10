@@ -27,6 +27,7 @@
 #include "DivFreeCoupledScalarAdvection.h"
 
 // Boundary conditions
+#include "ConservativeAdvectionNoBCBC.h"
 #include "DiffusionNoBCBC.h"
 #include "ScalarAdvectionArtDiffNoBCBC.h"
 #include "MatINSTemperatureNoBCBC.h"
@@ -115,6 +116,7 @@ MoltresApp::registerObjects(Factory & factory)
   registerKernel(INSK);
   registerKernel(GroupDiffusion);
   registerBoundaryCondition(ScalarAdvectionArtDiffNoBCBC);
+  registerBoundaryCondition(ConservativeAdvectionNoBCBC);
   registerBoundaryCondition(DiffusionNoBCBC);
   registerBoundaryCondition(CoupledScalarAdvectionNoBCBC);
   registerBoundaryCondition(MatINSTemperatureNoBCBC);

@@ -11,9 +11,9 @@
     variable = u
   [../]
   [./advection]
-    type = CoupledScalarAdvection
+    type = ConservativeAdvection
     variable = u
-    v_def = 1
+    velocity = '0 1 0'
   [../]
   [./source]
     type = UserForcingFunction
@@ -35,10 +35,10 @@
     boundary = 'top'
   [../]
   [./out_advection]
-    type = CoupledScalarAdvectionNoBCBC
+    type = ConservativeAdvectionNoBCBC
     variable = u
     boundary = 'top'
-    v_def = 1
+    velocity = '0 1 0'
   [../]
 []
 
