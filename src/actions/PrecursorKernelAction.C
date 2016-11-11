@@ -248,7 +248,18 @@ PrecursorKernelAction::act()
         std::string bc_name = "ScalarAdvectionArtDiffNoBCBC_" + var_name;
         _problem->addBoundaryCondition("ScalarAdvectionArtDiffNoBCBC", bc_name, params);
       }
+    }
 
+    if (_current_task = "add_ic")
+    {
+      if (isParamValid("inlet_dirichlet_value"))
+      // set up constant ics
+      {
+        InputParameters params = _factory.getValidParams("ConstantIC");
+        params.set<VariableName>("variable") = var_name;
+        params.set<Real>("value") = getParam<Real>("inlet_dirichlet_value");
+        _problem->addInitialCondition("ConstantIC", var_name, params);
+      }
     }
   }
 }
