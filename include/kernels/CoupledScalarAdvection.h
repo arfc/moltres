@@ -2,6 +2,7 @@
 #define COUPLEDSCALARADVECTION_H
 
 #include "Kernel.h"
+#include "ScalarTransportBase.h"
 
 // Forward Declarations
 class CoupledScalarAdvection;
@@ -13,7 +14,7 @@ InputParameters validParams<CoupledScalarAdvection>();
  * This class computes the residual and Jacobian contributions for the
  * incompressible Navier-Stokes temperature (energy) equation.
  */
-class CoupledScalarAdvection : public Kernel
+class CoupledScalarAdvection : public ScalarTransportBase<Kernel>
 {
 public:
   CoupledScalarAdvection(const InputParameters & parameters);

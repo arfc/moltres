@@ -2,6 +2,7 @@
 #define SCALARADVECTIONARTDIFFNOBCBC_H
 
 #include "IntegratedBC.h"
+#include "ScalarTransportBase.h"
 
 // Forward Declarations
 class ScalarAdvectionArtDiffNoBCBC;
@@ -13,7 +14,7 @@ InputParameters validParams<ScalarAdvectionArtDiffNoBCBC>();
  * This class computes the residual and Jacobian contributions for the
  * incompressible Navier-Stokes temperature (energy) equation.
  */
-class ScalarAdvectionArtDiffNoBCBC : public IntegratedBC
+class ScalarAdvectionArtDiffNoBCBC : public ScalarTransportBase<IntegratedBC>
 {
 public:
   ScalarAdvectionArtDiffNoBCBC(const InputParameters & parameters);

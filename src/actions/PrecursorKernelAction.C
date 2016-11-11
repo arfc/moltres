@@ -27,6 +27,7 @@ InputParameters validParams<PrecursorKernelAction>()
   params.addRequiredParam<std::vector<BoundaryName> >("outlet_boundary", "The outlet boundary for the precursors.");
   params.addParam<bool>("add_artificial_diffusion", true, "Whether to add artificial diffusion");
   params.addParam<bool>("incompressible_flow", true, "Determines whether we use a divergence-free form of the advecting velocity.");
+  params.addParam<bool>("use_exp_form", "Whether concentrations should be in an expotential/logarithmic format.");
   return params;
 }
 
@@ -97,6 +98,8 @@ PrecursorKernelAction::act()
           params.set<Real>("w_def") = getParam<Real>("w_def");
         if (isParamValid("block"))
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+        if (isParamValid("use_exp_form"))
+          params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
 
         std::string kernel_name = "CoupledScalarAdvection_" + var_name;
         _problem->addKernel("CoupledScalarAdvection", kernel_name, params);
@@ -143,14 +146,14 @@ PrecursorKernelAction::act()
 
       if (getParam<bool>("transient_simulation"))
       {
-        InputParameters params = _factory.getValidParams("TimeDerivative");
+        InputParameters params = _factory.getValidParams("ScalarTransportTimeDerivative");
         params.set<NonlinearVariableName>("variable") = var_name;
         params.set<bool>("implicit") = true;
         if (isParamValid("block"))
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
 
-        std::string kernel_name = "TimeDerivative_" + var_name;
-        _problem->addKernel("TimeDerivative", kernel_name, params);
+        std::string kernel_name = "ScalarTransportTimeDerivative_" + var_name;
+        _problem->addKernel("ScalarTransportTimeDerivative", kernel_name, params);
       }
 
       // Set up artificial diffusion

@@ -5,6 +5,7 @@ template<>
 InputParameters validParams<CoupledScalarAdvectionNoBCBC>()
 {
   InputParameters params = validParams<IntegratedBC>();
+  params += ScalarTransportBase<IntegratedBC>::validParams();
 
   // Coupled variables
   params.addCoupledVar("u", "x-velocity");
@@ -19,7 +20,7 @@ InputParameters validParams<CoupledScalarAdvectionNoBCBC>()
 
 
 CoupledScalarAdvectionNoBCBC::CoupledScalarAdvectionNoBCBC(const InputParameters & parameters) :
-    IntegratedBC(parameters),
+    ScalarTransportBase<IntegratedBC>(parameters),
 
     // Coupled variables
     _u_vel(isCoupled("u") ? coupledValue("u") : _u_def),
@@ -45,7 +46,7 @@ Real CoupledScalarAdvectionNoBCBC::computeQpResidual()
 {
   return (_normals[_qp](0) * _u_vel[_qp] +
            _normals[_qp](1) * _v_vel[_qp] +
-           _normals[_qp](2) * _w_vel[_qp]) * _test[_i][_qp] * _u[_qp];
+           _normals[_qp](2) * _w_vel[_qp]) * _test[_i][_qp] * computeConcentration();
 }
 
 
@@ -55,7 +56,7 @@ Real CoupledScalarAdvectionNoBCBC::computeQpJacobian()
 {
   return (_normals[_qp](0) * _u_vel[_qp] +
            _normals[_qp](1) * _v_vel[_qp] +
-           _normals[_qp](2) * _w_vel[_qp]) * _phi[_j][_qp] * _test[_i][_qp];
+          _normals[_qp](2) * _w_vel[_qp]) * computeConcentrationDerivative() * _test[_i][_qp];
 }
 
 
@@ -64,13 +65,13 @@ Real CoupledScalarAdvectionNoBCBC::computeQpJacobian()
 Real CoupledScalarAdvectionNoBCBC::computeQpOffDiagJacobian(unsigned jvar)
 {
   if (jvar == _u_vel_var_number)
-    return _normals[_qp](0) * _phi[_j][_qp] * _u[_qp] * _test[_i][_qp];
+    return _normals[_qp](0) * _phi[_j][_qp] * computeConcentration() * _test[_i][_qp];
 
   else if (jvar == _v_vel_var_number)
-    return _normals[_qp](1) * _phi[_j][_qp] * _u[_qp] * _test[_i][_qp];
+    return _normals[_qp](1) * _phi[_j][_qp] * computeConcentration() * _test[_i][_qp];
 
   else if (jvar == _w_vel_var_number)
-    return _normals[_qp](2) * _phi[_j][_qp] * _u[_qp] * _test[_i][_qp];
+    return _normals[_qp](2) * _phi[_j][_qp] * computeConcentration() * _test[_i][_qp];
 
   else
     return 0;

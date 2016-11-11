@@ -2,6 +2,7 @@
 #define SCALARADVECTIONARTDIFF_H
 
 #include "Kernel.h"
+#include "ScalarTransportBase.h"
 
 // Forward Declarations
 class ScalarAdvectionArtDiff;
@@ -13,7 +14,7 @@ InputParameters validParams<ScalarAdvectionArtDiff>();
  * This class computes the residual and Jacobian contributions for the
  * incompressible Navier-Stokes temperature (energy) equation.
  */
-class ScalarAdvectionArtDiff : public Kernel
+class ScalarAdvectionArtDiff : public ScalarTransportBase<Kernel>
 {
 public:
   ScalarAdvectionArtDiff(const InputParameters & parameters);

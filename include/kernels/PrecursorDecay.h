@@ -2,6 +2,7 @@
 #define PRECURSORDECAY_H
 
 #include "Kernel.h"
+#include "ScalarTransportBase.h"
 
 //Forward Declarations
 class PrecursorDecay;
@@ -9,7 +10,7 @@ class PrecursorDecay;
 template<>
 InputParameters validParams<PrecursorDecay>();
 
-class PrecursorDecay : public Kernel
+class PrecursorDecay : public ScalarTransportBase<Kernel>
 {
 public:
   PrecursorDecay(const InputParameters & parameters);

@@ -4,6 +4,7 @@ template<>
 InputParameters validParams<PrecursorSource>()
 {
   InputParameters params = validParams<Kernel>();
+  params += ScalarTransportBase<Kernel>::validParams();
   params.addRequiredParam<int>("num_groups", "The total numer of energy groups");
   params.addRequiredCoupledVar("group_fluxes", "All the variables that hold the group fluxes. These MUST be listed by decreasing energy/increasing group number.");
   params.addParam<int>("precursor_group_number", "What precursor group this kernel is acting on.");
@@ -12,7 +13,7 @@ InputParameters validParams<PrecursorSource>()
 }
 
 PrecursorSource::PrecursorSource(const InputParameters & parameters) :
-    Kernel(parameters),
+    ScalarTransportBase<Kernel>(parameters),
     _nsf(getMaterialProperty<std::vector<Real> >("nsf")),
     _d_nsf_d_temp(getMaterialProperty<std::vector<Real> >("d_nsf_d_temp")),
     _num_groups(getParam<int>("num_groups")),

@@ -28,3 +28,5 @@ Physical Line("all_top") = {1, 2};
 Physical Line("all_bottom") = {5, 4};
 Physical Line("fuel_bottom") = {5};
 Physical Line("fuel_top") = {1};
+Physical Line("graphite_bottom") = {4};
+Physical Line("graphite_top") = {2};

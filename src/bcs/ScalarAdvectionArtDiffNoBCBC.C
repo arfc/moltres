@@ -4,7 +4,9 @@ template<>
 InputParameters validParams<ScalarAdvectionArtDiffNoBCBC>()
 {
   InputParameters params = validParams<IntegratedBC>();
-  params.addParam<Real>("scale",1.,"Amount to scale artificial diffusion.");
+  params += ScalarTransportBase<IntegratedBC>::validParams();
+
+  params.addParam<Real>("scale", 1. ,"Amount to scale artificial diffusion.");
 
   // Coupled variables
   params.addCoupledVar("u", "x-velocity");
@@ -17,7 +19,7 @@ InputParameters validParams<ScalarAdvectionArtDiffNoBCBC>()
 }
 
 ScalarAdvectionArtDiffNoBCBC::ScalarAdvectionArtDiffNoBCBC(const InputParameters & parameters) :
-    IntegratedBC(parameters),
+    ScalarTransportBase<IntegratedBC>(parameters),
 
     _scale(getParam<Real>("scale")),
     // Coupled variables
@@ -46,7 +48,7 @@ ScalarAdvectionArtDiffNoBCBC::computeQpResidual()
 
   Real  delta = U.norm() * _current_elem->hmax() / 2.;
 
-  return _test[_i][_qp] * _normals[_qp] * -delta * _grad_u[_qp] * _scale;
+  return _test[_i][_qp] * _normals[_qp] * -delta * computeConcentrationGradient() * _scale;
 }
 
 Real
@@ -56,7 +58,7 @@ ScalarAdvectionArtDiffNoBCBC::computeQpJacobian()
 
   Real  delta = U.norm() * _current_elem->hmax() / 2.;
 
-  return _test[_i][_qp] * _normals[_qp] * -delta * _grad_phi[_j][_qp] * _scale;
+  return _test[_i][_qp] * _normals[_qp] * -delta * computeConcentrationGradientDerivative() * _scale;
 }
 
 Real
@@ -66,21 +68,21 @@ ScalarAdvectionArtDiffNoBCBC::computeQpOffDiagJacobian(unsigned int jvar)
   {
     RealVectorValue U(_u_vel[_qp], _v_vel[_qp], _w_vel[_qp]);
     Real  d_delta_d_u_vel = _u_vel[_qp] * _phi[_j][_qp] / U.norm() * _current_elem->hmax() / 2.;
-    return _test[_i][_qp] * _normals[_qp] * -d_delta_d_u_vel * _grad_u[_qp] * _scale;
+    return _test[_i][_qp] * _normals[_qp] * -d_delta_d_u_vel * computeConcentrationGradient() * _scale;
   }
 
   else if (jvar == _v_vel_var_number)
   {
     RealVectorValue U(_u_vel[_qp], _v_vel[_qp], _w_vel[_qp]);
     Real  d_delta_d_v_vel = _v_vel[_qp] * _phi[_j][_qp] / U.norm() * _current_elem->hmax() / 2.;
-    return _test[_i][_qp] * _normals[_qp] * -d_delta_d_v_vel * _grad_u[_qp] * _scale;
+    return _test[_i][_qp] * _normals[_qp] * -d_delta_d_v_vel * computeConcentrationGradient() * _scale;
   }
 
   else if (jvar == _w_vel_var_number)
   {
     RealVectorValue U(_u_vel[_qp], _v_vel[_qp], _w_vel[_qp]);
     Real  d_delta_d_w_vel = _w_vel[_qp] * _phi[_j][_qp] / U.norm() * _current_elem->hmax() / 2.;
-    return _test[_i][_qp] * _normals[_qp] * -d_delta_d_w_vel * _grad_u[_qp] * _scale;
+    return _test[_i][_qp] * _normals[_qp] * -d_delta_d_w_vel * computeConcentrationGradient() * _scale;
   }
   else
     return 0.0;

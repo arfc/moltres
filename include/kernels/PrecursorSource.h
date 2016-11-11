@@ -2,6 +2,7 @@
 #define PRECURSORSOURCE_H
 
 #include "Kernel.h"
+#include "ScalarTransportBase.h"
 
 //Forward Declarations
 class PrecursorSource;
@@ -9,7 +10,7 @@ class PrecursorSource;
 template<>
 InputParameters validParams<PrecursorSource>();
 
-class PrecursorSource : public Kernel
+class PrecursorSource : public ScalarTransportBase<Kernel>
 {
 public:
   PrecursorSource(const InputParameters & parameters);

@@ -2,6 +2,7 @@
 #define COUPLEDSCALARADVECTIONNOBCBC_H
 
 #include "IntegratedBC.h"
+#include "ScalarTransportBase.h"
 
 // Forward Declarations
 class CoupledScalarAdvectionNoBCBC;
@@ -13,7 +14,7 @@ InputParameters validParams<CoupledScalarAdvectionNoBCBC>();
  * This class computes the residual and Jacobian contributions for the
  * incompressible Navier-Stokes temperature (energy) equation.
  */
-class CoupledScalarAdvectionNoBCBC : public IntegratedBC
+class CoupledScalarAdvectionNoBCBC : public ScalarTransportBase<IntegratedBC>
 {
 public:
   CoupledScalarAdvectionNoBCBC(const InputParameters & parameters);

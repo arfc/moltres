@@ -2,6 +2,7 @@
 #define DIVFREECOUPLEDSCALARADVECTION_H
 
 #include "Kernel.h"
+#include "ScalarTransportBase.h"
 
 // Forward Declarations
 class DivFreeCoupledScalarAdvection;
@@ -13,7 +14,7 @@ InputParameters validParams<DivFreeCoupledScalarAdvection>();
  * This class computes the residual and Jacobian contributions for the
  * incompressible Navier-Stokes temperature (energy) equation.
  */
-class DivFreeCoupledScalarAdvection : public Kernel
+class DivFreeCoupledScalarAdvection : public ScalarTransportBase<Kernel>
 {
 public:
   DivFreeCoupledScalarAdvection(const InputParameters & parameters);

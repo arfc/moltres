@@ -5,6 +5,7 @@ template<>
 InputParameters validParams<DivFreeCoupledScalarAdvection>()
 {
   InputParameters params = validParams<Kernel>();
+  params += ScalarTransportBase<Kernel>::validParams();
 
   // DivFreeCoupled variables
   params.addCoupledVar("u", "x-velocity");
@@ -19,7 +20,7 @@ InputParameters validParams<DivFreeCoupledScalarAdvection>()
 
 
 DivFreeCoupledScalarAdvection::DivFreeCoupledScalarAdvection(const InputParameters & parameters) :
-    Kernel(parameters),
+    ScalarTransportBase<Kernel>(parameters),
 
     // DivFreeCoupled variables
     _u_vel(isCoupled("u") ? coupledValue("u") : _u_def),
@@ -43,9 +44,9 @@ DivFreeCoupledScalarAdvection::DivFreeCoupledScalarAdvection(const InputParamete
 
 Real DivFreeCoupledScalarAdvection::computeQpResidual()
 {
-  return (_grad_u[_qp](0) * _u_vel[_qp] +
-          _grad_u[_qp](1) * _v_vel[_qp] +
-          _grad_u[_qp](2) * _w_vel[_qp]) * _test[_i][_qp];
+  RealVectorValue U(_u_vel[_qp], _v_vel[_qp], _w_vel[_qp]);
+
+  return computeConcentrationGradient() * U * _test[_i][_qp];
 }
 
 
@@ -53,9 +54,9 @@ Real DivFreeCoupledScalarAdvection::computeQpResidual()
 
 Real DivFreeCoupledScalarAdvection::computeQpJacobian()
 {
-  return (_grad_phi[_j][_qp](0) * _u_vel[_qp] +
-          _grad_phi[_j][_qp](1) * _v_vel[_qp] +
-          _grad_phi[_j][_qp](2) * _w_vel[_qp]) * _test[_i][_qp];
+  RealVectorValue U(_u_vel[_qp], _v_vel[_qp], _w_vel[_qp]);
+
+  return computeConcentrationGradientDerivative() * U * _test[_i][_qp];
 }
 
 
@@ -64,13 +65,13 @@ Real DivFreeCoupledScalarAdvection::computeQpJacobian()
 Real DivFreeCoupledScalarAdvection::computeQpOffDiagJacobian(unsigned jvar)
 {
   if (jvar == _u_vel_var_number)
-    return _grad_u[_qp](0) * _phi[_j][_qp] * _test[_i][_qp];
+    return computeConcentrationGradient()(0) * _phi[_j][_qp] * _test[_i][_qp];
 
   else if (jvar == _v_vel_var_number)
-    return _grad_u[_qp](1) * _phi[_j][_qp] * _test[_i][_qp];
+    return computeConcentrationGradient()(1) * _phi[_j][_qp] * _test[_i][_qp];
 
   else if (jvar == _w_vel_var_number)
-    return _grad_u[_qp](2) * _phi[_j][_qp] * _test[_i][_qp];
+    return computeConcentrationGradient()(2) * _phi[_j][_qp] * _test[_i][_qp];
 
   else
     return 0;

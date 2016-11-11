@@ -5,6 +5,7 @@ template<>
 InputParameters validParams<CoupledScalarAdvection>()
 {
   InputParameters params = validParams<Kernel>();
+  params += ScalarTransportBase<Kernel>::validParams();
 
   // Coupled variables
   params.addCoupledVar("u", "x-velocity");
@@ -19,7 +20,7 @@ InputParameters validParams<CoupledScalarAdvection>()
 
 
 CoupledScalarAdvection::CoupledScalarAdvection(const InputParameters & parameters) :
-    Kernel(parameters),
+    ScalarTransportBase<Kernel>(parameters),
 
     // Coupled variables
     _u_vel(isCoupled("u") ? coupledValue("u") : _u_def),
@@ -39,13 +40,11 @@ CoupledScalarAdvection::CoupledScalarAdvection(const InputParameters & parameter
     _w_def.resize(_fe_problem.getMaxQps(), Real(getParam<Real>("w_def")));
 }
 
-
-
 Real CoupledScalarAdvection::computeQpResidual()
 {
   return -(_grad_test[_i][_qp](0) * _u_vel[_qp] +
            _grad_test[_i][_qp](1) * _v_vel[_qp] +
-           _grad_test[_i][_qp](2) * _w_vel[_qp]) * _u[_qp];
+           _grad_test[_i][_qp](2) * _w_vel[_qp]) * computeConcentration();
 }
 
 
@@ -55,7 +54,7 @@ Real CoupledScalarAdvection::computeQpJacobian()
 {
   return -(_grad_test[_i][_qp](0) * _u_vel[_qp] +
            _grad_test[_i][_qp](1) * _v_vel[_qp] +
-           _grad_test[_i][_qp](2) * _w_vel[_qp]) * _phi[_j][_qp];
+           _grad_test[_i][_qp](2) * _w_vel[_qp]) * computeConcentrationDerivative();
 }
 
 
@@ -64,13 +63,13 @@ Real CoupledScalarAdvection::computeQpJacobian()
 Real CoupledScalarAdvection::computeQpOffDiagJacobian(unsigned jvar)
 {
   if (jvar == _u_vel_var_number)
-    return -_grad_test[_i][_qp](0) * _phi[_j][_qp] * _u[_qp];
+    return -_grad_test[_i][_qp](0) * _phi[_j][_qp] * computeConcentration();
 
   else if (jvar == _v_vel_var_number)
-    return -_grad_test[_i][_qp](1) * _phi[_j][_qp] * _u[_qp];
+    return -_grad_test[_i][_qp](1) * _phi[_j][_qp] * computeConcentration();
 
   else if (jvar == _w_vel_var_number)
-    return -_grad_test[_i][_qp](2) * _phi[_j][_qp] * _u[_qp];
+    return -_grad_test[_i][_qp](2) * _phi[_j][_qp] * computeConcentration();
 
   else
     return 0;
