@@ -5,9 +5,11 @@
 #include "FluidPropertiesApp.h"
 #include "HeatConductionApp.h"
 #include "MooseTestApp.h"
+#include "ZapdosApp.h"
 #include "MooseSyntax.h"
 
 // Kernels
+#include "ScalarTransportTimeDerivative.h"
 #include "ScalarAdvectionArtDiff.h"
 #include "MatINSTemperatureRZ.h"
 #include "PrecursorDecay.h"
@@ -71,6 +73,7 @@ MoltresApp::MoltresApp(InputParameters parameters) :
   FluidPropertiesApp::registerObjects(_factory);
   HeatConductionApp::registerObjects(_factory);
   MooseTestApp::registerObjects(_factory);
+  ZapdosApp::registerObjects(_factory);
   MoltresApp::registerObjects(_factory);
 
   Moose::associateSyntax(_syntax, _action_factory);
@@ -78,6 +81,7 @@ MoltresApp::MoltresApp(InputParameters parameters) :
   FluidPropertiesApp::associateSyntax(_syntax, _action_factory);
   HeatConductionApp::associateSyntax(_syntax, _action_factory);
   MooseTestApp::associateSyntax(_syntax, _action_factory);
+  ZapdosApp::associateSyntax(_syntax, _action_factory);
   MoltresApp::associateSyntax(_syntax, _action_factory);
 }
 
@@ -99,6 +103,7 @@ void
 MoltresApp::registerObjects(Factory & factory)
 {
   registerKernel(SigmaR);
+  registerKernel(ScalarTransportTimeDerivative);
   registerKernel(MatINSTemperatureRZ);
   registerKernel(PrecursorSource);
   registerKernel(PrecursorDecay);

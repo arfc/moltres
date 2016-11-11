@@ -2,7 +2,7 @@ flow_velocity=147 # Cammi 147 cm/s
 
 [GlobalParams]
   num_groups = 2
-  num_precursor_groups = 8
+  num_precursor_groups = 1
   group_fluxes = 'group1 group2'
   # MSRE full power = 10 MW; core volume 90 ft3
   # power = 200000
@@ -147,15 +147,20 @@ flow_velocity=147 # Cammi 147 cm/s
   block = 'fuel'
   inlet_boundary = 'fuel_bottom'
   inlet_boundary_condition = 'DirichletBC'
-  inlet_dirichlet_value = 0
+  inlet_dirichlet_value = -20
   outlet_boundary = 'fuel_top'
   T = temp
   incompressible_flow = false
   transient_simulation = true
-  use_exp_form = false
+  use_exp_form = true
 []
 
-# [AuxVariables]
+[AuxVariables]
+  [./pre1_lin]
+    family = MONOMIAL
+    order = CONSTANT
+  [../]
+
 #   [./Qf]
 #     family = MONOMIAL
 #     order = CONSTANT
@@ -180,9 +185,15 @@ flow_velocity=147 # Cammi 147 cm/s
   #   family = LAGRANGE
   #   order = FIRST
   # [../]
-# [../]
+[../]
 
-# [AuxKernels]
+[AuxKernels]
+  [./pre1_lin]
+    variable = pre1_lin
+    density_log = pre1
+    type = Density
+  [../]
+
 #   [./Qf]
 #     type = FissionHeatSourceAux
 #     variable = Qf
@@ -194,7 +205,7 @@ flow_velocity=147 # Cammi 147 cm/s
   #   diffuse_var = temp
   #   prop_name = 'k'
   # [../]
-# []
+[]
 
 [Materials]
   [./fuel]
@@ -344,5 +355,10 @@ flow_velocity=147 # Cammi 147 cm/s
     type = ConstantIC
     variable = group2
     value = 1
+  [../]
+  [./pre1_ic]
+    type = ConstantIC
+    variable = pre1
+    value = -20
   [../]
 []

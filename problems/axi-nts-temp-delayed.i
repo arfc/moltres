@@ -164,6 +164,10 @@ flow_velocity=147 # Cammi 147 cm/s
     family = MONOMIAL
     order = CONSTANT
   [../]
+  [./pre1_lin]
+    family = MONOMIAL
+    order = CONSTANT
+  [../]
   # [./diffus_temp]
   #   family = MONOMIAL
   #   order = CONSTANT
@@ -191,6 +195,11 @@ flow_velocity=147 # Cammi 147 cm/s
     type = FissionHeatSourceAux
     variable = Qf
     tot_fissions = tot_fissions
+  [../]
+  [./pre1_lin]
+    variable = pre1_lin
+    density_log = pre1
+    type = Density
   [../]
   # [./diffus_temp]
   #   type = MatDiffusionAux
