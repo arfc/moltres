@@ -10,7 +10,7 @@ InputParameters validParams<PrecursorKernelAction>()
   InputParameters params = validParams<AddVariableAction>();
   params.addRequiredParam<int>("num_precursor_groups", "specifies the total number of precursors to create");
   params.addRequiredParam<std::string>("var_name_base", "specifies the base name of the variables");
-  params.addParam<VariableName>("T", "Name of temperature variable");
+  params.addParam<VariableName>("temperature", "Name of temperature variable");
   params.addParam<VariableName>("u", "Name of x-component of velocity");
   params.addParam<VariableName>("v", "Name of y-component of velocity");
   params.addParam<VariableName>("w", "Name of z-component of velocity");
@@ -20,7 +20,6 @@ InputParameters validParams<PrecursorKernelAction>()
   params.addRequiredParam<std::vector<VariableName> >("group_fluxes", "All the variables that hold the group fluxes. These MUST be listed by decreasing energy/increasing group number.");
   params.addRequiredParam<int>("num_groups", "The total number of energy groups.");
   params.addParam<bool>("transient_simulation", false, "Whether to conduct a transient simulation.");
-  params.addParam<std::vector<SubdomainName> >("block", "The list of block ids (SubdomainID) that this object will be applied to");
   params.addRequiredParam<std::vector<BoundaryName> >("inlet_boundary", "The inlet boundary for the precursors.");
   params.addRequiredParam<std::string>("inlet_boundary_condition", "The type of boundary condition to apply at the inlet.");
   params.addParam<Real>("inlet_dirichlet_value", "If inlet_boundary_condition is DirichletBC, specify the value.");
@@ -114,8 +113,8 @@ PrecursorKernelAction::act()
         params.set<int>("num_groups") = _num_groups;
         params.set<std::vector<VariableName> >("group_fluxes") = getParam<std::vector<VariableName> >("group_fluxes");
         params.set<int>("precursor_group_number") = op;
-        if (isParamValid("T"))
-          params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("T")};
+        if (isParamValid("temperature"))
+          params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
         if (isParamValid("block"))
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
 
@@ -131,8 +130,8 @@ PrecursorKernelAction::act()
         InputParameters params = _factory.getValidParams("PrecursorDecay");
         params.set<NonlinearVariableName>("variable") = var_name;
         params.set<int>("precursor_group_number") = op;
-        if (isParamValid("T"))
-          params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("T")};
+        if (isParamValid("temperature"))
+          params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
         if (isParamValid("block"))
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
 
@@ -250,15 +249,53 @@ PrecursorKernelAction::act()
       }
     }
 
-    if (_current_task = "add_ic")
+    // Set up ICs
+
+    if (_current_task == "add_ic")
     {
-      if (isParamValid("inlet_dirichlet_value"))
-      // set up constant ics
+      if (isParamValid("initial_condition"))
       {
         InputParameters params = _factory.getValidParams("ConstantIC");
         params.set<VariableName>("variable") = var_name;
-        params.set<Real>("value") = getParam<Real>("inlet_dirichlet_value");
-        _problem->addInitialCondition("ConstantIC", var_name, params);
+        if (isParamValid("block"))
+          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+        params.set<Real>("value") = getParam<Real>("initial_condition");
+
+        std::string ic_name = "ConstantIC_" + var_name;
+        _problem->addInitialCondition("ConstantIC", ic_name, params);
+      }
+    }
+
+
+    if (getParam<bool>("use_exp_form"))
+    {
+
+      std::string aux_var_name = var_name + "_lin";
+
+      // Set up elemental aux variables
+
+      if (_current_task == "add_elemental_field_variable")
+      {
+        std::set<SubdomainID> blocks = getSubdomainIDs();
+        FEType fe_type(CONSTANT, MONOMIAL);
+        if (blocks.empty())
+          _problem->addAuxVariable(aux_var_name, fe_type);
+        else
+          _problem->addAuxVariable(aux_var_name, fe_type, &blocks);
+      }
+
+      // Set up aux kernels
+
+      if (_current_task == "add_aux_kernel")
+      {
+        InputParameters params = _factory.getValidParams("Density");
+        params.set<AuxVariableName>("variable") = aux_var_name;
+        params.set<std::vector<VariableName> >("density_log") = {var_name};
+        if (isParamValid("block"))
+          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+
+        std::string aux_kernel_name = "Density_" + aux_var_name;
+        _problem->addAuxKernel("Density", aux_kernel_name, params);
       }
     }
   }

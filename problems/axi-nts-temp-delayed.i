@@ -157,6 +157,7 @@ flow_velocity=147 # Cammi 147 cm/s
   T = temp
   incompressible_flow = false
   use_exp_form = true
+  initial_condition = -20
 []
 
 [AuxVariables]
