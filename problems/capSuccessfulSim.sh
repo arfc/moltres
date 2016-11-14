@@ -14,8 +14,10 @@ GEOFILE=$GEOFILE
 mkdir "MooseGold/$OUTSTRING"
 cp $INSTRING".i" "MooseGold/$OUTSTRING/Input.i"
 cp $INSTRING"_out.e" "MooseGold/$OUTSTRING/Output.e"
+cp $INSTRING"_out.csv" "MooseGold/$OUTSTRING/Output.csv"
 cp $GEOFILE "MooseGold/$OUTSTRING/Geometry.geo"
-# cp "log.txt" "MooseLogs/log_"$OUTSTRING"_gold.txt"
+cp "log.txt" "MooseGold/$OUTSTRING/log.txt"
+
 
 drive push -no-clobber ~/gdrive/MooseGold <<<Y
-drive push -no-clobber ~/gdrive/Pictures <<<Y
+# drive push -no-clobber ~/gdrive/Pictures <<<Y

@@ -1,4 +1,5 @@
 flow_velocity=147 # Cammi 147 cm/s
+inlet_temp=824
 
 [GlobalParams]
   num_groups = 2
@@ -22,7 +23,7 @@ flow_velocity=147 # Cammi 147 cm/s
   [./temp]
     order = FIRST
     family = LAGRANGE
-    scaling = 1e-3
+    # scaling = 1e-3
   [../]
 []
 
@@ -117,6 +118,12 @@ flow_velocity=147 # Cammi 147 cm/s
     type = TransientFissionHeatSource
     variable = temp
   [../]
+  [./temp_time_derivative]
+    type = MatINSTemperatureTimeDerivative
+    variable = temp
+    rho = 'rho'
+    cp = 'cp'
+  [../]
 []
 
 # Delayed neutron precursors
@@ -170,7 +177,7 @@ flow_velocity=147 # Cammi 147 cm/s
     boundary = 'fuel_bottom graphite_bottom'
     type = DirichletBC
     variable = temp
-    value = 900
+    value = ${inlet_temp}
   [../]
   [./temp_outlet]
     boundary = 'fuel_top'
@@ -201,16 +208,17 @@ flow_velocity=147 # Cammi 147 cm/s
 
   nl_abs_tol = 1e-11
 
-# solve_type = 'PJFNK'
+  # solve_type = 'PJFNK'
   solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   # This system will not converge with default preconditioning; need to use asm
-  # petsc_options_iname = '-pc_type -sub_pc_type -sub_ksp_type -pc_asm_overlap -ksp_gmres_restart'
-  # petsc_options_value = 'asm lu preonly 2 31'
-  petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type -snes_linesearch_minlambda'
-  petsc_options_value = 'lu NONZERO 1.e-10 preonly 1e-3'
+  # petsc_options_iname = '-pc_type -sub_pc_type -sub_ksp_type -pc_asm_overlap -ksp_gmres_restart -snes_linesearch_mindlambda'
+  # petsc_options_value = 'asm lu preonly 2 31 1e-3'
+  petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type -snes_linesearch_minlambda -pc_factor_mat_solver_package'
+  petsc_options_value = 'lu NONZERO 1.e-10 preonly 1e-3 superlu_dist'
 
-  nl_max_its = 50
+  nl_max_its = 10
+  l_max_its = 10
 
   dtmin = 1e-7
   [./TimeStepper]
@@ -230,6 +238,7 @@ flow_velocity=147 # Cammi 147 cm/s
 []
 
 [Outputs]
+  csv = true
   [./out]
     type = Exodus
     execute_on = 'initial timestep_end'
@@ -244,7 +253,7 @@ flow_velocity=147 # Cammi 147 cm/s
   [./temp_ic]
     type = ConstantIC
     variable = temp
-    value = 900
+    value = ${inlet_temp}
   [../]
   [./group1_ic]
     type = ConstantIC
@@ -255,5 +264,27 @@ flow_velocity=147 # Cammi 147 cm/s
     type = ConstantIC
     variable = group2
     value = 1
+  [../]
+[]
+
+[Postprocessors]
+  [./group1_current]
+    type = ElementIntegralVariablePostprocessor
+    variable = group1
+    outputs = 'csv console'
+    # outputs = 'csv'
+  [../]
+  [./group1_old]
+    type = IntegralOldVariablePostprocessor
+    variable = group1
+    outputs = 'csv console'
+    # outputs = 'csv'
+  [../]
+  [./multiplication]
+    type = DivisionPostprocessor
+    value1 = group1_current
+    value2 = group1_old
+    outputs = 'csv console'
+    # outputs = 'csv'
   [../]
 []

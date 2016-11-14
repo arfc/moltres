@@ -27,6 +27,7 @@
 #include "GroupDiffusion.h"
 #include "CoupledScalarAdvection.h"
 #include "DivFreeCoupledScalarAdvection.h"
+#include "MatINSTemperatureTimeDerivative.h"
 
 // Boundary conditions
 #include "ConservativeAdvectionNoBCBC.h"
@@ -42,6 +43,8 @@
 #include "GenericMoltresMaterial.h"
 
 // Postprocessors
+#include "DivisionPostprocessor.h"
+#include "IntegralOldVariablePostprocessor.h"
 #include "ElmIntegTotFissPostprocessor.h"
 #include "ElmIntegTotFissNtsPostprocessor.h"
 
@@ -103,6 +106,7 @@ void
 MoltresApp::registerObjects(Factory & factory)
 {
   registerKernel(SigmaR);
+  registerKernel(MatINSTemperatureTimeDerivative);
   registerKernel(ScalarTransportTimeDerivative);
   registerKernel(MatINSTemperatureRZ);
   registerKernel(PrecursorSource);
@@ -129,6 +133,8 @@ MoltresApp::registerObjects(Factory & factory)
   registerBoundaryCondition(INSSymmetryAxisBC);
   registerBoundaryCondition(MatDiffusionFluxBC);
   registerMaterial(GenericMoltresMaterial);
+  registerPostprocessor(IntegralOldVariablePostprocessor);
+  registerPostprocessor(DivisionPostprocessor);
   registerPostprocessor(ElmIntegTotFissPostprocessor);
   registerPostprocessor(ElmIntegTotFissNtsPostprocessor);
   registerAux(FissionHeatSourceAux);
