@@ -4,8 +4,6 @@ flow_velocity=147 # Cammi 147 cm/s
   num_groups = 2
   num_precursor_groups = 8
   group_fluxes = 'group1 group2'
-  # MSRE full power = 10 MW; core volume 90 ft3
-  # power = 200000
 [../]
 
 [Mesh]
@@ -13,8 +11,6 @@ flow_velocity=147 # Cammi 147 cm/s
 [../]
 
 [Variables]
-  # [./pre1]
-  # [../]
   [./group1]
     order = FIRST
     family = LAGRANGE
@@ -82,22 +78,6 @@ flow_velocity=147 # Cammi 147 cm/s
     group_fluxes = 'group1 group2'
     temperature = temp
   [../]
-  # [./fission_source_group1]
-  #   type = CoupledFissionEigenKernel
-  #   variable = group1
-  #   group_number = 1
-  #   num_groups = 2
-  #   group_fluxes = 'group1 group2'
-  #   temperature = temp
-  # [../]
-  # [./fission_source_group2]
-  #   type = CoupledFissionEigenKernel
-  #   variable = group2
-  #   group_number = 2
-  #   num_groups = 2
-  #   group_fluxes = 'group1 group2'
-  #   temperature = temp
-  # [../]
   [./fission_source_group1]
     type = CoupledFissionKernel
     variable = group1
@@ -147,66 +127,20 @@ flow_velocity=147 # Cammi 147 cm/s
   block = 'fuel'
   inlet_boundary = 'fuel_bottom'
   inlet_boundary_condition = 'DirichletBC'
-  inlet_dirichlet_value = -20
+  inlet_bc_value = -20
   outlet_boundary = 'fuel_top'
-  T = temp
+  temperature = temp
   incompressible_flow = false
   transient_simulation = true
   use_exp_form = true
   initial_condition = -20
 []
 
-[AuxVariables]
-  [./pre1_lin]
-    family = MONOMIAL
-    order = CONSTANT
-  [../]
+# [AuxVariables]
+# []
 
-#   [./Qf]
-#     family = MONOMIAL
-#     order = CONSTANT
-#   [../]
-  # [./diffus_temp]
-  #   family = MONOMIAL
-  #   order = CONSTANT
-  # [../]
-  # [./diffus_resid]
-  #   family = LAGRANGE
-  #   order = FIRST
-  # [../]
-  # [./src_resid]
-  #   family = LAGRANGE
-  #   order = FIRST
-  # [../]
-  # [./bc_resid]
-  #   family = LAGRANGE
-  #   order = FIRST
-  # [../]
-  # [./tot_resid]
-  #   family = LAGRANGE
-  #   order = FIRST
-  # [../]
-[../]
-
-[AuxKernels]
-  [./pre1_lin]
-    variable = pre1_lin
-    density_log = pre1
-    type = Density
-  [../]
-
-#   [./Qf]
-#     type = FissionHeatSourceAux
-#     variable = Qf
-#     tot_fissions = tot_fissions
-#   [../]
-  # [./diffus_temp]
-  #   type = MatDiffusionAux
-  #   variable = diffus_temp
-  #   diffuse_var = temp
-  #   prop_name = 'k'
-  # [../]
-[]
+# [AuxKernels]
+# []
 
 [Materials]
   [./fuel]
@@ -271,8 +205,12 @@ flow_velocity=147 # Cammi 147 cm/s
   solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   # This system will not converge with default preconditioning; need to use asm
-  petsc_options_iname = '-pc_type -sub_pc_type -sub_ksp_type -pc_asm_overlap -ksp_gmres_restart'
-  petsc_options_value = 'asm lu preonly 2 31'
+  # petsc_options_iname = '-pc_type -sub_pc_type -sub_ksp_type -pc_asm_overlap -ksp_gmres_restart'
+  # petsc_options_value = 'asm lu preonly 2 31'
+  petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type -snes_linesearch_minlambda'
+  petsc_options_value = 'lu NONZERO 1.e-10 preonly 1e-3'
+
+  nl_max_its = 50
 
   dtmin = 1e-7
   [./TimeStepper]
@@ -281,7 +219,6 @@ flow_velocity=147 # Cammi 147 cm/s
     dt = 1e-4
     growth_factor = 1.2
     optimal_iterations = 20
-    nl_max_its = 50
   [../]
 []
 
@@ -291,44 +228,6 @@ flow_velocity=147 # Cammi 147 cm/s
     full = true
   [../]
 []
-
-# [Postprocessors]
-#   [./bnorm]
-#     type = ElmIntegTotFissNtsPostprocessor
-#     group_fluxes = 'group1 group2'
-#     execute_on = linear
-#   [../]
-#   [./tot_fissions]
-#     type = ElmIntegTotFissPostprocessor
-#     execute_on = linear
-#   [../]
-#   [./group1norm]
-#     type = ElementIntegralVariablePostprocessor
-#     variable = group1
-#     execute_on = linear
-#   [../]
-#   [./group2norm]
-#     type = ElementIntegralVariablePostprocessor
-#     variable = group2
-#     execute_on = linear
-#   [../]
-#   [./group1max]
-#     type = NodalMaxValue
-#     variable = group1
-#     execute_on = timestep_end
-#   [../]
-#   [./group2max]
-#     type = NodalMaxValue
-#     variable = group2
-#     execute_on = timestep_end
-#   [../]
-#   [./group1diff]
-#     type = ElementL2Diff
-#     variable = group1
-#     execute_on = 'linear timestep_end'
-#     use_displaced_mesh = false
-#   [../]
-# []
 
 [Outputs]
   [./out]
@@ -357,9 +256,4 @@ flow_velocity=147 # Cammi 147 cm/s
     variable = group2
     value = 1
   [../]
-  # [./pre1_ic]
-  #   type = ConstantIC
-  #   variable = pre1
-  #   value = -20
-  # [../]
 []

@@ -46,7 +46,6 @@ PrecursorSource::computeQpResidual()
     r += -_test[_i][_qp] * _beta_eff[_qp][_precursor_group] * _nsf[_qp][i] * (*_group_fluxes[i])[_qp];
   }
 
-  // Moose::out << "Residual is " << r << std::endl;
   return r;
 }
 
@@ -64,15 +63,13 @@ PrecursorSource::computeQpOffDiagJacobian(unsigned int jvar)
     if (jvar == _flux_ids[i])
     {
       jac = -_test[_i][_qp] * _beta_eff[_qp][_precursor_group] * _nsf[_qp][i] * _phi[_j][_qp];
-      // Moose::out << "Jacobian is " << jac << std::endl;
       return jac;
     }
 
   if (jvar == _temp_id)
   {
     for (int i = 0; i < _num_groups; ++i)
-      jac += -_test[_i][_qp] * (_beta_eff[_qp][_precursor_group] * _d_nsf_d_temp[_qp][i] * (*_group_fluxes[i])[_qp] + _d_beta_eff_d_temp[_qp][_precursor_group] * _nsf[_qp][i] * (*_group_fluxes[i])[_qp]);
-    // Moose::out << "Jacobian is " << jac << std::endl;
+      jac += -_test[_i][_qp] * (_beta_eff[_qp][_precursor_group] * _d_nsf_d_temp[_qp][i] * _phi[_j][_qp] * (*_group_fluxes[i])[_qp] + _d_beta_eff_d_temp[_qp][_precursor_group] * _phi[_j][_qp] * _nsf[_qp][i] * (*_group_fluxes[i])[_qp]);
     return jac;
   }
 

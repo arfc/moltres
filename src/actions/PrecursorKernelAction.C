@@ -22,11 +22,12 @@ InputParameters validParams<PrecursorKernelAction>()
   params.addParam<bool>("transient_simulation", false, "Whether to conduct a transient simulation.");
   params.addRequiredParam<std::vector<BoundaryName> >("inlet_boundary", "The inlet boundary for the precursors.");
   params.addRequiredParam<std::string>("inlet_boundary_condition", "The type of boundary condition to apply at the inlet.");
-  params.addParam<Real>("inlet_dirichlet_value", "If inlet_boundary_condition is DirichletBC, specify the value.");
+  params.addParam<Real>("inlet_bc_value", "For value based boundary conditions, specify the value.");
   params.addRequiredParam<std::vector<BoundaryName> >("outlet_boundary", "The outlet boundary for the precursors.");
   params.addParam<bool>("add_artificial_diffusion", true, "Whether to add artificial diffusion");
   params.addParam<bool>("incompressible_flow", true, "Determines whether we use a divergence-free form of the advecting velocity.");
   params.addParam<bool>("use_exp_form", "Whether concentrations should be in an expotential/logarithmic format.");
+  params.addParam<bool>("jac_test", false, "Whether we're testing the Jacobian and should use some random initial conditions for the precursors.");
   return params;
 }
 
@@ -192,8 +193,8 @@ PrecursorKernelAction::act()
         InputParameters params = _factory.getValidParams(bc_type_name);
         params.set<std::vector<BoundaryName> >("boundary") = getParam<std::vector<BoundaryName> >("inlet_boundary");
         params.set<NonlinearVariableName>("variable") = var_name;
-        if (bc_type_name == "DirichletBC")
-          params.set<Real>("value") = getParam<Real>("inlet_dirichlet_value");
+        if (isParamValid("inlet_bc_value"))
+          params.set<Real>("value") = getParam<Real>("inlet_bc_value");
         std::string bc_name = bc_type_name + "_" + var_name;
         _problem->addBoundaryCondition(bc_type_name, bc_name, params);
       }
@@ -253,7 +254,20 @@ PrecursorKernelAction::act()
 
     if (_current_task == "add_ic")
     {
-      if (isParamValid("initial_condition"))
+      if (getParam<bool>("jac_test"))
+      {
+        InputParameters params = _factory.getValidParams("RandomIC");
+        params.set<VariableName>("variable") = var_name;
+        if (isParamValid("block"))
+          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+        params.set<Real>("min") = 0;
+        params.set<Real>("max") = 1;
+
+        std::string ic_name = "RandomIC_" + var_name;
+        _problem->addInitialCondition("RandomIC", ic_name, params);
+      }
+
+      else if (isParamValid("initial_condition"))
       {
         InputParameters params = _factory.getValidParams("ConstantIC");
         params.set<VariableName>("variable") = var_name;

@@ -6,12 +6,27 @@ flow_velocity=147 # Cammi 147 cm/s
   group_fluxes = 'group1 group2'
   # MSRE full power = 10 MW; core volume 90 ft3
   # power = 200000
-  temperature = 900
+  temperature = temp
 [../]
 
 [Mesh]
-  file = 'axisymm_jac_test.msh'
+  type = GeneratedMesh
+  dim = 2
+  nx = 2
+  ny = 1
+  block_id = '0'
+  block_name = 'fuel'
 [../]
+
+[MeshModifiers]
+  [./bounding_box]
+    type = SubdomainBoundingBox
+    bottom_left = '0.5 0 0'
+    top_right = '1 1 0'
+    block_id = '1'
+    block_name = 'moder'
+  [../]
+[]
 
 [Variables]
   # [./pre1]
@@ -24,11 +39,11 @@ flow_velocity=147 # Cammi 147 cm/s
     order = FIRST
     family = LAGRANGE
   [../]
-  # [./temp]
-  #   order = FIRST
-  #   family = LAGRANGE
-  #   scaling = 1e-3
-  # [../]
+  [./temp]
+    order = FIRST
+    family = LAGRANGE
+    scaling = 1e-3
+  [../]
 []
 
 [Kernels]
@@ -77,20 +92,6 @@ flow_velocity=147 # Cammi 147 cm/s
     num_groups = 2
     group_fluxes = 'group1 group2'
   [../]
-  # [./fission_source_group1]
-  #   type = CoupledFissionEigenKernel
-  #   variable = group1
-  #   group_number = 1
-  #   num_groups = 2
-  #   group_fluxes = 'group1 group2'
-  # [../]
-  # [./fission_source_group2]
-  #   type = CoupledFissionEigenKernel
-  #   variable = group2
-  #   group_number = 2
-  #   num_groups = 2
-  #   group_fluxes = 'group1 group2'
-  # [../]
   [./fission_source_group1]
     type = CoupledFissionKernel
     variable = group1
@@ -107,45 +108,46 @@ flow_velocity=147 # Cammi 147 cm/s
   [../]
 
   # Temperature
-  # [./temp_flow_fuel]
-  #   block = 'fuel'
-  #   type = MatINSTemperatureRZ
-  #   variable = temp
-  #   rho = 'rho'
-  #   k = 'k'
-  #   cp = 'cp'
-  #   uz = ${flow_velocity}
-  # [../]
-  # [./temp_flow_moder]
-  #   block = 'moder'
-  #   type = MatINSTemperatureRZ
-  #   variable = temp
-  #   rho = 'rho'
-  #   k = 'k'
-  #   cp = 'cp'
-  # [../]
-  # [./temp_source]
-  #   type = TransientFissionHeatSource
-  #   variable = temp
-  # [../]
+  [./temp_flow_fuel]
+    block = 'fuel'
+    type = MatINSTemperatureRZ
+    variable = temp
+    rho = 'rho'
+    k = 'k'
+    cp = 'cp'
+    uz = ${flow_velocity}
+  [../]
+  [./temp_flow_moder]
+    block = 'moder'
+    type = MatINSTemperatureRZ
+    variable = temp
+    rho = 'rho'
+    k = 'k'
+    cp = 'cp'
+  [../]
+  [./temp_source]
+    type = TransientFissionHeatSource
+    variable = temp
+  [../]
 []
 
 # Delayed neutron precursors
 
-# [PrecursorKernel]
-#   var_name_base = pre
-#   v_def = ${flow_velocity}
-#   block = 'fuel'
-#   inlet_boundary = 'fuel_bottom'
-#   inlet_boundary_condition = 'DirichletBC'
-#   inlet_dirichlet_value = -20
-#   outlet_boundary = 'fuel_top'
-#   T = temp
-#   incompressible_flow = false
-#   transient_simulation = true
-#   use_exp_form = true
-#   initial_condition = -20
-# []
+[PrecursorKernel]
+  var_name_base = pre
+  v_def = ${flow_velocity}
+  # block = 'fuel'
+  inlet_boundary = 'bottom'
+  inlet_boundary_condition = 'NeumannBC'
+  inlet_bc_value = 1.1
+  outlet_boundary = 'top'
+  temperature = temp
+  incompressible_flow = false
+  transient_simulation = true
+  use_exp_form = false
+  jac_test = true
+  # initial_condition = -20
+[]
 
 # [AuxVariables]
 #   [./pre1_lin]
@@ -233,21 +235,22 @@ flow_velocity=147 # Cammi 147 cm/s
   #   variable = temp
   #   k = 'k'
   # [../]
-  [./group1_vacuum]
-    type = VacuumBC
-    variable = group1
-    boundary = 'fuel_top graphite_top fuel_bottom graphite_bottom'
-  [../]
-  [./group2_vacuum]
-    type = VacuumBC
-    variable = group2
-    boundary = 'fuel_top graphite_top fuel_bottom graphite_bottom'
-  [../]
+  # [./group1_vacuum]
+  #   type = VacuumBC
+  #   variable = group1
+  #   boundary = 'fuel_top graphite_top fuel_bottom graphite_bottom'
+  # [../]
+  # [./group2_vacuum]
+  #   type = VacuumBC
+  #   variable = group2
+  #   boundary = 'fuel_top graphite_top fuel_bottom graphite_bottom'
+  # [../]
 []
 
 [Problem]
   type = FEProblem
   coord_type = RZ
+  kernel_coverage_check = false
 [../]
 
 [Executioner]
@@ -324,6 +327,10 @@ flow_velocity=147 # Cammi 147 cm/s
     type = Exodus
     execute_on = 'initial timestep_end'
   [../]
+  [./dof_map]
+    type = DOFMap
+  [../]
+
 []
 
 [Debug]
@@ -331,20 +338,23 @@ flow_velocity=147 # Cammi 147 cm/s
 []
 
 [ICs]
-  # [./temp_ic]
-  #   type = ConstantIC
-  #   variable = temp
-  #   value = 900
-  # [../]
+  [./temp_ic]
+    type = RandomIC
+    variable = temp
+    min = 900
+    max = 1400
+  [../]
   [./group1_ic]
-    type = ConstantIC
+    type = RandomIC
     variable = group1
-    value = 1
+    min = 0
+    max = 600
   [../]
   [./group2_ic]
-    type = ConstantIC
+    type = RandomIC
     variable = group2
-    value = 1
+    min = 0
+    max = 600
   [../]
   # [./pre1_ic]
   #   type = ConstantIC

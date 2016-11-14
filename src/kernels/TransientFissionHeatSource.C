@@ -49,7 +49,7 @@ TransientFissionHeatSource::computeQpJacobian()
   Real jac = 0;
   for (int i = 0; i < _num_groups; ++i)
   {
-    jac += -_test[_i][_qp] * (_fisse[_qp][i] * _d_fissxs_d_temp[_qp][i] + _d_fisse_d_temp[_qp][i] * _fissxs[_qp][i]) * (*_group_fluxes[i])[_qp];
+    jac += -_test[_i][_qp] * (_fisse[_qp][i] * _d_fissxs_d_temp[_qp][i] * _phi[_j][_qp] + _d_fisse_d_temp[_qp][i] * _phi[_j][_qp] * _fissxs[_qp][i]) * (*_group_fluxes[i])[_qp];
   }
 
   return jac;
