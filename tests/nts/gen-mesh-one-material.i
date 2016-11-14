@@ -1,5 +1,6 @@
 [GlobalParams]
   num_groups = 2
+  num_precursor_groups = 8
   temperature = temp
   group_fluxes = 'group1 group2'
   # MSRE full power = 10 MW; core volume 90 ft3
