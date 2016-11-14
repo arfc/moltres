@@ -15,8 +15,8 @@ mkdir "MooseGold/$OUTSTRING"
 cp $INSTRING".i" "MooseGold/$OUTSTRING/Input.i"
 cp $INSTRING"_out.e" "MooseGold/$OUTSTRING/Output.e"
 cp $INSTRING"_out.csv" "MooseGold/$OUTSTRING/Output.csv"
-cp $GEOFILE "MooseGold/$OUTSTRING/Geometry.geo"
-cp "log.txt" "MooseGold/$OUTSTRING/log.txt"
+cp $GEOFILE "MooseGold/$OUTSTRING/$GEOFILE"
+cp -t "MooseGold/$OUTSTRING/" log.txt *interp*.txt
 
 
 drive push -no-clobber ~/gdrive/MooseGold <<<Y

@@ -131,14 +131,14 @@ GenericMoltresMaterial::computeQpProperties()
     _remxs[_qp][i] = _xsec_interpolators["REMXS"][i].sample(_temperature[_qp]);
     _fissxs[_qp][i] = _xsec_interpolators["FISSXS"][i].sample(_temperature[_qp]);
     _nsf[_qp][i] = _xsec_interpolators["NSF"][i].sample(_temperature[_qp]);
-    _fisse[_qp][i] = _xsec_interpolators["FISSE"][i].sample(_temperature[_qp]);
+    _fisse[_qp][i] = _xsec_interpolators["FISSE"][i].sample(_temperature[_qp]) * 1e6 * 1.6e-19; // convert from MeV to Joules
     _diffcoef[_qp][i] = _xsec_interpolators["DIFFCOEF"][i].sample(_temperature[_qp]);
     _recipvel[_qp][i] = _xsec_interpolators["RECIPVEL"][i].sample(_temperature[_qp]);
     _chi[_qp][i] = _xsec_interpolators["CHI"][i].sample(_temperature[_qp]);
     _d_remxs_d_temp[_qp][i] = _xsec_interpolators["REMXS"][i].sampleDerivative(_temperature[_qp]);
     _d_fissxs_d_temp[_qp][i] = _xsec_interpolators["FISSXS"][i].sampleDerivative(_temperature[_qp]);
     _d_nsf_d_temp[_qp][i] = _xsec_interpolators["NSF"][i].sampleDerivative(_temperature[_qp]);
-    _d_fisse_d_temp[_qp][i] = _xsec_interpolators["FISSE"][i].sampleDerivative(_temperature[_qp]);
+    _d_fisse_d_temp[_qp][i] = _xsec_interpolators["FISSE"][i].sampleDerivative(_temperature[_qp]) * 1e6 * 1.6e-19; // convert from MeV to Joules
     _d_diffcoef_d_temp[_qp][i] = _xsec_interpolators["DIFFCOEF"][i].sampleDerivative(_temperature[_qp]);
     _d_recipvel_d_temp[_qp][i] = _xsec_interpolators["RECIPVEL"][i].sampleDerivative(_temperature[_qp]);
     _d_chi_d_temp[_qp][i] = _xsec_interpolators["CHI"][i].sampleDerivative(_temperature[_qp]);

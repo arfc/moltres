@@ -30,6 +30,7 @@ protected:
   unsigned int _temp_id;
   std::vector<const VariableValue *> _group_fluxes;
   std::vector<unsigned int> _flux_ids;
+  Real _nt_scale;
 };
 
 #endif //PRECURSORSOURCE_H

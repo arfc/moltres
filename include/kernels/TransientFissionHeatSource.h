@@ -26,6 +26,7 @@ protected:
   int _num_groups;
   std::vector<const VariableValue *> _group_fluxes;
   std::vector<unsigned int> _flux_ids;
+  Real _nt_scale;
 };
 
 #endif //TRANSIENTFISSIONEHEATSOURCE_H

@@ -28,6 +28,7 @@ InputParameters validParams<PrecursorKernelAction>()
   params.addParam<bool>("incompressible_flow", true, "Determines whether we use a divergence-free form of the advecting velocity.");
   params.addParam<bool>("use_exp_form", "Whether concentrations should be in an expotential/logarithmic format.");
   params.addParam<bool>("jac_test", false, "Whether we're testing the Jacobian and should use some random initial conditions for the precursors.");
+  params.addParam<Real>("nt_scale", "The amount by which the neutron fluxes are scaled.");
   return params;
 }
 
@@ -118,6 +119,8 @@ PrecursorKernelAction::act()
           params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
         if (isParamValid("block"))
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+        if (isParamValid("nt_scale"))
+          params.set<Real>("nt_scale") = getParam<Real>("nt_scale");
 
         std::string kernel_name = "PrecursorSource_" + var_name;
         _problem->addKernel("PrecursorSource", kernel_name, params);
