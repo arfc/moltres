@@ -1,8 +1,7 @@
 #ifndef NTTIMEDERIVATIVE_H
 #define NTTIMEDERIVATIVE_H
 
-#include "TimeDerivative.h"
-#include "ScalarTransportBase.h"
+#include "ScalarTransportTimeDerivative.h"
 
 // Forward Declaration
 class NtTimeDerivative;
@@ -10,8 +9,7 @@ class NtTimeDerivative;
 template<>
 InputParameters validParams<NtTimeDerivative>();
 
-class NtTimeDerivative : public TimeDerivative,
-                         public ScalarTransportBase
+class NtTimeDerivative : public ScalarTransportTimeDerivative
 {
 public:
   NtTimeDerivative(const InputParameters & parameters);

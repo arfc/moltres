@@ -34,35 +34,41 @@ nt_scale=1e13
     type = NtTimeDerivative
     group_number = 1
     variable = group1
+    use_exp_form = false
   [../]
   [./time_group2]
     type = NtTimeDerivative
     group_number = 2
     variable = group2
+    use_exp_form = false
   [../]
   [./diff_group1]
     type = GroupDiffusion
     variable = group1
     group_number = 1
     temperature = temp
+    use_exp_form = false
   [../]
   [./diff_group2]
     type = GroupDiffusion
     variable = group2
     group_number = 2
     temperature = temp
+    use_exp_form = false
   [../]
   [./sigma_r_group1]
     type = SigmaR
     variable = group1
     group_number = 1
     temperature = temp
+    use_exp_form = false
   [../]
   [./sigma_r_group2]
     type = SigmaR
     variable = group2
     group_number = 2
     temperature = temp
+    use_exp_form = false
   [../]
   [./inscatter_group1]
     type = InScatter
@@ -71,6 +77,7 @@ nt_scale=1e13
     num_groups = 2
     group_fluxes = 'group1 group2'
     temperature = temp
+    use_exp_form = false
   [../]
   [./inscatter_group2]
     type = InScatter
@@ -79,6 +86,7 @@ nt_scale=1e13
     num_groups = 2
     group_fluxes = 'group1 group2'
     temperature = temp
+    use_exp_form = false
   [../]
   [./fission_source_group1]
     type = CoupledFissionKernel
@@ -87,6 +95,7 @@ nt_scale=1e13
     num_groups = 2
     group_fluxes = 'group1 group2'
     temperature = temp
+    use_exp_form = false
   [../]
   [./fission_source_group2]
     type = CoupledFissionKernel
@@ -95,6 +104,7 @@ nt_scale=1e13
     num_groups = 2
     group_fluxes = 'group1 group2'
     temperature = temp
+    use_exp_form = false
   [../]
 
   # Temperature
