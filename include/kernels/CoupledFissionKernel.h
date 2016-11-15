@@ -2,6 +2,7 @@
 #define COUPLEDFISSIONKERNEL_H
 
 #include "Kernel.h"
+#include "ScalarTransportBase.h"
 
 //Forward Declarations
 class CoupledFissionKernel;
@@ -9,7 +10,8 @@ class CoupledFissionKernel;
 template<>
 InputParameters validParams<CoupledFissionKernel>();
 
-class CoupledFissionKernel : public Kernel
+class CoupledFissionKernel : public Kernel,
+                             public ScalarTransportBase
 {
 public:
   CoupledFissionKernel(const InputParameters & parameters);

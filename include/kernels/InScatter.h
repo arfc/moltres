@@ -2,7 +2,7 @@
 #define INSCATTER_H
 
 #include "Kernel.h"
-#include "MaterialProperty.h"
+#include "ScalarTransportBase.h"
 
 // Forward Declaration
 class InScatter;
@@ -11,7 +11,8 @@ template<>
 InputParameters validParams<InScatter>();
 
 
-class InScatter : public Kernel
+class InScatter : public Kernel,
+                  public ScalarTransportBase
 {
 public:
   InScatter(const InputParameters & parameters);

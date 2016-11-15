@@ -2,7 +2,7 @@
 #define SIGMAR_H
 
 #include "Kernel.h"
-#include "MaterialProperty.h"
+#include "ScalarTransportBase.h"
 
 // Forward Declaration
 class SigmaR;
@@ -11,7 +11,8 @@ template<>
 InputParameters validParams<SigmaR>();
 
 
-class SigmaR : public Kernel
+class SigmaR : public Kernel,
+               public ScalarTransportBase
 {
 public:
   SigmaR(const InputParameters & parameters);

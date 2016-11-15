@@ -4,6 +4,7 @@ template<>
 InputParameters validParams<CoupledFissionKernel>()
 {
   InputParameters params = validParams<Kernel>();
+  params += validParams<ScalarTransportBase>();
   params.addRequiredParam<int>("group_number", "The current energy group");
   params.addRequiredParam<int>("num_groups", "The total numer of energy groups");
   params.addCoupledVar("temperature", 937, "The temperature used to interpolate material properties");
@@ -13,6 +14,7 @@ InputParameters validParams<CoupledFissionKernel>()
 
 CoupledFissionKernel::CoupledFissionKernel(const InputParameters & parameters) :
     Kernel(parameters),
+    ScalarTransportBase(parameters),
     _nsf(getMaterialProperty<std::vector<Real> >("nsf")),
     _d_nsf_d_temp(getMaterialProperty<std::vector<Real> >("d_nsf_d_temp")),
     _chi(getMaterialProperty<std::vector<Real> >("chi")),

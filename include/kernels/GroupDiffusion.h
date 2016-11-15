@@ -2,7 +2,7 @@
 #define GROUPDIFFUSION_H
 
 #include "Kernel.h"
-#include "MaterialProperty.h"
+#include "ScalarTransportBase.h"
 
 // Forward Declaration
 class GroupDiffusion;
@@ -11,7 +11,8 @@ template<>
 InputParameters validParams<GroupDiffusion>();
 
 
-class GroupDiffusion : public Kernel
+class GroupDiffusion : public Kernel,
+                       public ScalarTransportBase
 {
 public:
   GroupDiffusion(const InputParameters & parameters);

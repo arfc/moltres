@@ -4,6 +4,7 @@ template<>
 InputParameters validParams<GroupDiffusion>()
 {
   InputParameters params = validParams<Kernel>();
+  params += validParams<ScalarTransportBase>();
   params.addRequiredParam<int>("group_number", "The group for which this kernel controls diffusion");
   params.addCoupledVar("temperature", 937, "The temperature used to interpolate the diffusion coefficient");
   return params;
@@ -12,6 +13,7 @@ InputParameters validParams<GroupDiffusion>()
 
 GroupDiffusion::GroupDiffusion(const InputParameters & parameters) :
     Kernel(parameters),
+    ScalarTransportBase(parameters),
     _diffcoef(getMaterialProperty<std::vector<Real> >("diffcoef")),
     _d_diffcoef_d_temp(getMaterialProperty<std::vector<Real> >("d_diffcoef_d_temp")),
     _group(getParam<int>("group_number") - 1),

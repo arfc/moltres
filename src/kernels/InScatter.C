@@ -4,6 +4,7 @@ template<>
 InputParameters validParams<InScatter>()
 {
   InputParameters params = validParams<Kernel>();
+  params += validParams<ScalarTransportBase>();
   params.addRequiredParam<int>("group_number", "The current energy group");
   params.addRequiredParam<int>("num_groups", "The total numer of energy groups");
   params.addCoupledVar("temperature", 937, "The temperature used to interpolate material properties");
@@ -14,6 +15,7 @@ InputParameters validParams<InScatter>()
 
 InScatter::InScatter(const InputParameters & parameters) :
     Kernel(parameters),
+    ScalarTransportBase(parameters),
     _gtransfxs(getMaterialProperty<std::vector<Real> >("gtransfxs")),
     _d_gtransfxs_d_temp(getMaterialProperty<std::vector<Real> >("d_gtransfxs_d_temp")),
     _group(getParam<int>("group_number") - 1),
