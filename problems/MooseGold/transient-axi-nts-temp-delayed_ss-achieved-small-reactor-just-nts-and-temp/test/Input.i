@@ -153,7 +153,7 @@ inlet_temp=824
   [./fuel]
     type = GenericMoltresMaterial
     block = 'fuel'
-    property_tables_root = 'msr2g_enrU_mod_953_fuel_interp_'
+    property_tables_root = '../property_file_dir/msr2g_enrU_mod_953_fuel_interp_'
     num_groups = 2
     num_precursor_groups = 8
     prop_names = 'k rho cp'
@@ -163,7 +163,7 @@ inlet_temp=824
   [./moder]
     type = GenericMoltresMaterial
     block = 'moder'
-    property_tables_root = 'msr2g_enrU_fuel_922_mod_interp_'
+    property_tables_root = '../property_file_dir/msr2g_enrU_fuel_922_mod_interp_'
     num_groups = 2
     num_precursor_groups = 8
     prop_names = 'k rho cp'
