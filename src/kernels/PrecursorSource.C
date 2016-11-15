@@ -4,7 +4,7 @@ template<>
 InputParameters validParams<PrecursorSource>()
 {
   InputParameters params = validParams<Kernel>();
-  params += ScalarTransportBase<Kernel>::validParams();
+  params += validParams<ScalarTransportBase>();
   params.addRequiredParam<int>("num_groups", "The total numer of energy groups");
   params.addRequiredCoupledVar("group_fluxes", "All the variables that hold the group fluxes. These MUST be listed by decreasing energy/increasing group number.");
   params.addParam<int>("precursor_group_number", "What precursor group this kernel is acting on.");

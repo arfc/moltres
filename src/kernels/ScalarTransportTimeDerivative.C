@@ -4,7 +4,7 @@ template<>
 InputParameters validParams<ScalarTransportTimeDerivative>()
 {
   InputParameters params = validParams<TimeKernel>();
-  params += ScalarTransportBase<TimeKernel>::validParams();
+  params += validParams<ScalarTransportBase>();
   params.addParam<bool>("lumping", false, "True for mass matrix lumping, false otherwise");
   params.addParam<Real>("conc_scaling", 1, "The amount by which to scale the concentration variable.");
   return params;

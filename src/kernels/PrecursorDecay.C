@@ -4,7 +4,7 @@ template<>
 InputParameters validParams<PrecursorDecay>()
 {
   InputParameters params = validParams<Kernel>();
-  params += ScalarTransportBase<Kernel>::validParams();
+  params += validParams<ScalarTransportBase>();
   params.addParam<int>("precursor_group_number", "What precursor group this kernel is acting on.");
   params.addCoupledVar("temperature", 937, "The temperature used to interpolate material properties.");
   params.addParam<Real>("prec_scale", 1, "The amount by which to scale precursors.");

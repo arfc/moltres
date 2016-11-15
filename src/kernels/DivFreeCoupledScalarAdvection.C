@@ -5,7 +5,7 @@ template<>
 InputParameters validParams<DivFreeCoupledScalarAdvection>()
 {
   InputParameters params = validParams<Kernel>();
-  params += ScalarTransportBase<Kernel>::validParams();
+  params += validParams<ScalarTransportBase>();
 
   // DivFreeCoupled variables
   params.addCoupledVar("u", "x-velocity");

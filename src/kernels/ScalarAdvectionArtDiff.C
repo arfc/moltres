@@ -4,7 +4,7 @@ template<>
 InputParameters validParams<ScalarAdvectionArtDiff>()
 {
   InputParameters params = validParams<Kernel>();
-  params += ScalarTransportBase<Kernel>::validParams();
+  params += validParams<ScalarTransportBase>();
   params.addParam<Real>("scale", 1. ,"Amount to scale artificial diffusion.");
 
   // Coupled variables

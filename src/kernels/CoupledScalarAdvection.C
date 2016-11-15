@@ -5,7 +5,7 @@ template<>
 InputParameters validParams<CoupledScalarAdvection>()
 {
   InputParameters params = validParams<Kernel>();
-  params += ScalarTransportBase<Kernel>::validParams();
+  params += validParams<ScalarTransportBase>();
 
   // Coupled variables
   params.addCoupledVar("u", "x-velocity");
