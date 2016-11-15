@@ -116,7 +116,7 @@ nt_scale=1e13
     cp = 'cp'
   [../]
   [./temp_source]
-    type = TransientFissionHeatSource
+    type = TransientFissionHxeatSource
     variable = temp
     nt_scale = ${nt_scale}
   [../]
@@ -144,7 +144,7 @@ nt_scale=1e13
   transient_simulation = true
   use_exp_form = true
   initial_condition = 0
-  prec_scaling = 1e-3
+  # prec_scaling = 1e-3
 []
 
 # [AuxVariables]
