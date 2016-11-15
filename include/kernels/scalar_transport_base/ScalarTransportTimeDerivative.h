@@ -10,7 +10,8 @@ class ScalarTransportTimeDerivative;
 template<>
 InputParameters validParams<ScalarTransportTimeDerivative>();
 
-class ScalarTransportTimeDerivative : public ScalarTransportBase<TimeKernel>
+class ScalarTransportTimeDerivative : public TimeKernel,
+                                      public ScalarTransportBase
 {
 public:
   ScalarTransportTimeDerivative(const InputParameters & parameters);

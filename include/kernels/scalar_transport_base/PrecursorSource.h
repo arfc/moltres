@@ -10,7 +10,8 @@ class PrecursorSource;
 template<>
 InputParameters validParams<PrecursorSource>();
 
-class PrecursorSource : public ScalarTransportBase<Kernel>
+class PrecursorSource : public Kernel,
+                        public ScalarTransportBase
 {
 public:
   PrecursorSource(const InputParameters & parameters);

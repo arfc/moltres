@@ -14,7 +14,8 @@ InputParameters validParams<ScalarAdvectionArtDiff>();
  * This class computes the residual and Jacobian contributions for the
  * incompressible Navier-Stokes temperature (energy) equation.
  */
-class ScalarAdvectionArtDiff : public ScalarTransportBase<Kernel>
+class ScalarAdvectionArtDiff : public Kernel,
+                               public ScalarTransportBase
 {
 public:
   ScalarAdvectionArtDiff(const InputParameters & parameters);

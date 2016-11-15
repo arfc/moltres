@@ -10,7 +10,8 @@ class PrecursorDecay;
 template<>
 InputParameters validParams<PrecursorDecay>();
 
-class PrecursorDecay : public ScalarTransportBase<Kernel>
+class PrecursorDecay : public Kernel,
+                       public ScalarTransportBase
 {
 public:
   PrecursorDecay(const InputParameters & parameters);
