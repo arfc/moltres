@@ -41,6 +41,7 @@ protected:
   VariableValue _v_def;
   VariableValue _w_def;
   Real _conc_scaling;
+  Real _tau;
 };
 
 

@@ -30,6 +30,9 @@ InputParameters validParams<PrecursorKernelAction>()
   params.addParam<bool>("jac_test", false, "Whether we're testing the Jacobian and should use some random initial conditions for the precursors.");
   params.addParam<Real>("prec_scale", "The amount by which the neutron fluxes are scaled.");
   params.addParam<Real>("penalty", "The penalty to assess to the PenaltyDirichletBC.");
+  params.addParam<Real>("tau", "The amount to scale the artificial diffusion.");
+  params.addParam<bool>("use_source_stabilization", false, "Whether to use source stabilization.");
+  params.addParam<Real>("offset", "The value by which to offset the logarithmic stabilization.");
   return params;
 }
 
@@ -190,9 +193,27 @@ PrecursorKernelAction::act()
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
         if (isParamValid("prec_scale"))
           params.set<Real>("conc_scaling") = getParam<Real>("prec_scale");
+        if (isParamValid("tau"))
+          params.set<Real>("tau") = getParam<Real>("tau");
 
         std::string kernel_name = "ScalarAdvectionArtDiff_" + var_name;
         _problem->addKernel("ScalarAdvectionArtDiff", kernel_name, params);
+      }
+
+      if (getParam<bool>("use_source_stabilization") && !getParam<bool>("use_exp_form"))
+        mooseError("This source stabilization is for expotential concentrations");
+      if (getParam<bool>("use_source_stabilization") && isParamValid("prec_scale"))
+        mooseError("Scaling is not currently implemented in the source stabilization term.");
+      if (getParam<bool>("use_source_stabilization"))
+      {
+        InputParameters params = _factory.getValidParams("LogStabilizationMoles");
+        params.set<NonlinearVariableName>("variable") = var_name;
+        if (isParamValid("block"))
+          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+        params.set<Real>("offset") = getParam<Real>("offset");
+
+        std::string kernel_name = "LogStabilizationMoles_" + var_name;
+        _problem->addKernel("LogStabilizationMoles", kernel_name, params);
       }
     }
 
@@ -264,6 +285,8 @@ PrecursorKernelAction::act()
           params.set<Real>("w_def") = getParam<Real>("w_def");
         if (isParamValid("prec_scale"))
           params.set<Real>("conc_scaling") = getParam<Real>("prec_scale");
+        if (isParamValid("tau"))
+          params.set<Real>("tau") = getParam<Real>("tau");
 
         std::string bc_name = "ScalarAdvectionArtDiffNoBCBC_" + var_name;
         _problem->addBoundaryCondition("ScalarAdvectionArtDiffNoBCBC", bc_name, params);

@@ -101,3 +101,26 @@ There is a monotonic decrease in group 1 and group 2 fission and NSF cross secti
 increasing temperature. However, there's also a monotonic decrease in the
 removal cross section as well. Diffusion constants generally trend downward with
 temperature in the fuel. Same in the moderator.
+
+Precursor1 is always the residual that causes the simulation to fail. It gets
+this absolutely ridiculous depression in its concentration in the middle of the
+reactor. If I look a few time steps before the simulation starts crashing, then
+the precursor concentration looks like it should: monotonic. It's worthwhile to
+note that precursor1 isn't the only precursor whose behavior goes from monotonic
+to oscillatory; about half the precursor groups become oscillatory by the end of
+failed simulations. So my job is to figure out what's going on. Why does it
+crash? The problem is not:
+
+- the RZ formulation
+- the precursor decay kernels
+
+The problem can't be fixed by:
+- just reducing the advection velocity
+- changing prec scaling from 1e-3 to 1e3
+- increasing artificial diffusion
+
+When the precursor simulation fails, the temperature and flux profiles look
+fine.
+
+Can definitely fix it with a sufficient source stabilization...but then the
+problem becomes accuracy.
