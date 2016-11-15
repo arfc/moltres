@@ -21,6 +21,7 @@ InputParameters validParams<ScalarAdvectionArtDiff>()
 
 ScalarAdvectionArtDiff::ScalarAdvectionArtDiff(const InputParameters & parameters) :
     Kernel(parameters),
+    ScalarTransportBase(parameters),
 
     _scale(getParam<Real>("scale")),
     // Coupled variables

@@ -12,6 +12,7 @@ InputParameters validParams<ScalarTransportTimeDerivative>()
 
 ScalarTransportTimeDerivative::ScalarTransportTimeDerivative(const InputParameters & parameters) :
     TimeKernel(parameters),
+    ScalarTransportBase(parameters),
     _lumping(getParam<bool>("lumping")),
     _conc_scaling(getParam<Real>("conc_scaling"))
 

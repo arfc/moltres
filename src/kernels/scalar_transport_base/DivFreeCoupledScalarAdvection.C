@@ -1,13 +1,13 @@
-#include "CoupledScalarAdvection.h"
+#include "DivFreeCoupledScalarAdvection.h"
 #include "MooseMesh.h"
 
 template<>
-InputParameters validParams<CoupledScalarAdvection>()
+InputParameters validParams<DivFreeCoupledScalarAdvection>()
 {
   InputParameters params = validParams<Kernel>();
   params += validParams<ScalarTransportBase>();
 
-  // Coupled variables
+  // DivFreeCoupled variables
   params.addCoupledVar("u", "x-velocity");
   params.addCoupledVar("v", "y-velocity");
   params.addCoupledVar("w", "z-velocity");
@@ -20,10 +20,11 @@ InputParameters validParams<CoupledScalarAdvection>()
 
 
 
-CoupledScalarAdvection::CoupledScalarAdvection(const InputParameters & parameters) :
+DivFreeCoupledScalarAdvection::DivFreeCoupledScalarAdvection(const InputParameters & parameters) :
     Kernel(parameters),
+    ScalarTransportBase(parameters),
 
-    // Coupled variables
+    // DivFreeCoupled variables
     _u_vel(isCoupled("u") ? coupledValue("u") : _u_def),
     _v_vel(isCoupled("v") ? coupledValue("v") : _v_def),
     _w_vel(isCoupled("w") ? coupledValue("w") : _w_def),
@@ -32,7 +33,6 @@ CoupledScalarAdvection::CoupledScalarAdvection(const InputParameters & parameter
     _u_vel_var_number(coupled("u")),
     _v_vel_var_number(coupled("v")),
     _w_vel_var_number(coupled("w")),
-
     _conc_scaling(getParam<Real>("conc_scaling"))
 {
   if (!(isCoupled("u")))
@@ -43,36 +43,38 @@ CoupledScalarAdvection::CoupledScalarAdvection(const InputParameters & parameter
     _w_def.resize(_fe_problem.getMaxQps(), Real(getParam<Real>("w_def")));
 }
 
-Real CoupledScalarAdvection::computeQpResidual()
+
+
+Real DivFreeCoupledScalarAdvection::computeQpResidual()
 {
-  return -(_grad_test[_i][_qp](0) * _u_vel[_qp] +
-           _grad_test[_i][_qp](1) * _v_vel[_qp] +
-           _grad_test[_i][_qp](2) * _w_vel[_qp]) * computeConcentration(_u, _qp) * _conc_scaling;
+  RealVectorValue U(_u_vel[_qp], _v_vel[_qp], _w_vel[_qp]);
+
+  return computeConcentrationGradient(_grad_u, _qp) * U * _test[_i][_qp] * _conc_scaling;
 }
 
 
 
 
-Real CoupledScalarAdvection::computeQpJacobian()
+Real DivFreeCoupledScalarAdvection::computeQpJacobian()
 {
-  return -(_grad_test[_i][_qp](0) * _u_vel[_qp] +
-           _grad_test[_i][_qp](1) * _v_vel[_qp] +
-           _grad_test[_i][_qp](2) * _w_vel[_qp]) * computeConcentrationDerivative(_u, _phi, _j, _qp) * _conc_scaling;
+  RealVectorValue U(_u_vel[_qp], _v_vel[_qp], _w_vel[_qp]);
+
+  return computeConcentrationGradientDerivative(_u, _grad_u, _phi, _grad_phi, _j, _qp) * U * _test[_i][_qp] * _conc_scaling;
 }
 
 
 
 
-Real CoupledScalarAdvection::computeQpOffDiagJacobian(unsigned jvar)
+Real DivFreeCoupledScalarAdvection::computeQpOffDiagJacobian(unsigned jvar)
 {
   if (jvar == _u_vel_var_number)
-    return -_grad_test[_i][_qp](0) * _phi[_j][_qp] * computeConcentration(_u, _qp) * _conc_scaling;
+    return computeConcentrationGradient(_grad_u, _qp)(0) * _phi[_j][_qp] * _test[_i][_qp] * _conc_scaling;
 
   else if (jvar == _v_vel_var_number)
-    return -_grad_test[_i][_qp](1) * _phi[_j][_qp] * computeConcentration(_u, _qp) * _conc_scaling;
+    return computeConcentrationGradient(_grad_u, _qp)(1) * _phi[_j][_qp] * _test[_i][_qp] * _conc_scaling;
 
   else if (jvar == _w_vel_var_number)
-    return -_grad_test[_i][_qp](2) * _phi[_j][_qp] * computeConcentration(_u, _qp) * _conc_scaling;
+    return computeConcentrationGradient(_grad_u, _qp)(2) * _phi[_j][_qp] * _test[_i][_qp] * _conc_scaling;
 
   else
     return 0;

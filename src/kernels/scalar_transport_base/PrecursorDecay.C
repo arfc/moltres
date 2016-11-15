@@ -13,6 +13,7 @@ InputParameters validParams<PrecursorDecay>()
 
 PrecursorDecay::PrecursorDecay(const InputParameters & parameters) :
     Kernel(parameters),
+    ScalarTransportBase(parameters),
     _decay_constant(getMaterialProperty<std::vector<Real> >("decay_constant")),
     _d_decay_constant_d_temp(getMaterialProperty<std::vector<Real> >("d_decay_constant_d_temp")),
     _precursor_group(getParam<int>("precursor_group_number") - 1),
