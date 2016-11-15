@@ -12,7 +12,7 @@ InputParameters validParams<PrecursorDecay>()
 }
 
 PrecursorDecay::PrecursorDecay(const InputParameters & parameters) :
-    ScalarTransportBase<Kernel>(parameters),
+    Kernel(parameters),
     _decay_constant(getMaterialProperty<std::vector<Real> >("decay_constant")),
     _d_decay_constant_d_temp(getMaterialProperty<std::vector<Real> >("d_decay_constant_d_temp")),
     _precursor_group(getParam<int>("precursor_group_number") - 1),
@@ -24,20 +24,20 @@ PrecursorDecay::PrecursorDecay(const InputParameters & parameters) :
 Real
 PrecursorDecay::computeQpResidual()
 {
-  return _test[_i][_qp] * _decay_constant[_qp][_precursor_group] * computeConcentration() * _prec_scale;
+  return _test[_i][_qp] * _decay_constant[_qp][_precursor_group] * computeConcentration(_u, _qp) * _prec_scale;
 }
 
 Real
 PrecursorDecay::computeQpJacobian()
 {
-  return _test[_i][_qp] * _decay_constant[_qp][_precursor_group] * computeConcentrationDerivative() * _prec_scale;
+  return _test[_i][_qp] * _decay_constant[_qp][_precursor_group] * computeConcentrationDerivative(_u, _phi, _j, _qp) * _prec_scale;
 }
 
 Real
 PrecursorDecay::computeQpOffDiagJacobian(unsigned int jvar)
 {
   if (jvar == _temp_id)
-    return _test[_i][_qp] * _d_decay_constant_d_temp[_qp][_precursor_group] * _phi[_j][_qp] * computeConcentration() * _prec_scale;
+    return _test[_i][_qp] * _d_decay_constant_d_temp[_qp][_precursor_group] * _phi[_j][_qp] * computeConcentration(_u, _qp) * _prec_scale;
 
   else
     return 0;

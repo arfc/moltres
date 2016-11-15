@@ -21,7 +21,7 @@ InputParameters validParams<CoupledScalarAdvection>()
 
 
 CoupledScalarAdvection::CoupledScalarAdvection(const InputParameters & parameters) :
-    ScalarTransportBase<Kernel>(parameters),
+    Kernel(parameters),
 
     // Coupled variables
     _u_vel(isCoupled("u") ? coupledValue("u") : _u_def),
@@ -47,7 +47,7 @@ Real CoupledScalarAdvection::computeQpResidual()
 {
   return -(_grad_test[_i][_qp](0) * _u_vel[_qp] +
            _grad_test[_i][_qp](1) * _v_vel[_qp] +
-           _grad_test[_i][_qp](2) * _w_vel[_qp]) * computeConcentration() * _conc_scaling;
+           _grad_test[_i][_qp](2) * _w_vel[_qp]) * computeConcentration(_u, _qp) * _conc_scaling;
 }
 
 
@@ -57,7 +57,7 @@ Real CoupledScalarAdvection::computeQpJacobian()
 {
   return -(_grad_test[_i][_qp](0) * _u_vel[_qp] +
            _grad_test[_i][_qp](1) * _v_vel[_qp] +
-           _grad_test[_i][_qp](2) * _w_vel[_qp]) * computeConcentrationDerivative() * _conc_scaling;
+           _grad_test[_i][_qp](2) * _w_vel[_qp]) * computeConcentrationDerivative(_u, _phi, _j, _qp) * _conc_scaling;
 }
 
 
@@ -66,13 +66,13 @@ Real CoupledScalarAdvection::computeQpJacobian()
 Real CoupledScalarAdvection::computeQpOffDiagJacobian(unsigned jvar)
 {
   if (jvar == _u_vel_var_number)
-    return -_grad_test[_i][_qp](0) * _phi[_j][_qp] * computeConcentration() * _conc_scaling;
+    return -_grad_test[_i][_qp](0) * _phi[_j][_qp] * computeConcentration(_u, _qp) * _conc_scaling;
 
   else if (jvar == _v_vel_var_number)
-    return -_grad_test[_i][_qp](1) * _phi[_j][_qp] * computeConcentration() * _conc_scaling;
+    return -_grad_test[_i][_qp](1) * _phi[_j][_qp] * computeConcentration(_u, _qp) * _conc_scaling;
 
   else if (jvar == _w_vel_var_number)
-    return -_grad_test[_i][_qp](2) * _phi[_j][_qp] * computeConcentration() * _conc_scaling;
+    return -_grad_test[_i][_qp](2) * _phi[_j][_qp] * computeConcentration(_u, _qp) * _conc_scaling;
 
   else
     return 0;

@@ -14,7 +14,7 @@ InputParameters validParams<PrecursorSource>()
 }
 
 PrecursorSource::PrecursorSource(const InputParameters & parameters) :
-    ScalarTransportBase<Kernel>(parameters),
+    Kernel(parameters),
     _nsf(getMaterialProperty<std::vector<Real> >("nsf")),
     _d_nsf_d_temp(getMaterialProperty<std::vector<Real> >("d_nsf_d_temp")),
     _num_groups(getParam<int>("num_groups")),

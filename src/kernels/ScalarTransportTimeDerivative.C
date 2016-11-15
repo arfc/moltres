@@ -11,7 +11,7 @@ InputParameters validParams<ScalarTransportTimeDerivative>()
 }
 
 ScalarTransportTimeDerivative::ScalarTransportTimeDerivative(const InputParameters & parameters) :
-    ScalarTransportBase<TimeKernel>(parameters),
+    TimeKernel(parameters),
     _lumping(getParam<bool>("lumping")),
     _conc_scaling(getParam<Real>("conc_scaling"))
 
@@ -21,11 +21,11 @@ ScalarTransportTimeDerivative::ScalarTransportTimeDerivative(const InputParamete
 Real
 ScalarTransportTimeDerivative::computeQpResidual()
 {
-  return _test[_i][_qp] * computeConcentrationDot() * _conc_scaling;
+  return _test[_i][_qp] * computeConcentrationDot(_u, _u_dot, _qp) * _conc_scaling;
 }
 
 Real
 ScalarTransportTimeDerivative::computeQpJacobian()
 {
-  return _test[_i][_qp] * computeConcentrationDotDerivative() * _conc_scaling;
+  return _test[_i][_qp] * computeConcentrationDotDerivative(_u, _u_dot, _du_dot_du, _phi, _j, _qp) * _conc_scaling;
 }
