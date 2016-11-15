@@ -14,6 +14,7 @@ InputParameters validParams<CoupledScalarAdvection>()
   params.addParam<Real>("u_def", 0, "Allows user to specify constant value for u component of velocity.");
   params.addParam<Real>("v_def", 0, "Allows user to specify constant value for v component of velocity.");
   params.addParam<Real>("w_def", 0, "Allows user to specify constant value for w component of velocity.");
+  params.addParam<Real>("conc_scaling", 1, "The amount by which to scale the concentration variable.");
   return params;
 }
 
@@ -30,7 +31,9 @@ CoupledScalarAdvection::CoupledScalarAdvection(const InputParameters & parameter
     // Variable numberings
     _u_vel_var_number(coupled("u")),
     _v_vel_var_number(coupled("v")),
-    _w_vel_var_number(coupled("w"))
+    _w_vel_var_number(coupled("w")),
+
+    _conc_scaling(getParam<Real>("conc_scaling"))
 {
   if (!(isCoupled("u")))
     _u_def.resize(_fe_problem.getMaxQps(), Real(getParam<Real>("u_def")));
@@ -44,7 +47,7 @@ Real CoupledScalarAdvection::computeQpResidual()
 {
   return -(_grad_test[_i][_qp](0) * _u_vel[_qp] +
            _grad_test[_i][_qp](1) * _v_vel[_qp] +
-           _grad_test[_i][_qp](2) * _w_vel[_qp]) * computeConcentration();
+           _grad_test[_i][_qp](2) * _w_vel[_qp]) * computeConcentration() * _conc_scaling;
 }
 
 
@@ -54,7 +57,7 @@ Real CoupledScalarAdvection::computeQpJacobian()
 {
   return -(_grad_test[_i][_qp](0) * _u_vel[_qp] +
            _grad_test[_i][_qp](1) * _v_vel[_qp] +
-           _grad_test[_i][_qp](2) * _w_vel[_qp]) * computeConcentrationDerivative();
+           _grad_test[_i][_qp](2) * _w_vel[_qp]) * computeConcentrationDerivative() * _conc_scaling;
 }
 
 
@@ -63,13 +66,13 @@ Real CoupledScalarAdvection::computeQpJacobian()
 Real CoupledScalarAdvection::computeQpOffDiagJacobian(unsigned jvar)
 {
   if (jvar == _u_vel_var_number)
-    return -_grad_test[_i][_qp](0) * _phi[_j][_qp] * computeConcentration();
+    return -_grad_test[_i][_qp](0) * _phi[_j][_qp] * computeConcentration() * _conc_scaling;
 
   else if (jvar == _v_vel_var_number)
-    return -_grad_test[_i][_qp](1) * _phi[_j][_qp] * computeConcentration();
+    return -_grad_test[_i][_qp](1) * _phi[_j][_qp] * computeConcentration() * _conc_scaling;
 
   else if (jvar == _w_vel_var_number)
-    return -_grad_test[_i][_qp](2) * _phi[_j][_qp] * computeConcentration();
+    return -_grad_test[_i][_qp](2) * _phi[_j][_qp] * computeConcentration() * _conc_scaling;
 
   else
     return 0;

@@ -39,6 +39,8 @@ protected:
   VariableValue _u_def;
   VariableValue _v_def;
   VariableValue _w_def;
+
+  Real _conc_scaling;
 };
 
 

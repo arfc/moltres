@@ -9,7 +9,7 @@ InputParameters validParams<PrecursorSource>()
   params.addRequiredCoupledVar("group_fluxes", "All the variables that hold the group fluxes. These MUST be listed by decreasing energy/increasing group number.");
   params.addParam<int>("precursor_group_number", "What precursor group this kernel is acting on.");
   params.addCoupledVar("temperature", 937, "The temperature used to interpolate material properties.");
-  params.addParam<Real>("nt_scale", 1, "The factor by which the neutron fluxes are scaled.");
+  params.addParam<Real>("prec_scale", 1, "The factor by which the neutron fluxes are scaled.");
   return params;
 }
 
@@ -23,7 +23,7 @@ PrecursorSource::PrecursorSource(const InputParameters & parameters) :
     _precursor_group(getParam<int>("precursor_group_number") - 1),
     _temp(coupledValue("temperature")),
     _temp_id(coupled("temperature")),
-    _nt_scale(getParam<Real>("nt_scale"))
+    _prec_scale(getParam<Real>("prec_scale"))
 {
   int n = coupledComponents("group_fluxes");
   if (!(n == _num_groups))
@@ -45,7 +45,7 @@ PrecursorSource::computeQpResidual()
   Real r = 0;
   for (int i = 0; i < _num_groups; ++i)
   {
-    r += -_test[_i][_qp] * _beta_eff[_qp][_precursor_group] * _nsf[_qp][i] * (*_group_fluxes[i])[_qp] * _nt_scale;
+    r += -_test[_i][_qp] * _beta_eff[_qp][_precursor_group] * _nsf[_qp][i] * (*_group_fluxes[i])[_qp] * _prec_scale;
   }
 
   return r;
@@ -64,14 +64,14 @@ PrecursorSource::computeQpOffDiagJacobian(unsigned int jvar)
   for (int i = 0; i < _num_groups; ++i)
     if (jvar == _flux_ids[i])
     {
-      jac = -_test[_i][_qp] * _beta_eff[_qp][_precursor_group] * _nsf[_qp][i] * _phi[_j][_qp] * _nt_scale;
+      jac = -_test[_i][_qp] * _beta_eff[_qp][_precursor_group] * _nsf[_qp][i] * _phi[_j][_qp] * _prec_scale;
       return jac;
     }
 
   if (jvar == _temp_id)
   {
     for (int i = 0; i < _num_groups; ++i)
-      jac += -_test[_i][_qp] * (_beta_eff[_qp][_precursor_group] * _d_nsf_d_temp[_qp][i] * _phi[_j][_qp] * (*_group_fluxes[i])[_qp] * _nt_scale + _d_beta_eff_d_temp[_qp][_precursor_group] * _phi[_j][_qp] * _nsf[_qp][i] * (*_group_fluxes[i])[_qp] * _nt_scale);
+      jac += -_test[_i][_qp] * (_beta_eff[_qp][_precursor_group] * _d_nsf_d_temp[_qp][i] * _phi[_j][_qp] * (*_group_fluxes[i])[_qp] * _prec_scale + _d_beta_eff_d_temp[_qp][_precursor_group] * _phi[_j][_qp] * _nsf[_qp][i] * (*_group_fluxes[i])[_qp] * _prec_scale);
     return jac;
   }
 

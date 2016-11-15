@@ -21,6 +21,7 @@ protected:
   virtual Real computeQpJacobian();
 
   bool _lumping;
+  Real _conc_scaling;
 };
 
 #endif //SCALARTRANSPORTTIMEDERIVATIVE_H

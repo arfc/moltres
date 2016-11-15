@@ -28,7 +28,8 @@ InputParameters validParams<PrecursorKernelAction>()
   params.addParam<bool>("incompressible_flow", true, "Determines whether we use a divergence-free form of the advecting velocity.");
   params.addParam<bool>("use_exp_form", "Whether concentrations should be in an expotential/logarithmic format.");
   params.addParam<bool>("jac_test", false, "Whether we're testing the Jacobian and should use some random initial conditions for the precursors.");
-  params.addParam<Real>("nt_scale", "The amount by which the neutron fluxes are scaled.");
+  params.addParam<Real>("prec_scale", "The amount by which the neutron fluxes are scaled.");
+  params.addParam<Real>("penalty", "The penalty to assess to the PenaltyDirichletBC.");
   return params;
 }
 
@@ -77,6 +78,8 @@ PrecursorKernelAction::act()
           params.set<Real>("w_def") = getParam<Real>("w_def");
         if (isParamValid("block"))
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+        if (isParamValid("prec_scale"))
+          params.set<Real>("conc_scaling") = getParam<Real>("prec_scale");
 
         std::string kernel_name = "DivFreeCoupledScalarAdvection_" + var_name;
         _problem->addKernel("DivFreeCoupledScalarAdvection", kernel_name, params);
@@ -101,6 +104,8 @@ PrecursorKernelAction::act()
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
         if (isParamValid("use_exp_form"))
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
+        if (isParamValid("prec_scale"))
+          params.set<Real>("conc_scaling") = getParam<Real>("prec_scale");
 
         std::string kernel_name = "CoupledScalarAdvection_" + var_name;
         _problem->addKernel("CoupledScalarAdvection", kernel_name, params);
@@ -119,8 +124,8 @@ PrecursorKernelAction::act()
           params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
         if (isParamValid("block"))
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
-        if (isParamValid("nt_scale"))
-          params.set<Real>("nt_scale") = getParam<Real>("nt_scale");
+        if (isParamValid("prec_scale"))
+          params.set<Real>("prec_scale") = getParam<Real>("prec_scale");
 
         std::string kernel_name = "PrecursorSource_" + var_name;
         _problem->addKernel("PrecursorSource", kernel_name, params);
@@ -138,6 +143,8 @@ PrecursorKernelAction::act()
           params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
         if (isParamValid("block"))
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+        if (isParamValid("prec_scale"))
+          params.set<Real>("prec_scale") = getParam<Real>("prec_scale");
 
         std::string kernel_name = "PrecursorDecay_" + var_name;
         _problem->addKernel("PrecursorDecay", kernel_name, params);
@@ -154,6 +161,8 @@ PrecursorKernelAction::act()
         params.set<bool>("implicit") = true;
         if (isParamValid("block"))
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+        if (isParamValid("prec_scale"))
+          params.set<Real>("conc_scaling") = getParam<Real>("prec_scale");
 
         std::string kernel_name = "ScalarTransportTimeDerivative_" + var_name;
         _problem->addKernel("ScalarTransportTimeDerivative", kernel_name, params);
@@ -179,6 +188,8 @@ PrecursorKernelAction::act()
           params.set<Real>("w_def") = getParam<Real>("w_def");
         if (isParamValid("block"))
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+        if (isParamValid("prec_scale"))
+          params.set<Real>("conc_scaling") = getParam<Real>("prec_scale");
 
         std::string kernel_name = "ScalarAdvectionArtDiff_" + var_name;
         _problem->addKernel("ScalarAdvectionArtDiff", kernel_name, params);
@@ -198,6 +209,8 @@ PrecursorKernelAction::act()
         params.set<NonlinearVariableName>("variable") = var_name;
         if (isParamValid("inlet_bc_value"))
           params.set<Real>("value") = getParam<Real>("inlet_bc_value");
+        if (isParamValid("penalty"))
+          params.set<Real>("penalty") = getParam<Real>("penalty");
         std::string bc_name = bc_type_name + "_" + var_name;
         _problem->addBoundaryCondition(bc_type_name, bc_name, params);
       }
@@ -223,6 +236,8 @@ PrecursorKernelAction::act()
           params.set<std::vector<VariableName> >("w") = {getParam<VariableName>("w")};
         else if (isParamValid("w_def"))
           params.set<Real>("w_def") = getParam<Real>("w_def");
+        if (isParamValid("prec_scale"))
+          params.set<Real>("conc_scaling") = getParam<Real>("prec_scale");
 
         std::string bc_name = "CoupledScalarAdvectionNoBCBC_" + var_name;
         _problem->addBoundaryCondition("CoupledScalarAdvectionNoBCBC", bc_name, params);
@@ -247,6 +262,8 @@ PrecursorKernelAction::act()
           params.set<std::vector<VariableName> >("w") = {getParam<VariableName>("w")};
         else if (isParamValid("w_def"))
           params.set<Real>("w_def") = getParam<Real>("w_def");
+        if (isParamValid("prec_scale"))
+          params.set<Real>("conc_scaling") = getParam<Real>("prec_scale");
 
         std::string bc_name = "ScalarAdvectionArtDiffNoBCBC_" + var_name;
         _problem->addBoundaryCondition("ScalarAdvectionArtDiffNoBCBC", bc_name, params);

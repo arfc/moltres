@@ -6,12 +6,14 @@ InputParameters validParams<ScalarTransportTimeDerivative>()
   InputParameters params = validParams<TimeKernel>();
   params += ScalarTransportBase<TimeKernel>::validParams();
   params.addParam<bool>("lumping", false, "True for mass matrix lumping, false otherwise");
+  params.addParam<Real>("conc_scaling", 1, "The amount by which to scale the concentration variable.");
   return params;
 }
 
 ScalarTransportTimeDerivative::ScalarTransportTimeDerivative(const InputParameters & parameters) :
     ScalarTransportBase<TimeKernel>(parameters),
-    _lumping(getParam<bool>("lumping"))
+    _lumping(getParam<bool>("lumping")),
+    _conc_scaling(getParam<Real>("conc_scaling"))
 
 {
 }
@@ -19,11 +21,11 @@ ScalarTransportTimeDerivative::ScalarTransportTimeDerivative(const InputParamete
 Real
 ScalarTransportTimeDerivative::computeQpResidual()
 {
-  return _test[_i][_qp] * computeConcentrationDot();
+  return _test[_i][_qp] * computeConcentrationDot() * _conc_scaling;
 }
 
 Real
 ScalarTransportTimeDerivative::computeQpJacobian()
 {
-  return _test[_i][_qp] * computeConcentrationDotDerivative();
+  return _test[_i][_qp] * computeConcentrationDotDerivative() * _conc_scaling;
 }
