@@ -14,7 +14,8 @@ InputParameters validParams<CoupledScalarAdvectionNoBCBC>();
  * This class computes the residual and Jacobian contributions for the
  * incompressible Navier-Stokes temperature (energy) equation.
  */
-class CoupledScalarAdvectionNoBCBC : public ScalarTransportBase<IntegratedBC>
+class CoupledScalarAdvectionNoBCBC : public IntegratedBC,
+                                     public ScalarTransportBase
 {
 public:
   CoupledScalarAdvectionNoBCBC(const InputParameters & parameters);
