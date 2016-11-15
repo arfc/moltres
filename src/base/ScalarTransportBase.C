@@ -1,18 +1,15 @@
 #include "ScalarTransportBase.h"
-#include "InputParameters.h"
-#include "MooseObject.h"
-#include "MooseVariableBase.h"
 
-<template>
+template<>
 InputParameters validParams<ScalarTransportBase>()
 {
-  InputParameters params = InputParameters::emptyInputParameters();
+  InputParameters params = emptyInputParameters();
   params.addParam<bool>("use_exp_form", true, "Whether concentrations should be in an expotential/logarithmic format.");
   return params;
 }
 
 ScalarTransportBase::ScalarTransportBase(const InputParameters & parameters) :
-    _use_exp_form(MooseObject::getParam<bool>("use_exp_form"))
+    _use_exp_form(parameters.get<bool>("use_exp_form"))
 {
 }
 
@@ -26,7 +23,7 @@ ScalarTransportBase::computeConcentration(const VariableValue & u, unsigned int 
 }
 
 RealVectorValue
-ScalarTransportBase::computeConcentrationGradient(const VariableGradient & grad_u, unsigned int qp)
+ScalarTransportBase::computeConcentrationGradient(const VariableValue & u, const VariableGradient & grad_u, unsigned int qp)
 {
   if (_use_exp_form)
     return std::exp(u[qp]) * grad_u[qp];

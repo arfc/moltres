@@ -1,17 +1,12 @@
 #ifndef SCALARTRANSPORTBASE_H
 #define SCALARTRANSPORTBASE_H
 
-// #include "MooseObject.h"
-// #include "InputParameters.h"
+#include "InputParameters.h"
+#include "MooseVariableBase.h"
 
-class InputParameters
-class ScalarTransportBase
-class VariableValue
-class VariableGradient
-class VariablePhiValue
-class VarablePhiGradient
+class ScalarTransportBase;
 
-<template>
+template<>
 InputParameters validParams<ScalarTransportBase>();
 
 class ScalarTransportBase
@@ -19,15 +14,20 @@ class ScalarTransportBase
 public:
   ScalarTransportBase(const InputParameters & parameters);
 
-  Real computeConcentration(const VariableValue & u, unsigned int qp);
-  RealVectorValue computeConcentrationGradient(const VariableGradient & grad_u, unsigned int qp);
-  Real computeConcentrationDerivative(const VariableValue & u, const VariablePhiValue & phi,
+  virtual Real computeConcentration(const VariableValue & u, unsigned int qp);
+
+  virtual RealVectorValue computeConcentrationGradient(const VariableValue & u, const VariableGradient & grad_u, unsigned int qp);
+
+  virtual Real computeConcentrationDerivative(const VariableValue & u, const VariablePhiValue & phi,
                                       unsigned int j, unsigned int qp);
-  RealVectorValue computeConcentrationGradientDerivative(const VariableValue & u, const VariableGradient & grad_u,
+
+  virtual RealVectorValue computeConcentrationGradientDerivative(const VariableValue & u, const VariableGradient & grad_u,
                                                          const VariablePhiValue & phi, const VariablePhiGradient & grad_phi,
                                                          unsigned int j, unsigned int qp);
-  Real computeConcentrationDot(const VariableValue & u, const VariableValue u_dot, unsigned int qp);
-  Real computeConcentrationDotDerivative(const VariableValue & u, const VariableValue & u_dot,
+
+  virtual Real computeConcentrationDot(const VariableValue & u, const VariableValue u_dot, unsigned int qp);
+
+  virtual Real computeConcentrationDotDerivative(const VariableValue & u, const VariableValue & u_dot,
                                          const VariableValue & du_dot_du, const VariablePhiValue & phi,
                                          unsigned int j, unsigned int qp);
 
