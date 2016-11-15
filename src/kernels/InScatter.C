@@ -44,7 +44,7 @@ InScatter::computeQpResidual()
   {
     if (i == _group)
       continue;
-    r += -_test[_i][_qp] * _gtransfxs[_qp][i + _group * _num_groups] * (*_group_fluxes[i])[_qp];
+    r += -_test[_i][_qp] * _gtransfxs[_qp][i + _group * _num_groups] * computeConcentration((*_group_fluxes[i]), _qp);
   }
 
   return r;
@@ -64,7 +64,7 @@ InScatter::computeQpOffDiagJacobian(unsigned int jvar)
   {
     if (jvar == _flux_ids[i]  && jvar != _group)
     {
-      jac += -_test[_i][_qp] * _gtransfxs[_qp][i + _group * _num_groups] * _phi[_j][_qp];
+      jac += -_test[_i][_qp] * _gtransfxs[_qp][i + _group * _num_groups] * computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp);
       break;
     }
   }
@@ -75,7 +75,7 @@ InScatter::computeQpOffDiagJacobian(unsigned int jvar)
     {
       if (i == _group)
         continue;
-      jac += -_test[_i][_qp] * _d_gtransfxs_d_temp[_qp][i + _group * _num_groups] * _phi[_j][_qp] * (*_group_fluxes[i])[_qp];
+      jac += -_test[_i][_qp] * _d_gtransfxs_d_temp[_qp][i + _group * _num_groups] * _phi[_j][_qp] * computeConcentration((*_group_fluxes[i]), _qp);
     }
   }
 
