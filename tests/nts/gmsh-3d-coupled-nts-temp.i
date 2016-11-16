@@ -33,26 +33,31 @@
     type = GroupDiffusion
     variable = group1
     group_number = 1
+    use_exp_form = false
   [../]
   [./diff_group2]
     type = GroupDiffusion
     variable = group2
     group_number = 2
+    use_exp_form = false
   [../]
   [./sigma_r_group1]
     type = SigmaR
     variable = group1
     group_number = 1
+    use_exp_form = false
   [../]
   [./sigma_r_group2]
     type = SigmaR
     variable = group2
     group_number = 2
+    use_exp_form = false
   [../]
   [./inscatter_group1]
     type = InScatter
     variable = group1
     group_number = 1
+    use_exp_form = false
     num_groups = 2
     group_fluxes = 'group1 group2'
   [../]
@@ -60,6 +65,7 @@
     type = InScatter
     variable = group2
     group_number = 2
+    use_exp_form = false
     num_groups = 2
     group_fluxes = 'group1 group2'
   [../]
@@ -67,6 +73,7 @@
     type = CoupledFissionEigenKernel
     variable = group1
     group_number = 1
+    use_exp_form = false
     num_groups = 2
     group_fluxes = 'group1 group2'
   [../]
@@ -74,6 +81,7 @@
     type = CoupledFissionEigenKernel
     variable = group2
     group_number = 2
+    use_exp_form = false
     num_groups = 2
     group_fluxes = 'group1 group2'
   [../]

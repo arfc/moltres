@@ -33,12 +33,14 @@ nt_scale=1e13
   [./time_group1]
     type = NtTimeDerivative
     group_number = 1
+    use_exp_form = false
     variable = group1
     use_exp_form = false
   [../]
   [./time_group2]
     type = NtTimeDerivative
     group_number = 2
+    use_exp_form = false
     variable = group2
     use_exp_form = false
   [../]
@@ -46,6 +48,7 @@ nt_scale=1e13
     type = GroupDiffusion
     variable = group1
     group_number = 1
+    use_exp_form = false
     temperature = temp
     use_exp_form = false
   [../]
@@ -53,6 +56,7 @@ nt_scale=1e13
     type = GroupDiffusion
     variable = group2
     group_number = 2
+    use_exp_form = false
     temperature = temp
     use_exp_form = false
   [../]
@@ -60,6 +64,7 @@ nt_scale=1e13
     type = SigmaR
     variable = group1
     group_number = 1
+    use_exp_form = false
     temperature = temp
     use_exp_form = false
   [../]
@@ -67,6 +72,7 @@ nt_scale=1e13
     type = SigmaR
     variable = group2
     group_number = 2
+    use_exp_form = false
     temperature = temp
     use_exp_form = false
   [../]
@@ -74,6 +80,7 @@ nt_scale=1e13
     type = InScatter
     variable = group1
     group_number = 1
+    use_exp_form = false
     num_groups = 2
     group_fluxes = 'group1 group2'
     temperature = temp
@@ -83,6 +90,7 @@ nt_scale=1e13
     type = InScatter
     variable = group2
     group_number = 2
+    use_exp_form = false
     num_groups = 2
     group_fluxes = 'group1 group2'
     temperature = temp
@@ -92,6 +100,7 @@ nt_scale=1e13
     type = CoupledFissionKernel
     variable = group1
     group_number = 1
+    use_exp_form = false
     num_groups = 2
     group_fluxes = 'group1 group2'
     temperature = temp
@@ -101,6 +110,7 @@ nt_scale=1e13
     type = CoupledFissionKernel
     variable = group2
     group_number = 2
+    use_exp_form = false
     num_groups = 2
     group_fluxes = 'group1 group2'
     temperature = temp
