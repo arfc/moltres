@@ -1,11 +1,12 @@
 flow_velocity=147 # Cammi 147 cm/s
 inlet_temp=824
-nt_scale=1e17
+nt_scale=1e13
 
 [GlobalParams]
   num_groups = 2
   num_precursor_groups = 8
   group_fluxes = 'group1 group2'
+  use_exp_form = false
 [../]
 
 [Mesh]
@@ -28,84 +29,80 @@ nt_scale=1e17
   [../]
 []
 
+[Nt]
+  var_name_base = 'group'
+  temperature = temp
+  vacuum_boundaries = 'fuel_top graphite_top fuel_bottom graphite_bottom'
+[]
+
 [Kernels]
-  # Neutronics
-  [./time_group1]
-    type = NtTimeDerivative
-    group_number = 1
-    use_exp_form = true
-    variable = group1
-  [../]
-  [./time_group2]
-    type = NtTimeDerivative
-    group_number = 2
-    use_exp_form = true
-    variable = group2
-  [../]
-  [./diff_group1]
-    type = GroupDiffusion
-    variable = group1
-    group_number = 1
-    use_exp_form = true
-    temperature = temp
-  [../]
-  [./diff_group2]
-    type = GroupDiffusion
-    variable = group2
-    group_number = 2
-    use_exp_form = true
-    temperature = temp
-  [../]
-  [./sigma_r_group1]
-    type = SigmaR
-    variable = group1
-    group_number = 1
-    use_exp_form = true
-    temperature = temp
-  [../]
-  [./sigma_r_group2]
-    type = SigmaR
-    variable = group2
-    group_number = 2
-    use_exp_form = true
-    temperature = temp
-  [../]
-  [./inscatter_group1]
-    type = InScatter
-    variable = group1
-    group_number = 1
-    use_exp_form = true
-    num_groups = 2
-    group_fluxes = 'group1 group2'
-    temperature = temp
-  [../]
-  [./inscatter_group2]
-    type = InScatter
-    variable = group2
-    group_number = 2
-    use_exp_form = true
-    num_groups = 2
-    group_fluxes = 'group1 group2'
-    temperature = temp
-  [../]
-  [./fission_source_group1]
-    type = CoupledFissionKernel
-    variable = group1
-    group_number = 1
-    use_exp_form = true
-    num_groups = 2
-    group_fluxes = 'group1 group2'
-    temperature = temp
-  [../]
-  [./fission_source_group2]
-    type = CoupledFissionKernel
-    variable = group2
-    group_number = 2
-    use_exp_form = true
-    num_groups = 2
-    group_fluxes = 'group1 group2'
-    temperature = temp
-  [../]
+  # # Neutronics
+  # [./time_group1]
+  #   type = NtTimeDerivative
+  #   group_number = 1
+  #   variable = group1
+  # [../]
+  # [./time_group2]
+  #   type = NtTimeDerivative
+  #   group_number = 2
+  #   variable = group2
+  # [../]
+  # [./diff_group1]
+  #   type = GroupDiffusion
+  #   variable = group1
+  #   group_number = 1
+  #   temperature = temp
+  # [../]
+  # [./diff_group2]
+  #   type = GroupDiffusion
+  #   variable = group2
+  #   group_number = 2
+  #   temperature = temp
+  # [../]
+  # [./sigma_r_group1]
+  #   type = SigmaR
+  #   variable = group1
+  #   group_number = 1
+  #   temperature = temp
+  # [../]
+  # [./sigma_r_group2]
+  #   type = SigmaR
+  #   variable = group2
+  #   group_number = 2
+  #   temperature = temp
+  # [../]
+  # [./inscatter_group1]
+  #   type = InScatter
+  #   variable = group1
+  #   group_number = 1
+  #   num_groups = 2
+  #   group_fluxes = 'group1 group2'
+  #   temperature = temp
+  # [../]
+  # [./inscatter_group2]
+  #   type = InScatter
+  #   variable = group2
+  #   group_number = 2
+  #   num_groups = 2
+  #   group_fluxes = 'group1 group2'
+  #   temperature = temp
+  # [../]
+  # [./fission_source_group1]
+  #   type = CoupledFissionKernel
+  #   variable = group1
+  #   group_number = 1
+  #   num_groups = 2
+  #   group_fluxes = 'group1 group2'
+  #   temperature = temp
+  # [../]
+  # [./fission_source_group2]
+  #   type = CoupledFissionKernel
+  #   variable = group2
+  #   group_number = 2
+  #   num_groups = 2
+  #   group_fluxes = 'group1 group2'
+  #   temperature = temp
+  # [../]
 
   # Temperature
   [./temp_flow_fuel]
@@ -128,7 +125,6 @@ nt_scale=1e17
   [./temp_source]
     type = TransientFissionHeatSource
     variable = temp
-    use_exp_form = true
     nt_scale=${nt_scale}
   [../]
   [./temp_time_derivative]
@@ -171,42 +167,16 @@ nt_scale=1e17
     variable = temp
     k = 'k'
   [../]
-  [./group1_vacuum]
-    type = VacuumConcBC
-    variable = group1
-    use_exp_form = true
-    boundary = 'fuel_top graphite_top fuel_bottom graphite_bottom'
-  [../]
-  [./group2_vacuum]
-    type = VacuumConcBC
-    variable = group2
-    use_exp_form = true
-    boundary = 'fuel_top graphite_top fuel_bottom graphite_bottom'
-  [../]
-[]
-
-[AuxVariables]
-  [./group1_lin]
-    family = LAGRANGE
-    order = FIRST
-  [../]
-  [./group2_lin]
-    family = LAGRANGE
-    order = FIRST
-  [../]
-[]
-
-[AuxKernels]
-  [./group1_lin]
-    type = Density
-    variable = group1_lin
-    density_log = group1
-  [../]
-  [./group2_lin]
-    type = Density
-    variable = group2_lin
-    density_log = group2
-  [../]
+  # [./group1_vacuum]
+  #   type = VacuumConcBC
+  #   variable = group1
+  #   boundary = 'fuel_top graphite_top fuel_bottom graphite_bottom'
+  # [../]
+  # [./group2_vacuum]
+  #   type = VacuumConcBC
+  #   variable = group2
+  #   boundary = 'fuel_top graphite_top fuel_bottom graphite_bottom'
+  # [../]
 []
 
 [Problem]
@@ -269,16 +239,16 @@ nt_scale=1e17
     variable = temp
     value = ${inlet_temp}
   [../]
-  [./group1_ic]
-    type = ConstantIC
-    variable = group1
-    value = 0
-  [../]
-  [./group2_ic]
-    type = ConstantIC
-    variable = group2
-    value = 0
-  [../]
+  # [./group1_ic]
+  #   type = ConstantIC
+  #   variable = group1
+  #   value = 1
+  # [../]
+  # [./group2_ic]
+  #   type = ConstantIC
+  #   variable = group2
+  #   value = 1
+  # [../]
 []
 
 [Postprocessors]
@@ -286,14 +256,12 @@ nt_scale=1e17
     type = IntegralNewVariablePostprocessor
     variable = group1
     outputs = 'csv console'
-    use_exp_form = true
     # outputs = 'csv'
   [../]
   [./group1_old]
     type = IntegralOldVariablePostprocessor
     variable = group1
     outputs = 'csv console'
-    use_exp_form = true
     # outputs = 'csv'
   [../]
   [./multiplication]

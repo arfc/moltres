@@ -4,8 +4,8 @@ nt_scale=1e13
 
 [GlobalParams]
   num_groups = 2
-  num_precursor_groups = 8
   group_fluxes = 'group1 group2'
+  use_exp_form = false
 [../]
 
 [Mesh]
@@ -33,88 +33,68 @@ nt_scale=1e13
   [./time_group1]
     type = NtTimeDerivative
     group_number = 1
-    use_exp_form = false
     variable = group1
-    use_exp_form = false
   [../]
   [./time_group2]
     type = NtTimeDerivative
     group_number = 2
-    use_exp_form = false
     variable = group2
-    use_exp_form = false
   [../]
   [./diff_group1]
     type = GroupDiffusion
     variable = group1
     group_number = 1
-    use_exp_form = false
     temperature = temp
-    use_exp_form = false
   [../]
   [./diff_group2]
     type = GroupDiffusion
     variable = group2
     group_number = 2
-    use_exp_form = false
     temperature = temp
-    use_exp_form = false
   [../]
   [./sigma_r_group1]
     type = SigmaR
     variable = group1
     group_number = 1
-    use_exp_form = false
     temperature = temp
-    use_exp_form = false
   [../]
   [./sigma_r_group2]
     type = SigmaR
     variable = group2
     group_number = 2
-    use_exp_form = false
     temperature = temp
-    use_exp_form = false
   [../]
   [./inscatter_group1]
     type = InScatter
     variable = group1
     group_number = 1
-    use_exp_form = false
     num_groups = 2
     group_fluxes = 'group1 group2'
     temperature = temp
-    use_exp_form = false
   [../]
   [./inscatter_group2]
     type = InScatter
     variable = group2
     group_number = 2
-    use_exp_form = false
     num_groups = 2
     group_fluxes = 'group1 group2'
     temperature = temp
-    use_exp_form = false
   [../]
   [./fission_source_group1]
     type = CoupledFissionKernel
     variable = group1
     group_number = 1
-    use_exp_form = false
     num_groups = 2
     group_fluxes = 'group1 group2'
     temperature = temp
-    use_exp_form = false
   [../]
   [./fission_source_group2]
     type = CoupledFissionKernel
     variable = group2
     group_number = 2
-    use_exp_form = false
     num_groups = 2
     group_fluxes = 'group1 group2'
     temperature = temp
-    use_exp_form = false
   [../]
 
   # Temperature
@@ -161,7 +141,6 @@ nt_scale=1e13
 #   temperature = temp
 #   incompressible_flow = false
 #   transient_simulation = true
-#   use_exp_form = true
 #   initial_condition = -20
 # []
 
@@ -293,7 +272,7 @@ nt_scale=1e13
 
 [Postprocessors]
   [./group1_current]
-    type = ElementIntegralVariablePostprocessor
+    type = IntegralNewVariablePostprocessor
     variable = group1
     outputs = 'csv console'
     # outputs = 'csv'

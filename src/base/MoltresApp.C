@@ -57,6 +57,7 @@
 // Actions
 
 #include "PrecursorKernelAction.h"
+#include "NtAction.h"
 
 template<>
 InputParameters validParams<MoltresApp>()
@@ -151,6 +152,7 @@ void
 MoltresApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
 {
   syntax.registerActionSyntax("PrecursorKernelAction", "PrecursorKernel");
+  syntax.registerActionSyntax("NtAction", "Nt");
 
   registerAction(PrecursorKernelAction, "add_kernel");
   registerAction(PrecursorKernelAction, "add_bc");
@@ -158,4 +160,10 @@ MoltresApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
   registerAction(PrecursorKernelAction, "add_ic");
   registerAction(PrecursorKernelAction, "add_elemental_field_variable");
   registerAction(PrecursorKernelAction, "add_aux_kernel");
+  registerAction(NtAction, "add_kernel");
+  registerAction(NtAction, "add_bc");
+  registerAction(NtAction, "add_variable");
+  registerAction(NtAction, "add_ic");
+  registerAction(NtAction, "add_aux_variable");
+  registerAction(NtAction, "add_aux_kernel");
 }
