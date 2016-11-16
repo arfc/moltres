@@ -1,7 +1,7 @@
-#include "IntegralOldVariablePostprocessor.h"
+#include "IntegralNewVariablePostprocessor.h"
 
 template<>
-InputParameters validParams<IntegralOldVariablePostprocessor>()
+InputParameters validParams<IntegralNewVariablePostprocessor>()
 {
   InputParameters params = validParams<ElementIntegralPostprocessor>();
   params += validParams<ScalarTransportBase>();
@@ -9,18 +9,19 @@ InputParameters validParams<IntegralOldVariablePostprocessor>()
   return params;
 }
 
-IntegralOldVariablePostprocessor::IntegralOldVariablePostprocessor(const InputParameters & parameters) :
+IntegralNewVariablePostprocessor::IntegralNewVariablePostprocessor(const InputParameters & parameters) :
     ElementIntegralPostprocessor(parameters),
     ScalarTransportBase(parameters),
     MooseVariableInterface(this, false),
-    _u_old(coupledValueOld("variable")),
-    _grad_u_old(coupledGradientOld("variable"))
+    _u(coupledValue("variable")),
+    _grad_u(coupledGradient("variable")),
+    _u_dot(coupledDot("variable"))
 {
   addMooseVariableDependency(mooseVariable());
 }
 
 Real
-IntegralOldVariablePostprocessor::computeQpIntegral()
+IntegralNewVariablePostprocessor::computeQpIntegral()
 {
-  return computeConcentration(_u_old, _qp);
+  return computeConcentration(_u, _qp);
 }

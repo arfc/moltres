@@ -2,6 +2,7 @@
 #define INTEGRALOLDVARIABLEPOSTPROCESSOR_H
 
 #include "ElementIntegralPostprocessor.h"
+#include "ScalarTransportBase.h"
 #include "MooseVariableInterface.h"
 
 //Forward Declarations
@@ -19,6 +20,7 @@ InputParameters validParams<IntegralOldVariablePostprocessor>();
  */
 class IntegralOldVariablePostprocessor :
   public ElementIntegralPostprocessor,
+  public ScalarTransportBase,
   public MooseVariableInterface
 {
 public:

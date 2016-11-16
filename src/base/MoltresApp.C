@@ -30,6 +30,7 @@
 #include "MatINSTemperatureTimeDerivative.h"
 
 // Boundary conditions
+#include "VacuumConcBC.h"
 #include "ConservativeAdvectionNoBCBC.h"
 #include "DiffusionNoBCBC.h"
 #include "ScalarAdvectionArtDiffNoBCBC.h"
@@ -45,6 +46,7 @@
 // Postprocessors
 #include "DivisionPostprocessor.h"
 #include "IntegralOldVariablePostprocessor.h"
+#include "IntegralNewVariablePostprocessor.h"
 #include "ElmIntegTotFissPostprocessor.h"
 #include "ElmIntegTotFissNtsPostprocessor.h"
 
@@ -125,6 +127,7 @@ MoltresApp::registerObjects(Factory & factory)
   registerKernel(INSK);
   registerKernel(GroupDiffusion);
   registerBoundaryCondition(ScalarAdvectionArtDiffNoBCBC);
+  registerBoundaryCondition(VacuumConcBC);
   registerBoundaryCondition(ConservativeAdvectionNoBCBC);
   registerBoundaryCondition(DiffusionNoBCBC);
   registerBoundaryCondition(CoupledScalarAdvectionNoBCBC);
@@ -134,6 +137,7 @@ MoltresApp::registerObjects(Factory & factory)
   registerBoundaryCondition(MatDiffusionFluxBC);
   registerMaterial(GenericMoltresMaterial);
   registerPostprocessor(IntegralOldVariablePostprocessor);
+  registerPostprocessor(IntegralNewVariablePostprocessor);
   registerPostprocessor(DivisionPostprocessor);
   registerPostprocessor(ElmIntegTotFissPostprocessor);
   registerPostprocessor(ElmIntegTotFissNtsPostprocessor);

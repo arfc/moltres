@@ -2,6 +2,7 @@
 #define TRANSIENTFISSIONEHEATSOURCE_H
 
 #include "Kernel.h"
+#include "ScalarTransportBase.h"
 
 //Forward Declarations
 class TransientFissionHeatSource;
@@ -9,7 +10,8 @@ class TransientFissionHeatSource;
 template<>
 InputParameters validParams<TransientFissionHeatSource>();
 
-class TransientFissionHeatSource : public Kernel
+class TransientFissionHeatSource : public Kernel,
+                                   public ScalarTransportBase
 {
 public:
   TransientFissionHeatSource(const InputParameters & parameters);
