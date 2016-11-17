@@ -4,11 +4,11 @@
 #include "NavierStokesApp.h"
 #include "FluidPropertiesApp.h"
 #include "HeatConductionApp.h"
-#include "MooseTestApp.h"
 #include "ZapdosApp.h"
 #include "MooseSyntax.h"
 
 // Kernels
+#include "MatDiffusion.h"
 #include "ScalarTransportTimeDerivative.h"
 #include "ScalarAdvectionArtDiff.h"
 #include "MatINSTemperatureRZ.h"
@@ -44,6 +44,7 @@
 #include "GenericMoltresMaterial.h"
 
 // Postprocessors
+#include "ElementL2Diff.h"
 #include "DivisionPostprocessor.h"
 #include "IntegralOldVariablePostprocessor.h"
 #include "IntegralNewVariablePostprocessor.h"
@@ -78,7 +79,6 @@ MoltresApp::MoltresApp(InputParameters parameters) :
   NavierStokesApp::registerObjects(_factory);
   FluidPropertiesApp::registerObjects(_factory);
   HeatConductionApp::registerObjects(_factory);
-  MooseTestApp::registerObjects(_factory);
   ZapdosApp::registerObjects(_factory);
   MoltresApp::registerObjects(_factory);
 
@@ -86,7 +86,6 @@ MoltresApp::MoltresApp(InputParameters parameters) :
   NavierStokesApp::associateSyntax(_syntax, _action_factory);
   FluidPropertiesApp::associateSyntax(_syntax, _action_factory);
   HeatConductionApp::associateSyntax(_syntax, _action_factory);
-  MooseTestApp::associateSyntax(_syntax, _action_factory);
   ZapdosApp::associateSyntax(_syntax, _action_factory);
   MoltresApp::associateSyntax(_syntax, _action_factory);
 }
@@ -109,6 +108,7 @@ void
 MoltresApp::registerObjects(Factory & factory)
 {
   registerKernel(SigmaR);
+  registerKernel(MatDiffusion);
   registerKernel(MatINSTemperatureTimeDerivative);
   registerKernel(ScalarTransportTimeDerivative);
   registerKernel(MatINSTemperatureRZ);
@@ -138,6 +138,7 @@ MoltresApp::registerObjects(Factory & factory)
   registerBoundaryCondition(MatDiffusionFluxBC);
   registerMaterial(GenericMoltresMaterial);
   registerPostprocessor(IntegralOldVariablePostprocessor);
+  registerPostprocessor(ElementL2Diff);
   registerPostprocessor(IntegralNewVariablePostprocessor);
   registerPostprocessor(DivisionPostprocessor);
   registerPostprocessor(ElmIntegTotFissPostprocessor);

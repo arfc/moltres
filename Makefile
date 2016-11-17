@@ -27,10 +27,6 @@ HEAT_CONDUCTION := yes
 include $(MOOSE_DIR)/modules/modules.mk
 ###############################################################################
 
-APPLICATION_DIR    := $(MOOSE_DIR)/test
-APPLICATION_NAME   := moose_tests
-include            $(FRAMEWORK_DIR)/app.mk
-
 APPLICATION_DIR    := $(shell dirname `pwd`)/zapdos
 APPLICATION_NAME   := zapdos
 include            $(FRAMEWORK_DIR)/app.mk
