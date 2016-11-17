@@ -14,85 +14,13 @@ nt_scale=1e13
   file = 'jac_test.msh'
 [../]
 
-[Variables]
-  [./group1]
-    order = FIRST
-    family = LAGRANGE
-  [../]
-  [./group2]
-    order = FIRST
-    family = LAGRANGE
-  [../]
-  [./temp]
-    order = FIRST
-    family = LAGRANGE
-  [../]
+[Nt]
+  var_name_base = 'group'
+  vacuum_boundaries = 'fuel_top graphite_top fuel_bottom graphite_bottom'
+  jac_test = true
 []
 
-# [Nt]
-#   var_name_base = 'group'
-#   vacuum_boundaries = 'fuel_top graphite_top fuel_bottom graphite_bottom'
-#   order = FIRST
-#   family = LAGRANGE
-# []
-
 [Kernels]
-  # Neutronics
-  [./time_group1]
-    type = NtTimeDerivative
-    group_number = 1
-    variable = group1
-  [../]
-  [./time_group2]
-    type = NtTimeDerivative
-    group_number = 2
-    variable = group2
-  [../]
-  [./diff_group1]
-    type = GroupDiffusion
-    variable = group1
-    group_number = 1
-  [../]
-  [./diff_group2]
-    type = GroupDiffusion
-    variable = group2
-    group_number = 2
-  [../]
-  [./sigma_r_group1]
-    type = SigmaR
-    variable = group1
-    group_number = 1
-  [../]
-  [./sigma_r_group2]
-    type = SigmaR
-    variable = group2
-    group_number = 2
-  [../]
-  [./inscatter_group1]
-    type = InScatter
-    variable = group1
-    group_number = 1
-    num_groups = 2
-  [../]
-  [./inscatter_group2]
-    type = InScatter
-    variable = group2
-    group_number = 2
-    num_groups = 2
-  [../]
-  [./fission_source_group1]
-    type = CoupledFissionKernel
-    variable = group1
-    group_number = 1
-    num_groups = 2
-  [../]
-  [./fission_source_group2]
-    type = CoupledFissionKernel
-    variable = group2
-    group_number = 2
-    num_groups = 2
-  [../]
-
   # Temperature
   [./temp_flow_fuel]
     block = 'fuel'
@@ -102,6 +30,12 @@ nt_scale=1e13
     k = 'k'
     cp = 'cp'
     uz = ${flow_velocity}
+  [../]
+  [./temp_art_diff_fuel]
+    block = 'fuel'
+    type = ScalarAdvectionArtDiff
+    v_def = ${flow_velocity}
+    variable = temp
   [../]
   [./temp_flow_moder]
     block = 'moder'
@@ -154,15 +88,11 @@ nt_scale=1e13
     variable = temp
     k = 'k'
   [../]
-  [./group1_vacuum]
-    type = VacuumConcBC
-    variable = group1
-    boundary = 'fuel_top graphite_top fuel_bottom graphite_bottom'
-  [../]
-  [./group2_vacuum]
-    type = VacuumConcBC
-    variable = group2
-    boundary = 'fuel_top graphite_top fuel_bottom graphite_bottom'
+  [./temp_art_diff_fuel]
+    boundary = 'fuel_top'
+    type = ScalarAdvectionArtDiffNoBCBC
+    v_def = ${flow_velocity}
+    variable = temp
   [../]
 []
 
@@ -180,7 +110,6 @@ nt_scale=1e13
   trans_ss_check = true
   ss_check_tol = 4e-9
 
-  # solve_type = 'PJFNK'
   solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor -snes_test_display'
   petsc_options_iname = '-snes_type'
@@ -228,18 +157,6 @@ nt_scale=1e13
     min = 850
     max = 950
   [../]
-  [./group1_ic]
-    type = RandomIC
-    variable = group1
-    min = 0.5
-    max = 1.5
-  [../]
-  [./group2_ic]
-    type = RandomIC
-    variable = group2
-    min = 0.5
-    max = 1.5
-  [../]
 []
 
 [Postprocessors]
@@ -247,19 +164,16 @@ nt_scale=1e13
     type = IntegralNewVariablePostprocessor
     variable = group1
     outputs = 'csv console'
-    # outputs = 'csv'
   [../]
   [./group1_old]
     type = IntegralOldVariablePostprocessor
     variable = group1
     outputs = 'csv console'
-    # outputs = 'csv'
   [../]
   [./multiplication]
     type = DivisionPostprocessor
     value1 = group1_current
     value2 = group1_old
     outputs = 'csv console'
-    # outputs = 'csv'
   [../]
 []

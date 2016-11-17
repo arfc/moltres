@@ -5,29 +5,17 @@ nt_scale=1e13
 [GlobalParams]
   num_groups = 2
   num_precursor_groups = 8
-  use_exp_form = false
+  use_exp_form = true
   temperature = temp
   group_fluxes = 'group1 group2'
+  v_def = ${flow_velocity}
+  tau = 0
 [../]
 
 [Mesh]
   file = 'axisymm_cylinder.msh'
 [../]
 
-[Variables]
-  # [./temp]
-  #   order = FIRST
-  #   family = LAGRANGE
-  # [../]
-  # [./group1]
-  #   order = FIRST
-  #   family = LAGRANGE
-  # [../]
-  # [./group2]
-  #   order = FIRST
-  #   family = LAGRANGE
-  # [../]
-[]
 
 [Nt]
   var_name_base = 'group'
@@ -35,62 +23,6 @@ nt_scale=1e13
 []
 
 [Kernels]
-  # # Neutronics
-  # [./time_group1]
-  #   type = NtTimeDerivative
-  #   group_number = 1
-  #   variable = group1
-  # [../]
-  # [./time_group2]
-  #   type = NtTimeDerivative
-  #   group_number = 2
-  #   variable = group2
-  # [../]
-  # [./diff_group1]
-  #   type = GroupDiffusion
-  #   variable = group1
-  #   group_number = 1
-  # [../]
-  # [./diff_group2]
-  #   type = GroupDiffusion
-  #   variable = group2
-  #   group_number = 2
-  # [../]
-  # [./sigma_r_group1]
-  #   type = SigmaR
-  #   variable = group1
-  #   group_number = 1
-  # [../]
-  # [./sigma_r_group2]
-  #   type = SigmaR
-  #   variable = group2
-  #   group_number = 2
-  # [../]
-  # [./inscatter_group1]
-  #   type = InScatter
-  #   variable = group1
-  #   group_number = 1
-  #   num_groups = 2
-  # [../]
-  # [./inscatter_group2]
-  #   type = InScatter
-  #   variable = group2
-  #   group_number = 2
-  #   num_groups = 2
-  # [../]
-  # [./fission_source_group1]
-  #   type = CoupledFissionKernel
-  #   variable = group1
-  #   group_number = 1
-  #   num_groups = 2
-  # [../]
-  # [./fission_source_group2]
-  #   type = CoupledFissionKernel
-  #   variable = group2
-  #   group_number = 2
-  #   num_groups = 2
-  # [../]
-
   # Temperature
   [./temp_flow_fuel]
     block = 'fuel'
@@ -100,6 +32,12 @@ nt_scale=1e13
     k = 'k'
     cp = 'cp'
     uz = ${flow_velocity}
+  [../]
+  [./temp_art_diff_fuel]
+    block = 'fuel'
+    type = ScalarAdvectionArtDiff
+    variable = temp
+    use_exp_form = false
   [../]
   [./temp_flow_moder]
     block = 'moder'
@@ -126,14 +64,14 @@ nt_scale=1e13
   [./fuel]
     type = GenericMoltresMaterial
     block = 'fuel'
-    property_tables_root = '../property_file_dir/msr2g_enrU_mod_953_fuel_interp_'
+    property_tables_root = '../property_file_dir/msr2g_enrU_two_mat_homogenization_fuel_interp_'
     prop_names = 'k rho cp'
     prop_values = '.0123 3.327e-3 1357' # Cammi 2011 at 908 K
   [../]
   [./moder]
     type = GenericMoltresMaterial
     block = 'moder'
-    property_tables_root = '../property_file_dir/msr2g_enrU_fuel_922_mod_interp_'
+    property_tables_root = '../property_file_dir/msr2g_enrU_two_mat_homogenization_mod_interp_'
     prop_names = 'k rho cp'
     prop_values = '.312 1.843e-3 1760' # Cammi 2011 at 908 K
   [../]
@@ -152,16 +90,12 @@ nt_scale=1e13
     variable = temp
     k = 'k'
   [../]
-  # [./group1_vacuum]
-  #   type = VacuumConcBC
-  #   variable = group1
-  #   boundary = 'fuel_top graphite_top fuel_bottom graphite_bottom'
-  # [../]
-  # [./group2_vacuum]
-  #   type = VacuumConcBC
-  #   variable = group2
-  #   boundary = 'fuel_top graphite_top fuel_bottom graphite_bottom'
-  # [../]
+  [./temp_art_diff_fuel]
+    boundary = 'fuel_top'
+    type = ScalarAdvectionArtDiffNoBCBC
+    variable = temp
+    use_exp_form = false
+  [../]
 []
 
 [Problem]
@@ -173,16 +107,13 @@ nt_scale=1e13
   type = Transient
   end_time = 10000
 
-  nl_abs_tol = 4e-9
+  # line_search = none
+  nl_abs_tol = 8e-9
   trans_ss_check = true
-  ss_check_tol = 4e-9
+  ss_check_tol = 8e-9
 
-  # solve_type = 'PJFNK'
   solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  # This system will not converge with default preconditioning; need to use asm
-  # petsc_options_iname = '-pc_type -sub_pc_type -sub_ksp_type -pc_asm_overlap -ksp_gmres_restart -snes_linesearch_mindlambda'
-  # petsc_options_value = 'asm lu preonly 2 31 1e-3'
   petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type -snes_linesearch_minlambda -pc_factor_mat_solver_package'
   petsc_options_value = 'lu NONZERO 1.e-10 preonly 1e-3 superlu_dist'
 
@@ -227,16 +158,6 @@ nt_scale=1e13
     variable = temp
     value = ${inlet_temp}
   [../]
-  # [./group1_ic]
-  #   type = ConstantIC
-  #   variable = group1
-  #   value = 1
-  # [../]
-  # [./group2_ic]
-  #   type = ConstantIC
-  #   variable = group2
-  #   value = 1
-  # [../]
 []
 
 [Postprocessors]
@@ -244,19 +165,16 @@ nt_scale=1e13
     type = IntegralNewVariablePostprocessor
     variable = group1
     outputs = 'csv console'
-    # outputs = 'csv'
   [../]
   [./group1_old]
     type = IntegralOldVariablePostprocessor
     variable = group1
     outputs = 'csv console'
-    # outputs = 'csv'
   [../]
   [./multiplication]
     type = DivisionPostprocessor
     value1 = group1_current
     value2 = group1_old
     outputs = 'csv console'
-    # outputs = 'csv'
   [../]
 []
