@@ -11,7 +11,6 @@ InputParameters validParams<NtAction>()
   params.addRequiredParam<int>("num_precursor_groups", "specifies the total number of precursors to create");
   params.addRequiredParam<std::string>("var_name_base", "specifies the base name of the variables");
   params.addParam<VariableName>("temperature", "Name of temperature variable");
-  params.addRequiredParam<std::vector<VariableName> >("group_fluxes", "All the variables that hold the group fluxes. These MUST be listed by decreasing energy/increasing group number.");
   params.addRequiredParam<int>("num_groups", "The total number of energy groups.");
   params.addRequiredParam<bool>("use_exp_form", "Whether concentrations should be in an expotential/logarithmic format.");
   params.addParam<bool>("jac_test", false, "Whether we're testing the Jacobian and should use some random initial conditions for the precursors.");
@@ -32,6 +31,10 @@ NtAction::NtAction(const InputParameters & params) :
 void
 NtAction::act()
 {
+  std::vector<VariableName> all_var_names;
+  for (int op = 1; op <= _num_groups; ++op)
+    all_var_names.push_back(_var_name_base + Moose::stringify(op));
+
   for (int op = 1; op <= _num_groups; ++op)
   {
     //
@@ -110,7 +113,8 @@ NtAction::act()
         if (isParamValid("temperature"))
           params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
         params.set<int>("num_groups") = _num_groups;
-        params.set<std::vector<VariableName> >("group_fluxes") = getParam<std::vector<VariableName> >("group_fluxes");
+        // params.set<std::vector<VariableName> >("group_fluxes") = getParam<std::vector<VariableName> >("group_fluxes");
+        params.set<std::vector<VariableName> >("group_fluxes") = all_var_names;
 
         std::string kernel_name = "InScatter_" + var_name;
         _problem->addKernel("InScatter", kernel_name, params);
@@ -129,7 +133,8 @@ NtAction::act()
         if (isParamValid("temperature"))
           params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
         params.set<int>("num_groups") = _num_groups;
-        params.set<std::vector<VariableName> >("group_fluxes") = getParam<std::vector<VariableName> >("group_fluxes");
+        // params.set<std::vector<VariableName> >("group_fluxes") = getParam<std::vector<VariableName> >("group_fluxes");
+        params.set<std::vector<VariableName> >("group_fluxes") = all_var_names;
 
         std::string kernel_name = "CoupledFissionKernel_" + var_name;
         _problem->addKernel("CoupledFissionKernel", kernel_name, params);
@@ -190,7 +195,7 @@ NtAction::act()
 
       std::string aux_var_name = var_name + "_lin";
 
-      // Set up elemental aux variables
+      // Set up nodal aux variables
 
       if (_current_task == "add_aux_variable")
       {
@@ -216,5 +221,11 @@ NtAction::act()
         _problem->addAuxKernel("Density", aux_kernel_name, params);
       }
     }
+  }
+
+  if (_current_task == "add_variable")
+  {
+    std::string temp_var = "temp";
+    addVariable(temp_var);
   }
 }

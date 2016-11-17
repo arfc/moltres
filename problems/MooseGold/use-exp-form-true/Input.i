@@ -5,8 +5,9 @@ nt_scale=1e13
 [GlobalParams]
   num_groups = 2
   num_precursor_groups = 8
-  group_fluxes = 'group1 group2'
   use_exp_form = false
+  temperature = temp
+  group_fluxes = 'group1 group2'
 [../]
 
 [Mesh]
@@ -14,27 +15,23 @@ nt_scale=1e13
 [../]
 
 [Variables]
-  [./group1]
-    order = FIRST
-    family = LAGRANGE
-  [../]
-  [./group2]
-    order = FIRST
-    family = LAGRANGE
-  [../]
-  [./temp]
-    order = FIRST
-    family = LAGRANGE
-    # scaling = 1e-3
-  [../]
+  # [./temp]
+  #   order = FIRST
+  #   family = LAGRANGE
+  # [../]
+  # [./group1]
+  #   order = FIRST
+  #   family = LAGRANGE
+  # [../]
+  # [./group2]
+  #   order = FIRST
+  #   family = LAGRANGE
+  # [../]
 []
 
 [Nt]
   var_name_base = 'group'
-  temperature = temp
   vacuum_boundaries = 'fuel_top graphite_top fuel_bottom graphite_bottom'
-  # order = FIRST
-  # family = LAGRANGE
 []
 
 [Kernels]
@@ -53,57 +50,45 @@ nt_scale=1e13
   #   type = GroupDiffusion
   #   variable = group1
   #   group_number = 1
-  #   temperature = temp
   # [../]
   # [./diff_group2]
   #   type = GroupDiffusion
   #   variable = group2
   #   group_number = 2
-  #   temperature = temp
   # [../]
   # [./sigma_r_group1]
   #   type = SigmaR
   #   variable = group1
   #   group_number = 1
-  #   temperature = temp
   # [../]
   # [./sigma_r_group2]
   #   type = SigmaR
   #   variable = group2
   #   group_number = 2
-  #   temperature = temp
   # [../]
   # [./inscatter_group1]
   #   type = InScatter
   #   variable = group1
   #   group_number = 1
   #   num_groups = 2
-  #   group_fluxes = 'group1 group2'
-  #   temperature = temp
   # [../]
   # [./inscatter_group2]
   #   type = InScatter
   #   variable = group2
   #   group_number = 2
   #   num_groups = 2
-  #   group_fluxes = 'group1 group2'
-  #   temperature = temp
   # [../]
   # [./fission_source_group1]
   #   type = CoupledFissionKernel
   #   variable = group1
   #   group_number = 1
   #   num_groups = 2
-  #   group_fluxes = 'group1 group2'
-  #   temperature = temp
   # [../]
   # [./fission_source_group2]
   #   type = CoupledFissionKernel
   #   variable = group2
   #   group_number = 2
   #   num_groups = 2
-  #   group_fluxes = 'group1 group2'
-  #   temperature = temp
   # [../]
 
   # Temperature
@@ -144,7 +129,6 @@ nt_scale=1e13
     property_tables_root = '../property_file_dir/msr2g_enrU_mod_953_fuel_interp_'
     prop_names = 'k rho cp'
     prop_values = '.0123 3.327e-3 1357' # Cammi 2011 at 908 K
-    temperature = temp
   [../]
   [./moder]
     type = GenericMoltresMaterial
@@ -152,7 +136,6 @@ nt_scale=1e13
     property_tables_root = '../property_file_dir/msr2g_enrU_fuel_922_mod_interp_'
     prop_names = 'k rho cp'
     prop_values = '.312 1.843e-3 1760' # Cammi 2011 at 908 K
-    temperature = temp
   [../]
 []
 
@@ -228,6 +211,9 @@ nt_scale=1e13
   [./out]
     type = Exodus
     execute_on = 'initial timestep_end'
+  [../]
+  [./dof_map]
+    type = DOFMap
   [../]
 []
 
