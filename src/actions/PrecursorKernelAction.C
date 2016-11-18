@@ -19,13 +19,13 @@ InputParameters validParams<PrecursorKernelAction>()
   params.addParam<Real>("w_def", "Allows user to specify constant value for w component of velocity.");
   params.addRequiredParam<std::vector<VariableName> >("group_fluxes", "All the variables that hold the group fluxes. These MUST be listed by decreasing energy/increasing group number.");
   params.addRequiredParam<int>("num_groups", "The total number of energy groups.");
-  params.addParam<bool>("transient_simulation", false, "Whether to conduct a transient simulation.");
+  params.addRequiredParam<bool>("transient_simulation", "Whether to conduct a transient simulation.");
   params.addRequiredParam<std::vector<BoundaryName> >("inlet_boundary", "The inlet boundary for the precursors.");
   params.addRequiredParam<std::string>("inlet_boundary_condition", "The type of boundary condition to apply at the inlet.");
   params.addParam<Real>("inlet_bc_value", "For value based boundary conditions, specify the value.");
   params.addRequiredParam<std::vector<BoundaryName> >("outlet_boundary", "The outlet boundary for the precursors.");
   params.addParam<bool>("add_artificial_diffusion", true, "Whether to add artificial diffusion");
-  params.addParam<bool>("incompressible_flow", true, "Determines whether we use a divergence-free form of the advecting velocity.");
+  params.addParam<bool>("incompressible_flow", "Determines whether we use a divergence-free form of the advecting velocity.");
   params.addParam<bool>("use_exp_form", "Whether concentrations should be in an expotential/logarithmic format.");
   params.addParam<bool>("jac_test", false, "Whether we're testing the Jacobian and should use some random initial conditions for the precursors.");
   params.addParam<Real>("prec_scale", "The amount by which the neutron fluxes are scaled.");
@@ -329,12 +329,12 @@ PrecursorKernelAction::act()
 
       std::string aux_var_name = var_name + "_lin";
 
-      // Set up elemental aux variables
+      // Set up nodal aux variables
 
-      if (_current_task == "add_elemental_field_variable")
+      if (_current_task == "add_aux_variable")
       {
         std::set<SubdomainID> blocks = getSubdomainIDs();
-        FEType fe_type(CONSTANT, MONOMIAL);
+        FEType fe_type(FIRST, LAGRANGE);
         if (blocks.empty())
           _problem->addAuxVariable(aux_var_name, fe_type);
         else
@@ -355,5 +355,6 @@ PrecursorKernelAction::act()
         _problem->addAuxKernel("Density", aux_kernel_name, params);
       }
     }
+
   }
 }
