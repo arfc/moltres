@@ -49,26 +49,10 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
   std::vector<std::string> xsec_names {"FLUX", "REMXS", "FISSXS", "NUBAR", "NSF", "FISSE", "DIFFCOEF",
       "RECIPVEL", "CHI", "GTRANSFXS", "BETA_EFF", "DECAY_CONSTANT"};
 
-  std::vector<Real> temperature;
-  std::string file_name = property_tables_root + "DIFFCOEF.txt";
-  const std::string & file_name_ref = file_name;
-  std::ifstream myfile (file_name_ref.c_str());
-  if (myfile.is_open())
-  {
-    while (myfile >> value)
-    {
-      temperature.push_back(value);
-      for (int k = 0; k < _num_groups; ++k)
-        myfile >> value;
-    }
-    myfile.close();
-  }
-  else
-    mooseError("Unable to open file " << file_name);
-
   std::map<std::string, std::vector<std::vector<Real> > > xsec_map;
   for (int j = 0; j < xsec_names.size(); ++j)
   {
+    std::vector<Real> temperature;
     std::string file_name = property_tables_root + xsec_names[j] + ".txt";
     const std::string & file_name_ref = file_name;
     std::ifstream myfile (file_name_ref.c_str());
@@ -84,6 +68,7 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     {
       while (myfile >> value)
       {
+        temperature.push_back(value);
         for (int k = 0; k < _vec_lengths[xsec_names[j]]; ++k)
         {
           myfile >> value;

@@ -124,3 +124,32 @@ fine.
 
 Can definitely fix it with a sufficient source stabilization...but then the
 problem becomes accuracy.
+
+Order of tasks:
+
+deprecated_block
+finish_input_file_output
+meta_action
+no_action
+setup_oversampling
+
+Order of tasks that do things:
+- dynamic_object_registration
+    - Problem
+- common_output
+    - Outputs
+- set_global_params
+    - GlobalParams
+- setup_recover_file_base
+- check_copy_nodal_vars
+    - temp
+- setup_mesh
+    - Mesh
+
+
+So it makes sense that it takes so much bloody time for heat to diffuse from the
+surface of the moderator into the moderator bulk. The charateristic diffusion
+time from interface to wall is 42 seconds. The massive amounts of heat from
+fission are being generated over the course of hundredths of a second. So yea
+we're going to have to go to some wall like condition at the interface...e.g. we
+cannot have Tmod = Tfuel at the interface.
