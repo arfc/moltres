@@ -3,6 +3,7 @@
 
 #include "GenericConstantMaterial.h"
 #include "SplineInterpolation.h"
+#include "BicubicSplineInterpolation.h"
 
 class GenericMoltresMaterial;
 
@@ -40,10 +41,15 @@ protected:
   MaterialProperty<std::vector<Real> > & _d_beta_eff_d_temp;
   MaterialProperty<std::vector<Real> > & _d_decay_constant_d_temp;
 
+  bool _bivariable_interp;
+  const PostprocessorValue & _other_temp;
+
   int _num_groups;
   int _num_precursor_groups;
-  std::map<std::string, std::vector<SplineInterpolation> > _xsec_interpolators;
+  std::map<std::string, std::vector<SplineInterpolation> > _xsec_spline_interpolators;
+  std::map<std::string, std::vector<BicubicSplineInterpolation> > _xsec_bicubic_spline_interpolators;
   std::map<std::string, int> _vec_lengths;
+  std::string _material;
 };
 
 #endif //GENERICMOLTRESMATERIAL_H
