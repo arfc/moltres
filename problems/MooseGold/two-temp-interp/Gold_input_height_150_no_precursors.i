@@ -1,9 +1,9 @@
 flow_velocity=147 # Cammi 147 cm/s
 inlet_temp=824
-initial_outlet_temp=824
-nt_scale=1e9
+initial_outlet_temp=1700
+nt_scale=1e15
 precursor_log_inlet_conc=-17
-reactor_height=200 # Cammi 376 cm
+reactor_height=150 # Cammi 376 cm
 fuel_radius=2.08
 mod_initial_temp=1500
 
@@ -28,8 +28,8 @@ mod_initial_temp=1500
 [Nt]
   var_name_base = 'group'
   vacuum_boundaries = 'fuel_top graphite_top fuel_bottom graphite_bottom'
-  scaling = 1e4
-  temp_scaling = 1e2
+  scaling = 1e12
+  temp_scaling = 1e8
   nt_ic_function = 'nt_ic_func'
 []
 
@@ -142,7 +142,7 @@ mod_initial_temp=1500
   end_time = 10000
 
   # line_search = none
-  # nl_abs_tol = 1e1
+  nl_abs_tol = 1e1
   # trans_ss_check = true
   # ss_check_tol = 8e-9
 
@@ -202,15 +202,10 @@ mod_initial_temp=1500
   #   function = temp_fuel_ic_func
   #   variable = temp
   # [../]
-  # [./temp_all_ic]
-  #   type = ConstantIC
-  #   variable = temp
-  #   value = 824
-  # [../]
-  [./temp_all_ic_func]
-    type = FunctionIC
+  [./temp_all_ic]
+    type = ConstantIC
     variable = temp
-    function = 'temp_ic_func'
+    value = 824
   [../]
 []
 

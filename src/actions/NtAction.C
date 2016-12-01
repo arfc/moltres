@@ -15,6 +15,7 @@ InputParameters validParams<NtAction>()
   params.addRequiredParam<int>("num_groups", "The total number of energy groups.");
   params.addRequiredParam<bool>("use_exp_form", "Whether concentrations should be in an expotential/logarithmic format.");
   params.addParam<bool>("jac_test", false, "Whether we're testing the Jacobian and should use some random initial conditions for the precursors.");
+  params.addParam<FunctionName>("nt_ic_function", "An initial condition function for the neutrons.");
   params.addParam<bool>("use_source_stabilization", false, "Whether to use source stabilization.");
   params.addParam<Real>("offset", "The value by which to offset the logarithmic stabilization.");
   params.addParam<std::vector<BoundaryName> >("vacuum_boundaries", "The boundaries on which to apply vacuum boundaries.");
@@ -161,6 +162,9 @@ NtAction::act()
 
     if (_current_task == "add_ic")
     {
+      if (getParam<bool>("jac_test") && isParamValid("nt_ic_function"))
+        mooseError("jac_test creates RandomICs. So are you sure you want to pass an initial condition function?");
+
       if (getParam<bool>("jac_test"))
       {
         InputParameters params = _factory.getValidParams("RandomIC");
@@ -173,7 +177,17 @@ NtAction::act()
         std::string ic_name = "RandomIC_" + var_name;
         _problem->addInitialCondition("RandomIC", ic_name, params);
       }
+      else if (isParamValid("nt_ic_function"))
+      {
+        InputParameters params = _factory.getValidParams("FunctionIC");
+        params.set<VariableName>("variable") = var_name;
+        if (isParamValid("block"))
+          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+        params.set<FunctionName>("function") = getParam<FunctionName>("nt_ic_function");
 
+        std::string ic_name = "FunctionIC_" + var_name;
+        _problem->addInitialCondition("FunctionIC", ic_name, params);
+      }
       else
       {
         InputParameters params = _factory.getValidParams("ConstantIC");
