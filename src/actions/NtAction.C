@@ -11,6 +11,7 @@ InputParameters validParams<NtAction>()
   params.addRequiredParam<int>("num_precursor_groups", "specifies the total number of precursors to create");
   params.addRequiredParam<std::string>("var_name_base", "specifies the base name of the variables");
   params.addParam<VariableName>("temperature", "Name of temperature variable");
+  params.addParam<Real>("temp_scaling", "The amount by which to scale the temperature variable.");
   params.addRequiredParam<int>("num_groups", "The total number of energy groups.");
   params.addRequiredParam<bool>("use_exp_form", "Whether concentrations should be in an expotential/logarithmic format.");
   params.addParam<bool>("jac_test", false, "Whether we're testing the Jacobian and should use some random initial conditions for the precursors.");
@@ -226,6 +227,7 @@ NtAction::act()
   if (_current_task == "add_variable")
   {
     std::string temp_var = "temp";
+    _pars.set<Real>("scaling") = isParamValid("temp_scaling") ? getParam<Real>("temp_scaling") : 1;
     addVariable(temp_var);
   }
 }

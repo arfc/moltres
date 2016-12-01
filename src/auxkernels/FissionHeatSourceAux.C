@@ -19,14 +19,14 @@ FissionHeatSourceAux::FissionHeatSourceAux(const InputParameters & parameters) :
     _tot_fissions(getPostprocessorValue("tot_fissions")),
     _power(getParam<Real>("power"))
 {
-  int n = coupledComponents("group_fluxes");
+  auto n = coupledComponents("group_fluxes");
   if (!(n == _num_groups))
   {
     mooseError("The number of coupled variables doesn't match the number of groups.");
   }
   _group_fluxes.resize(n);
   _flux_ids.resize(n);
-  for (int i = 0; i < _group_fluxes.size(); ++i)
+  for (decltype(n) i = 0; i < n; ++i)
   {
     _group_fluxes[i] = &coupledValue("group_fluxes", i);
     _flux_ids[i] = coupled("group_fluxes", i);

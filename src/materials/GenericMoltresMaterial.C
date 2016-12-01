@@ -127,7 +127,7 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
 
       std::map<std::string, std::vector<std::vector<std::vector<Real> > > > xsec_map;
       xsec_map[xsec_names[j]].resize(o);
-      for (decltype(o) k = 0; k < 0; ++k)
+      for (decltype(o) k = 0; k < o; ++k)
         xsec_map[xsec_names[j]][k].resize(l);
       _xsec_bicubic_spline_interpolators[xsec_names[j]].resize(o);
       if (myfile.is_open())
