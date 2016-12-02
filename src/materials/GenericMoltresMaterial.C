@@ -15,6 +15,7 @@ InputParameters validParams<GenericMoltresMaterial>()
   params.addParam<std::vector<Real> >("mod_temp_points", "The moderator temperature interpolation points.");
   params.addParam<PostprocessorName>("other_temp", 0, "If doing bivariable interpolation, need to supply a postprocessor for the average temperature of the other material.");
   params.addParam<std::string>("material", "Must specify either *fuel* or *moderator*.");
+  params.addRequiredParam<bool>("monotonic_interpolation", "If this option is true, neutronic properties are fit with a least squared linear fit.");
   return params;
 }
 
@@ -44,126 +45,170 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     _d_beta_eff_d_temp(declareProperty<std::vector<Real> >("d_beta_eff_d_temp")),
     _d_decay_constant_d_temp(declareProperty<std::vector<Real> >("d_decay_constant_d_temp")),
     _bivariable_interp(getParam<bool>("bivariable_interp")),
-    _other_temp(getPostprocessorValue("other_temp"))
+    _other_temp(getPostprocessorValue("other_temp")),
+    _monotonic_interpolation(getParam<bool>("monotonic_interpolation"))
 {
-  Real value;
-
+  std::string property_tables_root = getParam<std::string>("property_tables_root");
   _num_groups = getParam<int>("num_groups");
   _num_precursor_groups = getParam<int>("num_precursor_groups");
 
-  std::string property_tables_root = getParam<std::string>("property_tables_root");
-  std::vector<std::string> xsec_names {"FLUX", "REMXS", "FISSXS", "NUBAR", "NSF", "FISSE", "DIFFCOEF",
-      "RECIPVEL", "CHI", "GTRANSFXS", "BETA_EFF", "DECAY_CONSTANT"};
-  auto n = xsec_names.size();
-
-  if (!_bivariable_interp)
+  if (_monotonic_interpolation)
   {
-    for (decltype(n) j = 0; j < n; ++j)
+
+    _flux_a.resize(_num_groups);
+    _flux_b.resize(_num_groups);
+    _remxs_a.resize(_num_groups);
+    _remxs_b.resize(_num_groups);
+    _fissxs_a.resize(_num_groups);
+    _fissxs_b.resize(_num_groups);
+    _nubar_a.resize(_num_groups);
+    _nubar_b.resize(_num_groups);
+    _nsf_a.resize(_num_groups);
+    _nsf_b.resize(_num_groups);
+    _fisse_a.resize(_num_groups);
+    _fisse_b.resize(_num_groups);
+    _diffcoeff_a.resize(_num_groups);
+    _diffcoeff_b.resize(_num_groups);
+    _recipvel_a.resize(_num_groups);
+    _recipvel_b.resize(_num_groups);
+    std::string file_name = property_tables_root;
+    const std::string & file_name_ref = file_name;
+    std::ifstream myfile (file_name_ref.c_str());
+    if (myfile.is_open())
     {
-      std::vector<Real> temperature;
-      std::string file_name = property_tables_root + xsec_names[j] + ".txt";
-      const std::string & file_name_ref = file_name;
-      std::ifstream myfile (file_name_ref.c_str());
-
-      if (xsec_names[j].compare("GTRANSFXS") == 0)
-        _vec_lengths[xsec_names[j]] = _num_groups * _num_groups;
-      else if (xsec_names[j].compare("BETA_EFF") == 0 || xsec_names[j].compare("DECAY_CONSTANT") == 0)
-        _vec_lengths[xsec_names[j]] = _num_precursor_groups;
-      else
-        _vec_lengths[xsec_names[j]] = _num_groups;
-      auto o = _vec_lengths[xsec_names[j]];
-
-      std::map<std::string, std::vector<std::vector<Real> > > xsec_map;
-      xsec_map[xsec_names[j]].resize(o);
-      _xsec_spline_interpolators[xsec_names[j]].resize(o);
-      if (myfile.is_open())
+      for (int i = 0; i < _num_groups; ++i)
       {
-        while (myfile >> value)
-        {
-          temperature.push_back(value);
-          for (decltype(o) k = 0; k < o; ++k)
-          {
-            myfile >> value;
-            xsec_map[xsec_names[j]][k].push_back(value);
-          }
-        }
-        myfile.close();
-        for (decltype(o) k = 0; k < o; ++k)
-          _xsec_spline_interpolators[xsec_names[j]][k].setData(temperature, xsec_map[xsec_names[j]][k]);
+        myfile >> value;
+        _flux_a[i] = value;
+        myfile >> value;
+        _flux_b[i] = value;
       }
-      else
-        mooseError("Unable to open file " << file_name);
-    }
+
+
+
   }
+
   else
   {
-    std::vector<Real> fuel_temperature;
-    std::vector<Real> mod_temperature;
-    if (isParamValid("fuel_temp_points") && !(getParam<std::vector<Real> >("fuel_temp_points").empty()))
-      fuel_temperature = getParam<std::vector<Real> >("fuel_temp_points");
-    else
-      mooseError("You forgot to supply *fuel_temp_points* for interpolation!");
-    if (isParamValid("mod_temp_points") && !(getParam<std::vector<Real> >("mod_temp_points").empty()))
-      mod_temperature = getParam<std::vector<Real> >("mod_temp_points");
-    else
-      mooseError("You forgot to supply *mod_temp_points* for interpolation!");
-    auto l = fuel_temperature.size();
-    auto m = mod_temperature.size();
-    auto lm = l * m;
-    decltype(lm) inc = 0;
+    Real value;
 
-    for (decltype(n) j = 0; j < n; ++j)
+    std::string property_tables_root = getParam<std::string>("property_tables_root");
+    std::vector<std::string> xsec_names {"FLUX", "REMXS", "FISSXS", "NUBAR", "NSF", "FISSE", "DIFFCOEF",
+        "RECIPVEL", "CHI", "GTRANSFXS", "BETA_EFF", "DECAY_CONSTANT"};
+    auto n = xsec_names.size();
+
+    if (!_bivariable_interp)
     {
-      std::string file_name = property_tables_root + xsec_names[j] + ".txt";
-      const std::string & file_name_ref = file_name;
-      std::ifstream myfile (file_name_ref.c_str());
-      if (xsec_names[j].compare("GTRANSFXS") == 0)
-        _vec_lengths[xsec_names[j]] = _num_groups * _num_groups;
-      else if (xsec_names[j].compare("BETA_EFF") == 0 || xsec_names[j].compare("DECAY_CONSTANT") == 0)
-        _vec_lengths[xsec_names[j]] = _num_precursor_groups;
-      else
-        _vec_lengths[xsec_names[j]] = _num_groups;
-      auto o = _vec_lengths[xsec_names[j]];
-
-      std::map<std::string, std::vector<std::vector<std::vector<Real> > > > xsec_map;
-      xsec_map[xsec_names[j]].resize(o);
-      for (decltype(o) k = 0; k < o; ++k)
-        xsec_map[xsec_names[j]][k].resize(l);
-      _xsec_bicubic_spline_interpolators[xsec_names[j]].resize(o);
-      if (myfile.is_open())
+      for (decltype(n) j = 0; j < n; ++j)
       {
-        for (decltype(l) h = 0; h < l; ++h)
+        std::vector<Real> temperature;
+        std::string file_name = property_tables_root + xsec_names[j] + ".txt";
+        const std::string & file_name_ref = file_name;
+        std::ifstream myfile (file_name_ref.c_str());
+
+        if (xsec_names[j].compare("GTRANSFXS") == 0)
+          _vec_lengths[xsec_names[j]] = _num_groups * _num_groups;
+        else if (xsec_names[j].compare("BETA_EFF") == 0 || xsec_names[j].compare("DECAY_CONSTANT") == 0)
+          _vec_lengths[xsec_names[j]] = _num_precursor_groups;
+        else
+          _vec_lengths[xsec_names[j]] = _num_groups;
+        auto o = _vec_lengths[xsec_names[j]];
+
+        std::map<std::string, std::vector<std::vector<Real> > > xsec_map;
+        xsec_map[xsec_names[j]].resize(o);
+        _xsec_spline_interpolators[xsec_names[j]].resize(o);
+        if (myfile.is_open())
         {
-          for (decltype(m) i = 0; i < m; ++i)
+          while (myfile >> value)
           {
-            myfile >> value;
-            myfile >> value;
+            temperature.push_back(value);
             for (decltype(o) k = 0; k < o; ++k)
             {
               myfile >> value;
-              xsec_map[xsec_names[j]][k][h].push_back(value);
+              xsec_map[xsec_names[j]][k].push_back(value);
             }
           }
+          myfile.close();
+          for (decltype(o) k = 0; k < o; ++k)
+            _xsec_spline_interpolators[xsec_names[j]][k].setData(temperature, xsec_map[xsec_names[j]][k]);
         }
-        myfile.close();
-        for (decltype(o) k = 0; k < o; ++k)
-          _xsec_bicubic_spline_interpolators[xsec_names[j]][k].setData(fuel_temperature, mod_temperature, xsec_map[xsec_names[j]][k]);
+        else
+          mooseError("Unable to open file " << file_name);
       }
-      else
-        mooseError("Unable to open file " << file_name);
     }
-  }
+    else
+    {
+      std::vector<Real> fuel_temperature;
+      std::vector<Real> mod_temperature;
+      if (isParamValid("fuel_temp_points") && !(getParam<std::vector<Real> >("fuel_temp_points").empty()))
+        fuel_temperature = getParam<std::vector<Real> >("fuel_temp_points");
+      else
+        mooseError("You forgot to supply *fuel_temp_points* for interpolation!");
+      if (isParamValid("mod_temp_points") && !(getParam<std::vector<Real> >("mod_temp_points").empty()))
+        mod_temperature = getParam<std::vector<Real> >("mod_temp_points");
+      else
+        mooseError("You forgot to supply *mod_temp_points* for interpolation!");
+      auto l = fuel_temperature.size();
+      auto m = mod_temperature.size();
+      auto lm = l * m;
+      decltype(lm) inc = 0;
 
-  if (_bivariable_interp && !parameters.isParamSetByUser("other_temp"))
-    mooseError("If doing bivariable interpolation, you must supply a postprocessor value for the average temperature of the other material.");
+      for (decltype(n) j = 0; j < n; ++j)
+      {
+        std::string file_name = property_tables_root + xsec_names[j] + ".txt";
+        const std::string & file_name_ref = file_name;
+        std::ifstream myfile (file_name_ref.c_str());
+        if (xsec_names[j].compare("GTRANSFXS") == 0)
+          _vec_lengths[xsec_names[j]] = _num_groups * _num_groups;
+        else if (xsec_names[j].compare("BETA_EFF") == 0 || xsec_names[j].compare("DECAY_CONSTANT") == 0)
+          _vec_lengths[xsec_names[j]] = _num_precursor_groups;
+        else
+          _vec_lengths[xsec_names[j]] = _num_groups;
+        auto o = _vec_lengths[xsec_names[j]];
 
-  if (_bivariable_interp && !isParamValid("material"))
-      mooseError("User must specify whether we are in the *fuel* or *moderator*.");
-  else
-  {
-    _material = getParam<std::string>("material");
-    if (_material.compare("fuel") != 0 && _material.compare("moderator") != 0)
-      mooseError("Only valid choices for material parameter are *fuel* and *moderator*.");
+        std::map<std::string, std::vector<std::vector<std::vector<Real> > > > xsec_map;
+        xsec_map[xsec_names[j]].resize(o);
+        for (decltype(o) k = 0; k < o; ++k)
+          xsec_map[xsec_names[j]][k].resize(l);
+        _xsec_bicubic_spline_interpolators[xsec_names[j]].resize(o);
+        if (myfile.is_open())
+        {
+          for (decltype(l) h = 0; h < l; ++h)
+          {
+            for (decltype(m) i = 0; i < m; ++i)
+            {
+              myfile >> value;
+              myfile >> value;
+              for (decltype(o) k = 0; k < o; ++k)
+              {
+                myfile >> value;
+                xsec_map[xsec_names[j]][k][h].push_back(value);
+              }
+            }
+          }
+          myfile.close();
+          for (decltype(o) k = 0; k < o; ++k)
+            _xsec_bicubic_spline_interpolators[xsec_names[j]][k].setData(fuel_temperature, mod_temperature, xsec_map[xsec_names[j]][k]);
+        }
+        else
+          mooseError("Unable to open file " << file_name);
+      }
+    }
+
+    if (_bivariable_interp)
+    {
+      if (!parameters.isParamSetByUser("other_temp"))
+        mooseError("If doing bivariable interpolation, you must supply a postprocessor value for the average temperature of the other material.");
+
+      if (!isParamValid("material"))
+        mooseError("User must specify whether we are in the *fuel* or *moderator*.");
+      else
+      {
+        _material = getParam<std::string>("material");
+        if (_material.compare("fuel") != 0 && _material.compare("moderator") != 0)
+          mooseError("Only valid choices for material parameter are *fuel* and *moderator*.");
+      }
+    }
   }
 }
 
