@@ -1,7 +1,7 @@
 // Cammi geometry
 r1 = 2.08; // cm
 r2 = 5.73;
-H = 175; // cammi 396
+H = 200; // cammi 396
 lx = .5;
 ly = 10;
 lc = lx;

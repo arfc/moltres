@@ -1,7 +1,7 @@
 flow_velocity=147 # Cammi 147 cm/s
 inlet_temp=824
-initial_outlet_temp=824
-nt_scale=1e9
+initial_outlet_temp=1700
+nt_scale=1e14
 precursor_log_inlet_conc=-17
 reactor_height=200 # Cammi 376 cm
 fuel_radius=2.08
@@ -28,8 +28,8 @@ mod_initial_temp=1500
 [Nt]
   var_name_base = 'group'
   vacuum_boundaries = 'fuel_top graphite_top fuel_bottom graphite_bottom'
-  scaling = 1e4
-  temp_scaling = 1e2
+  scaling = 1e12
+  temp_scaling = 1e8
   nt_ic_function = 'nt_ic_func'
 []
 
@@ -52,9 +52,6 @@ mod_initial_temp=1500
     block = 'fuel'
     type = MatINSTemperatureRZ
     variable = temp
-    rho = 'rho'
-    k = 'k'
-    cp = 'cp'
     uz = ${flow_velocity}
   [../]
   [./temp_art_diff_fuel]
@@ -67,9 +64,6 @@ mod_initial_temp=1500
     block = 'moder'
     type = MatINSTemperatureRZ
     variable = temp
-    rho = 'rho'
-    k = 'k'
-    cp = 'cp'
   [../]
   [./temp_source]
     type = TransientFissionHeatSource
@@ -79,35 +73,33 @@ mod_initial_temp=1500
   [./temp_time_derivative]
     type = MatINSTemperatureTimeDerivative
     variable = temp
-    rho = 'rho'
-    cp = 'cp'
   [../]
 []
 
 [Materials]
   [./fuel]
-    type = GenericMoltresMaterial
+    type = CammiFuel
     block = 'fuel'
     property_tables_root = '../property_file_dir/msr2g_Th_U_two_mat_homogenization_fuel_interp_'
-    prop_names = 'k rho cp'
-    prop_values = '.0123 3.327e-3 1357' # Cammi 2011 at 908 K
+    prop_names = 'cp'
+    prop_values = '1357' # Cammi 2011 at 908 K
     bivariable_interp = true
     fuel_temp_points = '800 850 900 950 1000 1050 1100 1150 1200 1250 1300 1350 1400 1450 1500 1550 1600 1650 1700 1750 1800 1850 1900 1950 2000 2050'
     mod_temp_points = '800 850 900 950 1000 1050 1100 1150 1200 1250 1300 1350 1400 1450 1500 1550 1600 1650 1700 1750 1800 1850 1900 1950 2000 2050'
     material = 'fuel'
-    other_temp = 'temp_fuel'
+    other_temp = 'temp_moder'
   [../]
   [./moder]
-    type = GenericMoltresMaterial
+    type = CammiModerator
     block = 'moder'
     property_tables_root = '../property_file_dir/msr2g_Th_U_two_mat_homogenization_mod_interp_'
-    prop_names = 'k rho cp'
-    prop_values = '.312 1.843e-3 1760' # Cammi 2011 at 908 K
+    prop_names = 'rho cp'
+    prop_values = '1.843e-3 1760' # Cammi 2011 at 908 K
     bivariable_interp = true
-    fuel_temp_points = '800 850 900 950 1000 1050 1100 1150 1200 1250 1300 1350 1400 1450 1500'
-    mod_temp_points = '800 850 900 950 1000 1050 1100 1150 1200 1250 1300 1350 1400 1450 1500'
+    fuel_temp_points = '800 850 900 950 1000 1050 1100 1150 1200 1250 1300 1350 1400 1450 1500 1550 1600 1650 1700 1750 1800 1850 1900 1950 2000 2050'
+    mod_temp_points = '800 850 900 950 1000 1050 1100 1150 1200 1250 1300 1350 1400 1450 1500 1550 1600 1650 1700 1750 1800 1850 1900 1950 2000 2050'
     material = 'moderator'
-    other_temp = 'temp_moder'
+    other_temp = 'temp_fuel'
   [../]
 []
 
@@ -142,14 +134,16 @@ mod_initial_temp=1500
   end_time = 10000
 
   # line_search = none
-  # nl_abs_tol = 1e1
+  nl_abs_tol = 1e1
   # trans_ss_check = true
   # ss_check_tol = 8e-9
 
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   solve_type = 'NEWTON'
-  petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type -snes_linesearch_minlambda -pc_factor_mat_solver_package'
-  petsc_options_value = 'lu NONZERO 1.e-10 preonly 1e-3 superlu_dist'
+  petsc_options_iname = '-pc_type -ksp_gmres_restart -sub_ksp_type -sub_pc_type -pc_asm_overlap -snes_linesearch_minlambda'
+  petsc_options_value = 'asm	  31		     preonly	   lu		2		1e-3'
+  # petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type -snes_linesearch_minlambda -pc_factor_mat_solver_package'
+  # petsc_options_value = 'lu NONZERO 1.e-10 preonly 1e-3 superlu_dist'
   # solve_type = 'PJFNK'
   # petsc_options_iname = '-pc_type -sub_pc_type -snes_linesearch_minlambda -snes_stol'
   # petsc_options_value = 'asm      lu	       1e-3 			  0'
@@ -162,9 +156,12 @@ mod_initial_temp=1500
     type = IterationAdaptiveDT
     cutback_factor = 0.4
     dt = 1e-4
-    growth_factor = 1.2
+    growth_factor = 1.05
     optimal_iterations = 20
   [../]
+  # [./TimeIntegrator]
+  #   type = CrankNicolson
+  # [../]
 []
 
 [Preconditioning]
@@ -202,15 +199,10 @@ mod_initial_temp=1500
   #   function = temp_fuel_ic_func
   #   variable = temp
   # [../]
-  # [./temp_all_ic]
-  #   type = ConstantIC
-  #   variable = temp
-  #   value = 824
-  # [../]
-  [./temp_all_ic_func]
-    type = FunctionIC
+  [./temp_all_ic]
+    type = ConstantIC
     variable = temp
-    function = 'temp_ic_func'
+    value = 824
   [../]
 []
 

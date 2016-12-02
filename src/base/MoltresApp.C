@@ -43,6 +43,8 @@
 
 // Materials
 #include "GenericMoltresMaterial.h"
+#include "CammiFuel.h"
+#include "CammiModerator.h"
 
 // Postprocessors
 #include "AverageFissionHeat.h"
@@ -141,6 +143,8 @@ MoltresApp::registerObjects(Factory & factory)
   registerBoundaryCondition(INSSymmetryAxisBC);
   registerBoundaryCondition(MatDiffusionFluxBC);
   registerMaterial(GenericMoltresMaterial);
+  registerMaterial(CammiFuel);
+  registerMaterial(CammiModerator);
   registerPostprocessor(IntegralOldVariablePostprocessor);
   registerPostprocessor(ElementL2Diff);
   registerPostprocessor(IntegralNewVariablePostprocessor);
