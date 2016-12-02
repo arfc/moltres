@@ -43,6 +43,7 @@ protected:
 
   bool _bivariable_interp;
   const PostprocessorValue & _other_temp;
+  bool _monotonic_interpolation;
 
   int _num_groups;
   int _num_precursor_groups;
@@ -50,6 +51,15 @@ protected:
   std::map<std::string, std::vector<BicubicSplineInterpolation> > _xsec_bicubic_spline_interpolators;
   std::map<std::string, int> _vec_lengths;
   std::string _material;
+
+  std::vector<std::vector<Real> > _flux_consts = std::vector<std::vector<Real> >(2);
+  std::vector<std::vector<Real> > _remxs_consts = std::vector<std::vector<Real> >(2);
+  std::vector<std::vector<Real> > _fissxs_consts = std::vector<std::vector<Real> >(2);
+  std::vector<std::vector<Real> > _nubar_consts = std::vector<std::vector<Real> >(2);
+  std::vector<std::vector<Real> > _nsf_consts = std::vector<std::vector<Real> >(2);
+  std::vector<std::vector<Real> > _fisse_consts = std::vector<std::vector<Real> >(2);
+  std::vector<std::vector<Real> > _diffcoeff_consts = std::vector<std::vector<Real> >(2);
+  std::vector<std::vector<Real> > _recipvel_consts = std::vector<std::vector<Real> >(2);
 };
 
 #endif //GENERICMOLTRESMATERIAL_H

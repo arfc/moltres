@@ -54,38 +54,38 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
 
   if (_monotonic_interpolation)
   {
+    std::vector<std::vector<std::vector<Real> > > nt_consts(8);
+    nt_consts[0] = _flux_consts;
+    nt_consts[1] = _remxs_consts;
+    nt_consts[2] = _fissxs_consts;
+    nt_consts[3] = _nubar_consts;
+    nt_consts[4] = _nsf_consts;
+    nt_consts[5] = _fisse_consts;
+    nt_consts[6] = _diffcoeff_consts;
+    nt_consts[7] = _recipvel_consts;
 
-    _flux_a.resize(_num_groups);
-    _flux_b.resize(_num_groups);
-    _remxs_a.resize(_num_groups);
-    _remxs_b.resize(_num_groups);
-    _fissxs_a.resize(_num_groups);
-    _fissxs_b.resize(_num_groups);
-    _nubar_a.resize(_num_groups);
-    _nubar_b.resize(_num_groups);
-    _nsf_a.resize(_num_groups);
-    _nsf_b.resize(_num_groups);
-    _fisse_a.resize(_num_groups);
-    _fisse_b.resize(_num_groups);
-    _diffcoeff_a.resize(_num_groups);
-    _diffcoeff_b.resize(_num_groups);
-    _recipvel_a.resize(_num_groups);
-    _recipvel_b.resize(_num_groups);
+
+    for (decltype(nt_consts.size()) i = 0; i < nt_consts.size(); ++i)
+      for (decltype(nt_consts[i].size()) j = 0; j < nt_consts[i].size(); ++j)
+        nt_consts[i][j].resize(_num_groups);
+
     std::string file_name = property_tables_root;
     const std::string & file_name_ref = file_name;
     std::ifstream myfile (file_name_ref.c_str());
+    Real value;
     if (myfile.is_open())
     {
-      for (int i = 0; i < _num_groups; ++i)
-      {
-        myfile >> value;
-        _flux_a[i] = value;
-        myfile >> value;
-        _flux_b[i] = value;
-      }
-
-
-
+      // loop over type of constant, e.g. remxs, diffcoeff, etc.
+      for (decltype(nt_consts.size()) i = 0; i < nt_consts.size(); ++i)
+        // loop over number of groups
+        for (decltype(_num_groups) j = 0; j < _num_groups; ++j)
+          // loop over number of constants in least squares fit (2 for linear)
+          for (decltype(nt_consts[i].size()) k = 0; k < nt_consts[i].size(); ++k)
+          {
+            myfile >> value;
+            nt_consts[i][k][j] = value;
+          }
+    }
   }
 
   else
