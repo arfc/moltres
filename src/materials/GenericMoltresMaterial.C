@@ -65,8 +65,7 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
   }
 
   if (_interp_type == "least_squares")
-  {
-  }
+    leastSquaresConstruct(property_tables_root, xsec_names);
 
   else if (_interp_type == "spline")
     splineConstruct(property_tables_root, xsec_names);
