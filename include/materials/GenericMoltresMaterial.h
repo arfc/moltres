@@ -16,6 +16,12 @@ public:
   GenericMoltresMaterial(const InputParameters & parameters);
 
 protected:
+  void splineConstruct(std::string & property_tables_root, std::vector<std::string> xsec_names);
+  virtual void splineComputeQpProperties();
+  virtual void fuelBicubic();
+  virtual void moderatorBicubic();
+  virtual void bicubicSplineComputeQpProperties();
+  virtual void leastSquaresComputeQpProperties();
   virtual void computeQpProperties();
 
   const VariableValue & _temperature;
@@ -41,9 +47,8 @@ protected:
   MaterialProperty<std::vector<Real> > & _d_beta_eff_d_temp;
   MaterialProperty<std::vector<Real> > & _d_decay_constant_d_temp;
 
-  bool _bivariable_interp;
+  MooseEnum _interp_type;
   const PostprocessorValue & _other_temp;
-  bool _monotonic_interpolation;
 
   int _num_groups;
   int _num_precursor_groups;
