@@ -66,139 +66,13 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
 
   if (_interp_type == "least_squares")
   {
-    std::vector<std::vector<std::vector<Real> > > nt_consts(8);
-    nt_consts[0] = _flux_consts;
-    nt_consts[1] = _remxs_consts;
-    nt_consts[2] = _fissxs_consts;
-    nt_consts[3] = _nubar_consts;
-    nt_consts[4] = _nsf_consts;
-    nt_consts[5] = _fisse_consts;
-    nt_consts[6] = _diffcoeff_consts;
-    nt_consts[7] = _recipvel_consts;
-
-
-    for (decltype(nt_consts.size()) i = 0; i < nt_consts.size(); ++i)
-      for (decltype(nt_consts[i].size()) j = 0; j < nt_consts[i].size(); ++j)
-        nt_consts[i][j].resize(_num_groups);
-
-    std::string file_name = property_tables_root;
-    const std::string & file_name_ref = file_name;
-    std::ifstream myfile (file_name_ref.c_str());
-    Real value;
-    if (myfile.is_open())
-    {
-      // loop over type of constant, e.g. remxs, diffcoeff, etc.
-      for (decltype(nt_consts.size()) i = 0; i < nt_consts.size(); ++i)
-        // loop over number of groups
-        for (decltype(_num_groups) j = 0; j < _num_groups; ++j)
-          // loop over number of constants in least squares fit (2 for linear)
-          for (decltype(nt_consts[i].size()) k = 0; k < nt_consts[i].size(); ++k)
-          {
-            myfile >> value;
-            nt_consts[i][k][j] = value;
-          }
-    }
   }
 
   else if (_interp_type == "spline")
-  {
-    for (decltype(n) j = 0; j < n; ++j)
-    {
-      std::vector<Real> temperature;
-      std::string file_name = property_tables_root + xsec_names[j] + ".txt";
-      const std::string & file_name_ref = file_name;
-      std::ifstream myfile (file_name_ref.c_str());
+    splineConstruct(property_tables_root, xsec_names);
 
-      auto o = _vec_lengths[xsec_names[j]];
-
-      std::map<std::string, std::vector<std::vector<Real> > > xsec_map;
-      xsec_map[xsec_names[j]].resize(o);
-      _xsec_spline_interpolators[xsec_names[j]].resize(o);
-      if (myfile.is_open())
-      {
-        while (myfile >> value)
-        {
-          temperature.push_back(value);
-          for (decltype(o) k = 0; k < o; ++k)
-          {
-            myfile >> value;
-            xsec_map[xsec_names[j]][k].push_back(value);
-          }
-        }
-        myfile.close();
-        for (decltype(o) k = 0; k < o; ++k)
-          _xsec_spline_interpolators[xsec_names[j]][k].setData(temperature, xsec_map[xsec_names[j]][k]);
-      }
-      else
-        mooseError("Unable to open file " << file_name);
-    }
-  }
   else if (_interp_type == "bicubic_spline_interp")
-  {
-
-    std::vector<Real> fuel_temperature;
-    std::vector<Real> mod_temperature;
-    if (isParamValid("fuel_temp_points") && !(getParam<std::vector<Real> >("fuel_temp_points").empty()))
-      fuel_temperature = getParam<std::vector<Real> >("fuel_temp_points");
-    else
-      mooseError("You forgot to supply *fuel_temp_points* for interpolation!");
-    if (isParamValid("mod_temp_points") && !(getParam<std::vector<Real> >("mod_temp_points").empty()))
-      mod_temperature = getParam<std::vector<Real> >("mod_temp_points");
-    else
-      mooseError("You forgot to supply *mod_temp_points* for interpolation!");
-    auto l = fuel_temperature.size();
-    auto m = mod_temperature.size();
-    auto lm = l * m;
-    decltype(lm) inc = 0;
-
-    for (decltype(n) j = 0; j < n; ++j)
-    {
-      std::string file_name = property_tables_root + xsec_names[j] + ".txt";
-      const std::string & file_name_ref = file_name;
-      std::ifstream myfile (file_name_ref.c_str());
-
-      auto o = _vec_lengths[xsec_names[j]];
-
-      std::map<std::string, std::vector<std::vector<std::vector<Real> > > > xsec_map;
-      xsec_map[xsec_names[j]].resize(o);
-      for (decltype(o) k = 0; k < o; ++k)
-        xsec_map[xsec_names[j]][k].resize(l);
-      _xsec_bicubic_spline_interpolators[xsec_names[j]].resize(o);
-      if (myfile.is_open())
-      {
-        for (decltype(l) h = 0; h < l; ++h)
-        {
-          for (decltype(m) i = 0; i < m; ++i)
-          {
-            myfile >> value;
-            myfile >> value;
-            for (decltype(o) k = 0; k < o; ++k)
-            {
-              myfile >> value;
-              xsec_map[xsec_names[j]][k][h].push_back(value);
-            }
-          }
-        }
-        myfile.close();
-        for (decltype(o) k = 0; k < o; ++k)
-          _xsec_bicubic_spline_interpolators[xsec_names[j]][k].setData(fuel_temperature, mod_temperature, xsec_map[xsec_names[j]][k]);
-      }
-      else
-        mooseError("Unable to open file " << file_name);
-    }
-
-    if (!parameters.isParamSetByUser("other_temp"))
-      mooseError("If doing bivariable interpolation, you must supply a postprocessor value for the average temperature of the other material.");
-
-    if (!isParamValid("material"))
-      mooseError("User must specify whether we are in the *fuel* or *moderator*.");
-    else
-    {
-      _material = getParam<std::string>("material");
-      if (_material.compare("fuel") != 0 && _material.compare("moderator") != 0)
-        mooseError("Only valid choices for material parameter are *fuel* and *moderator*.");
-    }
-  }
+    bicubicSplineConstruct(property_tables_root, xsec_names, parameters);
 
   else
     mooseError("Wrong enum type");
@@ -206,8 +80,155 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
 
 void
 GenericMoltresMaterial::splineConstruct(std::string & property_tables_root, std::vector<std::string> xsec_names)
-{}
+{
+  Real value;
+  for (decltype(xsec_names.size()) j = 0; j < xsec_names.size(); ++j)
+  {
+    std::vector<Real> temperature;
+    std::string file_name = property_tables_root + xsec_names[j] + ".txt";
+    const std::string & file_name_ref = file_name;
+    std::ifstream myfile (file_name_ref.c_str());
 
+    auto o = _vec_lengths[xsec_names[j]];
+
+    std::map<std::string, std::vector<std::vector<Real> > > xsec_map;
+    xsec_map[xsec_names[j]].resize(o);
+    _xsec_spline_interpolators[xsec_names[j]].resize(o);
+    if (myfile.is_open())
+    {
+      while (myfile >> value)
+      {
+        temperature.push_back(value);
+        for (decltype(o) k = 0; k < o; ++k)
+        {
+          myfile >> value;
+          xsec_map[xsec_names[j]][k].push_back(value);
+        }
+      }
+      myfile.close();
+      for (decltype(o) k = 0; k < o; ++k)
+        _xsec_spline_interpolators[xsec_names[j]][k].setData(temperature, xsec_map[xsec_names[j]][k]);
+    }
+    else
+      mooseError("Unable to open file " << file_name);
+  }
+}
+
+void
+GenericMoltresMaterial::bicubicSplineConstruct(std::string & property_tables_root, std::vector<std::string> xsec_names, const InputParameters & parameters)
+{
+  Real value;
+  std::vector<Real> fuel_temperature;
+  std::vector<Real> mod_temperature;
+  if (isParamValid("fuel_temp_points") && !(getParam<std::vector<Real> >("fuel_temp_points").empty()))
+    fuel_temperature = getParam<std::vector<Real> >("fuel_temp_points");
+  else
+    mooseError("You forgot to supply *fuel_temp_points* for interpolation!");
+  if (isParamValid("mod_temp_points") && !(getParam<std::vector<Real> >("mod_temp_points").empty()))
+    mod_temperature = getParam<std::vector<Real> >("mod_temp_points");
+  else
+    mooseError("You forgot to supply *mod_temp_points* for interpolation!");
+  auto l = fuel_temperature.size();
+  auto m = mod_temperature.size();
+
+  for (decltype(xsec_names.size()) j = 0; j < xsec_names.size(); ++j)
+  {
+    std::string file_name = property_tables_root + xsec_names[j] + ".txt";
+    const std::string & file_name_ref = file_name;
+    std::ifstream myfile (file_name_ref.c_str());
+
+    auto o = _vec_lengths[xsec_names[j]];
+
+    std::map<std::string, std::vector<std::vector<std::vector<Real> > > > xsec_map;
+    xsec_map[xsec_names[j]].resize(o);
+    for (decltype(o) k = 0; k < o; ++k)
+      xsec_map[xsec_names[j]][k].resize(l);
+    _xsec_bicubic_spline_interpolators[xsec_names[j]].resize(o);
+    if (myfile.is_open())
+    {
+      for (decltype(l) h = 0; h < l; ++h)
+      {
+        for (decltype(m) i = 0; i < m; ++i)
+        {
+          myfile >> value;
+          myfile >> value;
+          for (decltype(o) k = 0; k < o; ++k)
+          {
+            myfile >> value;
+            xsec_map[xsec_names[j]][k][h].push_back(value);
+          }
+        }
+      }
+      myfile.close();
+      for (decltype(o) k = 0; k < o; ++k)
+        _xsec_bicubic_spline_interpolators[xsec_names[j]][k].setData(fuel_temperature, mod_temperature, xsec_map[xsec_names[j]][k]);
+    }
+    else
+      mooseError("Unable to open file " << file_name);
+  }
+
+  if (!parameters.isParamSetByUser("other_temp"))
+    mooseError("If doing bivariable interpolation, you must supply a postprocessor value for the average temperature of the other material.");
+
+  if (!isParamValid("material"))
+    mooseError("User must specify whether we are in the *fuel* or *moderator*.");
+  else
+  {
+    _material = getParam<std::string>("material");
+    if (_material.compare("fuel") != 0 && _material.compare("moderator") != 0)
+      mooseError("Only valid choices for material parameter are *fuel* and *moderator*.");
+  }
+}
+
+void
+GenericMoltresMaterial::leastSquaresConstruct(std::string & property_tables_root, std::vector<std::string> xsec_names)
+{
+  Real value;
+  std::map<std::string, std::vector<std::vector<Real> > > xsec_map;
+
+  xsec_map["FLUX"] = _flux_consts;
+  xsec_map["REMXS"] = _remxs_consts;
+  xsec_map["FISSXS"] = _fissxs_consts;
+  xsec_map["NUBAR"] = _nubar_consts;
+  xsec_map["NSF"] = _nsf_consts;
+  xsec_map["FISSE"] = _fisse_consts;
+  xsec_map["DIFFCOEFF"] = _diffcoeff_consts;
+  xsec_map["RECIPVEL"] = _recipvel_consts;
+  xsec_map["CHI"] = _chi_consts;
+  xsec_map["GTRANSFXS"] = _gtransfxs_consts;
+  xsec_map["BETA"] = _beta_eff_consts;
+  xsec_map["DECAY"] = _decay_constants_consts;
+
+  // loop over type of constant, e.g. remxs, diffcoeff, etc.
+  for (decltype(xsec_names.size()) i = 0; i < xsec_names.size(); ++i)
+    // loop over number of constants in least squares fit (2 for linear)
+    for (unsigned int j = 0; j <= 1; ++j)
+      xsec_map[xsec_names[i]][j].resize(_vec_lengths[xsec_names[i]]);
+
+  std::string file_name = property_tables_root;
+  const std::string & file_name_ref = file_name;
+  std::ifstream myfile (file_name_ref.c_str());
+
+  auto m = xsec_names.size();
+  if (myfile.is_open())
+  {
+    // loop over type of constant, e.g. remxs, diffcoeff, etc.
+    for (decltype(m) i = 0; i < m; ++i)
+    {
+      // loop over number of groups / number of precursor groups (or number of groups squared for GTRANSFXS
+      auto n = _vec_lengths[xsec_names[i]];
+      for (decltype(n) j = 0; j < n; ++j)
+      {
+        // loop over number of constants in least squares fit (2 for linear)
+        for (unsigned int k = 0; k <= 1; ++k)
+        {
+          myfile >> value;
+          xsec_map[xsec_names[i]][k][j] = value;
+        }
+      }
+    }
+  }
+}
 
 void
 GenericMoltresMaterial::splineComputeQpProperties()

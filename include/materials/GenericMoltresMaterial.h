@@ -17,6 +17,8 @@ public:
 
 protected:
   void splineConstruct(std::string & property_tables_root, std::vector<std::string> xsec_names);
+  void bicubicSplineConstruct(std::string & property_tables_root, std::vector<std::string> xsec_names, const InputParameters & parameters);
+  void leastSquaresConstruct(std::string & property_tables_root, std::vector<std::string> xsec_names);
   virtual void splineComputeQpProperties();
   virtual void fuelBicubic();
   virtual void moderatorBicubic();
@@ -65,6 +67,11 @@ protected:
   std::vector<std::vector<Real> > _fisse_consts = std::vector<std::vector<Real> >(2);
   std::vector<std::vector<Real> > _diffcoeff_consts = std::vector<std::vector<Real> >(2);
   std::vector<std::vector<Real> > _recipvel_consts = std::vector<std::vector<Real> >(2);
+  std::vector<std::vector<Real> > _chi_consts = std::vector<std::vector<Real> >(2);
+  std::vector<std::vector<Real> > _gtransfxs_consts = std::vector<std::vector<Real> >(2);
+  std::vector<std::vector<Real> > _beta_eff_consts = std::vector<std::vector<Real> >(2);
+  std::vector<std::vector<Real> > _decay_constants_consts = std::vector<std::vector<Real> >(2);
+
 };
 
 #endif //GENERICMOLTRESMATERIAL_H
