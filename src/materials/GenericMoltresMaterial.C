@@ -185,24 +185,14 @@ GenericMoltresMaterial::leastSquaresConstruct(std::string & property_tables_root
   Real value;
   std::map<std::string, std::vector<std::vector<Real> > > xsec_map;
 
-  xsec_map["FLUX"] = _flux_consts;
-  xsec_map["REMXS"] = _remxs_consts;
-  xsec_map["FISSXS"] = _fissxs_consts;
-  xsec_map["NUBAR"] = _nubar_consts;
-  xsec_map["NSF"] = _nsf_consts;
-  xsec_map["FISSE"] = _fisse_consts;
-  xsec_map["DIFFCOEFF"] = _diffcoeff_consts;
-  xsec_map["RECIPVEL"] = _recipvel_consts;
-  xsec_map["CHI"] = _chi_consts;
-  xsec_map["GTRANSFXS"] = _gtransfxs_consts;
-  xsec_map["BETA"] = _beta_eff_consts;
-  xsec_map["DECAY"] = _decay_constants_consts;
-
   // loop over type of constant, e.g. remxs, diffcoeff, etc.
   for (decltype(xsec_names.size()) i = 0; i < xsec_names.size(); ++i)
+  {
+    xsec_map[xsec_names[i]].resize(2);
     // loop over number of constants in least squares fit (2 for linear)
     for (unsigned int j = 0; j <= 1; ++j)
       xsec_map[xsec_names[i]][j].resize(_vec_lengths[xsec_names[i]]);
+  }
 
   std::string file_name = property_tables_root;
   const std::string & file_name_ref = file_name;
@@ -227,6 +217,19 @@ GenericMoltresMaterial::leastSquaresConstruct(std::string & property_tables_root
       }
     }
   }
+  
+  _flux_consts = xsec_map["FLUX"];
+  _remxs_consts = xsec_map["REMXS"];
+  _fissxs_consts = xsec_map["FISSXS"];
+  _nubar_consts = xsec_map["NUBAR"];
+  _nsf_consts = xsec_map["NSF"];
+  _fisse_consts = xsec_map["FISSE"];
+  _diffcoeff_consts = xsec_map["DIFFCOEFF"];
+  _recipvel_consts = xsec_map["RECIPVEL"];
+  _chi_consts = xsec_map["CHI"];
+  _gtransfxs_consts = xsec_map["GTRANSFXS"];
+  _beta_eff_consts = xsec_map["BETA"];
+  _decay_constants_consts = xsec_map["DECAY"];       
 }
 
 void
@@ -346,7 +349,37 @@ GenericMoltresMaterial::bicubicSplineComputeQpProperties()
 
 void
 GenericMoltresMaterial::leastSquaresComputeQpProperties()
-{}
+{
+  for (decltype(_num_groups) i = 0; i < _num_groups; ++i)
+  {
+    _remxs[_qp][i] = _remxs_consts[0][i] * _temperature[_qp] + _remxs_consts[1][i];
+    _fissxs[_qp][i] = _fissxs_consts[0][i] * _temperature[_qp] + _fissxs_consts[1][i];
+    _nsf[_qp][i] = _nsf_consts[0][i] * _temperature[_qp] + _nsf_consts[1][i];
+    _fisse[_qp][i] = (_fisse_consts[0][i] * _temperature[_qp] + _fisse_consts[1][i]) * 1e6 * 1.6e-19; // convert from MeV to Joules
+    _diffcoef[_qp][i] = _diffcoeff_consts[0][i] * _temperature[_qp] + _diffcoeff_consts[1][i];
+    _recipvel[_qp][i] = _recipvel_consts[0][i] * _temperature[_qp] + _recipvel_consts[1][i];
+    _chi[_qp][i] = _chi_consts[0][i] * _temperature[_qp] + _chi_consts[1][i];
+    _d_remxs_d_temp[_qp][i] = _remxs_consts[0][i];
+    _d_fissxs_d_temp[_qp][i] = _fissxs_consts[0][i];
+    _d_nsf_d_temp[_qp][i] = _nsf_consts[0][i];
+    _d_fisse_d_temp[_qp][i] = _fisse_consts[0][i] * 1e6 * 1.6e-19; // convert from MeV to Joules
+    _d_diffcoef_d_temp[_qp][i] = _diffcoeff_consts[0][i];
+    _d_recipvel_d_temp[_qp][i] = _recipvel_consts[0][i];
+    _d_chi_d_temp[_qp][i] = _chi_consts[0][i];
+  }
+  for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
+  {
+    _gtransfxs[_qp][i] = _gtransfxs_consts[0][i] * _temperature[_qp] + _gtransfxs_consts[1][i];
+    _d_gtransfxs_d_temp[_qp][i] = _gtransfxs_consts[0][i];
+  }
+  for (decltype(_num_groups) i = 0; i < _num_precursor_groups; ++i)
+  {
+    _beta_eff[_qp][i] = _beta_eff_consts[0][i] * _temperature[_qp] + _beta_eff_consts[1][i];
+    _d_beta_eff_d_temp[_qp][i] = _beta_eff_consts[0][i];
+    _decay_constant[_qp][i] = _decay_constants_consts[0][i] * _temperature[_qp] + _decay_constants_consts[1][i];
+    _d_decay_constant_d_temp[_qp][i] = _decay_constants_consts[0][i];
+  }
+}
 
 
 void
