@@ -6,7 +6,7 @@ InputParameters validParams<MatINSTemperatureNoBCBC>()
   InputParameters params = validParams<IntegratedBC>();
 
   // Required parameters
-  params.addRequiredParam<MaterialPropertyName>("k", "The name of the thermal conductivity material property");
+  params.addParam<MaterialPropertyName>("k", "The name of the thermal conductivity material property");
 
   return params;
 }

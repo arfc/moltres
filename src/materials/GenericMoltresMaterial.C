@@ -49,10 +49,10 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
 {
   _num_groups = getParam<int>("num_groups");
   _num_precursor_groups = getParam<int>("num_precursor_groups");
-  Real value;
   std::string property_tables_root = getParam<std::string>("property_tables_root");
   std::vector<std::string> xsec_names {"FLUX", "REMXS", "FISSXS", "NUBAR", "NSF", "FISSE", "DIFFCOEF",
       "RECIPVEL", "CHI", "GTRANSFXS", "BETA_EFF", "DECAY_CONSTANT"};
+  
   auto n = xsec_names.size();
   for (decltype(n) j = 0; j < n; ++j)
   {
@@ -224,12 +224,12 @@ GenericMoltresMaterial::leastSquaresConstruct(std::string & property_tables_root
   _nubar_consts = xsec_map["NUBAR"];
   _nsf_consts = xsec_map["NSF"];
   _fisse_consts = xsec_map["FISSE"];
-  _diffcoeff_consts = xsec_map["DIFFCOEFF"];
+  _diffcoeff_consts = xsec_map["DIFFCOEF"];
   _recipvel_consts = xsec_map["RECIPVEL"];
   _chi_consts = xsec_map["CHI"];
   _gtransfxs_consts = xsec_map["GTRANSFXS"];
-  _beta_eff_consts = xsec_map["BETA"];
-  _decay_constants_consts = xsec_map["DECAY"];       
+  _beta_eff_consts = xsec_map["BETA_EFF"];
+  _decay_constants_consts = xsec_map["DECAY_CONSTANT"];
 }
 
 void
@@ -385,7 +385,7 @@ GenericMoltresMaterial::leastSquaresComputeQpProperties()
 void
 GenericMoltresMaterial::computeQpProperties()
 {
-  for (decltype(_num_groups) i = 0; i < _num_props; i++)
+  for (unsigned int i = 0; i < _num_props; i++)
     (*_properties[i])[_qp] = _prop_values[i];
 
   _remxs[_qp].resize(_vec_lengths["REMXS"]);

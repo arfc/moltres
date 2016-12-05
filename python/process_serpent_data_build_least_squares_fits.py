@@ -1,3 +1,5 @@
+#!/usr/env/python
+
 import numpy as np
 import subprocess
 
@@ -14,7 +16,7 @@ materials = ["fuel", "mod"]
 
 for material in materials:
     write_file_name =  subprocess.call(["touch", "write_" + material])
-    file_base = "msr2g_Th_U_two_mat_homogenization_" + material + "_data_func_of_" + material + "_temp"
+    file_base = "msr2g_Th_U_two_mat_homogenization_dens_func_" + material + "_data_func_of_" + material + "_temp"
     write_file = open("write_" + material, 'r+')
     for xsec in xsecs:
         file_name = file_base + "_" + xsec + ".txt"

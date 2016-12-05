@@ -153,3 +153,16 @@ time from interface to wall is 42 seconds. The massive amounts of heat from
 fission are being generated over the course of hundredths of a second. So yea
 we're going to have to go to some wall like condition at the interface...e.g. we
 cannot have Tmod = Tfuel at the interface.
+
+Coefficient of thermal expansion, graphite: 2-6e-6 m/(m*K)
+
+Doubling fluid flow velocity (see leastSquared directory), had absolutely no
+impact on the maximum temperature in the reactor which seems a little bit odd to
+me. 
+
+Putting those dumb boundary conditions in place for the temperature in the
+moderator produces a hideous spectrum. I think how Cammi got around these things
+is because he never used local temperatures to determine his properties. He used
+block averaged values. So he could integrate over half the moderator domain to
+determine the average temperature and then use that for the neutron group
+constants in the other half.
