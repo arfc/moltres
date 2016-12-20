@@ -1,7 +1,7 @@
 flow_velocity=300 # Cammi 147 cm/s
 inlet_temp=824
 initial_outlet_temp=824
-nt_scale=1e16
+nt_scale=1e13
 precursor_log_inlet_conc=-17
 reactor_height=200 # Cammi 396 cm
 fuel_radius=2.08
@@ -21,7 +21,7 @@ mod_initial_temp=1500
 [../]
 
 [Mesh]
-  file = 'three-temp-region.msh'
+  file = 'cylinder_structured.msh'
 [../]
 
 
@@ -96,7 +96,7 @@ mod_initial_temp=1500
   [../]
   [./moder]
     type = CammiModerator
-    block = 'moder left_graphite right_graphite'
+    block = 'moder'
     property_tables_root = '../property_file_dir/write_mod_dens_func'
     prop_names = 'rho cp'
     prop_values = '1.843e-3 1760' # Cammi 2011 at 908 K
@@ -123,17 +123,17 @@ mod_initial_temp=1500
     variable = temp
     use_exp_form = false
   [../]
-  [./temp_graphite_centerline]
-    boundary = 'graphite_middle'
-    type = NeumannBC
-    value = 0
-    variable = temp
-  [../]
-  [./temp_outer_wall]
-    boundary = 'outer_wall'
-    type = MatINSTemperatureNoBCBC
-    variable = temp
-  [../]  
+  # [./temp_graphite_centerline]
+  #   boundary = 'graphite_middle'
+  #   type = NeumannBC
+  #   value = 0
+  #   variable = temp
+  # [../]
+  # [./temp_outer_wall]
+  #   boundary = 'outer_wall'
+  #   type = MatINSTemperatureNoBCBC
+  #   variable = temp
+  # [../]  
 []
 
 [Problem]
@@ -146,7 +146,7 @@ mod_initial_temp=1500
   end_time = 10000
 
   # line_search = none
-  nl_abs_tol = 1e1
+  nl_abs_tol = 2e2
   # trans_ss_check = true
   # ss_check_tol = 8e-9
 
@@ -168,7 +168,7 @@ mod_initial_temp=1500
     type = IterationAdaptiveDT
     cutback_factor = 0.4
     dt = 1e-4
-    growth_factor = 1.005
+    growth_factor = 1.01
     optimal_iterations = 20
   [../]
   # [./TimeIntegrator]

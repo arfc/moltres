@@ -5,6 +5,15 @@
   ny = 10
 []
 
+[MeshModifiers]
+  [./box]
+    type = SubdomainBoundingBox
+    bottom_left = '0.5 0 0'
+    top_right = '1. 1. 0'
+    block_id = 1
+  [../]
+[]
+
 [Variables]
   [./diffused]
     order = FIRST

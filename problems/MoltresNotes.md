@@ -158,7 +158,7 @@ Coefficient of thermal expansion, graphite: 2-6e-6 m/(m*K)
 
 Doubling fluid flow velocity (see leastSquared directory), had absolutely no
 impact on the maximum temperature in the reactor which seems a little bit odd to
-me. 
+me.
 
 Putting those dumb boundary conditions in place for the temperature in the
 moderator produces a hideous spectrum. I think how Cammi got around these things
@@ -166,3 +166,62 @@ is because he never used local temperatures to determine his properties. He used
 block averaged values. So he could integrate over half the moderator domain to
 determine the average temperature and then use that for the neutron group
 constants in the other half.
+
+Working on monotone cubic interpolation:
+
+The second order accurate finite difference methods for derivative computation
+will compute derivatives exactly for a second order polynomial. They WILL NOT
+correctly compute derivatives for a third order polynomial because they are only
+second order accurate. The FC algorithm initializes derivatives using this
+second order differencing scheme. However, the FB algorithm roughly averages
+neighboring secant lines...this is not second order accurate (or is it?).
+
+Let's say we have some function. We want to evaluate/estimate it's derivative at
+a point. How can we do that? We can perform a finite difference to do the
+estimation:
+
+f'(x) ~ (f(x+h) - f(x-h)) / h
+
+We can write the error of this approximation as:
+
+E(h) = C * h**n
+
+where n is the order of accuracy. We can imagine a case where a method is nth
+order accurate and the error is zero; this corresponds to C = 0.
+
+From wikipedia: "The Newton series consists of the terms of the Newton forward
+difference equation, named after Isaac Newton; in essence, it is the Newton
+interpolation formula, namely the discrete analog of the continuum Taylor
+expansion, which holds for any polynomial function f and for most (but not all)
+analytic functions.
+
+You can define your numerical derivative however you want! But then the key is
+you need to be able to set-up an expression:
+
+y' + Error(stuff, h) = numerical\_derivative
+
+And then you can inspect the parts that make up the error in order to determine
+it's functional dependence on h and perhaps whether the error is zero because of
+other components that make up the error function. Cool!
+
+yt is not correctly rendering any of my new neutronic simulation data sets! Need
+to figure out why.
+
+Ok first test was running a single region test with Quad4 elements. That test
+went sucessfully which makes sense because Andrew has had a Q2 sampler
+implemented forever.
+
+It should be noted that data values in yt aren't actually accessed until
+performing data access, something like `ad['diffused']`. Even this operation:
+`ad = ds.all_data()` won't actually read the variable values.
+
+Prism volumes:
+second order volumes: 1.17718
+first order volumes: 1.06066
+
+For just one element:
+first order volume: 1.5 (as it should be)
+second order volume: 2.32843; very close to 2.356 which is equal to:
+pi * r^2 * h / 4
+
+The rule for computing the PRISM18 volume can be found in the libmesh source.

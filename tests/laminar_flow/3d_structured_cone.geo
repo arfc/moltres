@@ -13,17 +13,17 @@ Plane Surface(6) = {5};
 Transfinite Line{1:4} = 10;
 Transfinite Surface{6};
 Recombine Surface{6};
-Extrude {{0, 0, 1}, {0, 0, 0}, Pi/2} {
-  Surface{6}; Layers{5}; Recombine;
-}
 // Extrude {{0, 0, 1}, {0, 0, 0}, Pi/2} {
-//   Surface{23};
+//   Surface{6}; Layers{5}; Recombine;
 // }
 // Extrude {{0, 0, 1}, {0, 0, 0}, Pi/2} {
-//   Surface{40};
+//   Surface{23}; Layers{5}; Recombine;
 // }
 // Extrude {{0, 0, 1}, {0, 0, 0}, Pi/2} {
-//   Surface{57};
+//   Surface{40}; Layers{5}; Recombine;
+// }
+// Extrude {{0, 0, 1}, {0, 0, 0}, Pi/2} {
+//   Surface{57}; Layers{5}; Recombine;
 // }
 // Physical Point("PressurePoint") = {3};
 // Physical Surface("Walls") = {19, 70, 53, 36};

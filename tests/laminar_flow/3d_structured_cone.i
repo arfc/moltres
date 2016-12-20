@@ -7,7 +7,7 @@
 []
 
 [Mesh]
-  file = '3d_cone.msh'
+  file = 'prism.msh'
 []
 
 [Problem]
