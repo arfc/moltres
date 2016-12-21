@@ -7,7 +7,7 @@
 []
 
 [Mesh]
-  file = '3d_cone.msh'
+  file = 'constant_ending_channel_3d.msh'
 []
 
 [Problem]
@@ -43,9 +43,12 @@
 [Outputs]
   print_perf_log = true
   print_linear_residuals = true
+  # [./out]
+  #   type = Exodus
+  # []
   [./out]
-    type = Exodus
-  []
+    type = VTK
+  [../]
 []
 
 [Variables]
@@ -112,16 +115,16 @@
     p = p
     component = 1
   [../]
-  [./uz_out]
-    type = INSMomentumNoBCBCTractionForm
-    boundary = 'Outlet'
-    variable = uz
-    u = ux
-    v = uy
-    w = uz
-    p = p
-    component = 2
-  [../]
+  # [./uz_out]
+  #   type = INSMomentumNoBCBCTractionForm
+  #   boundary = 'Outlet'
+  #   variable = uz
+  #   u = ux
+  #   v = uy
+  #   w = uz
+  #   p = p
+  #   component = 2
+  # [../]
   [./p_point]
     type = DirichletBC
     boundary = 'PressurePoint'

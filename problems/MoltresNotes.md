@@ -225,3 +225,9 @@ second order volume: 2.32843; very close to 2.356 which is equal to:
 pi * r^2 * h / 4
 
 The rule for computing the PRISM18 volume can be found in the libmesh source.
+
+The natural boundary condition appears to have an effect on the flow at the
+boundary for shizzle.
+
+I've been able to get the flow simulation to work perfectly with the correct
+geometry and the correct boundary conditions. Nice!

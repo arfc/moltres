@@ -7,7 +7,7 @@
 []
 
 [Mesh]
-  file = 'prism.msh'
+  file = '3d_structured_cone.msh'
 []
 
 [Problem]
@@ -21,7 +21,7 @@
     # petsc_options_iname = '-pc_type -sub_pc_type -sub_ksp_type'
     # petsc_options_value = 'asm	    lu		 preonly'
     petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type -pc_factor_mat_solver_package'
-    petsc_options_value = 'lu NONZERO 1.e-10 preonly superlu_dist'
+    petsc_options_value = 'lu NONZERO 1.e-10 preonly mumps'
   [../]
 []
 
@@ -43,9 +43,12 @@
 [Outputs]
   print_perf_log = true
   print_linear_residuals = true
+  # [./out]
+  #   type = Exodus
+  # []
   [./out]
-    type = Exodus
-  []
+    type = VTK
+  [../]
 []
 
 [Variables]
@@ -197,6 +200,6 @@
 [Functions]
   [./inlet_func]
     type = ParsedFunction
-    value = '1 - (x^2 + y^2)'
+    value = '1 - 4 * (x^2 + y^2)'
   [../]
 []
