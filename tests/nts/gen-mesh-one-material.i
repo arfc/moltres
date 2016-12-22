@@ -162,6 +162,7 @@
     num_groups = 2
     prop_names = 'k'
     prop_values = '.0123' # Cammi 2011 at 908 K
+    interp_type = spline
     # prop_names = 'k d_k_d_temp'
     # prop_values = '.0123 0' # Cammi 2011 at 908 K
   [../]

@@ -231,3 +231,66 @@ boundary for shizzle.
 
 I've been able to get the flow simulation to work perfectly with the correct
 geometry and the correct boundary conditions. Nice!
+
+Ok, so when linking a library with -l, the linker searches in order from first
+to last of directories provided with -L. -rpath matters for run-time; if there's
+a mistake in supplying rpath during the linking stage, this error will show up
+at run-time, NOT during program linking.
+
+ldd uses LD_LIBRARY_PATH. You can kind of think of ldd as a command that
+executes the shared object in order to discover its dependencies. Things that
+get executed care about their environment; e.g. in this case ldd certainly cares
+about LD_LIBRARY_PATH.
+
+Changing LD_LIBRARY_PATH will change the memory location/library version that a
+shared object points to. E.g. if I alter LD_LIBRARY_PATH, then I can change the
+location of the library that libgfortran.so.3 points to.
+
+When resolving shared object dependencies of an executable or other shared
+object, the looking order is roughly the following:
+
+1. Directories specified in the DT_RPATH dynamic section attribute of the
+   executable/shared object in question (this is set at compile/linking time for
+   example with -W,-rpath)
+2. From the environment variable LD_LIBRARY_PATH
+3. From the library directories listed in /etc/ld.so.conf
+4. Finally in /lib and then /usr/lib
+
+Nice!
+
+The problematic file appears to be...kind of the core shared
+object...libmesh_dbg.so
+
+Successfull compilation command for the previously failing unit_tests-dbg:
+
+ccache clang++ -std=gnu++11 -O0 -felide-constructors -g -pedantic -W -Wall
+-Wextra -Wno-long-long -Wunused -Wpointer-arith -Wformat -Wparentheses
+-Qunused-arguments -Woverloaded-virtual -fopenmp -std=gnu++11 -o
+.libs/unit_tests-dbg hello.cpp -Wl,-rpath -Wl,/opt/moose/tbb/lib -Wl,-rpath
+-Wl,/opt/moose/petsc/mpich_petsc-3.7.4/clang-opt-superlu/lib -Wl,-rpath
+-Wl,/opt/moose/gcc-6.2.0/lib/gcc/x86_64-pc-linux-gnu/6.2.0 -Wl,-rpath
+-Wl,/opt/moose/gcc-6.2.0/lib64 -Wl,-rpath -Wl,/lib/x86_64-linux-gnu -Wl,-rpath
+-Wl,/opt/moose/gcc-6.2.0/lib -Wl,-rpath
+-Wl,/opt/moose/mpich/mpich-3.2/clang-opt/lib -Wl,-rpath
+-Wl,/opt/moose/llvm-3.9.0/lib -Wl,-rpath -Wl,/usr/lib/x86_64-linux-gnu
+-L/opt/moose/petsc/mpich_petsc-3.7.4/clang-opt-superlu/lib
+-L/opt/moose/mpich/mpich-3.2/clang-opt/lib -L/opt/moose/gcc-6.2.0/lib64
+-L/opt/moose/gcc-6.2.0/lib
+/home/lindsayad/test_multiple_petsc/libmesh/build/contrib/netcdf/v4/liblib/.libs/libnetcdf.so
+/usr/lib/x86_64-linux-gnu/libcurl-gnutls.so -lz -L/opt/moose/tbb/lib -ltbb
+-ltbbmalloc -lpetsc -lsuperlu_dist -lcmumps -ldmumps -lsmumps -lzmumps
+-lmumps_common -lpord -lparmetis -lmetis -lHYPRE
+-L/opt/moose/gcc-6.2.0/lib/gcc/x86_64-pc-linux-gnu/6.2.0 -L/lib/x86_64-linux-gnu
+-L/opt/moose/llvm-3.9.0/lib -lscalapack -lflapack -lfblas -lX11 -lhwloc
+/opt/moose/mpich/mpich-3.2/clang-opt/lib/libmpifort.so
+/opt/moose/gcc-6.2.0/lib/../lib64/libgfortran.so
+/opt/moose/gcc-6.2.0/lib/../lib64/libgomp.so
+/opt/moose/gcc-6.2.0/lib/../lib64/libquadmath.so
+/opt/moose/mpich/mpich-3.2/clang-opt/lib/libmpicxx.so
+/opt/moose/gcc-6.2.0/lib/../lib64/libstdc++.so -lm
+/opt/moose/mpich/mpich-3.2/clang-opt/lib/libmpi.so -lrt -lomp -lgcc_s -lpthread
+-L/usr/lib/x86_64-linux-gnu -L/opt/moose/cppunit-1.12.1/clang-opt/lib -lcppunit
+-ldl -pthread -fopenmp -Wl,-rpath
+-Wl,/home/lindsayad/test_multiple_petsc/scripts/../libmesh/installed/lib
+-Wl,-rpath -Wl,/opt/moose/gcc-6.2.0/lib/../lib64 -Wl,-rpath
+-Wl,/opt/moose/mpich/mpich-3.2/clang-opt/lib
