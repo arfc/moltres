@@ -26,26 +26,22 @@
     exodiff = 'RZ_p_parts_do_nothing_bcs_out.e'
     cli_args = 'Outputs/file_base=RZ_p_parts_do_nothing_bcs_out GlobalParams/integrate_p_by_parts=true'
   [../]
-  [./RZ_p_no_parts_do_nothing_bcs_cone]
+  [./3d_channel_flow_unstructured_matching]
     type = 'Exodiff'
-    input = 'RZ_do_nothing_bcs_cone.i'
-    exodiff = 'RZ_p_no_parts_do_nothing_bcs_cone_out.e'
-    cli_args = 'Outputs/file_base=RZ_p_no_parts_do_nothing_bcs_cone_out GlobalParams/integrate_p_by_parts=false'
+    input = 'constant_ending_channel_3d_unstructured.i'
+    exodiff = 'constant_ending_channel_3d_unstructured_out.e'
+    min_parallel = 2
   [../]
-  [./RZ_p_parts_do_nothing_bcs_cone]
-    type = 'Exodiff'
-    input = 'RZ_do_nothing_bcs_cone.i'
-    exodiff = 'RZ_p_parts_do_nothing_bcs_cone_out.e'
-    cli_args = 'Outputs/file_base=RZ_p_parts_do_nothing_bcs_cone_out GlobalParams/integrate_p_by_parts=true'
+  [./3d_channel_flow_structured_matching]
+    type = 'VTKDiff'
+    input = 'constant_ending_channel_3d_structured.i'
+    vtkdiff = 'constant_ending_channel_3d_structured_out_001.vtk constant_ending_channel_3d_structured_out_001_0.vtu'
+    max_parallel = 1
+    vtk = true
   [../]
-  [./3d_channel_flow]
+  [./2d_RZ_channel_flow_matching]
     type = 'Exodiff'
-    input = '3d_channel_flow.i'
-    exodiff = '3d_channel_flow_out.e'
-  [../]
-  [./3d_unstructured_channel_flow]
-    type = 'Exodiff'
-    input = '3d_unstructured.i'
-    exodiff = '3d_unstructured_out.e'
+    input = 'RZ_2d_pressure_point_in_center_outlet.i'
+    exodiff = 'RZ_2d_pressure_point_in_center_outlet_out.e'
   [../]
 []

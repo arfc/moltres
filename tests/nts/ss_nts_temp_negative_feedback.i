@@ -102,18 +102,12 @@ nt_scale=1e13
     block = 'fuel'
     type = MatINSTemperatureRZ
     variable = temp
-    rho = 'rho'
-    k = 'k'
-    cp = 'cp'
     uz = ${flow_velocity}
   [../]
   [./temp_flow_moder]
     block = 'moder'
     type = MatINSTemperatureRZ
     variable = temp
-    rho = 'rho'
-    k = 'k'
-    cp = 'cp'
   [../]
   [./temp_source]
     type = TransientFissionHeatSource
@@ -123,8 +117,6 @@ nt_scale=1e13
   [./temp_time_derivative]
     type = MatINSTemperatureTimeDerivative
     variable = temp
-    rho = 'rho'
-    cp = 'cp'
   [../]
 []
 
@@ -160,6 +152,7 @@ nt_scale=1e13
     prop_names = 'k rho cp'
     prop_values = '.0123 3.327e-3 1357' # Cammi 2011 at 908 K
     temperature = temp
+    interp_type = spline
   [../]
   [./moder]
     type = GenericMoltresMaterial
@@ -170,6 +163,7 @@ nt_scale=1e13
     prop_names = 'k rho cp'
     prop_values = '.312 1.843e-3 1760' # Cammi 2011 at 908 K
     temperature = temp
+    interp_type = spline
   [../]
 []
 
@@ -218,12 +212,12 @@ nt_scale=1e13
   # petsc_options_iname = '-pc_type -sub_pc_type -sub_ksp_type -pc_asm_overlap -ksp_gmres_restart -snes_linesearch_mindlambda'
   # petsc_options_value = 'asm lu preonly 2 31 1e-3'
   petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type -snes_linesearch_minlambda -pc_factor_mat_solver_package'
-  petsc_options_value = 'lu NONZERO 1.e-10 preonly 1e-3 superlu_dist'
+  petsc_options_value = 'lu NONZERO 1.e-10 preonly 1e-3 mumps'
 
   nl_max_its = 10
   l_max_its = 10
 
-  dtmin = 1e-7
+  dtmin = 1e-5
   [./TimeStepper]
     type = IterationAdaptiveDT
     cutback_factor = 0.4

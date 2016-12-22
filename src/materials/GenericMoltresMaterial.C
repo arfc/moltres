@@ -52,7 +52,7 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
   std::string property_tables_root = getParam<std::string>("property_tables_root");
   std::vector<std::string> xsec_names {"FLUX", "REMXS", "FISSXS", "NUBAR", "NSF", "FISSE", "DIFFCOEF",
       "RECIPVEL", "CHI", "GTRANSFXS", "BETA_EFF", "DECAY_CONSTANT"};
-  
+
   auto n = xsec_names.size();
   for (decltype(n) j = 0; j < n; ++j)
   {
@@ -217,7 +217,7 @@ GenericMoltresMaterial::leastSquaresConstruct(std::string & property_tables_root
       }
     }
   }
-  
+
   _flux_consts = xsec_map["FLUX"];
   _remxs_consts = xsec_map["REMXS"];
   _fissxs_consts = xsec_map["FISSXS"];
