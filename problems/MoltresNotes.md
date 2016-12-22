@@ -294,3 +294,20 @@ ccache clang++ -std=gnu++11 -O0 -felide-constructors -g -pedantic -W -Wall
 -Wl,/home/lindsayad/test_multiple_petsc/scripts/../libmesh/installed/lib
 -Wl,-rpath -Wl,/opt/moose/gcc-6.2.0/lib/../lib64 -Wl,-rpath
 -Wl,/opt/moose/mpich/mpich-3.2/clang-opt/lib
+
+Should it be enough...?
+
+I learned exactly why the libmesh build was failing. The reason is that when
+compiling and linking the libmesh_dbg library, the /usr/lib/x86_64-linux-gnu
+directory was passed to the linker before the opt petsc directory, meaning that
+-lpetsc links in the system petsc as opposed to the MOOSE environment petsc. And
+then when compiling and linking the unit_tests-dbg shared object, the opt petsc directory
+is passed first, so there's a mismatch there.
+
+To summarize: system petsc can be used to build libmesh/moose as long as the
+moose environment is not loaded. However, it's pretty much impossible to unload
+the system packages, so the moose environment petsc cannot be used to build
+libmesh/moose as long as the system petsc is installed.
+
+Knowing why this failed is enough for me. There's really no practical use to
+having two petsc installations loaded at any time.
