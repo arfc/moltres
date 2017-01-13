@@ -4,7 +4,7 @@ initial_outlet_temp=824
 nt_scale=1e16
 precursor_log_inlet_conc=-17
 reactor_height=115 # Cammi 376 cm
-global_temperature='temp'
+global_temperature=900
 
 [GlobalParams]
   num_groups = 2
@@ -28,9 +28,9 @@ global_temperature='temp'
   vacuum_boundaries = 'fuel_top graphite_top fuel_bottom graphite_bottom'
   temp_scaling = 1e0
   nt_ic_function = 'nt_ic_func'
-  # create_temperature_var = false
-  temperature = ${global_temperature}
-  # temperature_value = ${global_temperature}
+  create_temperature_var = false
+  # temperature = ${global_temperature}
+  temperature_value = ${global_temperature}
 []
 
 # [PrecursorKernel]
@@ -46,43 +46,43 @@ global_temperature='temp'
 #   offset = 24
 # []
 
-[Kernels]
-  # Temperature
-  [./temp_flow_fuel]
-    block = 'fuel'
-    type = MatINSTemperatureRZ
-    variable = temp
-    rho = 'rho'
-    k = 'k'
-    cp = 'cp'
-    uz = ${flow_velocity}
-  [../]
-  [./temp_art_diff_fuel]
-    block = 'fuel'
-    type = ScalarAdvectionArtDiff
-    variable = temp
-    use_exp_form = false
-  [../]
-  [./temp_flow_moder]
-    block = 'moder'
-    type = MatINSTemperatureRZ
-    variable = temp
-    rho = 'rho'
-    k = 'k'
-    cp = 'cp'
-  [../]
-  [./temp_source]
-    type = TransientFissionHeatSource
-    variable = temp
-    nt_scale=${nt_scale}
-  [../]
-  [./temp_time_derivative]
-    type = MatINSTemperatureTimeDerivative
-    variable = temp
-    rho = 'rho'
-    cp = 'cp'
-  [../]
-[]
+# [Kernels]
+#   # Temperature
+#   [./temp_flow_fuel]
+#     block = 'fuel'
+#     type = MatINSTemperatureRZ
+#     variable = temp
+#     rho = 'rho'
+#     k = 'k'
+#     cp = 'cp'
+#     uz = ${flow_velocity}
+#   [../]
+#   [./temp_art_diff_fuel]
+#     block = 'fuel'
+#     type = ScalarAdvectionArtDiff
+#     variable = temp
+#     use_exp_form = false
+#   [../]
+#   [./temp_flow_moder]
+#     block = 'moder'
+#     type = MatINSTemperatureRZ
+#     variable = temp
+#     rho = 'rho'
+#     k = 'k'
+#     cp = 'cp'
+#   [../]
+#   [./temp_source]
+#     type = TransientFissionHeatSource
+#     variable = temp
+#     nt_scale=${nt_scale}
+#   [../]
+#   [./temp_time_derivative]
+#     type = MatINSTemperatureTimeDerivative
+#     variable = temp
+#     rho = 'rho'
+#     cp = 'cp'
+#   [../]
+# []
 
 [Materials]
   [./fuel]
@@ -105,26 +105,26 @@ global_temperature='temp'
   [../]
 []
 
-[BCs]
-  [./temp_inlet]
-    boundary = 'fuel_bottom graphite_bottom'
-    type = DirichletBC
-    variable = temp
-    value = ${inlet_temp}
-  [../]
-  [./temp_outlet]
-    boundary = 'fuel_top'
-    type = MatINSTemperatureNoBCBC
-    variable = temp
-    k = 'k'
-  [../]
-  [./temp_art_diff_fuel]
-    boundary = 'fuel_top'
-    type = ScalarAdvectionArtDiffNoBCBC
-    variable = temp
-    use_exp_form = false
-  [../]
-[]
+# [BCs]
+#   [./temp_inlet]
+#     boundary = 'fuel_bottom graphite_bottom'
+#     type = DirichletBC
+#     variable = temp
+#     value = ${inlet_temp}
+#   [../]
+#   [./temp_outlet]
+#     boundary = 'fuel_top'
+#     type = MatINSTemperatureNoBCBC
+#     variable = temp
+#     k = 'k'
+#   [../]
+#   [./temp_art_diff_fuel]
+#     boundary = 'fuel_top'
+#     type = ScalarAdvectionArtDiffNoBCBC
+#     variable = temp
+#     use_exp_form = false
+#   [../]
+# []
 
 [Problem]
   type = FEProblem
@@ -181,18 +181,18 @@ global_temperature='temp'
   show_var_residual_norms = true
 []
 
-[ICs]
-  # [./temp_ic]
-  #   type = ConstantIC
-  #   variable = temp
-  #   value = ${inlet_temp}
-  # [../]
-  [./temp_all_ic_func]
-    type = FunctionIC
-    variable = temp
-    function = temp_ic_func
-  [../]
-[]
+# [ICs]
+#   # [./temp_ic]
+#   #   type = ConstantIC
+#   #   variable = temp
+#   #   value = ${inlet_temp}
+#   # [../]
+#   [./temp_all_ic_func]
+#     type = FunctionIC
+#     variable = temp
+#     function = temp_ic_func
+#   [../]
+# []
 
 [Functions]
   [./temp_ic_func]
