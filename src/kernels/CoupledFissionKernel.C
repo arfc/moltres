@@ -7,7 +7,7 @@ InputParameters validParams<CoupledFissionKernel>()
   params += validParams<ScalarTransportBase>();
   params.addRequiredParam<int>("group_number", "The current energy group");
   params.addRequiredParam<int>("num_groups", "The total numer of energy groups");
-  params.addCoupledVar("temperature", 937, "The temperature used to interpolate material properties");
+  params.addCoupledVar("temperature", 800, "The temperature used to interpolate material properties");
   params.addRequiredCoupledVar("group_fluxes", "All the variables that hold the group fluxes. These MUST be listed by decreasing energy/increasing group number.");
   return params;
 }

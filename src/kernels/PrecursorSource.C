@@ -8,7 +8,7 @@ InputParameters validParams<PrecursorSource>()
   params.addRequiredParam<int>("num_groups", "The total numer of energy groups");
   params.addRequiredCoupledVar("group_fluxes", "All the variables that hold the group fluxes. These MUST be listed by decreasing energy/increasing group number.");
   params.addParam<int>("precursor_group_number", "What precursor group this kernel is acting on.");
-  params.addCoupledVar("temperature", 937, "The temperature used to interpolate material properties.");
+  params.addCoupledVar("temperature", 800, "The temperature used to interpolate material properties.");
   params.addParam<Real>("prec_scale", 1, "The factor by which the neutron fluxes are scaled.");
   return params;
 }

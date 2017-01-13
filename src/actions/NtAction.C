@@ -11,6 +11,7 @@ InputParameters validParams<NtAction>()
   params.addRequiredParam<int>("num_precursor_groups", "specifies the total number of precursors to create");
   params.addRequiredParam<std::string>("var_name_base", "specifies the base name of the variables");
   params.addParam<VariableName>("temperature", "Name of temperature variable");
+  params.addParam<Real>("temperature_value", "Can decouple neutron and temperature simulations by passing in a temperature value here.");
   params.addParam<Real>("temp_scaling", "The amount by which to scale the temperature variable.");
   params.addRequiredParam<int>("num_groups", "The total number of energy groups.");
   params.addRequiredParam<bool>("use_exp_form", "Whether concentrations should be in an expotential/logarithmic format.");
@@ -19,6 +20,7 @@ InputParameters validParams<NtAction>()
   params.addParam<bool>("use_source_stabilization", false, "Whether to use source stabilization.");
   params.addParam<Real>("offset", "The value by which to offset the logarithmic stabilization.");
   params.addParam<std::vector<BoundaryName> >("vacuum_boundaries", "The boundaries on which to apply vacuum boundaries.");
+  params.addParam<bool>("create_temperature_var", true, "Whether to create the temperature variable.");
   return params;
 }
 
@@ -28,6 +30,8 @@ NtAction::NtAction(const InputParameters & params) :
     _var_name_base(getParam<std::string>("var_name_base")),
     _num_groups(getParam<int>("num_groups"))
 {
+  if (!isParamValid("temperature") && !isParamValid("temperature_value"))
+    mooseError("You must either supply a coupled temperature variable or a value for the temperature.");
 }
 
 void
@@ -63,6 +67,8 @@ NtAction::act()
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
         if (isParamValid("temperature"))
           params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
+        else
+          params.addCoupledVar("temperature", getParam<Real>("temperature_value"), "The temperature");
 
         std::string kernel_name = "NtTimeDerivative_" + var_name;
         _problem->addKernel("NtTimeDerivative", kernel_name, params);
@@ -80,6 +86,8 @@ NtAction::act()
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
         if (isParamValid("temperature"))
           params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
+        else
+          params.addCoupledVar("temperature", getParam<Real>("temperature_value"), "The temperature");
 
         std::string kernel_name = "GroupDiffusion_" + var_name;
         _problem->addKernel("GroupDiffusion", kernel_name, params);
@@ -97,6 +105,8 @@ NtAction::act()
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
         if (isParamValid("temperature"))
           params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
+        else
+          params.addCoupledVar("temperature", getParam<Real>("temperature_value"), "The temperature");
 
         std::string kernel_name = "SigmaR_" + var_name;
         _problem->addKernel("SigmaR", kernel_name, params);
@@ -114,6 +124,9 @@ NtAction::act()
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
         if (isParamValid("temperature"))
           params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
+        else
+          params.addCoupledVar("temperature", getParam<Real>("temperature_value"), "The temperature");
+
         params.set<int>("num_groups") = _num_groups;
         // params.set<std::vector<VariableName> >("group_fluxes") = getParam<std::vector<VariableName> >("group_fluxes");
         params.set<std::vector<VariableName> >("group_fluxes") = all_var_names;
@@ -134,6 +147,9 @@ NtAction::act()
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
         if (isParamValid("temperature"))
           params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
+        else
+          params.addCoupledVar("temperature", getParam<Real>("temperature_value"), "The temperature");
+
         params.set<int>("num_groups") = _num_groups;
         // params.set<std::vector<VariableName> >("group_fluxes") = getParam<std::vector<VariableName> >("group_fluxes");
         params.set<std::vector<VariableName> >("group_fluxes") = all_var_names;
@@ -238,7 +254,7 @@ NtAction::act()
     }
   }
 
-  if (_current_task == "add_variable")
+  if (_current_task == "add_variable" && getParam<bool>("create_temperature_var"))
   {
     std::string temp_var = "temp";
     _pars.set<Real>("scaling") = isParamValid("temp_scaling") ? getParam<Real>("temp_scaling") : 1;
