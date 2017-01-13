@@ -7,7 +7,7 @@ InputParameters validParams<CoupledFissionKernel>()
   params += validParams<ScalarTransportBase>();
   params.addRequiredParam<int>("group_number", "The current energy group");
   params.addRequiredParam<int>("num_groups", "The total numer of energy groups");
-  params.addCoupledVar("temperature", 800, "The temperature used to interpolate material properties");
+  params.addCoupledVar("temperature", "The temperature used to interpolate material properties");
   params.addRequiredCoupledVar("group_fluxes", "All the variables that hold the group fluxes. These MUST be listed by decreasing energy/increasing group number.");
   return params;
 }
@@ -21,7 +21,8 @@ CoupledFissionKernel::CoupledFissionKernel(const InputParameters & parameters) :
     _d_chi_d_temp(getMaterialProperty<std::vector<Real> >("d_chi_d_temp")),
     _group(getParam<int>("group_number") - 1),
     _num_groups(getParam<int>("num_groups")),
-    _temp_id(coupled("temperature"))
+    _temp_id(coupled("temperature")),
+    _temp(coupledValue("temperature"))
 {
   int n = coupledComponents("group_fluxes");
   if (!(n == _num_groups))
@@ -40,6 +41,7 @@ CoupledFissionKernel::CoupledFissionKernel(const InputParameters & parameters) :
 Real
 CoupledFissionKernel::computeQpResidual()
 {
+  // std::cout << _temp[_qp] << std::endl;
   Real r = 0;
   for (int i = 0; i < _num_groups; ++i)
   {

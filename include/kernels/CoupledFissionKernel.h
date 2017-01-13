@@ -28,6 +28,7 @@ protected:
   int _group;
   int _num_groups;
   unsigned int _temp_id;
+  const VariableValue & _temp;
   std::vector<const VariableValue *> _group_fluxes;
   std::vector<unsigned int> _flux_ids;
 };

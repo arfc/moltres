@@ -68,7 +68,7 @@ NtAction::act()
         if (isParamValid("temperature"))
           params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
         else
-          params.addCoupledVar("temperature", getParam<Real>("temperature_value"), "The temperature");
+          params.defaultCoupledValue("temperature", getParam<Real>("temperature_value"));
 
         std::string kernel_name = "NtTimeDerivative_" + var_name;
         _problem->addKernel("NtTimeDerivative", kernel_name, params);
@@ -87,7 +87,7 @@ NtAction::act()
         if (isParamValid("temperature"))
           params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
         else
-          params.addCoupledVar("temperature", getParam<Real>("temperature_value"), "The temperature");
+          params.defaultCoupledValue("temperature", getParam<Real>("temperature_value"));
 
         std::string kernel_name = "GroupDiffusion_" + var_name;
         _problem->addKernel("GroupDiffusion", kernel_name, params);
@@ -106,7 +106,7 @@ NtAction::act()
         if (isParamValid("temperature"))
           params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
         else
-          params.addCoupledVar("temperature", getParam<Real>("temperature_value"), "The temperature");
+          params.defaultCoupledValue("temperature", getParam<Real>("temperature_value"));
 
         std::string kernel_name = "SigmaR_" + var_name;
         _problem->addKernel("SigmaR", kernel_name, params);
@@ -125,7 +125,7 @@ NtAction::act()
         if (isParamValid("temperature"))
           params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
         else
-          params.addCoupledVar("temperature", getParam<Real>("temperature_value"), "The temperature");
+          params.defaultCoupledValue("temperature", getParam<Real>("temperature_value"));
 
         params.set<int>("num_groups") = _num_groups;
         // params.set<std::vector<VariableName> >("group_fluxes") = getParam<std::vector<VariableName> >("group_fluxes");
@@ -148,7 +148,7 @@ NtAction::act()
         if (isParamValid("temperature"))
           params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
         else
-          params.addCoupledVar("temperature", getParam<Real>("temperature_value"), "The temperature");
+          params.defaultCoupledValue("temperature", getParam<Real>("temperature_value"));
 
         params.set<int>("num_groups") = _num_groups;
         // params.set<std::vector<VariableName> >("group_fluxes") = getParam<std::vector<VariableName> >("group_fluxes");
