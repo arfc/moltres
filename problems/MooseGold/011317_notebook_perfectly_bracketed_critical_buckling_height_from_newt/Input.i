@@ -1,9 +1,9 @@
 flow_velocity=147 # Cammi 147 cm/s
 inlet_temp=824
 initial_outlet_temp=824
-nt_scale=1e16
+nt_scale=1e0
 precursor_log_inlet_conc=-17
-reactor_height=115 # Cammi 376 cm
+reactor_height=115 # Cammi 396 cm; critical_buckling_from_newt ~ 115 cm
 global_temperature=900
 
 [GlobalParams]
@@ -137,7 +137,7 @@ global_temperature=900
 
   # line_search = none
   nl_rel_tol = 1e-6
-  nl_abs_tol = 1e-5
+  # nl_abs_tol = 1e-5
   # trans_ss_check = true
   # ss_check_tol = 8e-9
 
