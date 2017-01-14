@@ -3,12 +3,12 @@ inlet_temp=824
 initial_outlet_temp=824
 nt_scale=1e0
 precursor_log_inlet_conc=-17
-reactor_height=115 # Cammi 396 cm; critical_buckling_from_newt ~ 115 cm
-global_temperature=950
+reactor_height=175 # Cammi 396 cm; critical_buckling_from_newt ~ 115 cm
+global_temperature=900
 
 [GlobalParams]
   num_groups = 2
-  num_precursor_groups = 6
+  num_precursor_groups = 8
   use_exp_form = true
   group_fluxes = 'group1 group2'
   v_def = ${flow_velocity}
@@ -88,7 +88,7 @@ global_temperature=950
   [./fuel]
     type = CammiFuel
     block = 'fuel'
-    property_tables_root = '../property_file_dir/newt_fuel_'
+    property_tables_root = '../property_file_dir/msr2g_Th_U_two_mat_homogenization_fuel_data_func_of_fuel_temp_'
     prop_names = 'cp'
     prop_values = '1357' # Cammi 2011 at 908 K
     interp_type = 'spline'
@@ -97,7 +97,7 @@ global_temperature=950
   [./moder]
     type = CammiModerator
     block = 'moder'
-    property_tables_root = '../property_file_dir/newt_mod_'
+    property_tables_root = '../property_file_dir/msr2g_Th_U_two_mat_homogenization_mod_data_func_of_mod_temp_'
     prop_names = 'rho cp'
     prop_values = '1.843e-3 1760' # Cammi 2011 at 908 K
     interp_type = 'spline'
