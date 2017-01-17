@@ -177,4 +177,6 @@ MoltresApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
   registerAction(NtAction, "add_ic");
   registerAction(NtAction, "add_aux_variable");
   registerAction(NtAction, "add_aux_kernel");
+  registerAction(NtAction, "check_copy_nodal_vars");
+  registerAction(NtAction, "copy_nodal_vars");
 }

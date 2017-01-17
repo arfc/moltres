@@ -21,6 +21,8 @@ InputParameters validParams<NtAction>()
   params.addParam<Real>("offset", "The value by which to offset the logarithmic stabilization.");
   params.addParam<std::vector<BoundaryName> >("vacuum_boundaries", "The boundaries on which to apply vacuum boundaries.");
   params.addParam<bool>("create_temperature_var", true, "Whether to create the temperature variable.");
+  params.addParam<bool>("init_nts_from_file", false, "Whether to restart simulation using nt output from a previous simulation.");
+  params.addParam<bool>("init_temperature_from_file", false, "Whether to restart simulation using temperature output from a previous simulation.");
   return params;
 }
 
@@ -43,11 +45,27 @@ NtAction::act()
 
   for (int op = 1; op <= _num_groups; ++op)
   {
+    std::string var_name = _var_name_base + Moose::stringify(op);
+
+    //
+    // See whether we want to use an old solution
+    //
+    if (getParam<bool>("init_nts_from_file"))
+    {
+      if (_current_task == "check_copy_nodal_vars")
+        _app.setFileRestart() = true;
+
+      if (_current_task == "copy_nodal_vars")
+      {
+        SystemBase * system;
+        system = &_problem->getNonlinearSystemBase();
+        system->addVariableToCopy(var_name, var_name, "LATEST");
+      }
+    }
+
     //
     // Create variable names
     //
-
-    std::string var_name = _var_name_base + Moose::stringify(op);
 
     if (_current_task == "add_variable")
       addVariable(var_name);
@@ -176,7 +194,7 @@ NtAction::act()
       }
     }
 
-    if (_current_task == "add_ic")
+    if (_current_task == "add_ic" && !getParam<bool>("init_nts_from_file"))
     {
       if (getParam<bool>("jac_test") && isParamValid("nt_ic_function"))
         mooseError("jac_test creates RandomICs. So are you sure you want to pass an initial condition function?");
@@ -254,10 +272,29 @@ NtAction::act()
     }
   }
 
-  if (_current_task == "add_variable" && getParam<bool>("create_temperature_var"))
+  if (getParam<bool>("create_temperature_var"))
   {
     std::string temp_var = "temp";
-    _pars.set<Real>("scaling") = isParamValid("temp_scaling") ? getParam<Real>("temp_scaling") : 1;
-    addVariable(temp_var);
+    //
+    // See whether we want to use an old solution
+    //
+    if (getParam<bool>("init_temperature_from_file"))
+    {
+      if (_current_task == "check_copy_nodal_vars")
+        _app.setFileRestart() = true;
+
+      if (_current_task == "copy_nodal_vars")
+      {
+        SystemBase * system;
+        system = &_problem->getNonlinearSystemBase();
+        system->addVariableToCopy(temp_var, temp_var, "LATEST");
+      }
+    }
+
+    if (_current_task == "add_variable")
+    {
+      _pars.set<Real>("scaling") = isParamValid("temp_scaling") ? getParam<Real>("temp_scaling") : 1;
+      addVariable(temp_var);
+    }
   }
 }
