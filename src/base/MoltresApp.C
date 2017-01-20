@@ -4,6 +4,7 @@
 #include "NavierStokesApp.h"
 #include "FluidPropertiesApp.h"
 #include "HeatConductionApp.h"
+#include "RdgApp.h"
 #include "ZapdosApp.h"
 #include "MooseSyntax.h"
 
@@ -84,6 +85,7 @@ MoltresApp::MoltresApp(InputParameters parameters) :
   NavierStokesApp::registerObjects(_factory);
   FluidPropertiesApp::registerObjects(_factory);
   HeatConductionApp::registerObjects(_factory);
+  RdgApp::registerObjects(_factory);
   ZapdosApp::registerObjects(_factory);
   MoltresApp::registerObjects(_factory);
 
@@ -91,6 +93,7 @@ MoltresApp::MoltresApp(InputParameters parameters) :
   NavierStokesApp::associateSyntax(_syntax, _action_factory);
   FluidPropertiesApp::associateSyntax(_syntax, _action_factory);
   HeatConductionApp::associateSyntax(_syntax, _action_factory);
+  RdgApp::associateSyntax(_syntax, _action_factory);
   ZapdosApp::associateSyntax(_syntax, _action_factory);
   MoltresApp::associateSyntax(_syntax, _action_factory);
 }
