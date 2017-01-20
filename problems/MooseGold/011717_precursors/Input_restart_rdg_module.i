@@ -11,28 +11,17 @@ global_temperature=temp
   num_precursor_groups = 6
   use_exp_form = true
   group_fluxes = 'group1 group2'
+  u_def = 0
   v_def = ${flow_velocity}
+  w_def = 0
   tau = 1
   transient_simulation = true
   incompressible_flow = false
-  # prec_scale = 1e5
-  u = pre1
-  slope_reconstruction = rslope
-  slope_limiting = lslope
 [../]
-
-[Variables]
-  [./pre1]
-    family = MONOMIAL
-    order = CONSTANT
-    block = 'fuel'
-  [../]
-[]
 
 [Mesh]
   file = 'Input_out.e'
 [../]
-
 
 [Nt]
   var_name_base = 'group'
@@ -46,39 +35,15 @@ global_temperature=temp
   init_temperature_from_file = true
 []
 
-# [PrecursorKernel]
-#   var_name_base = pre
-#   block = 'fuel'
-#   inlet_boundary = 'fuel_bottom'
-#   inlet_boundary_condition = 'DirichletBC'
-#   inlet_bc_value = 0
-#   outlet_boundary = 'fuel_top'
-#   initial_condition = 0
-#   tau = 1
-#   use_source_stabilization = false
-#   # offset = 24
-#   use_exp_form = false
-# []
+[PrecursorKernel]
+  var_name_base = pre
+  block = 'fuel'
+  advection_boundaries = 'fuel_top fuel_bottom'
+  family = MONOMIAL
+  order = CONSTANT
+[]
 
 [Kernels]
-  # precursor
-  [./time_pre1]
-    variable = pre1
-    type = TimeDerivative
-  [../]
-  [./source_pre1]
-    variable = pre1
-    type = PrecursorSource
-    temperature = ${global_temperature}
-    precursor_group_number = 1
-    use_exp_form = true
-  [../]
-  # [./source]
-  #   type = UserForcingFunction
-  #   variable = pre1
-  #   function = 'forcing_func'
-  # [../]
-
   # Temperature
   [./temp_flow_fuel]
     block = 'fuel'
@@ -105,24 +70,6 @@ global_temperature=temp
   [./temp_time_derivative]
     type = MatINSTemperatureTimeDerivative
     variable = temp
-  [../]
-[]
-
-[DGKernels]
-  # [./concentration]
-  #   type = AEFVKernel
-  #   variable = pre1
-  #   component = 'concentration'
-  #   flux = internal_side_flux
-  #   u_adv_default = 0
-  #   v_adv_default = ${flow_velocity}
-  #   w_adv_default = 0
-  #   implicit = false
-  # [../]
-  [./concentration]
-    type = DGConvection
-    variable = pre1
-    velocity = '0 ${flow_velocity} 0'
   [../]
 []
 
@@ -165,29 +112,6 @@ global_temperature=temp
     type = ScalarAdvectionArtDiffNoBCBC
     variable = temp
     use_exp_form = false
-  [../]
-  # [./concentration]
-  #   type = AEFVBC
-  #   boundary = 'fuel_top'
-  #   variable = pre1
-  #   component = 'concentration'
-  #   flux = free_outflow_bc
-  #   u_adv_default = 0
-  #   v_adv_default = ${flow_velocity}
-  #   w_adv_default = 0
-  # [../]
-  # [./conc_bottom]
-  #   type = PenaltyDirichletBC
-  #   penalty = 10
-  #   value = 0
-  #   variable = pre1
-  #   boundary = 'fuel_bottom'
-  # [../]
-  [./concentration]
-    type = DGConvectionOutflow
-    boundary = 'fuel_top fuel_bottom'
-    variable = pre1
-    velocity = '0 ${flow_velocity} 0'
   [../]
 []
 
@@ -255,10 +179,6 @@ global_temperature=temp
 # []
 
 [Functions]
-  [./forcing_func]
-    type = ParsedFunction
-    value = ${flow_velocity}
-  [../]
   [./temp_ic_func]
     type = ParsedFunction
     value = '(${initial_outlet_temp} - ${inlet_temp}) / ${reactor_height} * y + ${inlet_temp}'
@@ -301,30 +221,3 @@ global_temperature=temp
     outputs = 'csv console'
   [../]
 []
-
-# [UserObjects]
-#   [./rslope]
-#     type = AEFVSlopeReconstructionOneD
-#     execute_on = 'linear'
-#     block = 'fuel'
-#   [../]
-
-#   [./lslope]
-#     type = AEFVSlopeLimitingOneD
-#     execute_on = 'linear'
-#     scheme = 'none' #none | minmod | mc | superbee
-#     block = 'fuel'
-#   [../]
-
-#   [./internal_side_flux]
-#     type = AEFVUpwindInternalSideFlux
-#     execute_on = 'linear'
-#     block = 'fuel'
-#   [../]
-
-#   [./free_outflow_bc]
-#     type = AEFVFreeOutflowBoundaryFlux
-#     execute_on = 'linear'
-#     block = 'fuel'
-#   [../]
-# []
