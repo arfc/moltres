@@ -174,8 +174,7 @@ MoltresApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
   registerAction(PrecursorKernelAction, "add_bc");
   registerAction(PrecursorKernelAction, "add_variable");
   registerAction(PrecursorKernelAction, "add_ic");
-  registerAction(PrecursorKernelAction, "add_aux_variable");
-  registerAction(PrecursorKernelAction, "add_aux_kernel");
+  registerAction(PrecursorKernelAction, "add_dg_kernel");
   registerAction(NtAction, "add_kernel");
   registerAction(NtAction, "add_bc");
   registerAction(NtAction, "add_variable");

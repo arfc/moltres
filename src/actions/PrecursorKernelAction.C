@@ -19,20 +19,10 @@ InputParameters validParams<PrecursorKernelAction>()
   params.addParam<Real>("w_def", "Allows user to specify constant value for w component of velocity.");
   params.addRequiredParam<std::vector<VariableName> >("group_fluxes", "All the variables that hold the group fluxes. These MUST be listed by decreasing energy/increasing group number.");
   params.addRequiredParam<int>("num_groups", "The total number of energy groups.");
-  params.addRequiredParam<bool>("transient_simulation", "Whether to conduct a transient simulation.");
-  params.addRequiredParam<std::vector<BoundaryName> >("inlet_boundary", "The inlet boundary for the precursors.");
-  params.addRequiredParam<std::string>("inlet_boundary_condition", "The type of boundary condition to apply at the inlet.");
-  params.addParam<Real>("inlet_bc_value", "For value based boundary conditions, specify the value.");
-  params.addRequiredParam<std::vector<BoundaryName> >("outlet_boundary", "The outlet boundary for the precursors.");
-  params.addParam<bool>("add_artificial_diffusion", true, "Whether to add artificial diffusion");
-  params.addParam<bool>("incompressible_flow", "Determines whether we use a divergence-free form of the advecting velocity.");
-  params.addParam<bool>("use_exp_form", "Whether concentrations should be in an expotential/logarithmic format.");
+  params.addRequiredParam<std::vector<BoundaryName> >("advection_boundaries", "The boundaries normal to the advective flow.");
+  params.addParam<bool>("nt_exp_form", true, "Whether concentrations should be in an expotential/logarithmic format.");
   params.addParam<bool>("jac_test", false, "Whether we're testing the Jacobian and should use some random initial conditions for the precursors.");
   params.addParam<Real>("prec_scale", "The amount by which the neutron fluxes are scaled.");
-  params.addParam<Real>("penalty", "The penalty to assess to the PenaltyDirichletBC.");
-  params.addParam<Real>("tau", "The amount to scale the artificial diffusion.");
-  params.addParam<bool>("use_source_stabilization", false, "Whether to use source stabilization.");
-  params.addParam<Real>("offset", "The value by which to offset the logarithmic stabilization.");
   return params;
 }
 
@@ -60,61 +50,6 @@ PrecursorKernelAction::act()
 
     if (_current_task == "add_kernel")
     {
-      //
-      // Set up advection kernels
-      //
-      if (getParam<bool>("incompressible_flow"))
-      {
-        InputParameters params = _factory.getValidParams("DivFreeCoupledScalarAdvection");
-        params.set<NonlinearVariableName>("variable") = var_name;
-        if (isParamValid("u"))
-          params.set<std::vector<VariableName> >("u") = {getParam<VariableName>("u")};
-        else if (isParamValid("u_def"))
-          params.set<Real>("u_def") = getParam<Real>("u_def");
-        if (isParamValid("v"))
-          params.set<std::vector<VariableName> >("v") = {getParam<VariableName>("v")};
-        else if (isParamValid("v_def"))
-          params.set<Real>("v_def") = getParam<Real>("v_def");
-        if (isParamValid("w"))
-          params.set<std::vector<VariableName> >("w") = {getParam<VariableName>("w")};
-        else if (isParamValid("w_def"))
-          params.set<Real>("w_def") = getParam<Real>("w_def");
-        if (isParamValid("block"))
-          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
-        if (isParamValid("prec_scale"))
-          params.set<Real>("conc_scaling") = getParam<Real>("prec_scale");
-
-        std::string kernel_name = "DivFreeCoupledScalarAdvection_" + var_name;
-        _problem->addKernel("DivFreeCoupledScalarAdvection", kernel_name, params);
-      }
-      else
-      {
-        InputParameters params = _factory.getValidParams("CoupledScalarAdvection");
-        params.set<NonlinearVariableName>("variable") = var_name;
-        if (isParamValid("u"))
-          params.set<std::vector<VariableName> >("u") = {getParam<VariableName>("u")};
-        else if (isParamValid("u_def"))
-          params.set<Real>("u_def") = getParam<Real>("u_def");
-        if (isParamValid("v"))
-          params.set<std::vector<VariableName> >("v") = {getParam<VariableName>("v")};
-        else if (isParamValid("v_def"))
-          params.set<Real>("v_def") = getParam<Real>("v_def");
-        if (isParamValid("w"))
-          params.set<std::vector<VariableName> >("w") = {getParam<VariableName>("w")};
-        else if (isParamValid("w_def"))
-          params.set<Real>("w_def") = getParam<Real>("w_def");
-        if (isParamValid("block"))
-          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
-        if (isParamValid("use_exp_form"))
-          params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
-        if (isParamValid("prec_scale"))
-          params.set<Real>("conc_scaling") = getParam<Real>("prec_scale");
-
-        std::string kernel_name = "CoupledScalarAdvection_" + var_name;
-        _problem->addKernel("CoupledScalarAdvection", kernel_name, params);
-      }
-
-
       // Set up PrecursorSource kernels
 
       {
@@ -129,6 +64,7 @@ PrecursorKernelAction::act()
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
         if (isParamValid("prec_scale"))
           params.set<Real>("prec_scale") = getParam<Real>("prec_scale");
+        params.set<bool>("use_exp_form") = getParam<bool>("nt_exp_form");
 
         std::string kernel_name = "PrecursorSource_" + var_name;
         _problem->addKernel("PrecursorSource", kernel_name, params);
@@ -148,16 +84,15 @@ PrecursorKernelAction::act()
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
         if (isParamValid("prec_scale"))
           params.set<Real>("prec_scale") = getParam<Real>("prec_scale");
+        params.set<bool>("use_exp_form") = false;
 
         std::string kernel_name = "PrecursorDecay_" + var_name;
         _problem->addKernel("PrecursorDecay", kernel_name, params);
       }
 
       //
-      // If doing a transient simulation, set up TimeDerivative kernels
+      // Set up TimeDerivative kernels
       //
-
-      if (getParam<bool>("transient_simulation"))
       {
         InputParameters params = _factory.getValidParams("ScalarTransportTimeDerivative");
         params.set<NonlinearVariableName>("variable") = var_name;
@@ -166,131 +101,40 @@ PrecursorKernelAction::act()
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
         if (isParamValid("prec_scale"))
           params.set<Real>("conc_scaling") = getParam<Real>("prec_scale");
+        params.set<bool>("use_exp_form") = false;
 
         std::string kernel_name = "ScalarTransportTimeDerivative_" + var_name;
         _problem->addKernel("ScalarTransportTimeDerivative", kernel_name, params);
       }
+    }
 
-      // Set up artificial diffusion
-
-      if (getParam<bool>("add_artificial_diffusion"))
+    if (_current_task == "add_dg_kernel")
+    {
       {
-        InputParameters params = _factory.getValidParams("ScalarAdvectionArtDiff");
-        params.set<NonlinearVariableName>("variable") = var_name;
-        if (isParamValid("u"))
-          params.set<std::vector<VariableName> >("u") = {getParam<VariableName>("u")};
-        else if (isParamValid("u_def"))
-          params.set<Real>("u_def") = getParam<Real>("u_def");
-        if (isParamValid("v"))
-          params.set<std::vector<VariableName> >("v") = {getParam<VariableName>("v")};
-        else if (isParamValid("v_def"))
-          params.set<Real>("v_def") = getParam<Real>("v_def");
-        if (isParamValid("w"))
-          params.set<std::vector<VariableName> >("w") = {getParam<VariableName>("w")};
-        else if (isParamValid("w_def"))
-          params.set<Real>("w_def") = getParam<Real>("w_def");
-        if (isParamValid("block"))
-          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
-        if (isParamValid("prec_scale"))
-          params.set<Real>("conc_scaling") = getParam<Real>("prec_scale");
-        if (isParamValid("tau"))
-          params.set<Real>("tau") = getParam<Real>("tau");
-
-        std::string kernel_name = "ScalarAdvectionArtDiff_" + var_name;
-        _problem->addKernel("ScalarAdvectionArtDiff", kernel_name, params);
-      }
-
-      if (getParam<bool>("use_source_stabilization") && !getParam<bool>("use_exp_form"))
-        mooseError("This source stabilization is for expotential concentrations");
-      if (getParam<bool>("use_source_stabilization") && isParamValid("prec_scale"))
-        mooseError("Scaling is not currently implemented in the source stabilization term.");
-      if (getParam<bool>("use_source_stabilization"))
-      {
-        InputParameters params = _factory.getValidParams("LogStabilizationMoles");
+        InputParameters params = _factory.getValidParams("DGConvection");
         params.set<NonlinearVariableName>("variable") = var_name;
         if (isParamValid("block"))
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
-        params.set<Real>("offset") = getParam<Real>("offset");
+        RealVectorValue vel = {getParam<Real>("u_def"), getParam<Real>("v_def"), getParam<Real>("w_def")};
+        params.set<RealVectorValue>("velocity") = vel;
 
-        std::string kernel_name = "LogStabilizationMoles_" + var_name;
-        _problem->addKernel("LogStabilizationMoles", kernel_name, params);
-      }
+        std::string kernel_name = "DGConvection_" + var_name;
+        _problem->addDGKernel("DGConvection", kernel_name, params);
+      }        
     }
 
     if (_current_task == "add_bc")
     {
-
-      // Set up precursor inlet boundary conditions
-
-
       {
-        std::string bc_type_name = getParam<std::string>("inlet_boundary_condition");
-        InputParameters params = _factory.getValidParams(bc_type_name);
-        params.set<std::vector<BoundaryName> >("boundary") = getParam<std::vector<BoundaryName> >("inlet_boundary");
+        InputParameters params = _factory.getValidParams("DGConvectionOutflow");
         params.set<NonlinearVariableName>("variable") = var_name;
-        if (isParamValid("inlet_bc_value"))
-          params.set<Real>("value") = getParam<Real>("inlet_bc_value");
-        if (isParamValid("penalty"))
-          params.set<Real>("penalty") = getParam<Real>("penalty");
-        std::string bc_name = bc_type_name + "_" + var_name;
-        _problem->addBoundaryCondition(bc_type_name, bc_name, params);
-      }
+        params.set<std::vector<BoundaryName> >("boundary") = getParam<std::vector<BoundaryName> >("advection_boundaries");
+        RealVectorValue vel = {getParam<Real>("u_def"), getParam<Real>("v_def"), getParam<Real>("w_def")};
+        params.set<RealVectorValue>("velocity") = vel;
 
-      //
-      // Set up precursor outlet boundary conditions
-      //
-
-      if (!(getParam<bool>("incompressible_flow")))
-      {
-        InputParameters params = _factory.getValidParams("CoupledScalarAdvectionNoBCBC");
-        params.set<std::vector<BoundaryName> >("boundary") = getParam<std::vector<BoundaryName> >("outlet_boundary");
-        params.set<NonlinearVariableName>("variable") = var_name;
-        if (isParamValid("u"))
-          params.set<std::vector<VariableName> >("u") = {getParam<VariableName>("u")};
-        else if (isParamValid("u_def"))
-          params.set<Real>("u_def") = getParam<Real>("u_def");
-        if (isParamValid("v"))
-          params.set<std::vector<VariableName> >("v") = {getParam<VariableName>("v")};
-        else if (isParamValid("v_def"))
-          params.set<Real>("v_def") = getParam<Real>("v_def");
-        if (isParamValid("w"))
-          params.set<std::vector<VariableName> >("w") = {getParam<VariableName>("w")};
-        else if (isParamValid("w_def"))
-          params.set<Real>("w_def") = getParam<Real>("w_def");
-        if (isParamValid("prec_scale"))
-          params.set<Real>("conc_scaling") = getParam<Real>("prec_scale");
-
-        std::string bc_name = "CoupledScalarAdvectionNoBCBC_" + var_name;
-        _problem->addBoundaryCondition("CoupledScalarAdvectionNoBCBC", bc_name, params);
-      }
-
-      // Set up artificial diffusion
-
-      if (getParam<bool>("add_artificial_diffusion"))
-      {
-        InputParameters params = _factory.getValidParams("ScalarAdvectionArtDiffNoBCBC");
-        params.set<std::vector<BoundaryName> >("boundary") = getParam<std::vector<BoundaryName> >("outlet_boundary");
-        params.set<NonlinearVariableName>("variable") = var_name;
-        if (isParamValid("u"))
-          params.set<std::vector<VariableName> >("u") = {getParam<VariableName>("u")};
-        else if (isParamValid("u_def"))
-          params.set<Real>("u_def") = getParam<Real>("u_def");
-        if (isParamValid("v"))
-          params.set<std::vector<VariableName> >("v") = {getParam<VariableName>("v")};
-        else if (isParamValid("v_def"))
-          params.set<Real>("v_def") = getParam<Real>("v_def");
-        if (isParamValid("w"))
-          params.set<std::vector<VariableName> >("w") = {getParam<VariableName>("w")};
-        else if (isParamValid("w_def"))
-          params.set<Real>("w_def") = getParam<Real>("w_def");
-        if (isParamValid("prec_scale"))
-          params.set<Real>("conc_scaling") = getParam<Real>("prec_scale");
-        if (isParamValid("tau"))
-          params.set<Real>("tau") = getParam<Real>("tau");
-
-        std::string bc_name = "ScalarAdvectionArtDiffNoBCBC_" + var_name;
-        _problem->addBoundaryCondition("ScalarAdvectionArtDiffNoBCBC", bc_name, params);
-      }
+        std::string kernel_name = "DGConvectionOutflow_" + var_name;
+        _problem->addBoundaryCondition("DGConvectionOutflow", kernel_name, params);
+      }        
     }
 
     // Set up ICs
@@ -309,52 +153,6 @@ PrecursorKernelAction::act()
         std::string ic_name = "RandomIC_" + var_name;
         _problem->addInitialCondition("RandomIC", ic_name, params);
       }
-
-      else if (isParamValid("initial_condition"))
-      {
-        InputParameters params = _factory.getValidParams("ConstantIC");
-        params.set<VariableName>("variable") = var_name;
-        if (isParamValid("block"))
-          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
-        params.set<Real>("value") = getParam<Real>("initial_condition");
-
-        std::string ic_name = "ConstantIC_" + var_name;
-        _problem->addInitialCondition("ConstantIC", ic_name, params);
-      }
     }
-
-
-    if (getParam<bool>("use_exp_form"))
-    {
-
-      std::string aux_var_name = var_name + "_lin";
-
-      // Set up nodal aux variables
-
-      if (_current_task == "add_aux_variable")
-      {
-        std::set<SubdomainID> blocks = getSubdomainIDs();
-        FEType fe_type(FIRST, LAGRANGE);
-        if (blocks.empty())
-          _problem->addAuxVariable(aux_var_name, fe_type);
-        else
-          _problem->addAuxVariable(aux_var_name, fe_type, &blocks);
-      }
-
-      // Set up aux kernels
-
-      if (_current_task == "add_aux_kernel")
-      {
-        InputParameters params = _factory.getValidParams("Density");
-        params.set<AuxVariableName>("variable") = aux_var_name;
-        params.set<std::vector<VariableName> >("density_log") = {var_name};
-        if (isParamValid("block"))
-          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
-
-        std::string aux_kernel_name = "Density_" + aux_var_name;
-        _problem->addAuxKernel("Density", aux_kernel_name, params);
-      }
-    }
-
   }
 }
