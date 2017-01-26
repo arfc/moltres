@@ -23,6 +23,7 @@ InputParameters validParams<NtAction>()
   params.addParam<bool>("create_temperature_var", true, "Whether to create the temperature variable.");
   params.addParam<bool>("init_nts_from_file", false, "Whether to restart simulation using nt output from a previous simulation.");
   params.addParam<bool>("init_temperature_from_file", false, "Whether to restart simulation using temperature output from a previous simulation.");
+  params.addParam<bool>("dg_for_temperature", true, "Whether the temperature variable should use discontinuous basis functions.");
   return params;
 }
 
@@ -294,7 +295,19 @@ NtAction::act()
     if (_current_task == "add_variable")
     {
       _pars.set<Real>("scaling") = isParamValid("temp_scaling") ? getParam<Real>("temp_scaling") : 1;
-      addVariable(temp_var);
+      Real scale_factor = getParam<Real>("scaling");
+      FEType fe_type(getParam<bool>("dg_for_temperature") ? CONSTANT : FIRST,
+                     getParam<bool>("dg_for_temperature") ? MONOMIAL : LAGRANGE);
+
+      std::set<SubdomainID> blocks = getSubdomainIDs();
+
+      // Block restricted variable
+      if (blocks.empty())
+        _problem->addVariable(temp_var, fe_type, scale_factor);
+
+      // Non-block restricted variable
+      else
+        _problem->addVariable(temp_var, fe_type, scale_factor, &blocks);
     }
   }
 }

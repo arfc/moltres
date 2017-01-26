@@ -32,6 +32,10 @@ APPLICATION_DIR    := $(shell dirname `pwd`)/zapdos
 APPLICATION_NAME   := zapdos
 include            $(FRAMEWORK_DIR)/app.mk
 
+APPLICATION_DIR    := $(shell dirname `pwd`)/squirrel
+APPLICATION_NAME   := squirrel
+include            $(FRAMEWORK_DIR)/app.mk
+
 # dep apps
 APPLICATION_DIR    := $(CURDIR)
 APPLICATION_NAME   := moltres

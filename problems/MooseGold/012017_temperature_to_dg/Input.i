@@ -43,31 +43,31 @@ global_temperature=temp
 
 [Kernels]
   # Temperature
-  [./temp_flow_fuel]
-    block = 'fuel'
-    type = MatINSTemperatureRZ
-    variable = temp
-    uz = ${flow_velocity}
-  [../]
-  [./temp_art_diff_fuel]
-    block = 'fuel'
-    type = ScalarAdvectionArtDiff
-    variable = temp
-    use_exp_form = false
-  [../]
-  [./temp_flow_moder]
-    block = 'moder'
-    type = MatINSTemperatureRZ
-    variable = temp
-  [../]
   [./temp_source]
     type = TransientFissionHeatSource
     variable = temp
     nt_scale=${nt_scale}
+    block = 'fuel'
   [../]
   [./temp_time_derivative]
     type = MatINSTemperatureTimeDerivative
     variable = temp
+  [../]
+[]
+
+[DGKernels]
+  [./temp_advection_fuel]
+    block = 'fuel'
+    type = DGTemperatureAdvection
+    variable = temp
+    velocity = '0 ${flow_velocity} 0'
+  [../]
+  [./temp_diffusion]
+    type = DGMatDiffusion
+    variable = temp
+    sigma = 6
+    epsilon = -1
+    prop_name = 'k'
   [../]
 []
 

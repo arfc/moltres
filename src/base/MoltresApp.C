@@ -6,10 +6,10 @@
 #include "HeatConductionApp.h"
 #include "RdgApp.h"
 #include "ZapdosApp.h"
+#include "SquirrelApp.h"
 #include "MooseSyntax.h"
 
 // Kernels
-#include "MatDiffusion.h"
 #include "ScalarTransportTimeDerivative.h"
 #include "ScalarAdvectionArtDiff.h"
 #include "MatINSTemperatureRZ.h"
@@ -88,6 +88,7 @@ MoltresApp::MoltresApp(InputParameters parameters) :
   HeatConductionApp::registerObjects(_factory);
   RdgApp::registerObjects(_factory);
   ZapdosApp::registerObjects(_factory);
+  SquirrelApp::registerObjects(_factory);
   MoltresApp::registerObjects(_factory);
 
   Moose::associateSyntax(_syntax, _action_factory);
@@ -96,6 +97,7 @@ MoltresApp::MoltresApp(InputParameters parameters) :
   HeatConductionApp::associateSyntax(_syntax, _action_factory);
   RdgApp::associateSyntax(_syntax, _action_factory);
   ZapdosApp::associateSyntax(_syntax, _action_factory);
+  SquirrelApp::associateSyntax(_syntax, _action_factory);
   MoltresApp::associateSyntax(_syntax, _action_factory);
 }
 
@@ -118,7 +120,6 @@ MoltresApp::registerObjects(Factory & factory)
 {
   registerKernel(SigmaR);
   registerKernel(GammaHeatSource);
-  registerKernel(MatDiffusion);
   registerKernel(MatINSTemperatureTimeDerivative);
   registerKernel(ScalarTransportTimeDerivative);
   registerKernel(MatINSTemperatureRZ);
