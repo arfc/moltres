@@ -32,7 +32,6 @@
 #include "GammaHeatSource.h"
 
 // Boundary conditions
-#include "DGConvectionOutflow.h"
 #include "VacuumConcBC.h"
 #include "ConservativeAdvectionNoBCBC.h"
 #include "DiffusionNoBCBC.h"
@@ -139,7 +138,6 @@ MoltresApp::registerObjects(Factory & factory)
   registerKernel(INSK);
   registerKernel(GroupDiffusion);
   registerBoundaryCondition(ScalarAdvectionArtDiffNoBCBC);
-  registerBoundaryCondition(DGConvectionOutflow);
   registerBoundaryCondition(VacuumConcBC);
   registerBoundaryCondition(ConservativeAdvectionNoBCBC);
   registerBoundaryCondition(DiffusionNoBCBC);

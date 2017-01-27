@@ -31,6 +31,7 @@ global_temperature=temp
   # create_temperature_var = false
   temperature = ${global_temperature}
   # temperature_value = ${global_temperature}
+  dg_for_temperature = true
 []
 
 [PrecursorKernel]
@@ -52,6 +53,17 @@ global_temperature=temp
   [./temp_time_derivative]
     type = MatINSTemperatureTimeDerivative
     variable = temp
+  [../]
+  [./temp_diffusion]
+    type = MatDiffusion
+    prop_name = 'k'
+    variable = temp
+  [../]
+  [./temp_advection_fuel]
+    type = ConservativeTemperatureAdvection
+    velocity = '0 ${flow_velocity} 0'
+    variable = temp
+    block = 'fuel'
   [../]
 []
 
@@ -93,23 +105,20 @@ global_temperature=temp
 []
 
 [BCs]
-  [./temp_inlet]
+  [./temp_dirichlet_diffusion_inlet]
     boundary = 'fuel_bottom graphite_bottom'
-    type = DirichletBC
+    type = DGFunctionMatDiffusionDirichletBC
     variable = temp
-    value = ${inlet_temp}
+    sigma = 6
+    epsilon = -1
+    prop_name = 'k'
+    function = 'inlet_boundary_temp_func'
   [../]
-  [./temp_outlet]
-    boundary = 'fuel_top'
-    type = MatINSTemperatureNoBCBC
+  [./temp_advection_inlet_outlet]
+    boundary = 'fuel_bottom fuel_top'
+    type = DGConvectionOutflow
     variable = temp
-    k = 'k'
-  [../]
-  [./temp_art_diff_fuel]
-    boundary = 'fuel_top'
-    type = ScalarAdvectionArtDiffNoBCBC
-    variable = temp
-    use_exp_form = false
+    velocity = '0 ${flow_velocity} 0'
   [../]
 []
 
@@ -122,11 +131,8 @@ global_temperature=temp
   type = Transient
   end_time = 10000
 
-  # line_search = none
   nl_rel_tol = 1e-6
   nl_abs_tol = 1e-5
-  # trans_ss_check = true
-  # ss_check_tol = 8e-9
 
   solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
@@ -159,22 +165,22 @@ global_temperature=temp
     type = Exodus
     execute_on = 'initial timestep_end'
   [../]
-  [./dof_map]
-    type = DOFMap
-  [../]
+  # [./dof_map]
+  #   type = DOFMap
+  # [../]
 []
 
 [Debug]
   show_var_residual_norms = true
 []
 
-# [ICs]
-#   [./temp_all_ic_func]
-#     type = FunctionIC
-#     variable = temp
-#     function = temp_ic_func
-#   [../]
-# []
+[ICs]
+  [./temp_all_ic_func]
+    type = FunctionIC
+    variable = temp
+    function = temp_ic_func
+  [../]
+[]
 
 [Functions]
   [./temp_ic_func]
@@ -184,6 +190,10 @@ global_temperature=temp
   [./nt_ic_func]
     type = ParsedFunction
     value = '4/${reactor_height} * y * (1 - y/${reactor_height})'
+  [../]
+  [./inlet_boundary_temp_func]
+    type = ParsedFunction
+    value = '${inlet_temp}'
   [../]
 []
 
