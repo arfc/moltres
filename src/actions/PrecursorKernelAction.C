@@ -120,21 +120,21 @@ PrecursorKernelAction::act()
 
         std::string kernel_name = "DGConvection_" + var_name;
         _problem->addDGKernel("DGConvection", kernel_name, params);
-      }        
+      }
     }
 
     if (_current_task == "add_bc")
     {
       {
-        InputParameters params = _factory.getValidParams("DGConvectionOutflow");
+        InputParameters params = _factory.getValidParams("OutflowBC");
         params.set<NonlinearVariableName>("variable") = var_name;
         params.set<std::vector<BoundaryName> >("boundary") = getParam<std::vector<BoundaryName> >("advection_boundaries");
         RealVectorValue vel = {getParam<Real>("u_def"), getParam<Real>("v_def"), getParam<Real>("w_def")};
         params.set<RealVectorValue>("velocity") = vel;
 
-        std::string kernel_name = "DGConvectionOutflow_" + var_name;
-        _problem->addBoundaryCondition("DGConvectionOutflow", kernel_name, params);
-      }        
+        std::string kernel_name = "OutflowBC_" + var_name;
+        _problem->addBoundaryCondition("OutflowBC", kernel_name, params);
+      }
     }
 
     // Set up ICs

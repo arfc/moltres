@@ -2,7 +2,6 @@ flow_velocity=147 # Cammi 147 cm/s
 inlet_temp=824
 initial_outlet_temp=824
 nt_scale=1e16
-precursor_log_inlet_conc=-25
 reactor_height=115 # Cammi 396 cm; critical_buckling_from_newt ~ 115 cm
 global_temperature=temp
 
@@ -14,9 +13,6 @@ global_temperature=temp
   u_def = 0
   v_def = ${flow_velocity}
   w_def = 0
-  tau = 1
-  transient_simulation = true
-  incompressible_flow = false
 [../]
 
 [Mesh]
@@ -75,11 +71,11 @@ global_temperature=temp
     velocity = '0 ${flow_velocity} 0'
   [../]
   [./temp_diffusion]
-    type = DGMatDiffusion
+    type = DGDiffusion
     variable = temp
     sigma = 6
     epsilon = -1
-    prop_name = 'k'
+    diff = 'k'
   [../]
 []
 
@@ -107,16 +103,16 @@ global_temperature=temp
 [BCs]
   [./temp_dirichlet_diffusion_inlet]
     boundary = 'fuel_bottom graphite_bottom'
-    type = DGFunctionMatDiffusionDirichletBC
+    type = DGFunctionDiffusionDirichletBC
     variable = temp
     sigma = 6
     epsilon = -1
-    prop_name = 'k'
+    diff = 'k'
     function = 'inlet_boundary_temp_func'
   [../]
   [./temp_advection_inlet_outlet]
     boundary = 'fuel_bottom fuel_top'
-    type = DGConvectionOutflow
+    type = OutflowBC
     variable = temp
     velocity = '0 ${flow_velocity} 0'
   [../]
@@ -165,9 +161,6 @@ global_temperature=temp
     type = Exodus
     execute_on = 'initial timestep_end'
   [../]
-  # [./dof_map]
-  #   type = DOFMap
-  # [../]
 []
 
 [Debug]
