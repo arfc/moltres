@@ -4,7 +4,7 @@ initial_outlet_temp=824
 nt_scale=1e16
 reactor_height=115 # Cammi 396 cm; critical_buckling_from_newt ~ 115 cm
 global_temperature=temp
-sigma_val=0
+sigma_val=6
 
 [GlobalParams]
   num_groups = 2
@@ -42,7 +42,7 @@ sigma_val=0
 [Variables]
   [./temp]
     family = MONOMIAL
-    order = CONSTANT
+    order = FIRST
   [../]
 []
 
@@ -64,17 +64,17 @@ sigma_val=0
     type = MatINSTemperatureTimeDerivative
     variable = temp
   [../]
-  # [./temp_diffusion]
-  #   type = MatDiffusion
-  #   prop_name = 'k'
-  #   variable = temp
-  # [../]
-  # [./temp_advection_fuel]
-  #   type = ConservativeTemperatureAdvection
-  #   velocity = '0 ${flow_velocity} 0'
-  #   variable = temp
-  #   block = 'fuel'
-  # [../]
+  [./temp_diffusion]
+    type = MatDiffusion
+    prop_name = 'k'
+    variable = temp
+  [../]
+  [./temp_advection_fuel]
+    type = ConservativeTemperatureAdvection
+    velocity = '0 ${flow_velocity} 0'
+    variable = temp
+    block = 'fuel'
+  [../]
 []
 
 [DGKernels]
@@ -84,13 +84,13 @@ sigma_val=0
     variable = temp
     velocity = '0 ${flow_velocity} 0'
   [../]
-  # [./temp_diffusion]
-  #   type = DGDiffusion
-  #   variable = temp
-  #   sigma = ${sigma_val}
-  #   epsilon = -1
-  #   diff = 'k'
-  # [../]
+  [./temp_diffusion]
+    type = DGDiffusion
+    variable = temp
+    sigma = ${sigma_val}
+    epsilon = -1
+    diff = 'k'
+  [../]
 []
 
 [Materials]
@@ -115,15 +115,15 @@ sigma_val=0
 []
 
 [BCs]
-  # [./temp_dirichlet_diffusion_inlet]
-  #   boundary = 'fuel_bottom graphite_bottom'
-  #   type = DGFunctionDiffusionDirichletBC
-  #   variable = temp
-  #   sigma = ${sigma_val}
-  #   epsilon = -1
-  #   diff = 'k'
-  #   function = 'inlet_boundary_temp_func'
-  # [../]
+  [./temp_dirichlet_diffusion_inlet]
+    boundary = 'fuel_bottom graphite_bottom'
+    type = DGFunctionDiffusionDirichletBC
+    variable = temp
+    sigma = ${sigma_val}
+    epsilon = -1
+    diff = 'k'
+    function = 'inlet_boundary_temp_func'
+  [../]
   [./temp_advection_inlet]
     boundary = 'fuel_bottom'
     type = TemperatureInflowBC
