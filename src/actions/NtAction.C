@@ -297,7 +297,7 @@ NtAction::act()
       _pars.set<Real>("scaling") = isParamValid("temp_scaling") ? getParam<Real>("temp_scaling") : 1;
       Real scale_factor = getParam<Real>("scaling");
       FEType fe_type(getParam<bool>("dg_for_temperature") ? FIRST : FIRST,
-                     getParam<bool>("dg_for_temperature") ? MONOMIAL : LAGRANGE);
+                     getParam<bool>("dg_for_temperature") ? L2_LAGRANGE : LAGRANGE);
 
       std::set<SubdomainID> blocks = getSubdomainIDs();
 

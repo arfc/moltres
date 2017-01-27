@@ -4,6 +4,7 @@ initial_outlet_temp=824
 nt_scale=1e16
 reactor_height=115 # Cammi 396 cm; critical_buckling_from_newt ~ 115 cm
 global_temperature=temp
+sigma_val=0
 
 [GlobalParams]
   num_groups = 2
@@ -19,48 +20,61 @@ global_temperature=temp
   file = 'cylinder_structured.msh'
 [../]
 
-[Nt]
-  var_name_base = 'group'
-  vacuum_boundaries = 'fuel_top graphite_top fuel_bottom graphite_bottom'
-  temp_scaling = 1e0
-  nt_ic_function = 'nt_ic_func'
-  # create_temperature_var = false
-  temperature = ${global_temperature}
-  # temperature_value = ${global_temperature}
-  dg_for_temperature = true
-[]
+# [Nt]
+#   var_name_base = 'group'
+#   vacuum_boundaries = 'fuel_top graphite_top fuel_bottom graphite_bottom'
+#   temp_scaling = 1e0
+#   nt_ic_function = 'nt_ic_func'
+#   # create_temperature_var = false
+#   temperature = ${global_temperature}
+#   # temperature_value = ${global_temperature}
+#   dg_for_temperature = true
+# []
 
-[PrecursorKernel]
-  var_name_base = pre
-  block = 'fuel'
-  advection_boundaries = 'fuel_top fuel_bottom'
-  family = MONOMIAL
-  order = CONSTANT
+# [PrecursorKernel]
+#   var_name_base = pre
+#   block = 'fuel'
+#   advection_boundaries = 'fuel_top fuel_bottom'
+#   family = MONOMIAL
+#   order = CONSTANT
+# []
+
+[Variables]
+  [./temp]
+    family = MONOMIAL
+    order = CONSTANT
+  [../]
 []
 
 [Kernels]
   # Temperature
-  [./temp_source]
-    type = TransientFissionHeatSource
+  # [./temp_source]
+  #   type = TransientFissionHeatSource
+  #   variable = temp
+  #   nt_scale=${nt_scale}
+  #   block = 'fuel'
+  # [../]
+  [./source]
+    type = UserForcingFunction
     variable = temp
-    nt_scale=${nt_scale}
+    function = 'forcing_func'
     block = 'fuel'
   [../]
   [./temp_time_derivative]
     type = MatINSTemperatureTimeDerivative
     variable = temp
   [../]
-  [./temp_diffusion]
-    type = MatDiffusion
-    prop_name = 'k'
-    variable = temp
-  [../]
-  [./temp_advection_fuel]
-    type = ConservativeTemperatureAdvection
-    velocity = '0 ${flow_velocity} 0'
-    variable = temp
-    block = 'fuel'
-  [../]
+  # [./temp_diffusion]
+  #   type = MatDiffusion
+  #   prop_name = 'k'
+  #   variable = temp
+  # [../]
+  # [./temp_advection_fuel]
+  #   type = ConservativeTemperatureAdvection
+  #   velocity = '0 ${flow_velocity} 0'
+  #   variable = temp
+  #   block = 'fuel'
+  # [../]
 []
 
 [DGKernels]
@@ -70,13 +84,13 @@ global_temperature=temp
     variable = temp
     velocity = '0 ${flow_velocity} 0'
   [../]
-  [./temp_diffusion]
-    type = DGDiffusion
-    variable = temp
-    sigma = 6
-    epsilon = -1
-    diff = 'k'
-  [../]
+  # [./temp_diffusion]
+  #   type = DGDiffusion
+  #   variable = temp
+  #   sigma = ${sigma_val}
+  #   epsilon = -1
+  #   diff = 'k'
+  # [../]
 []
 
 [Materials]
@@ -101,18 +115,25 @@ global_temperature=temp
 []
 
 [BCs]
-  [./temp_dirichlet_diffusion_inlet]
-    boundary = 'fuel_bottom graphite_bottom'
-    type = DGFunctionDiffusionDirichletBC
+  # [./temp_dirichlet_diffusion_inlet]
+  #   boundary = 'fuel_bottom graphite_bottom'
+  #   type = DGFunctionDiffusionDirichletBC
+  #   variable = temp
+  #   sigma = ${sigma_val}
+  #   epsilon = -1
+  #   diff = 'k'
+  #   function = 'inlet_boundary_temp_func'
+  # [../]
+  [./temp_advection_inlet]
+    boundary = 'fuel_bottom'
+    type = TemperatureInflowBC
     variable = temp
-    sigma = 6
-    epsilon = -1
-    diff = 'k'
-    function = 'inlet_boundary_temp_func'
+    velocity = '0 ${flow_velocity} 0'
+    inlet_conc = 824
   [../]
-  [./temp_advection_inlet_outlet]
-    boundary = 'fuel_bottom fuel_top'
-    type = OutflowBC
+  [./temp_advection_outlet]
+    boundary = 'fuel_top'
+    type = TemperatureOutflowBC
     variable = temp
     velocity = '0 ${flow_velocity} 0'
   [../]
@@ -176,6 +197,10 @@ global_temperature=temp
 []
 
 [Functions]
+  [./forcing_func]
+    type = ParsedFunction
+    value = '1000'
+  [../]
   [./temp_ic_func]
     type = ParsedFunction
     value = '(${initial_outlet_temp} - ${inlet_temp}) / ${reactor_height} * y + ${inlet_temp}'
@@ -191,22 +216,22 @@ global_temperature=temp
 []
 
 [Postprocessors]
-  [./group1_current]
-    type = IntegralNewVariablePostprocessor
-    variable = group1
-    outputs = 'csv console'
-  [../]
-  [./group1_old]
-    type = IntegralOldVariablePostprocessor
-    variable = group1
-    outputs = 'csv console'
-  [../]
-  [./multiplication]
-    type = DivisionPostprocessor
-    value1 = group1_current
-    value2 = group1_old
-    outputs = 'csv console'
-  [../]
+  # [./group1_current]
+  #   type = IntegralNewVariablePostprocessor
+  #   variable = group1
+  #   outputs = 'csv console'
+  # [../]
+  # [./group1_old]
+  #   type = IntegralOldVariablePostprocessor
+  #   variable = group1
+  #   outputs = 'csv console'
+  # [../]
+  # [./multiplication]
+  #   type = DivisionPostprocessor
+  #   value1 = group1_current
+  #   value2 = group1_old
+  #   outputs = 'csv console'
+  # [../]
   [./temp_fuel]
     type = ElementAverageValue
     variable = temp
