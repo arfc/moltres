@@ -20,16 +20,16 @@ sigma_val=6
   file = 'cylinder_structured.msh'
 [../]
 
-# [Nt]
-#   var_name_base = 'group'
-#   vacuum_boundaries = 'fuel_top graphite_top fuel_bottom graphite_bottom'
-#   temp_scaling = 1e0
-#   nt_ic_function = 'nt_ic_func'
-#   # create_temperature_var = false
-#   temperature = ${global_temperature}
-#   # temperature_value = ${global_temperature}
-#   dg_for_temperature = true
-# []
+[Nt]
+  var_name_base = 'group'
+  vacuum_boundaries = 'fuel_top graphite_top fuel_bottom graphite_bottom'
+  temp_scaling = 1e0
+  nt_ic_function = 'nt_ic_func'
+  # create_temperature_var = false
+  temperature = ${global_temperature}
+  # temperature_value = ${global_temperature}
+  dg_for_temperature = true
+[]
 
 # [PrecursorKernel]
 #   var_name_base = pre
@@ -39,27 +39,20 @@ sigma_val=6
 #   order = CONSTANT
 # []
 
-[Variables]
-  [./temp]
-    family = MONOMIAL
-    order = FIRST
-  [../]
-[]
-
 [Kernels]
   # Temperature
-  # [./temp_source]
-  #   type = TransientFissionHeatSource
-  #   variable = temp
-  #   nt_scale=${nt_scale}
-  #   block = 'fuel'
-  # [../]
-  [./source]
-    type = UserForcingFunction
+  [./temp_source]
+    type = TransientFissionHeatSource
     variable = temp
-    function = 'forcing_func'
+    nt_scale=${nt_scale}
     block = 'fuel'
   [../]
+  # [./source]
+  #   type = UserForcingFunction
+  #   variable = temp
+  #   function = 'forcing_func'
+  #   block = 'fuel'
+  # [../]
   [./temp_time_derivative]
     type = MatINSTemperatureTimeDerivative
     variable = temp
@@ -163,8 +156,8 @@ sigma_val=6
   [./TimeStepper]
     type = IterationAdaptiveDT
     cutback_factor = 0.4
-    dt = 1e-4
-    growth_factor = 1.05
+    dt = 1e-3
+    growth_factor = 1.025
     optimal_iterations = 20
   [../]
 []
@@ -216,22 +209,22 @@ sigma_val=6
 []
 
 [Postprocessors]
-  # [./group1_current]
-  #   type = IntegralNewVariablePostprocessor
-  #   variable = group1
-  #   outputs = 'csv console'
-  # [../]
-  # [./group1_old]
-  #   type = IntegralOldVariablePostprocessor
-  #   variable = group1
-  #   outputs = 'csv console'
-  # [../]
-  # [./multiplication]
-  #   type = DivisionPostprocessor
-  #   value1 = group1_current
-  #   value2 = group1_old
-  #   outputs = 'csv console'
-  # [../]
+  [./group1_current]
+    type = IntegralNewVariablePostprocessor
+    variable = group1
+    outputs = 'csv console'
+  [../]
+  [./group1_old]
+    type = IntegralOldVariablePostprocessor
+    variable = group1
+    outputs = 'csv console'
+  [../]
+  [./multiplication]
+    type = DivisionPostprocessor
+    value1 = group1_current
+    value2 = group1_old
+    outputs = 'csv console'
+  [../]
   [./temp_fuel]
     type = ElementAverageValue
     variable = temp
