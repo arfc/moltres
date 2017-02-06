@@ -41,11 +41,18 @@ sigma_val=6
 
 [Kernels]
   # Temperature
-  [./temp_source]
+  [./temp_source_fuel]
     type = TransientFissionHeatSource
     variable = temp
     nt_scale=${nt_scale}
     block = 'fuel'
+  [../]
+  [./temp_source_mod]
+    type = GammaHeatSource
+    variable = temp
+    gamma = .0144 # Cammi .0144
+    block = 'moder'
+    average_fission_heat = 'average_fission_heat'
   [../]
   [./temp_time_derivative]
     type = MatINSTemperatureTimeDerivative
@@ -223,14 +230,19 @@ sigma_val=6
     type = ElementAverageValue
     variable = temp
     block = 'fuel'
-    # execute_on = 'linear nonlinear'
     outputs = 'csv console'
   [../]
   [./temp_moder]
     type = ElementAverageValue
     variable = temp
     block = 'moder'
-    # execute_on = 'linear nonlinear'
     outputs = 'csv console'
+  [../]
+  [./average_fission_heat]
+    type = AverageFissionHeat
+    nt_scale = ${nt_scale}
+    execute_on = 'linear nonlinear'
+    outputs = 'csv console'
+    block = 'fuel'
   [../]
 []

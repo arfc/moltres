@@ -19,6 +19,8 @@ CoupledFissionKernel::CoupledFissionKernel(const InputParameters & parameters) :
     _d_nsf_d_temp(getMaterialProperty<std::vector<Real> >("d_nsf_d_temp")),
     _chi(getMaterialProperty<std::vector<Real> >("chi")),
     _d_chi_d_temp(getMaterialProperty<std::vector<Real> >("d_chi_d_temp")),
+    _beta(getMaterialProperty<Real>("beta")),
+    _d_beta_d_temp(getMaterialProperty<Real>("d_beta_d_temp")),
     _group(getParam<int>("group_number") - 1),
     _num_groups(getParam<int>("num_groups")),
     _temp_id(coupled("temperature")),
@@ -44,11 +46,9 @@ CoupledFissionKernel::computeQpResidual()
   // std::cout << _temp[_qp] << std::endl;
   Real r = 0;
   for (int i = 0; i < _num_groups; ++i)
-  {
-    r += -_test[_i][_qp] * _chi[_qp][_group] * _nsf[_qp][i] * computeConcentration((*_group_fluxes[i]), _qp);
-  }
+    r += -_nsf[_qp][i] * computeConcentration((*_group_fluxes[i]), _qp);
 
-  return r;
+  return _test[_i][_qp] * (1. - _beta[_qp]) * _chi[_qp][_group] * r;
 }
 
 Real
@@ -59,12 +59,12 @@ CoupledFissionKernel::computeQpJacobian()
   {
     if (i == _group)
     {
-      jac += -_test[_i][_qp] * _chi[_qp][_group] * _nsf[_qp][i] * computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp);
+      jac += -_nsf[_qp][i] * computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp);
       break;
     }
   }
 
-  return jac;
+  return _test[_i][_qp] * (1. - _beta[_qp]) * _chi[_qp][_group] * jac;
 }
 
 Real
@@ -82,7 +82,7 @@ CoupledFissionKernel::computeQpOffDiagJacobian(unsigned int jvar)
 
   if (jvar == _temp_id)
     for (int i = 0; i < _num_groups; ++i)
-      jac += -_test[_i][_qp] * computeConcentration((*_group_fluxes[i]), _qp) * (_d_chi_d_temp[_qp][_group] * _phi[_j][_qp] * _nsf[_qp][i] + _chi[_qp][_group] * _d_nsf_d_temp[_qp][i] * _phi[_j][_qp]);
+      jac += -_test[_i][_qp] * computeConcentration((*_group_fluxes[i]), _qp) * (_d_chi_d_temp[_qp][_group] * _phi[_j][_qp] * _nsf[_qp][i] * (1. - _beta[_qp]) + _chi[_qp][_group] * _d_nsf_d_temp[_qp][i] * _phi[_j][_qp] * (1. - _beta[_qp]) + _chi[_qp][_group] * _nsf[_qp][i] * -_d_beta_d_temp[_qp] * _phi[_j][_qp]);
 
   return jac;
 }

@@ -25,6 +25,8 @@ protected:
   const MaterialProperty<std::vector<Real> > & _d_nsf_d_temp;
   const MaterialProperty<std::vector<Real> > & _chi;
   const MaterialProperty<std::vector<Real> > & _d_chi_d_temp;
+  const MaterialProperty<Real> & _beta;
+  const MaterialProperty<Real> & _d_beta_d_temp;
   int _group;
   int _num_groups;
   unsigned int _temp_id;

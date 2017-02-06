@@ -32,6 +32,7 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     _chi(declareProperty<std::vector<Real> >("chi")),
     _gtransfxs(declareProperty<std::vector<Real> >("gtransfxs")),
     _beta_eff(declareProperty<std::vector<Real> >("beta_eff")),
+    _beta(declareProperty<Real>("beta")),
     _decay_constant(declareProperty<std::vector<Real> >("decay_constant")),
 
     _d_remxs_d_temp(declareProperty<std::vector<Real> >("d_remxs_d_temp")),
@@ -43,6 +44,7 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     _d_chi_d_temp(declareProperty<std::vector<Real> >("d_chi_d_temp")),
     _d_gtransfxs_d_temp(declareProperty<std::vector<Real> >("d_gtransfxs_d_temp")),
     _d_beta_eff_d_temp(declareProperty<std::vector<Real> >("d_beta_eff_d_temp")),
+    _d_beta_d_temp(declareProperty<Real>("d_beta_d_temp")),
     _d_decay_constant_d_temp(declareProperty<std::vector<Real> >("d_decay_constant_d_temp")),
     _interp_type(getParam<MooseEnum>("interp_type")),
     _other_temp(getPostprocessorValue("other_temp"))
@@ -257,10 +259,14 @@ GenericMoltresMaterial::splineComputeQpProperties()
     _gtransfxs[_qp][i] = _xsec_spline_interpolators["GTRANSFXS"][i].sample(_temperature[_qp]);
     _d_gtransfxs_d_temp[_qp][i] = _xsec_spline_interpolators["GTRANSFXS"][i].sampleDerivative(_temperature[_qp]);
   }
+  _beta[_qp] = 0;
+  _d_beta_d_temp[_qp] = 0;
   for (decltype(_num_groups) i = 0; i < _num_precursor_groups; ++i)
   {
     _beta_eff[_qp][i] = _xsec_spline_interpolators["BETA_EFF"][i].sample(_temperature[_qp]);
     _d_beta_eff_d_temp[_qp][i] = _xsec_spline_interpolators["BETA_EFF"][i].sampleDerivative(_temperature[_qp]);
+    _beta[_qp] += _beta_eff[_qp][i];
+    _d_beta_d_temp[_qp] += _d_beta_eff_d_temp[_qp][i];
     _decay_constant[_qp][i] = _xsec_spline_interpolators["DECAY_CONSTANT"][i].sample(_temperature[_qp]);
     _d_decay_constant_d_temp[_qp][i] = _xsec_spline_interpolators["DECAY_CONSTANT"][i].sampleDerivative(_temperature[_qp]);
   }

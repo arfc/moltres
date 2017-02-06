@@ -17,7 +17,7 @@ sigma_val=6
 [../]
 
 [Mesh]
-  file = 'cylinder_structured.msh'
+  file = 'one_element.msh'
 [../]
 
 [Nt]
@@ -47,6 +47,12 @@ sigma_val=6
     nt_scale=${nt_scale}
     block = 'fuel'
   [../]
+  # [./source]
+  #   type = UserForcingFunction
+  #   variable = temp
+  #   function = 'forcing_func'
+  #   block = 'fuel'
+  # [../]
   [./temp_time_derivative]
     type = MatINSTemperatureTimeDerivative
     variable = temp
@@ -133,7 +139,7 @@ sigma_val=6
 
 [Executioner]
   type = Transient
-  end_time = 10000
+  end_time = 1e-3
 
   nl_rel_tol = 1e-6
   nl_abs_tol = 1e-5
