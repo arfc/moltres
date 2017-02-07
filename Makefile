@@ -21,16 +21,8 @@ include $(FRAMEWORK_DIR)/moose.mk
 
 ################################## MODULES ####################################
 ALL_MODULES := no
-NAVIER_STOKES := yes
-FLUID_PROPERTIES := yes
-HEAT_CONDUCTION := yes
-RDG := yes
 include $(MOOSE_DIR)/modules/modules.mk
 ###############################################################################
-
-APPLICATION_DIR    := $(shell dirname `pwd`)/zapdos
-APPLICATION_NAME   := zapdos
-include            $(FRAMEWORK_DIR)/app.mk
 
 APPLICATION_DIR    := $(shell dirname `pwd`)/squirrel
 APPLICATION_NAME   := squirrel
