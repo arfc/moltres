@@ -1,10 +1,9 @@
 graph_sqc_rad = 2.54; // MSRE (cm) unless otherwise noted
 fuel_sqc_rad = 3.048;
 pitch = 2 * fuel_sqc_rad;
-// num_cells = 23;
-num_cells = 1;
+num_cells = 4;
 // height = 162.56;
-height = 60;
+height = 30;
 lc = 2.5;
 
 Point(1) = {-graph_sqc_rad, -graph_sqc_rad, 0, lc};
@@ -70,13 +69,37 @@ fuel_tops[] = {};
 fuel_sides[] = {};
 moder_tops[] = {};
 For index In {0:num_cells*num_cells-1}
+// For index In {3:5}
 fuel_out[] = Extrude {0, 0, height} { Surface{fuel_surfaces[index]}; };
 fuel_volumes += fuel_out[1];
 fuel_tops += fuel_out[0];
-fuel_sides += fuel_out[2];
-fuel_sides += fuel_out[3];
+If (index == 0)
 fuel_sides += fuel_out[4];
 fuel_sides += fuel_out[5];
+ElseIf (index == num_cells * num_cells - 1)
+fuel_sides += fuel_out[2];
+fuel_sides += fuel_out[3];
+ElseIf (index == num_cells -1)
+fuel_sides += fuel_out[3];
+fuel_sides += fuel_out[4];
+ElseIf (index == 2 * num_cells - 2)
+fuel_sides += fuel_out[5];
+fuel_sides += fuel_out[2];
+ElseIf (index < num_cells) // -y side
+fuel_sides += fuel_out[4];
+ElseIf (index < 2 * num_cells - 2) // -x side
+fuel_sides += fuel_out[5];
+ElseIf ((index - 2 * (num_cells - 1)) % (num_cells - 1) == 0)
+fuel_sides += fuel_out[2];
+ElseIf (index >= num_cells * num_cells - num_cells + 1 && index < num_cells * num_cells - 1)
+fuel_sides += fuel_out[3];
+EndIf
+// If (index >= num_cells * (num_cells - 1) && index < num_cells * num_cells)// +y side
+// fuel_sides += fuel_out[2];
+// EndIf
+// If (index % num_cells == num_cells - 1) // +x side
+// fuel_sides += fuel_out[3];
+// EndIf
 moder_out[] = Extrude {0, 0, height} { Surface{moder_surfaces[index]}; };
 moder_volumes += moder_out[1];
 moder_tops += moder_out[0];
@@ -95,7 +118,4 @@ bound_surfs += moder_tops[];
 bound_surfs += fuel_sides[];
 Printf("'%g'",#tot_volumes[]);
 bnd[] = Boundary{ Volume{tot_volumes[]}; };
-// Physical Surface ("boundary") = bnd[];
 Physical Surface ("boundary") = { bound_surfs[] };
-// Printf("Surfaces '%g' and '%g' and '%g'", fuel_surfaces[0], fuel_surfaces[1], fuel_surfaces[2]);
-// Printf("Surfaces '%g' and '%g' and '%g'", moder_surfaces[0], moder_surfaces[1], moder_surfaces[2]);
