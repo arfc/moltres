@@ -115,6 +115,16 @@ bound_surfs += moder_surfaces[];
 bound_surfs += fuel_tops[];
 bound_surfs += moder_tops[];
 bound_surfs += fuel_sides[];
-Printf("'%g'",#tot_volumes[]);
-bnd[] = Boundary{ Volume{tot_volumes[]}; };
+
+temp_diri_surfs = {};
+temp_diri_surfs[] = fuel_surfaces[];
+temp_diri_surfs += moder_surfaces[];
+temp_diri_surfs += fuel_sides[];
+
+temp_out_surfs = {};
+temp_out_surfs[] = fuel_tops[];
+temp_out_surfs += moder_tops[];
+
 Physical Surface ("boundary") = { bound_surfs[] };
+Physical Surface ("temp_diri_bnd") = { temp_diri_surfs[] };
+Physical Surface ("temp_out_bnd") = { temp_out_surfs[] };
