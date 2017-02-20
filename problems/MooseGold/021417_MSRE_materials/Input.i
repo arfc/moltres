@@ -1,10 +1,9 @@
 flow_velocity=147 # Cammi 147 cm/s
-inlet_temp=824
-initial_outlet_temp=824
-nt_scale=1e16
-reactor_height=115 # Cammi 396 cm; critical_buckling_from_newt ~ 115 cm
-# global_temperature=temp
-global_temperature=922
+diri_temp=908
+nt_scale=1e13
+reactor_height=162.56
+global_temperature=temp
+# global_temperature=922
 sigma_val=6
 
 [GlobalParams]
@@ -27,9 +26,9 @@ sigma_val=6
   temp_scaling = 1e0
   nt_ic_function = 'nt_ic_func'
   create_temperature_var = false
-  # temperature = ${global_temperature}
-  temperature_value = ${global_temperature}
-  # dg_for_temperature = true
+  temperature = ${global_temperature}
+  # temperature_value = ${global_temperature}
+  dg_for_temperature = true
 []
 
 # [PrecursorKernel]
@@ -40,99 +39,101 @@ sigma_val=6
 #   order = CONSTANT
 # []
 
-# [Kernels]
-#   # Temperature
-#   [./temp_source_fuel]
-#     type = TransientFissionHeatSource
-#     variable = temp
-#     nt_scale=${nt_scale}
-#     block = 'fuel'
-#   [../]
-#   [./temp_source_mod]
-#     type = GammaHeatSource
-#     variable = temp
-#     gamma = .0144 # Cammi .0144
-#     block = 'moder'
-#     average_fission_heat = 'average_fission_heat'
-#   [../]
-#   [./temp_time_derivative]
-#     type = MatINSTemperatureTimeDerivative
-#     variable = temp
-#   [../]
-#   [./temp_diffusion]
-#     type = MatDiffusion
-#     prop_name = 'k'
-#     variable = temp
-#   [../]
-#   [./temp_advection_fuel]
-#     type = ConservativeTemperatureAdvection
-#     velocity = '0 ${flow_velocity} 0'
-#     variable = temp
-#     block = 'fuel'
-#   [../]
-# []
+[Kernels]
+  # Temperature
+  [./temp_source_fuel]
+    type = TransientFissionHeatSource
+    variable = temp
+    nt_scale=${nt_scale}
+    block = 'fuel'
+  [../]
+  # [./temp_source_mod]
+  #   type = GammaHeatSource
+  #   variable = temp
+  #   gamma = .0144 # Cammi .0144
+  #   block = 'moder'
+  #   average_fission_heat = 'average_fission_heat'
+  # [../]
+  [./temp_time_derivative]
+    type = MatINSTemperatureTimeDerivative
+    variable = temp
+  [../]
+  [./temp_diffusion]
+    type = MatDiffusion
+    prop_name = 'k'
+    variable = temp
+  [../]
+  [./temp_advection_fuel]
+    type = ConservativeTemperatureAdvection
+    velocity = '0 ${flow_velocity} 0'
+    variable = temp
+    block = 'fuel'
+  [../]
+[]
 
-# [DGKernels]
-#   [./temp_advection_fuel]
-#     block = 'fuel'
-#     type = DGTemperatureAdvection
-#     variable = temp
-#     velocity = '0 ${flow_velocity} 0'
-#   [../]
-#   [./temp_diffusion]
-#     type = DGDiffusion
-#     variable = temp
-#     sigma = ${sigma_val}
-#     epsilon = -1
-#     diff = 'k'
-#   [../]
-# []
+[DGKernels]
+  [./temp_advection_fuel]
+    block = 'fuel'
+    type = DGTemperatureAdvection
+    variable = temp
+    velocity = '0 ${flow_velocity} 0'
+  [../]
+  [./temp_diffusion]
+    type = DGDiffusion
+    variable = temp
+    sigma = ${sigma_val}
+    epsilon = -1
+    diff = 'k'
+  [../]
+[]
 
 [Materials]
   [./fuel]
-    type = CammiFuel
+    # type = CammiFuel
+    type = GenericMoltresMaterial
     block = 'fuel'
     property_tables_root = '../property_file_dir/msr2g_part_U_full_core_fuel_data_func_of_fuel_temp_'
-    prop_names = 'cp'
-    prop_values = '1357' # Cammi 2011 at 908 K
+    prop_names = 'rho k cp'
+    prop_values = '2.146e-3 .0553 1967' # Cammi 2011 at 908 K
     interp_type = 'spline'
     temperature = ${global_temperature}
   [../]
   [./moder]
-    type = CammiModerator
+    # type = CammiModerator
+    type = GenericMoltresMaterial
     block = 'moder'
     property_tables_root = '../property_file_dir/msr2g_part_U_full_core_mod_data_func_of_mod_temp_'
-    prop_names = 'rho cp'
-    prop_values = '1.843e-3 1760' # Cammi 2011 at 908 K
+    prop_names = 'rho k cp'
+    prop_values = '1.843e-3 .312 1760' # Cammi 2011 at 908 K
     interp_type = 'spline'
     temperature = ${global_temperature}
   [../]
 []
 
-# [BCs]
-#   [./temp_dirichlet_diffusion_inlet]
-#     boundary = 'fuel_bottom graphite_bottom'
-#     type = DGFunctionDiffusionDirichletBC
-#     variable = temp
-#     sigma = ${sigma_val}
-#     epsilon = -1
-#     diff = 'k'
-#     function = 'inlet_boundary_temp_func'
-#   [../]
-#   [./temp_advection_inlet]
-#     boundary = 'fuel_bottom'
-#     type = TemperatureInflowBC
-#     variable = temp
-#     velocity = '0 ${flow_velocity} 0'
-#     inlet_conc = 824
-#   [../]
-#   [./temp_advection_outlet]
-#     boundary = 'fuel_top'
-#     type = TemperatureOutflowBC
-#     variable = temp
-#     velocity = '0 ${flow_velocity} 0'
-#   [../]
-# []
+[BCs]
+  [./temp_dirichlet_diffusion_inlet]
+    boundary = 'temp_diri_bnd'
+    type = DGFunctionDiffusionDirichletBC
+    variable = temp
+    sigma = ${sigma_val}
+    epsilon = -1
+    diff = 'k'
+    function = 'diri_temp_func'
+  [../]
+  [./temp_advection_inlet]
+    boundary = 'temp_inflow_bnd'
+    type = TemperatureInflowBC
+    variable = temp
+    velocity = '0 ${flow_velocity} 0'
+    inlet_conc = ${diri_temp}
+  [../]
+  [./temp_advection_outlet]
+    boundary = 'temp_outflow_bnd'
+    type = TemperatureOutflowBC
+    variable = temp
+    velocity = '0 ${flow_velocity} 0'
+  [../]
+[]
 
 # [Problem]
 #   type = FEProblem
@@ -185,30 +186,26 @@ sigma_val=6
   show_var_residual_norms = true
 []
 
-# [ICs]
-#   [./temp_all_ic_func]
-#     type = FunctionIC
-#     variable = temp
-#     function = temp_ic_func
-#   [../]
-# []
+[ICs]
+  [./temp_all_ic_func]
+    type = FunctionIC
+    variable = temp
+    function = temp_ic_func
+  [../]
+[]
 
 [Functions]
-  [./forcing_func]
-    type = ParsedFunction
-    value = '1000'
-  [../]
   [./temp_ic_func]
     type = ParsedFunction
-    value = '(${initial_outlet_temp} - ${inlet_temp}) / ${reactor_height} * y + ${inlet_temp}'
+    value = '${diri_temp}'
   [../]
   [./nt_ic_func]
     type = ParsedFunction
     value = '4/${reactor_height} * y * (1 - y/${reactor_height})'
   [../]
-  [./inlet_boundary_temp_func]
+  [./diri_temp_func]
     type = ParsedFunction
-    value = '${inlet_temp}'
+    value = '${diri_temp}'
   [../]
 []
 
@@ -229,23 +226,23 @@ sigma_val=6
     value2 = group1_old
     outputs = 'csv console'
   [../]
-  # [./temp_fuel]
-  #   type = ElementAverageValue
-  #   variable = temp
-  #   block = 'fuel'
-  #   outputs = 'csv console'
-  # [../]
-  # [./temp_moder]
-  #   type = ElementAverageValue
-  #   variable = temp
-  #   block = 'moder'
-  #   outputs = 'csv console'
-  # [../]
-  # [./average_fission_heat]
-  #   type = AverageFissionHeat
-  #   nt_scale = ${nt_scale}
-  #   execute_on = 'linear nonlinear'
-  #   outputs = 'csv console'
-  #   block = 'fuel'
-  # [../]
+  [./temp_fuel]
+    type = ElementAverageValue
+    variable = temp
+    block = 'fuel'
+    outputs = 'csv console'
+  [../]
+  [./temp_moder]
+    type = ElementAverageValue
+    variable = temp
+    block = 'moder'
+    outputs = 'csv console'
+  [../]
+#   # [./average_fission_heat]
+#   #   type = AverageFissionHeat
+#   #   nt_scale = ${nt_scale}
+#   #   execute_on = 'linear nonlinear'
+#   #   outputs = 'csv console'
+#   #   block = 'fuel'
+#   # [../]
 []

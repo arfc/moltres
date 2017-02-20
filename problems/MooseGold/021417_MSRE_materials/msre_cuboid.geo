@@ -121,10 +121,13 @@ temp_diri_surfs[] = fuel_surfaces[];
 temp_diri_surfs += moder_surfaces[];
 temp_diri_surfs += fuel_sides[];
 
-temp_out_surfs = {};
-temp_out_surfs[] = fuel_tops[];
-temp_out_surfs += moder_tops[];
+temp_outflow_surfs = {};
+temp_outflow_surfs[] = fuel_tops[];
+
+temp_inflow_surfs = {};
+temp_inflow_surfs[] = fuel_surfaces[];
 
 Physical Surface ("boundary") = { bound_surfs[] };
 Physical Surface ("temp_diri_bnd") = { temp_diri_surfs[] };
-Physical Surface ("temp_out_bnd") = { temp_out_surfs[] };
+Physical Surface ("temp_outflow_bnd") = { temp_outflow_surfs[] };
+Physical Surface ("temp_inflow_bnd") = { temp_inflow_surfs[] };
