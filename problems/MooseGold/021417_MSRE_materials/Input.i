@@ -17,7 +17,8 @@ sigma_val=6
 [../]
 
 [Mesh]
-  file = 'msr-10x10.msh'
+  file = 'msre_22x22_correct_vol_fraction.msh'
+  # file = msr-10x10.msh
 [../]
 
 [Nt]
@@ -25,7 +26,7 @@ sigma_val=6
   vacuum_boundaries = 'boundary'
   temp_scaling = 1e0
   nt_ic_function = 'nt_ic_func'
-  create_temperature_var = false
+  create_temperature_var = true
   temperature = ${global_temperature}
   # temperature_value = ${global_temperature}
   dg_for_temperature = true
