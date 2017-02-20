@@ -64,7 +64,7 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     myfile.close();
   }
   else
-    mooseError("Unable to open file " << file_name);
+    mooseError("Unable to open file " + file_name);
 
   std::map<std::string, std::vector<std::vector<Real> > > xsec_map;
   for (int j = 0; j < xsec_names.size(); ++j)
@@ -95,7 +95,7 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
         _xsec_interpolators[xsec_names[j]][k].setData(temperature, xsec_map[xsec_names[j]][k]);
     }
     else
-      mooseError("Unable to open file " << file_name);
+      mooseError("Unable to open file " + file_name);
   }
 }
 
