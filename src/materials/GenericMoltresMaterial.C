@@ -111,7 +111,7 @@ GenericMoltresMaterial::splineConstruct(std::string & property_tables_root, std:
         _xsec_spline_interpolators[xsec_names[j]][k].setData(temperature, xsec_map[xsec_names[j]][k]);
     }
     else
-      mooseError("Unable to open file " << file_name);
+      mooseError("Unable to open file " + file_name);
   }
 }
 
@@ -165,7 +165,7 @@ GenericMoltresMaterial::bicubicSplineConstruct(std::string & property_tables_roo
         _xsec_bicubic_spline_interpolators[xsec_names[j]][k].setData(fuel_temperature, mod_temperature, xsec_map[xsec_names[j]][k]);
     }
     else
-      mooseError("Unable to open file " << file_name);
+      mooseError("Unable to open file " + file_name);
   }
 
   if (!parameters.isParamSetByUser("other_temp"))
