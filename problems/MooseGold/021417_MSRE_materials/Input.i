@@ -17,8 +17,8 @@ sigma_val=6
 [../]
 
 [Mesh]
-  file = 'msre_22x22_correct_vol_fraction.msh'
-  # file = msr-10x10.msh
+  # file = 'msre_22x22_correct_vol_fraction.msh'
+  file = msre_cuboid_3x3.msh
 [../]
 
 [Nt]

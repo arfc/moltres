@@ -1,7 +1,7 @@
 graph_sqc_rad = 2.54; // MSRE (cm) unless otherwise noted
 fuel_sqc_rad = 2.8847; // See N and O columns of MSRE-properties.ods. Ensures correct volume fraction of .229
 pitch = 2 * fuel_sqc_rad;
-num_cells = 22;
+num_cells = 3;
 height = 162.56; // p. 101 robertson design report part 1
 lc = 2.5;
 
