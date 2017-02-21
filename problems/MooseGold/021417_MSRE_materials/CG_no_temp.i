@@ -2,8 +2,8 @@ flow_velocity=21.7 # cm/s. See MSRE-properties.ods
 diri_temp=908
 nt_scale=1e13
 reactor_height=162.56
-global_temperature=temp
-# global_temperature=922
+# global_temperature=temp
+global_temperature=922
 
 [GlobalParams]
   num_groups = 2
@@ -21,55 +21,19 @@ global_temperature=temp
   file = msre_cuboid_3x3.msh
 [../]
 
+[Problem]
+  kernel_coverage_check = false
+[]
+
 [Nt]
   var_name_base = 'group'
   vacuum_boundaries = 'boundary'
   temp_scaling = 1e0
   nt_ic_function = 'nt_ic_func'
-  create_temperature_var = true
-  temperature = ${global_temperature}
-  # temperature_value = ${global_temperature}
+  create_temperature_var = false
+  # temperature = ${global_temperature}
+  temperature_value = ${global_temperature}
   dg_for_temperature = false
-[]
-
-# [PrecursorKernel]
-#   var_name_base = pre
-#   block = 'fuel'
-#   advection_boundaries = 'fuel_top fuel_bottom'
-#   family = MONOMIAL
-#   order = CONSTANT
-# []
-
-[Kernels]
-  # Temperature
-  [./temp_source_fuel]
-    type = TransientFissionHeatSource
-    variable = temp
-    nt_scale=${nt_scale}
-    block = 'fuel'
-  [../]
-  # [./temp_source_mod]
-  #   type = GammaHeatSource
-  #   variable = temp
-  #   gamma = .0144 # Cammi .0144
-  #   block = 'moder'
-  #   average_fission_heat = 'average_fission_heat'
-  # [../]
-  [./temp_time_derivative]
-    type = MatINSTemperatureTimeDerivative
-    variable = temp
-  [../]
-  [./temp_diffusion]
-    type = MatDiffusion
-    prop_name = 'k'
-    variable = temp
-  [../]
-  [./temp_advection_fuel]
-    type = ConservativeTemperatureAdvection
-    velocity = '0 0 ${flow_velocity}'
-    variable = temp
-    block = 'fuel'
-  [../]
 []
 
 [Materials]
@@ -94,26 +58,6 @@ global_temperature=temp
     temperature = ${global_temperature}
   [../]
 []
-
-[BCs]
-  [./temp_diri_cg]
-    boundary = 'temp_diri_bnd'
-    type = DirichletBC
-    variable = temp
-    value = ${diri_temp}
-  [../]
-  [./temp_advection_outlet]
-    boundary = 'temp_outflow_bnd'
-    type = TemperatureOutflowBC
-    variable = temp
-    velocity = '0 0 ${flow_velocity}'
-  [../]
-[]
-
-# [Problem]
-#   type = FEProblem
-#   coord_type = RZ
-# [../]
 
 [Executioner]
   type = Transient
@@ -152,36 +96,17 @@ global_temperature=temp
   csv = true
   print_linear_residuals = true
   print_perf_log = true
-  [./out]
-    type = Exodus
-    execute_on = 'initial timestep_end'
-  [../]
+  exodus = true
 []
 
 [Debug]
   show_var_residual_norms = true
 []
 
-[ICs]
-  [./temp_all_ic_func]
-    type = FunctionIC
-    variable = temp
-    function = temp_ic_func
-  [../]
-[]
-
 [Functions]
-  [./temp_ic_func]
-    type = ParsedFunction
-    value = '${diri_temp}'
-  [../]
   [./nt_ic_func]
     type = ParsedFunction
     value = '4/${reactor_height} * y * (1 - y/${reactor_height})'
-  [../]
-  [./diri_temp_func]
-    type = ParsedFunction
-    value = '${diri_temp}'
   [../]
 []
 
@@ -202,23 +127,4 @@ global_temperature=temp
     value2 = group1_old
     outputs = 'csv console'
   [../]
-  [./temp_fuel]
-    type = ElementAverageValue
-    variable = temp
-    block = 'fuel'
-    outputs = 'csv console'
-  [../]
-  [./temp_moder]
-    type = ElementAverageValue
-    variable = temp
-    block = 'moder'
-    outputs = 'csv console'
-  [../]
-#   # [./average_fission_heat]
-#   #   type = AverageFissionHeat
-#   #   nt_scale = ${nt_scale}
-#   #   execute_on = 'linear nonlinear'
-#   #   outputs = 'csv console'
-#   #   block = 'fuel'
-#   # [../]
 []
