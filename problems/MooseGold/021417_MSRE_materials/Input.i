@@ -1,4 +1,4 @@
-flow_velocity=147 # Cammi 147 cm/s
+flow_velocity=21.7 # cm/s. See MSRE-properties.ods
 diri_temp=908
 nt_scale=1e13
 reactor_height=162.56
@@ -11,9 +11,9 @@ sigma_val=6
   num_precursor_groups = 8
   use_exp_form = true
   group_fluxes = 'group1 group2'
-  u_def = 0
-  v_def = ${flow_velocity}
-  w_def = 0
+#   u_def = 0
+#   v_def = ${flow_velocity}
+#   w_def = 0
 [../]
 
 [Mesh]
@@ -143,16 +143,16 @@ sigma_val=6
 
 [Executioner]
   type = Transient
-  # end_time = 10000
-  num_steps = 1
+  end_time = 10000
+#   num_steps = 1
 
   nl_rel_tol = 1e-6
   nl_abs_tol = 1e-5
 
   solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -ksp_gmres_restart'
-  petsc_options_value = 'asm	  lu	       1	       preonly	     31'
+  petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type' # -ksp_gmres_restart'
+  petsc_options_value = 'asm	  lu	       1	       preonly'	     # 31'
 
   nl_max_its = 20
   l_max_its = 10
@@ -177,6 +177,7 @@ sigma_val=6
 [Outputs]
   csv = true
   print_linear_residuals = true
+  print_perf_log = true
   [./out]
     type = Exodus
     execute_on = 'initial timestep_end'
