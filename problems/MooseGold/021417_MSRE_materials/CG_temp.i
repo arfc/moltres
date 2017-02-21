@@ -4,7 +4,6 @@ nt_scale=1e13
 reactor_height=162.56
 global_temperature=temp
 # global_temperature=922
-sigma_val=6
 
 [GlobalParams]
   num_groups = 2
@@ -18,7 +17,7 @@ sigma_val=6
 
 [Mesh]
   # file = 'msre_22x22_correct_vol_fraction.msh'
-  file = msre_cuboid_3x3.msh
+  file = msre_cuboid_3x3_short_height.msh
 [../]
 
 [Nt]
@@ -29,7 +28,7 @@ sigma_val=6
   create_temperature_var = true
   temperature = ${global_temperature}
   # temperature_value = ${global_temperature}
-  dg_for_temperature = true
+  dg_for_temperature = false
 []
 
 # [PrecursorKernel]
@@ -72,22 +71,6 @@ sigma_val=6
   [../]
 []
 
-[DGKernels]
-  [./temp_advection_fuel]
-    block = 'fuel'
-    type = DGTemperatureAdvection
-    variable = temp
-    velocity = '0 0 ${flow_velocity}'
-  [../]
-  [./temp_diffusion]
-    type = DGDiffusion
-    variable = temp
-    sigma = ${sigma_val}
-    epsilon = -1
-    diff = 'k'
-  [../]
-[]
-
 [Materials]
   [./fuel]
     # type = CammiFuel
@@ -112,21 +95,11 @@ sigma_val=6
 []
 
 [BCs]
-  [./temp_dirichlet_diffusion_inlet]
+  [./temp_diri_cg]
     boundary = 'temp_diri_bnd'
-    type = DGFunctionDiffusionDirichletBC
+    type = DirichletBC
     variable = temp
-    sigma = ${sigma_val}
-    epsilon = -1
-    diff = 'k'
-    function = 'diri_temp_func'
-  [../]
-  [./temp_advection_inlet]
-    boundary = 'temp_inflow_bnd'
-    type = TemperatureInflowBC
-    variable = temp
-    velocity = '0 0 ${flow_velocity}'
-    inlet_conc = ${diri_temp}
+    value = ${diri_temp}
   [../]
   [./temp_advection_outlet]
     boundary = 'temp_outflow_bnd'
