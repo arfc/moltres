@@ -1,9 +1,8 @@
 graph_sqc_rad = 2.54; // MSRE (cm) unless otherwise noted
 fuel_sqc_rad = 2.8847; // See N and O columns of MSRE-properties.ods. Ensures correct volume fraction of .229
 pitch = 2 * fuel_sqc_rad;
-num_cells = 3;
+num_cells = 22;
 height = 162.56; // p. 101 robertson design report part 1
-// height = 20;
 lc = 2.5;
 
 Point(1) = {-graph_sqc_rad, -graph_sqc_rad, 0, lc};
@@ -128,7 +127,12 @@ temp_outflow_surfs[] = fuel_tops[];
 temp_inflow_surfs = {};
 temp_inflow_surfs[] = fuel_surfaces[];
 
-Physical Surface ("boundary") = { bound_surfs[] };
-Physical Surface ("temp_diri_bnd") = { temp_diri_surfs[] };
-Physical Surface ("temp_outflow_bnd") = { temp_outflow_surfs[] };
-Physical Surface ("temp_inflow_bnd") = { temp_inflow_surfs[] };
+// Physical Surface ("boundary") = { bound_surfs[] };
+// Physical Surface ("temp_diri_bnd") = { temp_diri_surfs[] };
+// Physical Surface ("temp_outflow_bnd") = { temp_outflow_surfs[] };
+// Physical Surface ("temp_inflow_bnd") = { temp_inflow_surfs[] };
+Physical Surface ("fuel_bottoms") = { fuel_surfaces[] };
+Physical Surface ("fuel_tops") = { fuel_tops[] };
+Physical Surface ("moder_bottoms") = { moder_surfaces[] };
+Physical Surface ("moder_tops") = { moder_tops[] };
+Physical Surface ("fuel_sides") = { fuel_sides[] };

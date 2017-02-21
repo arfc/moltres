@@ -18,7 +18,8 @@ global_temperature=922
 [Mesh]
   # file = 'msre_22x22_correct_vol_fraction.msh'
   # file = msre_cuboid_3x3_short_height.msh
-  file = msre_cuboid_3x3.msh
+  # file = msre_cuboid_3x3.msh
+  file = 'jac_test.msh'
 [../]
 
 [Problem]
@@ -27,7 +28,7 @@ global_temperature=922
 
 [Nt]
   var_name_base = 'group'
-  vacuum_boundaries = 'boundary'
+  vacuum_boundaries = 'fuel_bottoms fuel_tops moder_bottoms moder_tops fuel_sides'
   temp_scaling = 1e0
   nt_ic_function = 'nt_ic_func'
   create_temperature_var = false
@@ -68,9 +69,12 @@ global_temperature=922
   nl_abs_tol = 1e-5
 
   solve_type = 'NEWTON'
-  petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
-  petsc_options_value = 'asm	  lu	       1	       preonly	     1e-3'
+  petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor -snes_test_display'
+  # petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
+  # petsc_options_value = 'asm	  lu	       1	       preonly	     1e-3'
+
+  petsc_options_iname = '-snes_type'
+  petsc_options_value = 'test'
 
   nl_max_its = 30
   l_max_its = 100

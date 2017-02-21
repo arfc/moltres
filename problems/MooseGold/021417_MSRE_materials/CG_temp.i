@@ -16,14 +16,12 @@ global_temperature=temp
 [../]
 
 [Mesh]
-  # file = 'msre_22x22_correct_vol_fraction.msh'
-  # file = msre_cuboid_3x3_short_height.msh
-  file = msre_cuboid_3x3.msh
+  file = 'msre_22x22_correct_vol_fraction.msh'
 [../]
 
 [Nt]
   var_name_base = 'group'
-  vacuum_boundaries = 'boundary'
+  vacuum_boundaries = 'fuel_bottoms fuel_tops moder_bottoms moder_tops fuel_sides'
   temp_scaling = 1e0
   nt_ic_function = 'nt_ic_func'
   create_temperature_var = true
@@ -97,13 +95,13 @@ global_temperature=temp
 
 [BCs]
   [./temp_diri_cg]
-    boundary = 'temp_diri_bnd'
+    boundary = 'fuel_bottoms moder_bottoms fuel_sides'
     type = DirichletBC
     variable = temp
     value = ${diri_temp}
   [../]
   [./temp_advection_outlet]
-    boundary = 'temp_outflow_bnd'
+    boundary = 'fuel_tops'
     type = TemperatureOutflowBC
     variable = temp
     velocity = '0 0 ${flow_velocity}'
