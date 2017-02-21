@@ -16,8 +16,8 @@ global_temperature=temp
 [../]
 
 [Mesh]
-  # file = 'msre_22x22_correct_vol_fraction.msh'
-  file = msre_cuboid_3x3_short_height.msh
+  file = 'msre_22x22_correct_vol_fraction.msh'
+  # file = msre_cuboid_3x3.msh
 [../]
 
 [Nt]
@@ -124,11 +124,11 @@ global_temperature=temp
 
   solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type' # -ksp_gmres_restart'
-  petsc_options_value = 'asm	  lu	       1	       preonly'	     # 31'
+  petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda' # -ksp_gmres_restart'
+  petsc_options_value = 'asm	  lu	       1	       preonly	     1e-3'	     # 31'
 
-  nl_max_its = 20
-  l_max_its = 10
+  nl_max_its = 30
+  l_max_its = 100
 
   dtmin = 1e-5
   [./TimeStepper]
