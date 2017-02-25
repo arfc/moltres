@@ -27,6 +27,7 @@
 #include "GammaHeatSource.h"
 
 // Boundary conditions
+#include "LinLogPenaltyDirichletBC.h"
 #include "VacuumConcBC.h"
 #include "ConservativeAdvectionNoBCBC.h"
 #include "DiffusionNoBCBC.h"
@@ -122,6 +123,7 @@ MoltresApp::registerObjects(Factory & factory)
   registerKernel(INSMomentumKEpsilon);
   registerKernel(INSK);
   registerKernel(GroupDiffusion);
+  registerBoundaryCondition(LinLogPenaltyDirichletBC);
   registerBoundaryCondition(ScalarAdvectionArtDiffNoBCBC);
   registerBoundaryCondition(VacuumConcBC);
   registerBoundaryCondition(ConservativeAdvectionNoBCBC);
