@@ -1,5 +1,4 @@
 flow_velocity=21.7 # cm/s. See MSRE-properties.ods
-diri_temp=908
 nt_scale=1e13
 reactor_height=162.56
 # global_temperature=temp
@@ -8,7 +7,7 @@ global_temperature=922
 [GlobalParams]
   num_groups = 2
   num_precursor_groups = 8
-  use_exp_form = true
+  use_exp_form = false
   group_fluxes = 'group1 group2'
 #   u_def = 0
 #   v_def = 0
@@ -16,10 +15,7 @@ global_temperature=922
 [../]
 
 [Mesh]
-  # file = 'msre_22x22_correct_vol_fraction.msh'
-  # file = msre_cuboid_3x3_short_height.msh
-  # file = msre_cuboid_3x3.msh
-  file = 'jac_test.msh'
+  file = 'msre_22x22_correct_vol_fraction.msh'
 [../]
 
 [Problem]
@@ -35,6 +31,7 @@ global_temperature=922
   # temperature = ${global_temperature}
   temperature_value = ${global_temperature}
   dg_for_temperature = false
+  eigen = true
 []
 
 [Materials]
@@ -130,5 +127,40 @@ global_temperature=922
     value1 = group1_current
     value2 = group1_old
     outputs = 'csv console'
+  [../]
+  [./bnorm]
+    type = ElmIntegTotFissNtsPostprocessor
+    group_fluxes = 'group1 group2'
+    execute_on = linear
+  [../]
+  [./tot_fissions]
+    type = ElmIntegTotFissPostprocessor
+    execute_on = linear
+  [../]
+  [./group1norm]
+    type = ElementIntegralVariablePostprocessor
+    variable = group1
+    execute_on = linear
+  [../]
+  [./group2norm]
+    type = ElementIntegralVariablePostprocessor
+    variable = group2
+    execute_on = linear
+  [../]
+  [./group1max]
+    type = NodalMaxValue
+    variable = group1
+    execute_on = timestep_end
+  [../]
+  [./group2max]
+    type = NodalMaxValue
+    variable = group2
+    execute_on = timestep_end
+  [../]
+  [./group1diff]
+    type = ElementL2Diff
+    variable = group1
+    execute_on = 'linear timestep_end'
+    use_displaced_mesh = false
   [../]
 []

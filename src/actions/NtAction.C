@@ -24,6 +24,7 @@ InputParameters validParams<NtAction>()
   params.addParam<bool>("init_nts_from_file", false, "Whether to restart simulation using nt output from a previous simulation.");
   params.addParam<bool>("init_temperature_from_file", false, "Whether to restart simulation using temperature output from a previous simulation.");
   params.addParam<bool>("dg_for_temperature", true, "Whether the temperature variable should use discontinuous basis functions.");
+  params.addParam<bool>("eigen", false, "Whether to run an eigen- instead of a transient- simulation.");
   return params;
 }
 
@@ -75,7 +76,7 @@ NtAction::act()
     {
 
       // Set up time derivatives
-
+      if (!getParam<bool>("eigen"))
       {
         InputParameters params = _factory.getValidParams("NtTimeDerivative");
         params.set<NonlinearVariableName>("variable") = var_name;
@@ -155,7 +156,7 @@ NtAction::act()
       }
 
       // Set up CoupledFissionKernel
-
+      if (!getParam<bool>("eigen"))
       {
         InputParameters params = _factory.getValidParams("CoupledFissionKernel");
         params.set<NonlinearVariableName>("variable") = var_name;
@@ -175,6 +176,27 @@ NtAction::act()
 
         std::string kernel_name = "CoupledFissionKernel_" + var_name;
         _problem->addKernel("CoupledFissionKernel", kernel_name, params);
+      }
+      else
+      {
+        InputParameters params = _factory.getValidParams("CoupledFissionEigenKernel");
+        params.set<NonlinearVariableName>("variable") = var_name;
+        params.set<int>("group_number") = op;
+        if (isParamValid("block"))
+          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+        if (isParamValid("use_exp_form"))
+          params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
+        if (isParamValid("temperature"))
+          params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
+        else
+          params.defaultCoupledValue("temperature", getParam<Real>("temperature_value"));
+
+        params.set<int>("num_groups") = _num_groups;
+        // params.set<std::vector<VariableName> >("group_fluxes") = getParam<std::vector<VariableName> >("group_fluxes");
+        params.set<std::vector<VariableName> >("group_fluxes") = all_var_names;
+
+        std::string kernel_name = "CoupledFissionEigenKernel_" + var_name;
+        _problem->addKernel("CoupledFissionEigenKernel", kernel_name, params);
       }
     }
 

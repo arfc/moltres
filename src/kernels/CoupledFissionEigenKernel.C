@@ -4,6 +4,7 @@ template<>
 InputParameters validParams<CoupledFissionEigenKernel>()
 {
   InputParameters params = validParams<EigenKernel>();
+  params += validParams<ScalarTransportBase>();
   params.addRequiredParam<int>("group_number", "The current energy group");
   params.addRequiredParam<int>("num_groups", "The total numer of energy groups");
   params.addCoupledVar("temperature", 800, "The temperature used to interpolate material properties");
@@ -13,6 +14,7 @@ InputParameters validParams<CoupledFissionEigenKernel>()
 
 CoupledFissionEigenKernel::CoupledFissionEigenKernel(const InputParameters & parameters) :
     EigenKernel(parameters),
+    ScalarTransportBase(parameters),
     _nsf(getMaterialProperty<std::vector<Real> >("nsf")),
     _d_nsf_d_temp(getMaterialProperty<std::vector<Real> >("d_nsf_d_temp")),
     _chi(getMaterialProperty<std::vector<Real> >("chi")),
@@ -40,9 +42,7 @@ CoupledFissionEigenKernel::computeQpResidual()
 {
   Real r = 0;
   for (int i = 0; i < _num_groups; ++i)
-  {
-    r += -_test[_i][_qp] * _chi[_qp][_group] * _nsf[_qp][i] * (*_group_fluxes[i])[_qp];
-  }
+    r += -_test[_i][_qp] * _chi[_qp][_group] * _nsf[_qp][i] * computeConcentration((*_group_fluxes[i]), _qp);
 
   return r;
 }
@@ -55,7 +55,7 @@ CoupledFissionEigenKernel::computeQpJacobian()
   {
     if (i == _group)
     {
-      jac += -_test[_i][_qp] * _chi[_qp][_group] * _nsf[_qp][i] * _phi[_j][_qp];
+      jac += -_test[_i][_qp] * _chi[_qp][_group] * _nsf[_qp][i] * computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp);
       break;
     }
   }
@@ -71,14 +71,14 @@ CoupledFissionEigenKernel::computeQpOffDiagJacobian(unsigned int jvar)
   {
     if (jvar == _flux_ids[i])
     {
-      jac += -_test[_i][_qp] * _chi[_qp][_group] * _nsf[_qp][i] * _phi[_j][_qp];
+      jac += -_test[_i][_qp] * _chi[_qp][_group] * _nsf[_qp][i] * computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp);
       break;
     }
   }
 
   if (jvar == _temp_id)
     for (int i = 0; i < _num_groups; ++i)
-      jac += -_test[_i][_qp] * (*_group_fluxes[i])[_qp] * (_d_chi_d_temp[_qp][_group] * _phi[_j][_qp] * _nsf[_qp][i] + _chi[_qp][_group] * _d_nsf_d_temp[_qp][i] * _phi[_j][_qp]);
+      jac += -_test[_i][_qp] * computeConcentration((*_group_fluxes[i]), _qp) * (_d_chi_d_temp[_qp][_group] * _phi[_j][_qp] * _nsf[_qp][i] + _chi[_qp][_group] * _d_nsf_d_temp[_qp][i] * _phi[_j][_qp]);
 
   return jac;
 }
