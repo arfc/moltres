@@ -49,32 +49,26 @@ global_temperature=922
 []
 
 [Executioner]
-  type = Transient
-  end_time = 10000
-#   num_steps = 1
+  # type = NonlinearEigen
+  # free_power_iterations = 4
+  # source_abs_tol = 1e-12
+  # source_rel_tol = 1e-8
+  # output_after_power_iterations = true
 
-  nl_rel_tol = 1e-6
-  nl_abs_tol = 1e-5
+  type = InversePowerMethod
+  max_power_iterations = 50
+  xdiff = 'group1diff'
 
-  solve_type = 'NEWTON'
-  petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor -snes_test_display'
-  # petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
-  # petsc_options_value = 'asm	  lu	       1	       preonly	     1e-3'
-
-  petsc_options_iname = '-snes_type'
-  petsc_options_value = 'test'
-
-  nl_max_its = 30
+  bx_norm = 'bnorm'
+  k0 = 1.0
+  pfactor = 1e-2
   l_max_its = 100
 
-  dtmin = 1e-5
-  [./TimeStepper]
-    type = IterationAdaptiveDT
-    cutback_factor = 0.4
-    dt = 1e-3
-    growth_factor = 1.025
-    optimal_iterations = 20
-  [../]
+  # solve_type = 'PJFNK'
+  solve_type = 'NEWTON'
+  petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
+  petsc_options_iname = '-pc_type -sub_pc_type'
+  petsc_options_value = 'asm lu'
 []
 
 [Preconditioning]
