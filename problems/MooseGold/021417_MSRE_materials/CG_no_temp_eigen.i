@@ -22,7 +22,7 @@ global_temperature=922
   # temperature = ${global_temperature}
   temperature_value = ${global_temperature}
   dg_for_temperature = false
-  eigen = false
+  eigen = true
 []
 
 [Materials]
