@@ -133,7 +133,7 @@ NtAction::act()
       }
 
       // Set up InScatter
-
+      if (_num_groups != 1)
       {
         InputParameters params = _factory.getValidParams("InScatter");
         params.set<NonlinearVariableName>("variable") = var_name;
