@@ -27,10 +27,6 @@ global_temperature=922
     order = FIRST
     family = LAGRANGE
   [../]
-  [./group2]
-    order = FIRST
-    family = LAGRANGE
-  [../]
 []
 
 [Kernels]
@@ -49,8 +45,6 @@ global_temperature=922
     type = CoupledFissionEigenKernel
     variable = group1
     group_number = 1
-    num_groups = 2
-    group_fluxes = 'group1 group2'
   [../]
 []
 
