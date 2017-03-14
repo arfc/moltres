@@ -10,7 +10,7 @@ InputParameters validParams<GenericMoltresMaterial>()
   params.addRequiredParam<int>("num_groups", "The number of groups the energy spectrum is divided into.");
   params.addRequiredParam<int>("num_precursor_groups", "The number of delayed neutron precursor groups.");
   params.addCoupledVar("temperature", 937, "The temperature field for determining group constants.");
-  MooseEnum interp_type("bicubic_spline spline least_squares");
+  MooseEnum interp_type("bicubic_spline spline least_squares none");
   params.addRequiredParam<MooseEnum>("interp_type", interp_type, "The type of interpolation to perform.");
   params.addParam<std::vector<Real> >("fuel_temp_points", "The fuel temperature interpolation points.");
   params.addParam<std::vector<Real> >("mod_temp_points", "The moderator temperature interpolation points.");
@@ -72,11 +72,44 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
   else if (_interp_type == "spline")
     splineConstruct(property_tables_root, xsec_names);
 
-  else if (_interp_type == "bicubic_spline_interp")
+  else if (_interp_type == "bicubic_spline")
     bicubicSplineConstruct(property_tables_root, xsec_names, parameters);
+
+  else if (_interp_type == "none")
+    dummyConstruct(property_tables_root, xsec_names);
 
   else
     mooseError("Wrong enum type");
+}
+
+void
+GenericMoltresMaterial::dummyConstruct(std::string & property_tables_root, std::vector<std::string> xsec_names)
+{
+  Real value;
+  for (decltype(xsec_names.size()) j = 0; j < xsec_names.size(); ++j)
+  {
+    std::vector<Real> temperature;
+    std::string file_name = property_tables_root + xsec_names[j] + ".txt";
+    const std::string & file_name_ref = file_name;
+    std::ifstream myfile (file_name_ref.c_str());
+
+    auto o = _vec_lengths[xsec_names[j]];
+
+    _xsec_map[xsec_names[j]].resize(o);
+    _xsec_spline_interpolators[xsec_names[j]].resize(o);
+    if (myfile.is_open())
+    {
+      myfile >> value;
+      temperature.push_back(value);
+      for (decltype(o) k = 0; k < o; ++k)
+      {
+        myfile >> value;
+        _xsec_map[xsec_names[j]][k] = value;
+      }
+    }
+    else
+      mooseError("Unable to open file " + file_name);
+  }
 }
 
 void
@@ -232,6 +265,44 @@ GenericMoltresMaterial::leastSquaresConstruct(std::string & property_tables_root
   _gtransfxs_consts = xsec_map["GTRANSFXS"];
   _beta_eff_consts = xsec_map["BETA_EFF"];
   _decay_constants_consts = xsec_map["DECAY_CONSTANT"];
+}
+
+void
+GenericMoltresMaterial::dummyComputeQpProperties()
+{
+  for (decltype(_num_groups) i = 0; i < _num_groups; ++i)
+  {
+    _remxs[_qp][i] = _xsec_map["REMXS"][i];
+    _fissxs[_qp][i] = _xsec_map["FISSXS"][i];
+    _nsf[_qp][i] = _xsec_map["NSF"][i];
+    _fisse[_qp][i] = _xsec_map["FISSE"][i] * 1e6 * 1.6e-19; // convert from MeV to Joules
+    _diffcoef[_qp][i] = _xsec_map["DIFFCOEF"][i];
+    _recipvel[_qp][i] = _xsec_map["RECIPVEL"][i];
+    _chi[_qp][i] = _xsec_map["CHI"][i];
+    _d_remxs_d_temp[_qp][i] = _xsec_map["REMXS"][i];
+    _d_fissxs_d_temp[_qp][i] = _xsec_map["FISSXS"][i];
+    _d_nsf_d_temp[_qp][i] = _xsec_map["NSF"][i];
+    _d_fisse_d_temp[_qp][i] = _xsec_map["FISSE"][i] * 1e6 * 1.6e-19; // convert from MeV to Joules
+    _d_diffcoef_d_temp[_qp][i] = _xsec_map["DIFFCOEF"][i];
+    _d_recipvel_d_temp[_qp][i] = _xsec_map["RECIPVEL"][i];
+    _d_chi_d_temp[_qp][i] = _xsec_map["CHI"][i];
+  }
+  for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
+  {
+    _gtransfxs[_qp][i] = _xsec_map["GTRANSFXS"][i];
+    _d_gtransfxs_d_temp[_qp][i] = _xsec_map["GTRANSFXS"][i];
+  }
+  _beta[_qp] = 0;
+  _d_beta_d_temp[_qp] = 0;
+  for (decltype(_num_groups) i = 0; i < _num_precursor_groups; ++i)
+  {
+    _beta_eff[_qp][i] = _xsec_map["BETA_EFF"][i];
+    _d_beta_eff_d_temp[_qp][i] = _xsec_map["BETA_EFF"][i];
+    _beta[_qp] += _beta_eff[_qp][i];
+    _d_beta_d_temp[_qp] += _d_beta_eff_d_temp[_qp][i];
+    _decay_constant[_qp][i] = _xsec_map["DECAY_CONSTANT"][i];
+    _d_decay_constant_d_temp[_qp][i] = _xsec_map["DECAY_CONSTANT"][i];
+  }
 }
 
 void
@@ -424,4 +495,6 @@ GenericMoltresMaterial::computeQpProperties()
   else if (_interp_type == "least_squares")
     leastSquaresComputeQpProperties();
 
+  else if (_interp_type == "none")
+    dummyComputeQpProperties();
 }

@@ -16,9 +16,11 @@ public:
   GenericMoltresMaterial(const InputParameters & parameters);
 
 protected:
+  void dummyConstruct(std::string & property_tables_root, std::vector<std::string> xsec_names);
   void splineConstruct(std::string & property_tables_root, std::vector<std::string> xsec_names);
   void bicubicSplineConstruct(std::string & property_tables_root, std::vector<std::string> xsec_names, const InputParameters & parameters);
   void leastSquaresConstruct(std::string & property_tables_root, std::vector<std::string> xsec_names);
+  virtual void dummyComputeQpProperties();
   virtual void splineComputeQpProperties();
   virtual void fuelBicubic();
   virtual void moderatorBicubic();
@@ -56,6 +58,7 @@ protected:
 
   int _num_groups;
   int _num_precursor_groups;
+  std::map<std::string, std::vector<Real>> _xsec_map;
   std::map<std::string, std::vector<SplineInterpolation> > _xsec_spline_interpolators;
   std::map<std::string, std::vector<BicubicSplineInterpolation> > _xsec_bicubic_spline_interpolators;
   std::map<std::string, int> _vec_lengths;
