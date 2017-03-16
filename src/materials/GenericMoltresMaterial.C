@@ -69,13 +69,13 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
 
   _file_map["REMXS"] = "REMXS";
   _file_map["NSF"] = "NSF";
-  _file_map["NUMBAR"] = "NUBAR";
+  _file_map["NUBAR"] = "NUBAR";
   _file_map["DIFFCOEF"] = "DIFFCOEF";
   _file_map["BETA_EFF"] = "BETA_EFF";
   if (getParam<bool>("sss2_input"))
   {
     _file_map["FLUX"] = "FLX";
-    _file_map["FISSXS"] = "FISSXS";
+    _file_map["FISSXS"] = "FISS";
     _file_map["FISSE"] = "KAPPA";
     _file_map["RECIPVEL"] = "INVV";
     _file_map["CHI"] = "CHIT";
