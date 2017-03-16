@@ -16,6 +16,7 @@ InputParameters validParams<GenericMoltresMaterial>()
   params.addParam<std::vector<Real> >("mod_temp_points", "The moderator temperature interpolation points.");
   params.addParam<PostprocessorName>("other_temp", 0, "If doing bivariable interpolation, need to supply a postprocessor for the average temperature of the other material.");
   params.addParam<std::string>("material", "Must specify either *fuel* or *moderator*.");
+  params.addParam<bool>("sss2_input", true, "Whether serpent 2 was used to generate the input files.");
   return params;
 }
 
@@ -66,6 +67,32 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
       _vec_lengths[xsec_names[j]] = _num_groups;
   }
 
+  _file_map["REMXS"] = "REMXS";
+  _file_map["NSF"] = "NSF";
+  _file_map["NUMBAR"] = "NUBAR";
+  _file_map["DIFFCOEF"] = "DIFFCOEF";
+  _file_map["BETA_EFF"] = "BETA_EFF";
+  if (getParam<bool>("sss2_input"))
+  {
+    _file_map["FLUX"] = "FLX";
+    _file_map["FISSXS"] = "FISSXS";
+    _file_map["FISSE"] = "KAPPA";
+    _file_map["RECIPVEL"] = "INVV";
+    _file_map["CHI"] = "CHIT";
+    _file_map["GTRANSFXS"] = "SP0";
+    _file_map["DECAY_CONSTANT"] = "LAMBDA";
+  }
+  else
+  {
+    _file_map["FLUX"] = "FLUX";
+    _file_map["FISSXS"] = "FISSXS";
+    _file_map["FISSE"] = "FISSE";
+    _file_map["RECIPVEL"] = "RECIPVEL";
+    _file_map["CHI"] = "CHI";
+    _file_map["GTRANSFXS"] = "GTRANSFXS";
+    _file_map["DECAY_CONSTANT"] = "DECAY_CONSTANT";
+  }
+
   if (_interp_type == "least_squares")
     leastSquaresConstruct(property_tables_root, xsec_names);
 
@@ -89,7 +116,7 @@ GenericMoltresMaterial::dummyConstruct(std::string & property_tables_root, std::
   for (decltype(xsec_names.size()) j = 0; j < xsec_names.size(); ++j)
   {
     std::vector<Real> temperature;
-    std::string file_name = property_tables_root + xsec_names[j] + ".txt";
+    std::string file_name = property_tables_root + _file_map[xsec_names[j]] + ".txt";
     const std::string & file_name_ref = file_name;
     std::ifstream myfile (file_name_ref.c_str());
 
@@ -119,7 +146,7 @@ GenericMoltresMaterial::splineConstruct(std::string & property_tables_root, std:
   for (decltype(xsec_names.size()) j = 0; j < xsec_names.size(); ++j)
   {
     std::vector<Real> temperature;
-    std::string file_name = property_tables_root + xsec_names[j] + ".txt";
+    std::string file_name = property_tables_root + _file_map[xsec_names[j]] + ".txt";
     const std::string & file_name_ref = file_name;
     std::ifstream myfile (file_name_ref.c_str());
 
@@ -167,7 +194,7 @@ GenericMoltresMaterial::bicubicSplineConstruct(std::string & property_tables_roo
 
   for (decltype(xsec_names.size()) j = 0; j < xsec_names.size(); ++j)
   {
-    std::string file_name = property_tables_root + xsec_names[j] + ".txt";
+    std::string file_name = property_tables_root + _file_map[xsec_names[j]] + ".txt";
     const std::string & file_name_ref = file_name;
     std::ifstream myfile (file_name_ref.c_str());
 

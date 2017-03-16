@@ -62,6 +62,7 @@ protected:
   std::map<std::string, std::vector<SplineInterpolation> > _xsec_spline_interpolators;
   std::map<std::string, std::vector<BicubicSplineInterpolation> > _xsec_bicubic_spline_interpolators;
   std::map<std::string, int> _vec_lengths;
+  std::map<std::string, std::string> _file_map;
   std::string _material;
 
   std::vector<std::vector<Real> > _flux_consts = std::vector<std::vector<Real> >(2);

@@ -9,6 +9,7 @@ InputParameters validParams<InScatter>()
   params.addRequiredParam<int>("num_groups", "The total numer of energy groups");
   params.addCoupledVar("temperature", "The temperature used to interpolate material properties");
   params.addRequiredCoupledVar("group_fluxes", "All the variables that hold the group fluxes. These MUST be listed by decreasing energy/increasing group number.");
+  params.addParam<bool>("sss2_input", true, "Whether serpent 2 was used to generate the input files.");
   return params;
 }
 
@@ -20,7 +21,8 @@ InScatter::InScatter(const InputParameters & parameters) :
     _d_gtransfxs_d_temp(getMaterialProperty<std::vector<Real> >("d_gtransfxs_d_temp")),
     _group(getParam<int>("group_number") - 1),
     _num_groups(getParam<int>("num_groups")),
-    _temp_id(coupled("temperature"))
+    _temp_id(coupled("temperature")),
+    _sss2_input(getParam<bool>("sss2_input"))
 {
   int n = coupledComponents("group_fluxes");
   if (!(n == _num_groups))
@@ -44,7 +46,10 @@ InScatter::computeQpResidual()
   {
     if (i == _group)
       continue;
-    r += -_test[_i][_qp] * _gtransfxs[_qp][i + _group * _num_groups] * computeConcentration((*_group_fluxes[i]), _qp);
+    if (_sss2_input)
+      r += -_test[_i][_qp] * _gtransfxs[_qp][i * _num_groups + _group] * computeConcentration((*_group_fluxes[i]), _qp);
+    else
+      r += -_test[_i][_qp] * _gtransfxs[_qp][i + _group * _num_groups] * computeConcentration((*_group_fluxes[i]), _qp);
   }
 
   return r;
@@ -64,7 +69,10 @@ InScatter::computeQpOffDiagJacobian(unsigned int jvar)
   {
     if (jvar == _flux_ids[i]  && jvar != _group)
     {
-      jac += -_test[_i][_qp] * _gtransfxs[_qp][i + _group * _num_groups] * computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp);
+      if (_sss2_input)
+        jac += -_test[_i][_qp] * _gtransfxs[_qp][i * _num_groups + _group] * computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp);
+      else
+        jac += -_test[_i][_qp] * _gtransfxs[_qp][i + _group * _num_groups] * computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp);
       break;
     }
   }
