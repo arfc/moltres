@@ -10,8 +10,8 @@ global_temperature=922
 [../]
 
 [Mesh]
-  file = 'msre_23x23.msh'
-  # file = 'msre_cuboid_3x3.msh'
+  # file = 'msre_23x23.msh'
+  file = 'msre_cuboid_3x3.msh'
 [../]
 
 [Variables]
@@ -144,42 +144,46 @@ global_temperature=922
   [./group1_current]
     type = IntegralNewVariablePostprocessor
     variable = group1
-    outputs = 'console'
+    outputs = 'console csv'
   [../]
   [./group1_old]
     type = IntegralOldVariablePostprocessor
     variable = group1
-    outputs = 'console'
+    outputs = 'console csv'
   [../]
   [./multiplication]
     type = DivisionPostprocessor
     value1 = group1_current
     value2 = group1_old
-    outputs = 'console'
+    outputs = 'console csv'
   [../]
   [./bnorm]
     type = ElmIntegTotFissNtsPostprocessor
-    outputs = 'console'
+    outputs = 'console csv'
   [../]
   [./tot_fissions]
     type = ElmIntegTotFissPostprocessor
-    outputs = 'console'
+    outputs = 'console csv'
   [../]
   [./group2norm]
     type = ElementIntegralVariablePostprocessor
     variable = group2
-    outputs = 'console'
+    outputs = 'console csv'
   [../]
   [./group2max]
     type = NodalMaxValue
     variable = group2
-    outputs = 'console'
+    outputs = 'console csv'
   [../]
 []
 
 [Outputs]
+  print_perf_log = true
   [./out]
     type = Exodus
+  [../]
+  [./csv]
+    type = CSV
   [../]
 []
 
