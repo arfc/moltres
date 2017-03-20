@@ -10,7 +10,7 @@ global_temperature=922
 [../]
 
 [Mesh]
-  file = 'msre_22x22_correct_vol_fraction.msh'
+  file = 'msre_26x26.msh'
   # file = 'msre_cuboid_3x3.msh'
 [../]
 

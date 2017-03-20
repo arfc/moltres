@@ -14,8 +14,8 @@ diri_temp=922
 [../]
 
 [Mesh]
-  # file = 'msre_24x24.msh'
-  file = 'msre_cuboid_3x3.msh'
+  file = 'msre_26x26.msh'
+  # file = 'msre_cuboid_3x3.msh'
 [../]
 
 [Variables]
