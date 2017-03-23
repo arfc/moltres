@@ -2,9 +2,9 @@ Mesh.RandomFactor = 1e-6;
 graph_sqc_rad = 2.54; // MSRE (cm) unless otherwise noted
 fuel_sqc_rad = 2.8847; // See N and O columns of MSRE-properties.ods. Ensures correct volume fraction of .229
 pitch = 2 * fuel_sqc_rad;
-num_cells = 26;
-height = 162.56; // p. 101 robertson design report part 1
-lc = 2.5;
+num_cells = 28;
+height = 162.56; // p. 101 robertson design report part 1: 162.56
+lc = .3;
 
 Point(1) = {-graph_sqc_rad, -graph_sqc_rad, 0, lc};
 Point(2) = {graph_sqc_rad, -graph_sqc_rad, 0, lc};
