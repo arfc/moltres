@@ -2,6 +2,7 @@ flow_velocity=21.7 # cm/s. See MSRE-properties.ods
 nt_scale=1e13
 global_temperature=temp
 # global_temperature=922
+ini_temp=1022
 diri_temp=922
 
 [GlobalParams]
@@ -30,7 +31,7 @@ diri_temp=922
     initial_condition = 1
   [../]
   [./temp]
-    initial_condition = ${diri_temp}
+    initial_condition = ${ini_temp}
   [../]
 []
 
@@ -123,15 +124,22 @@ diri_temp=922
   [../]
   [./temp_diri_cg]
     boundary = 'moder_bottoms fuel_bottoms moder_sides'
-    type = DirichletBC
+    type = FunctionDirichletBC
+    function = 'temp_bc_func'
     variable = temp
-    value = ${diri_temp}
   [../]
   [./temp_advection_outlet]
     boundary = 'fuel_tops'
     type = TemperatureOutflowBC
     variable = temp
     velocity = '0 0 ${flow_velocity}'
+  [../]
+[]
+
+[Functions]
+  [./temp_bc_func]
+    type = ParsedFunction
+    value = '${ini_temp} - (${ini_temp} - ${diri_temp}) * tanh(t/1e-2)'
   [../]
 []
 

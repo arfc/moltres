@@ -3,7 +3,7 @@ graph_sqc_rad = 1.18585;
 fuel_sqc_rad = 2.5;
 pitch = 2 * fuel_sqc_rad;
 num_cells = 29;
-height = 143; // p. 101 robertson design report part 1: 162.56
+height = 133; // p. 101 robertson design report part 1: 162.56
 lc = 2*graph_sqc_rad;
 
 Point(1) = {-graph_sqc_rad, -graph_sqc_rad, 0, lc};
