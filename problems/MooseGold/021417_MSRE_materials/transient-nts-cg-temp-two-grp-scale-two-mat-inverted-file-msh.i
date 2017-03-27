@@ -15,7 +15,7 @@ diri_temp=922
 [../]
 
 [Mesh]
-  file = 'inverted_29x29_h_143.msh'
+  file = 'inverted_29x29_h_133.msh'
   # file = 'inverted_3x3_h_15.msh'
 [../]
 
@@ -24,14 +24,17 @@ diri_temp=922
     order = FIRST
     family = LAGRANGE
     initial_condition = 1
+    scaling = 1e1
   [../]
   [./group2]
     order = FIRST
     family = LAGRANGE
     initial_condition = 1
+    scaling = 1e1
   [../]
   [./temp]
     initial_condition = ${ini_temp}
+    scaling = 1e-3
   [../]
 []
 
