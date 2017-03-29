@@ -100,6 +100,13 @@ diri_temp=922
     nt_scale=${nt_scale}
     block = 'fuel'
   [../]
+  [./temp_source_mod]
+    type = GammaHeatSource
+    variable = temp
+    gamma = .0144 # Cammi .0144
+    block = 'moder'
+    average_fission_heat = 'average_fission_heat'
+  [../]
   [./temp_time_derivative]
     type = MatINSTemperatureTimeDerivative
     variable = temp
@@ -178,7 +185,7 @@ diri_temp=922
   nl_rel_tol = 1e-6
   nl_abs_tol = 1e-5
 
-  solve_type = 'NEWTON'
+  solve_type = 'PJFNK'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
   petsc_options_value = 'asm	  lu	       1	       preonly	     1e-3'
@@ -231,6 +238,13 @@ diri_temp=922
     variable = temp
     block = 'moder'
     outputs = 'csv console'
+  [../]
+  [./average_fission_heat]
+    type = AverageFissionHeat
+    nt_scale = ${nt_scale}
+    execute_on = 'nonlinear'
+    outputs = 'console'
+    block = 'fuel'
   [../]
 []
 
