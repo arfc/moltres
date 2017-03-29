@@ -3,7 +3,7 @@ nt_scale=1e13
 global_temperature=temp
 # global_temperature=922
 ini_temp=1022
-diri_temp=922
+diri_temp=1022
 
 [GlobalParams]
   num_groups = 2
@@ -94,21 +94,21 @@ diri_temp=922
     group_number = 2
   [../]
   # Temperature
-  [./temp_source_fuel]
-    type = TransientFissionHeatSource
-    variable = temp
-    nt_scale=${nt_scale}
-    block = 'fuel'
-  [../]
+  # [./temp_source_fuel]
+  #   type = TransientFissionHeatSource
+  #   variable = temp
+  #   nt_scale=${nt_scale}
+  #   block = 'fuel'
+  # [../]
   [./temp_time_derivative]
     type = MatINSTemperatureTimeDerivative
     variable = temp
   [../]
-  [./temp_diffusion]
-    type = MatDiffusion
-    prop_name = 'k'
-    variable = temp
-  [../]
+  # [./temp_diffusion]
+  #   type = MatDiffusion
+  #   prop_name = 'k'
+  #   variable = temp
+  # [../]
   # [./temp_advection_fuel]
   #   type = ConservativeTemperatureAdvection
   #   velocity = '0 0 ${flow_velocity}'
