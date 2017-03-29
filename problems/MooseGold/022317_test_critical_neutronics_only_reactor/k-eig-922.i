@@ -167,6 +167,7 @@ global_temperature=922
 []
 
 [Outputs]
+  print_perf_log = true
   [./out]
     type = Exodus
     execute_on = 'timestep_end'
