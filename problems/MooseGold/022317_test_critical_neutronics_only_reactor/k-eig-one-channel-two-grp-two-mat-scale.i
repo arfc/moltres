@@ -9,9 +9,12 @@ global_temperature=922
   sss2_input = false
 [../]
 
+[Problem]
+  coord_type = RZ
+[]
+
 [Mesh]
-  # file = 'inverted_29x29_h_143.msh'
-  file = 'inverted_3x3_h_15.msh'
+  file = 'cylinder_structured_for_msre_comp.msh'
 [../]
 
 [Variables]
@@ -72,12 +75,12 @@ global_temperature=922
 [BCs]
   [./vacuum_group1]
     type = VacuumConcBC
-    boundary = 'moder_bottoms moder_tops fuel_bottoms fuel_tops moder_sides'
+    boundary = 'fuel_bottom fuel_top graphite_bottom graphite_top'
     variable = group1
   [../]
   [./vacuum_group2]
     type = VacuumConcBC
-    boundary = 'moder_bottoms moder_tops fuel_bottoms fuel_tops moder_sides'
+    boundary = 'fuel_bottom fuel_top graphite_bottom graphite_top'
     variable = group2
   [../]
 []
@@ -104,6 +107,7 @@ global_temperature=922
   max_power_iterations = 50
   xdiff = 'group1diff'
 
+  eig_check_tol = 1e-9
   bx_norm = 'bnorm'
   k0 = 1.5
   pfactor = 1e-2
