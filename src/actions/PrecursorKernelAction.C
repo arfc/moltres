@@ -19,7 +19,8 @@ InputParameters validParams<PrecursorKernelAction>()
   params.addParam<Real>("w_def", "Allows user to specify constant value for w component of velocity.");
   params.addRequiredParam<std::vector<VariableName> >("group_fluxes", "All the variables that hold the group fluxes. These MUST be listed by decreasing energy/increasing group number.");
   params.addRequiredParam<int>("num_groups", "The total number of energy groups.");
-  params.addRequiredParam<std::vector<BoundaryName> >("advection_boundaries", "The boundaries normal to the advective flow.");
+  params.addRequiredParam<std::vector<BoundaryName> >("outlet_boundaries", "Outflow boundaries.");
+  params.addParam<std::vector<BoundaryName> >("inlet_boundaries", "Inflow boundaries.");
   params.addParam<bool>("nt_exp_form", true, "Whether concentrations should be in an expotential/logarithmic format.");
   params.addParam<bool>("jac_test", false, "Whether we're testing the Jacobian and should use some random initial conditions for the precursors.");
   params.addParam<Real>("prec_scale", "The amount by which the neutron fluxes are scaled.");
@@ -62,8 +63,6 @@ PrecursorKernelAction::act()
           params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
         if (isParamValid("block"))
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
-        if (isParamValid("prec_scale"))
-          params.set<Real>("prec_scale") = getParam<Real>("prec_scale");
         params.set<bool>("use_exp_form") = getParam<bool>("nt_exp_form");
 
         std::string kernel_name = "PrecursorSource_" + var_name;
@@ -82,8 +81,6 @@ PrecursorKernelAction::act()
           params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
         if (isParamValid("block"))
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
-        if (isParamValid("prec_scale"))
-          params.set<Real>("prec_scale") = getParam<Real>("prec_scale");
         params.set<bool>("use_exp_form") = false;
 
         std::string kernel_name = "PrecursorDecay_" + var_name;
@@ -99,8 +96,6 @@ PrecursorKernelAction::act()
         params.set<bool>("implicit") = true;
         if (isParamValid("block"))
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
-        if (isParamValid("prec_scale"))
-          params.set<Real>("conc_scaling") = getParam<Real>("prec_scale");
         params.set<bool>("use_exp_form") = false;
 
         std::string kernel_name = "ScalarTransportTimeDerivative_" + var_name;
@@ -128,13 +123,24 @@ PrecursorKernelAction::act()
       {
         InputParameters params = _factory.getValidParams("OutflowBC");
         params.set<NonlinearVariableName>("variable") = var_name;
-        params.set<std::vector<BoundaryName> >("boundary") = getParam<std::vector<BoundaryName> >("advection_boundaries");
+        params.set<std::vector<BoundaryName> >("boundary") = getParam<std::vector<BoundaryName> >("outlet_boundaries");
         RealVectorValue vel = {getParam<Real>("u_def"), getParam<Real>("v_def"), getParam<Real>("w_def")};
         params.set<RealVectorValue>("velocity") = vel;
 
         std::string kernel_name = "OutflowBC_" + var_name;
         _problem->addBoundaryCondition("OutflowBC", kernel_name, params);
       }
+      // {
+      //   InputParameters params = _factory.getValidParams("InflowBC");
+      //   params.set<NonlinearVariableName>("variable") = var_name;
+      //   params.set<std::vector<BoundaryName> >("boundary") = getParam<std::vector<BoundaryName> >("inlet_boundaries");
+      //   RealVectorValue vel = {getParam<Real>("u_def"), getParam<Real>("v_def"), getParam<Real>("w_def")};
+      //   params.set<RealVectorValue>("velocity") = vel;
+      //   params.set<Real>("inlet_conc") = 1.;
+
+      //   std::string kernel_name = "InflowBC_" + var_name;
+      //   _problem->addBoundaryCondition("InflowBC", kernel_name, params);
+      // }
     }
 
     // Set up ICs
