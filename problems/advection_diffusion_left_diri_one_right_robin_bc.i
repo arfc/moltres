@@ -91,7 +91,7 @@ flow_velocity=100
 
 [Outputs]
   exodus = true
-  print_linear_residuals = false
+  print_linear_residuals = true
 []
 
 [Debug]
