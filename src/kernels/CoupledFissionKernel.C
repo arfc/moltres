@@ -75,7 +75,7 @@ CoupledFissionKernel::computeQpOffDiagJacobian(unsigned int jvar)
   {
     if (jvar == _flux_ids[i])
     {
-      jac += -_test[_i][_qp] * _chi[_qp][_group] * _nsf[_qp][i] * computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp);
+      jac += -_test[_i][_qp] * _chi[_qp][_group] * _nsf[_qp][i] * (1. - _beta[_qp]) * computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp);
       break;
     }
   }
