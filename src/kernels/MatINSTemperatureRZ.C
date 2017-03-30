@@ -9,9 +9,9 @@ InputParameters validParams<MatINSTemperatureRZ>()
   // Coupled variables
   params.addCoupledVar("ur", 0, "Radial velocity");
   params.addCoupledVar("uz", 0, "Axial velocity");
-  params.addRequiredParam<MaterialPropertyName>("rho", "The material property name for the density");
-  params.addRequiredParam<MaterialPropertyName>("k", "The material property name for the thermal conductivity");
-  params.addRequiredParam<MaterialPropertyName>("cp", "The material property name for the specific heat");
+  // params.addParam<MaterialPropertyName>("rho", "The material property name for the density");
+  // params.addParam<MaterialPropertyName>("k", "The material property name for the thermal conductivity");
+  // params.addParam<MaterialPropertyName>("cp", "The material property name for the specific heat");
 
   return params;
 }

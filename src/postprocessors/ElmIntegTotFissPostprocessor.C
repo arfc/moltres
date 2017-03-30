@@ -4,17 +4,20 @@ template<>
 InputParameters validParams<ElmIntegTotFissPostprocessor>()
 {
   InputParameters params = validParams<ElementIntegralPostprocessor>();
+  params += validParams<ScalarTransportBase>();
   params.addRequiredCoupledVar("group_fluxes", "The group fluxes. MUST be arranged by decreasing energy/increasing group number.");
   params.addRequiredParam<int>("num_groups", "The number of energy groups.");
+  params.addParam<Real>("nt_scale", 1, "Scaling of the neutron fluxes to aid convergence.");
   return params;
 }
 
 ElmIntegTotFissPostprocessor::ElmIntegTotFissPostprocessor(const InputParameters & parameters) :
     ElementIntegralPostprocessor(parameters),
-    // MooseVariableInterface(this, false),
+    ScalarTransportBase(parameters),
     _num_groups(getParam<int>("num_groups")),
     _fissxs(getMaterialProperty<std::vector<Real> >("fissxs")),
-    _vars(getCoupledMooseVars())
+    _vars(getCoupledMooseVars()),
+    _nt_scale(getParam<Real>("nt_scale"))
 {
   addMooseVariableDependency(_vars);
   int n = coupledComponents("group_fluxes");
@@ -22,7 +25,7 @@ ElmIntegTotFissPostprocessor::ElmIntegTotFissPostprocessor(const InputParameters
     mooseError("The number of coupled variables doesn't match the number of groups.");
 
   _group_fluxes.resize(n);
-  for (int i = 0; i < _group_fluxes.size(); ++i)
+  for (unsigned int i = 0; i < _group_fluxes.size(); ++i)
   {
     _group_fluxes[i] = &coupledValue("group_fluxes", i);
   }
@@ -33,7 +36,13 @@ ElmIntegTotFissPostprocessor::computeQpIntegral()
 {
   Real sum = 0;
   for (int i = 0; i < _num_groups; ++i)
-    sum += _fissxs[_qp][i] * (*_group_fluxes[i])[_qp];
+    sum += computeFluxMultiplier(i) * computeConcentration((*_group_fluxes[i]), _qp) * _nt_scale;
 
   return sum;
+}
+
+Real
+ElmIntegTotFissPostprocessor::computeFluxMultiplier(int index)
+{
+  return _fissxs[_qp][index];
 }

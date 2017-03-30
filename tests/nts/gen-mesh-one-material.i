@@ -5,7 +5,9 @@
   group_fluxes = 'group1 group2'
   # MSRE full power = 10 MW; core volume 90 ft3
   power = 10
-[../]
+  use_exp_form = false
+  sss2_input = false
+[]
 
 [Mesh]
   type = GeneratedMesh
@@ -38,31 +40,26 @@
     type = GroupDiffusion
     variable = group1
     group_number = 1
-    use_exp_form = false
   [../]
   [./diff_group2]
     type = GroupDiffusion
     variable = group2
     group_number = 2
-    use_exp_form = false
   [../]
   [./sigma_r_group1]
     type = SigmaR
     variable = group1
     group_number = 1
-    use_exp_form = false
   [../]
   [./sigma_r_group2]
     type = SigmaR
     variable = group2
     group_number = 2
-    use_exp_form = false
   [../]
   [./inscatter_group1]
     type = InScatter
     variable = group1
     group_number = 1
-    use_exp_form = false
     num_groups = 2
     group_fluxes = 'group1 group2'
   [../]
@@ -70,7 +67,6 @@
     type = InScatter
     variable = group2
     group_number = 2
-    use_exp_form = false
     num_groups = 2
     group_fluxes = 'group1 group2'
   [../]
@@ -78,7 +74,6 @@
     type = CoupledFissionEigenKernel
     variable = group1
     group_number = 1
-    use_exp_form = false
     num_groups = 2
     group_fluxes = 'group1 group2'
   [../]
@@ -86,7 +81,6 @@
     type = CoupledFissionEigenKernel
     variable = group2
     group_number = 2
-    use_exp_form = false
     num_groups = 2
     group_fluxes = 'group1 group2'
   [../]
@@ -159,11 +153,9 @@
     type = GenericMoltresMaterial
     block = 0
     property_tables_root = 'msr2g_enrU_mod_953_fuel_interp_'
-    num_groups = 2
     prop_names = 'k'
     prop_values = '.0123' # Cammi 2011 at 908 K
-    # prop_names = 'k d_k_d_temp'
-    # prop_values = '.0123 0' # Cammi 2011 at 908 K
+    interp_type = spline
   [../]
 []
 

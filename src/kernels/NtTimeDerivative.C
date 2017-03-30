@@ -9,7 +9,7 @@ InputParameters validParams<NtTimeDerivative>()
 {
   InputParameters params = validParams<ScalarTransportTimeDerivative>();
   params.addRequiredParam<int>("group_number", "The group for which this kernel controls diffusion");
-  params.addCoupledVar("temperature", 937, "The temperature used to interpolate the diffusion coefficient");
+  params.addCoupledVar("temperature", "The temperature used to interpolate the diffusion coefficient");
   return params;
 }
 

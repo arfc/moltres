@@ -1,7 +1,7 @@
 [GlobalParams]
   rho = 1
   mu = 1
-  integrate_p_by_parts = false
+  integrate_p_by_parts = true
   gravity = '0 0 0'
   coord_type = XYZ
 []
@@ -18,16 +18,22 @@
     type = SMP
     full = true
     solve_type = 'NEWTON'
-    petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type'
-    petsc_options_value = 'lu NONZERO 1.e-10 preonly'
+    # petsc_options_iname = '-pc_type -sub_pc_type -sub_ksp_type'
+    # petsc_options_value = 'asm	    lu		 preonly'
+    petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type -pc_factor_mat_solver_package'
+    petsc_options_value = 'lu NONZERO 1.e-10 preonly mumps'
   [../]
 []
 
 [Executioner]
   type = Steady
+  # type = Transient
+  # num_steps = 10
+  # dt = .01
   petsc_options = '-snes_converged_reason -snes_linesearch_monitor -ksp_converged_reason'
 
   nl_rel_tol = 1e-12
+  nl_abs_tol = 1e-12
 []
 
 [Debug]
@@ -36,7 +42,7 @@
 
 [Outputs]
   print_perf_log = true
-  print_linear_residuals = false
+  print_linear_residuals = true
   [./out]
     type = Exodus
   []
@@ -80,8 +86,14 @@
     variable = uz
     value = 0
   [../]
+  [./uz_inlet]
+    type = FunctionDirichletBC
+    boundary = 'Inlet'
+    variable = uz
+    function = 'inlet_func'
+  [../]
   [./ux_out]
-    type = INSMomentumNoBCBC
+    type = INSMomentumNoBCBCTractionForm
     boundary = 'Outlet'
     variable = ux
     u = ux
@@ -91,7 +103,7 @@
     component = 0
   [../]
   [./uy_out]
-    type = INSMomentumNoBCBC
+    type = INSMomentumNoBCBCTractionForm
     boundary = 'Outlet'
     variable = uy
     u = ux
@@ -100,18 +112,35 @@
     p = p
     component = 1
   [../]
-  [./p_inlet]
-    type = DirichletBC
-    boundary = 'Inlet'
-    variable = p
-    value = 3
-  [../]
-  [./p_right]
-    type = DirichletBC
+  [./uz_out]
+    type = INSMomentumNoBCBCTractionForm
     boundary = 'Outlet'
+    variable = uz
+    u = ux
+    v = uy
+    w = uz
+    p = p
+    component = 2
+  [../]
+  [./p_point]
+    type = DirichletBC
+    boundary = 'PressurePoint'
     variable = p
     value = 0
   [../]
+
+  # [./p_inlet]
+  #   type = DirichletBC
+  #   boundary = 'Inlet'
+  #   variable = p
+  #   value = 3
+  # [../]
+  # [./p_right]
+  #   type = DirichletBC
+  #   boundary = 'Outlet'
+  #   variable = p
+  #   value = 0
+  # [../]
 []
 
 
@@ -137,7 +166,7 @@
   #   variable = uz
   # [../]
   [./x_momentum_space]
-    type = INSMomentum
+    type = INSMomentumTractionForm
     variable = ux
     u = ux
     v = uy
@@ -146,7 +175,7 @@
     component = 0
   [../]
   [./y_momentum_space]
-    type = INSMomentum
+    type = INSMomentumTractionForm
     variable = uy
     u = ux
     v = uy
@@ -155,12 +184,19 @@
     component = 1
   [../]
   [./z_momentum_space]
-    type = INSMomentum
+    type = INSMomentumTractionForm
     variable = uz
     u = ux
     v = uy
     w = uz
     p = p
     component = 2
+  [../]
+[]
+
+[Functions]
+  [./inlet_func]
+    type = ParsedFunction
+    value = '1 - 4 * (x^2 + y^2)'
   [../]
 []

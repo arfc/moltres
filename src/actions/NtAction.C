@@ -11,12 +11,20 @@ InputParameters validParams<NtAction>()
   params.addRequiredParam<int>("num_precursor_groups", "specifies the total number of precursors to create");
   params.addRequiredParam<std::string>("var_name_base", "specifies the base name of the variables");
   params.addParam<VariableName>("temperature", "Name of temperature variable");
+  params.addParam<Real>("temperature_value", "Can decouple neutron and temperature simulations by passing in a temperature value here.");
+  params.addParam<Real>("temp_scaling", "The amount by which to scale the temperature variable.");
   params.addRequiredParam<int>("num_groups", "The total number of energy groups.");
   params.addRequiredParam<bool>("use_exp_form", "Whether concentrations should be in an expotential/logarithmic format.");
   params.addParam<bool>("jac_test", false, "Whether we're testing the Jacobian and should use some random initial conditions for the precursors.");
+  params.addParam<FunctionName>("nt_ic_function", "An initial condition function for the neutrons.");
   params.addParam<bool>("use_source_stabilization", false, "Whether to use source stabilization.");
   params.addParam<Real>("offset", "The value by which to offset the logarithmic stabilization.");
   params.addParam<std::vector<BoundaryName> >("vacuum_boundaries", "The boundaries on which to apply vacuum boundaries.");
+  params.addParam<bool>("create_temperature_var", true, "Whether to create the temperature variable.");
+  params.addParam<bool>("init_nts_from_file", false, "Whether to restart simulation using nt output from a previous simulation.");
+  params.addParam<bool>("init_temperature_from_file", false, "Whether to restart simulation using temperature output from a previous simulation.");
+  params.addParam<bool>("dg_for_temperature", true, "Whether the temperature variable should use discontinuous basis functions.");
+  params.addParam<bool>("eigen", false, "Whether to run an eigen- instead of a transient- simulation.");
   return params;
 }
 
@@ -26,6 +34,8 @@ NtAction::NtAction(const InputParameters & params) :
     _var_name_base(getParam<std::string>("var_name_base")),
     _num_groups(getParam<int>("num_groups"))
 {
+  if (!isParamValid("temperature") && !isParamValid("temperature_value"))
+    mooseError("You must either supply a coupled temperature variable or a value for the temperature.");
 }
 
 void
@@ -37,11 +47,27 @@ NtAction::act()
 
   for (int op = 1; op <= _num_groups; ++op)
   {
+    std::string var_name = _var_name_base + Moose::stringify(op);
+
+    //
+    // See whether we want to use an old solution
+    //
+    if (getParam<bool>("init_nts_from_file"))
+    {
+      if (_current_task == "check_copy_nodal_vars")
+        _app.setFileRestart() = true;
+
+      if (_current_task == "copy_nodal_vars")
+      {
+        SystemBase * system;
+        system = &_problem->getNonlinearSystemBase();
+        system->addVariableToCopy(var_name, var_name, "LATEST");
+      }
+    }
+
     //
     // Create variable names
     //
-
-    std::string var_name = _var_name_base + Moose::stringify(op);
 
     if (_current_task == "add_variable")
       addVariable(var_name);
@@ -50,7 +76,7 @@ NtAction::act()
     {
 
       // Set up time derivatives
-
+      if (!getParam<bool>("eigen"))
       {
         InputParameters params = _factory.getValidParams("NtTimeDerivative");
         params.set<NonlinearVariableName>("variable") = var_name;
@@ -61,6 +87,8 @@ NtAction::act()
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
         if (isParamValid("temperature"))
           params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
+        else
+          params.defaultCoupledValue("temperature", getParam<Real>("temperature_value"));
 
         std::string kernel_name = "NtTimeDerivative_" + var_name;
         _problem->addKernel("NtTimeDerivative", kernel_name, params);
@@ -78,6 +106,8 @@ NtAction::act()
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
         if (isParamValid("temperature"))
           params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
+        else
+          params.defaultCoupledValue("temperature", getParam<Real>("temperature_value"));
 
         std::string kernel_name = "GroupDiffusion_" + var_name;
         _problem->addKernel("GroupDiffusion", kernel_name, params);
@@ -95,13 +125,15 @@ NtAction::act()
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
         if (isParamValid("temperature"))
           params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
+        else
+          params.defaultCoupledValue("temperature", getParam<Real>("temperature_value"));
 
         std::string kernel_name = "SigmaR_" + var_name;
         _problem->addKernel("SigmaR", kernel_name, params);
       }
 
       // Set up InScatter
-
+      if (_num_groups != 1)
       {
         InputParameters params = _factory.getValidParams("InScatter");
         params.set<NonlinearVariableName>("variable") = var_name;
@@ -112,6 +144,9 @@ NtAction::act()
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
         if (isParamValid("temperature"))
           params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
+        else
+          params.defaultCoupledValue("temperature", getParam<Real>("temperature_value"));
+
         params.set<int>("num_groups") = _num_groups;
         // params.set<std::vector<VariableName> >("group_fluxes") = getParam<std::vector<VariableName> >("group_fluxes");
         params.set<std::vector<VariableName> >("group_fluxes") = all_var_names;
@@ -121,7 +156,7 @@ NtAction::act()
       }
 
       // Set up CoupledFissionKernel
-
+      if (!getParam<bool>("eigen"))
       {
         InputParameters params = _factory.getValidParams("CoupledFissionKernel");
         params.set<NonlinearVariableName>("variable") = var_name;
@@ -132,12 +167,36 @@ NtAction::act()
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
         if (isParamValid("temperature"))
           params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
+        else
+          params.defaultCoupledValue("temperature", getParam<Real>("temperature_value"));
+
         params.set<int>("num_groups") = _num_groups;
         // params.set<std::vector<VariableName> >("group_fluxes") = getParam<std::vector<VariableName> >("group_fluxes");
         params.set<std::vector<VariableName> >("group_fluxes") = all_var_names;
 
         std::string kernel_name = "CoupledFissionKernel_" + var_name;
         _problem->addKernel("CoupledFissionKernel", kernel_name, params);
+      }
+      else
+      {
+        InputParameters params = _factory.getValidParams("CoupledFissionEigenKernel");
+        params.set<NonlinearVariableName>("variable") = var_name;
+        params.set<int>("group_number") = op;
+        if (isParamValid("block"))
+          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+        if (isParamValid("use_exp_form"))
+          params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
+        if (isParamValid("temperature"))
+          params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
+        else
+          params.defaultCoupledValue("temperature", getParam<Real>("temperature_value"));
+
+        params.set<int>("num_groups") = _num_groups;
+        // params.set<std::vector<VariableName> >("group_fluxes") = getParam<std::vector<VariableName> >("group_fluxes");
+        params.set<std::vector<VariableName> >("group_fluxes") = all_var_names;
+
+        std::string kernel_name = "CoupledFissionEigenKernel_" + var_name;
+        _problem->addKernel("CoupledFissionEigenKernel", kernel_name, params);
       }
     }
 
@@ -158,8 +217,11 @@ NtAction::act()
       }
     }
 
-    if (_current_task == "add_ic")
+    if (_current_task == "add_ic" && !getParam<bool>("init_nts_from_file"))
     {
+      if (getParam<bool>("jac_test") && isParamValid("nt_ic_function"))
+        mooseError("jac_test creates RandomICs. So are you sure you want to pass an initial condition function?");
+
       if (getParam<bool>("jac_test"))
       {
         InputParameters params = _factory.getValidParams("RandomIC");
@@ -172,7 +234,17 @@ NtAction::act()
         std::string ic_name = "RandomIC_" + var_name;
         _problem->addInitialCondition("RandomIC", ic_name, params);
       }
+      else if (isParamValid("nt_ic_function"))
+      {
+        InputParameters params = _factory.getValidParams("FunctionIC");
+        params.set<VariableName>("variable") = var_name;
+        if (isParamValid("block"))
+          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+        params.set<FunctionName>("function") = getParam<FunctionName>("nt_ic_function");
 
+        std::string ic_name = "FunctionIC_" + var_name;
+        _problem->addInitialCondition("FunctionIC", ic_name, params);
+      }
       else
       {
         InputParameters params = _factory.getValidParams("ConstantIC");
@@ -223,9 +295,41 @@ NtAction::act()
     }
   }
 
-  if (_current_task == "add_variable")
+  if (getParam<bool>("create_temperature_var"))
   {
     std::string temp_var = "temp";
-    addVariable(temp_var);
+    //
+    // See whether we want to use an old solution
+    //
+    if (getParam<bool>("init_temperature_from_file"))
+    {
+      if (_current_task == "check_copy_nodal_vars")
+        _app.setFileRestart() = true;
+
+      if (_current_task == "copy_nodal_vars")
+      {
+        SystemBase * system;
+        system = &_problem->getNonlinearSystemBase();
+        system->addVariableToCopy(temp_var, temp_var, "LATEST");
+      }
+    }
+
+    if (_current_task == "add_variable")
+    {
+      _pars.set<Real>("scaling") = isParamValid("temp_scaling") ? getParam<Real>("temp_scaling") : 1;
+      Real scale_factor = getParam<Real>("scaling");
+      FEType fe_type(getParam<bool>("dg_for_temperature") ? FIRST : FIRST,
+                     getParam<bool>("dg_for_temperature") ? L2_LAGRANGE : LAGRANGE);
+
+      std::set<SubdomainID> blocks = getSubdomainIDs();
+
+      // Block restricted variable
+      if (blocks.empty())
+        _problem->addVariable(temp_var, fe_type, scale_factor);
+
+      // Non-block restricted variable
+      else
+        _problem->addVariable(temp_var, fe_type, scale_factor, &blocks);
+    }
   }
 }

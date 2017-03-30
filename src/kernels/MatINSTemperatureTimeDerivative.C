@@ -4,8 +4,8 @@ template<>
 InputParameters validParams<MatINSTemperatureTimeDerivative>()
 {
   InputParameters params = validParams<TimeDerivative>();
-  params.addRequiredParam<MaterialPropertyName>("rho", "The material property name for the density");
-  params.addRequiredParam<MaterialPropertyName>("cp", "The material property name for the specific heat");
+  // params.addRequiredParam<MaterialPropertyName>("rho", "The material property name for the density");
+  // params.addRequiredParam<MaterialPropertyName>("cp", "The material property name for the specific heat");
   return params;
 }
 

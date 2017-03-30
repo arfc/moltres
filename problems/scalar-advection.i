@@ -1,20 +1,29 @@
 [Mesh]
   type = GeneratedMesh
-  nx = 10
-  ny = 5
-  dim = 2
+  nx = 20
+  dim = 1
 []
 
 [Kernels]
-  [./diff]
-    type = Diffusion
-    variable = u
-  [../]
-  [./advection]
-    type = CoupledScalarAdvection
-    variable = u
-    v_def = 1
-  [../]
+  # [./diff]
+  #   type = Diffusion
+  #   variable = u
+  # [../]
+  # [./art_diff]
+  #   type = ScalarAdvectionArtDiff
+  #   variable = u
+  #   u_def = 1
+  #   scale = 5
+  # [../]
+  # [./advection]
+  #   type = CoupledScalarAdvection
+  #   variable = u
+  #   u_def = 1
+  # [../]
+  # [./time_derivative]
+  #   type = TimeDerivative
+  #   variable = u
+  # [../]
   [./source]
     type = UserForcingFunction
     variable = u
@@ -22,23 +31,20 @@
   [../]
 []
 
+[DGKernels]
+  [./concentration]
+    type = DGConvection
+    variable = u
+    velocity = '1 0 0'
+  [../]
+[]
+
 [BCs]
-  [./inlet]
-    type = DirichletBC
-    value = 0
-    boundary = 'bottom'
+  [./concentration]
+    type = DGConvectionOutflow
+    boundary = 'left right'
     variable = u
-  [../]
-  [./out_diffusion]
-    type = DiffusionNoBCBC
-    variable = u
-    boundary = 'top'
-  [../]
-  [./out_advection]
-    type = CoupledScalarAdvectionNoBCBC
-    variable = u
-    boundary = 'top'
-    v_def = 1
+    velocity = '1 0 0'
   [../]
 []
 
@@ -48,16 +54,28 @@
 
 [Variables]
   [./u]
+    family = MONOMIAL
+    order = CONSTANT
   [../]
 []
 
 [Executioner]
-  type = Steady
-  solve_type = NEWTON
-  petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  # This system will not converge with default preconditioning; need to use asm
-  petsc_options_iname = '-pc_type -sub_pc_type -sub_ksp_type -pc_asm_overlap -ksp_gmres_restart'
-  petsc_options_value = 'asm lu preonly 2 31'
+  type = Transient
+  # type = Steady
+  # [./TimeIntegrator]
+  #   type = ExplicitMidpoint
+  # [../]
+  solve_type = 'NEWTON'
+
+  l_tol = 1e-4
+  nl_rel_tol = 1e-20
+  nl_abs_tol = 1e-8
+  nl_max_its = 60
+
+  start_time = 0.0
+  num_steps = 10 # 4 | 400 for complete run
+  dt = 5e-4
+  dtmin = 1e-6
 []
 
 [Preconditioning]

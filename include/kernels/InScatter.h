@@ -30,6 +30,7 @@ protected:
   unsigned int _temp_id;
   std::vector<const VariableValue *> _group_fluxes;
   std::vector<unsigned int> _flux_ids;
+  bool _sss2_input;
 };
 
 #endif //INSCATTER_H

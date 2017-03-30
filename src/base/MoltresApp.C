@@ -1,14 +1,10 @@
 #include "MoltresApp.h"
 #include "Moose.h"
 #include "AppFactory.h"
-#include "NavierStokesApp.h"
-#include "FluidPropertiesApp.h"
-#include "HeatConductionApp.h"
-#include "ZapdosApp.h"
+#include "SquirrelApp.h"
 #include "MooseSyntax.h"
 
 // Kernels
-#include "MatDiffusion.h"
 #include "ScalarTransportTimeDerivative.h"
 #include "ScalarAdvectionArtDiff.h"
 #include "MatINSTemperatureRZ.h"
@@ -28,8 +24,10 @@
 #include "CoupledScalarAdvection.h"
 #include "DivFreeCoupledScalarAdvection.h"
 #include "MatINSTemperatureTimeDerivative.h"
+#include "GammaHeatSource.h"
 
 // Boundary conditions
+#include "LinLogPenaltyDirichletBC.h"
 #include "VacuumConcBC.h"
 #include "ConservativeAdvectionNoBCBC.h"
 #include "DiffusionNoBCBC.h"
@@ -42,13 +40,17 @@
 
 // Materials
 #include "GenericMoltresMaterial.h"
+#include "CammiFuel.h"
+#include "CammiModerator.h"
 
 // Postprocessors
+#include "AverageFissionHeat.h"
 #include "ElementL2Diff.h"
 #include "DivisionPostprocessor.h"
 #include "IntegralOldVariablePostprocessor.h"
 #include "IntegralNewVariablePostprocessor.h"
 #include "ElmIntegTotFissPostprocessor.h"
+#include "ElmIntegTotFissHeatPostprocessor.h"
 #include "ElmIntegTotFissNtsPostprocessor.h"
 
 // AuxKernels
@@ -76,17 +78,11 @@ MoltresApp::MoltresApp(InputParameters parameters) :
     MooseApp(parameters)
 {
   Moose::registerObjects(_factory);
-  NavierStokesApp::registerObjects(_factory);
-  FluidPropertiesApp::registerObjects(_factory);
-  HeatConductionApp::registerObjects(_factory);
-  ZapdosApp::registerObjects(_factory);
+  SquirrelApp::registerObjects(_factory);
   MoltresApp::registerObjects(_factory);
 
   Moose::associateSyntax(_syntax, _action_factory);
-  NavierStokesApp::associateSyntax(_syntax, _action_factory);
-  FluidPropertiesApp::associateSyntax(_syntax, _action_factory);
-  HeatConductionApp::associateSyntax(_syntax, _action_factory);
-  ZapdosApp::associateSyntax(_syntax, _action_factory);
+  SquirrelApp::associateSyntax(_syntax, _action_factory);
   MoltresApp::associateSyntax(_syntax, _action_factory);
 }
 
@@ -108,7 +104,7 @@ void
 MoltresApp::registerObjects(Factory & factory)
 {
   registerKernel(SigmaR);
-  registerKernel(MatDiffusion);
+  registerKernel(GammaHeatSource);
   registerKernel(MatINSTemperatureTimeDerivative);
   registerKernel(ScalarTransportTimeDerivative);
   registerKernel(MatINSTemperatureRZ);
@@ -127,6 +123,7 @@ MoltresApp::registerObjects(Factory & factory)
   registerKernel(INSMomentumKEpsilon);
   registerKernel(INSK);
   registerKernel(GroupDiffusion);
+  registerBoundaryCondition(LinLogPenaltyDirichletBC);
   registerBoundaryCondition(ScalarAdvectionArtDiffNoBCBC);
   registerBoundaryCondition(VacuumConcBC);
   registerBoundaryCondition(ConservativeAdvectionNoBCBC);
@@ -137,12 +134,16 @@ MoltresApp::registerObjects(Factory & factory)
   registerBoundaryCondition(INSSymmetryAxisBC);
   registerBoundaryCondition(MatDiffusionFluxBC);
   registerMaterial(GenericMoltresMaterial);
+  registerMaterial(CammiFuel);
+  registerMaterial(CammiModerator);
   registerPostprocessor(IntegralOldVariablePostprocessor);
   registerPostprocessor(ElementL2Diff);
   registerPostprocessor(IntegralNewVariablePostprocessor);
   registerPostprocessor(DivisionPostprocessor);
   registerPostprocessor(ElmIntegTotFissPostprocessor);
+  registerPostprocessor(ElmIntegTotFissHeatPostprocessor);
   registerPostprocessor(ElmIntegTotFissNtsPostprocessor);
+  registerPostprocessor(AverageFissionHeat);
   registerAux(FissionHeatSourceAux);
   registerAux(MatDiffusionAux);
 }
@@ -159,12 +160,13 @@ MoltresApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
   registerAction(PrecursorKernelAction, "add_bc");
   registerAction(PrecursorKernelAction, "add_variable");
   registerAction(PrecursorKernelAction, "add_ic");
-  registerAction(PrecursorKernelAction, "add_elemental_field_variable");
-  registerAction(PrecursorKernelAction, "add_aux_kernel");
+  registerAction(PrecursorKernelAction, "add_dg_kernel");
   registerAction(NtAction, "add_kernel");
   registerAction(NtAction, "add_bc");
   registerAction(NtAction, "add_variable");
   registerAction(NtAction, "add_ic");
   registerAction(NtAction, "add_aux_variable");
   registerAction(NtAction, "add_aux_kernel");
+  registerAction(NtAction, "check_copy_nodal_vars");
+  registerAction(NtAction, "copy_nodal_vars");
 }

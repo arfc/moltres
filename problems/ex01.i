@@ -1,5 +1,8 @@
 [Mesh]
-  file = 'cubicmesh.msh'
+  type = GeneratedMesh
+  dim = 2
+  nx = 10
+  ny = 10
 []
 
 [Variables]
@@ -17,19 +20,18 @@
 []
 
 [BCs]
+  [./bottom]
+    type = DirichletBC
+    variable = diffused
+    boundary = 'bottom'
+    value = 1
+  [../]
 
   [./top]
     type = DirichletBC
     variable = diffused
     boundary = 'top'
-    value = 2
-  [../]
-
-  [./bottom]
-    type = DirichletBC
-    variable = diffused
-    boundary = 'bottom'
-    value = 3
+    value = 0
   [../]
 []
 

@@ -6,7 +6,7 @@ InputParameters validParams<SigmaR>()
   InputParameters params = validParams<Kernel>();
   params += validParams<ScalarTransportBase>();
   params.addRequiredParam<int>("group_number", "The current energy group.");
-  params.addCoupledVar("temperature", 937, "The temperature used to interpolate material properties");
+  params.addCoupledVar("temperature", "The temperature used to interpolate material properties");
   return params;
 }
 

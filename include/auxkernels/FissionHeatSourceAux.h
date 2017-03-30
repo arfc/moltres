@@ -19,7 +19,7 @@ protected:
 
   const MaterialProperty<std::vector<Real> > & _fissxs;
   const MaterialProperty<std::vector<Real> > & _d_fissxs_d_temp;
-  int _num_groups;
+  unsigned int _num_groups;
   const PostprocessorValue & _tot_fissions;
   Real _power;
   std::vector<const VariableValue *> _group_fluxes;
