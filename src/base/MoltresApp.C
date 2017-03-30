@@ -5,6 +5,7 @@
 #include "MooseSyntax.h"
 
 // Kernels
+#include "DelayedNeutronSource.h"
 #include "ScalarTransportTimeDerivative.h"
 #include "ScalarAdvectionArtDiff.h"
 #include "MatINSTemperatureRZ.h"
@@ -103,6 +104,7 @@ extern "C" void MoltresApp__registerObjects(Factory & factory) { MoltresApp::reg
 void
 MoltresApp::registerObjects(Factory & factory)
 {
+  registerKernel(DelayedNeutronSource);
   registerKernel(SigmaR);
   registerKernel(GammaHeatSource);
   registerKernel(MatINSTemperatureTimeDerivative);
