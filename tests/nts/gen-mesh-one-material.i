@@ -6,7 +6,8 @@
   # MSRE full power = 10 MW; core volume 90 ft3
   power = 10
   use_exp_form = false
-[../]
+  sss2_input = false
+[]
 
 [Mesh]
   type = GeneratedMesh
@@ -152,12 +153,9 @@
     type = GenericMoltresMaterial
     block = 0
     property_tables_root = 'msr2g_enrU_mod_953_fuel_interp_'
-    num_groups = 2
     prop_names = 'k'
     prop_values = '.0123' # Cammi 2011 at 908 K
     interp_type = spline
-    # prop_names = 'k d_k_d_temp'
-    # prop_values = '.0123 0' # Cammi 2011 at 908 K
   [../]
 []
 
