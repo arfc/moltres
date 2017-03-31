@@ -228,7 +228,7 @@ diri_temp=922
     type = IterationAdaptiveDT
     dt = 1e-3
     cutback_factor = 0.4
-    growth_factor = 1.025
+    growth_factor = 1.2
     optimal_iterations = 20
   [../]
 []
@@ -244,30 +244,30 @@ diri_temp=922
   [./group1_current]
     type = IntegralNewVariablePostprocessor
     variable = group1
-    outputs = 'console csv'
+    outputs = 'console'
   [../]
   [./group1_old]
     type = IntegralOldVariablePostprocessor
     variable = group1
-    outputs = 'console csv'
+    outputs = 'console'
   [../]
   [./multiplication]
     type = DivisionPostprocessor
     value1 = group1_current
     value2 = group1_old
-    outputs = 'console csv'
+    outputs = 'console'
   [../]
   [./temp_fuel]
     type = ElementAverageValue
     variable = temp
     block = 'fuel'
-    outputs = 'csv console'
+    outputs = 'console'
   [../]
   [./temp_moder]
     type = ElementAverageValue
     variable = temp
     block = 'moder'
-    outputs = 'csv console'
+    outputs = 'console'
   [../]
   # [./average_fission_heat]
   #   type = AverageFissionHeat
@@ -281,9 +281,9 @@ diri_temp=922
 [Outputs]
   print_perf_log = true
   print_linear_residuals = true
-  csv = true
   [./out]
     type = Exodus
+    execute_on = 'final'
   [../]
 []
 

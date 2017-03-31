@@ -244,7 +244,7 @@ diri_temp=922
     type = IterationAdaptiveDT
     dt = 1e-3
     cutback_factor = 0.4
-    growth_factor = 1.025
+    growth_factor = 1.2
     optimal_iterations = 20
   [../]
 []

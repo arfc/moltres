@@ -1,6 +1,7 @@
 #include "MoltresApp.h"
 #include "Moose.h"
 #include "AppFactory.h"
+#include "ModulesApp.h"
 #include "SquirrelApp.h"
 #include "MooseSyntax.h"
 
@@ -76,10 +77,12 @@ MoltresApp::MoltresApp(InputParameters parameters) :
     MooseApp(parameters)
 {
   Moose::registerObjects(_factory);
+  ModulesApp::registerObjects(_factory);
   SquirrelApp::registerObjects(_factory);
   MoltresApp::registerObjects(_factory);
 
   Moose::associateSyntax(_syntax, _action_factory);
+  ModulesApp::associateSyntax(_syntax, _action_factory);
   SquirrelApp::associateSyntax(_syntax, _action_factory);
   MoltresApp::associateSyntax(_syntax, _action_factory);
 }
