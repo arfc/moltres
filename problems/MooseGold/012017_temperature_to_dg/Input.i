@@ -53,7 +53,7 @@ sigma_val=6
   [../]
   [./temp_diffusion]
     type = MatDiffusion
-    prop_name = 'k'
+    D_name = 'k'
     variable = temp
   [../]
   [./temp_advection_fuel]

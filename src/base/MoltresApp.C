@@ -8,7 +8,6 @@
 #include "DelayedNeutronSource.h"
 #include "ScalarTransportTimeDerivative.h"
 #include "ScalarAdvectionArtDiff.h"
-#include "MatINSTemperatureRZ.h"
 #include "PrecursorDecay.h"
 #include "NtTimeDerivative.h"
 #include "PrecursorSource.h"
@@ -24,7 +23,6 @@
 #include "GroupDiffusion.h"
 #include "CoupledScalarAdvection.h"
 #include "DivFreeCoupledScalarAdvection.h"
-#include "MatINSTemperatureTimeDerivative.h"
 #include "GammaHeatSource.h"
 
 // Boundary conditions
@@ -33,7 +31,6 @@
 #include "ConservativeAdvectionNoBCBC.h"
 #include "DiffusionNoBCBC.h"
 #include "ScalarAdvectionArtDiffNoBCBC.h"
-#include "MatINSTemperatureNoBCBC.h"
 #include "INSOutflowBC.h"
 #include "INSSymmetryAxisBC.h"
 #include "MatDiffusionFluxBC.h"
@@ -107,9 +104,7 @@ MoltresApp::registerObjects(Factory & factory)
   registerKernel(DelayedNeutronSource);
   registerKernel(SigmaR);
   registerKernel(GammaHeatSource);
-  registerKernel(MatINSTemperatureTimeDerivative);
   registerKernel(ScalarTransportTimeDerivative);
-  registerKernel(MatINSTemperatureRZ);
   registerKernel(PrecursorSource);
   registerKernel(PrecursorDecay);
   registerKernel(CoupledScalarAdvection);
@@ -131,7 +126,6 @@ MoltresApp::registerObjects(Factory & factory)
   registerBoundaryCondition(ConservativeAdvectionNoBCBC);
   registerBoundaryCondition(DiffusionNoBCBC);
   registerBoundaryCondition(CoupledScalarAdvectionNoBCBC);
-  registerBoundaryCondition(MatINSTemperatureNoBCBC);
   registerBoundaryCondition(INSOutflowBC);
   registerBoundaryCondition(INSSymmetryAxisBC);
   registerBoundaryCondition(MatDiffusionFluxBC);

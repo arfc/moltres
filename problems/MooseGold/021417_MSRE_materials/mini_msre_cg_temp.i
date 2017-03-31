@@ -59,7 +59,7 @@ global_temperature=temp
   [../]
   [./temp_diffusion]
     type = MatDiffusion
-    prop_name = 'k'
+    D_name = 'k'
     variable = temp
   [../]
   [./temp_advection_fuel]
