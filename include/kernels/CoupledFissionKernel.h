@@ -33,6 +33,7 @@ protected:
   const VariableValue & _temp;
   std::vector<const VariableValue *> _group_fluxes;
   std::vector<unsigned int> _flux_ids;
+  bool _account_delayed;
 };
 
 #endif //COUPLEDFISSIONKERNEL_H

@@ -13,10 +13,12 @@ diri_temp=922
   temperature = ${global_temperature}
   sss2_input = false
   pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6'
+  account_delayed = true
 [../]
 
 [Mesh]
   file = '2d_lattice_structured.msh'
+  # file = '2d_lattice_structured_jac.msh'
 [../]
 
 [Problem]
@@ -52,6 +54,7 @@ diri_temp=922
   nt_exp_form = false
   family = MONOMIAL
   order = CONSTANT
+  # jac_test = true
 []
 
 [Kernels]
@@ -205,7 +208,6 @@ diri_temp=922
 [Executioner]
   type = Transient
   end_time = 10000
-#   num_steps = 1
 
   nl_rel_tol = 1e-6
   nl_abs_tol = 1e-5
@@ -214,15 +216,18 @@ diri_temp=922
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
   petsc_options_value = 'asm	  lu	       1	       preonly	     1e-3'
+  # petsc_options_iname = '-snes_type'
+  # petsc_options_value = 'test'
 
   nl_max_its = 30
   l_max_its = 100
 
   dtmin = 1e-5
+  # dt = 1e-3
   [./TimeStepper]
     type = IterationAdaptiveDT
-    cutback_factor = 0.4
     dt = 1e-3
+    cutback_factor = 0.4
     growth_factor = 1.025
     optimal_iterations = 20
   [../]
@@ -285,3 +290,24 @@ diri_temp=922
 [Debug]
   show_var_residual_norms = true
 []
+
+# [ICs]
+#   [./temp_ic]
+#     type = RandomIC
+#     variable = temp
+#     min = 922
+#     max = 1022
+#   [../]
+#   [./group1_ic]
+#     type = RandomIC
+#     variable = group1
+#     min = .5
+#     max = 1.5
+#   [../]
+#   [./group2_ic]
+#     type = RandomIC
+#     variable = group2
+#     min = .5
+#     max = 1.5
+#   [../]
+# []
