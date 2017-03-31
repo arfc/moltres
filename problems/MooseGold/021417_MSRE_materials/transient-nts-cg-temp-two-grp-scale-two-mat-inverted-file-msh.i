@@ -154,7 +154,7 @@ diri_temp=922
     temperature = ${global_temperature}
     block = 'fuel'
     prop_names = 'rho k cp'
-    prop_values = '2.146e-3 .0553 1967' # Cammi 2011 at 908 K
+    prop_values = '2.146e-3 .0553 1967' # Robertson MSRE technical report @ 922 K
   [../]
   [./moder]
     type = GenericMoltresMaterial

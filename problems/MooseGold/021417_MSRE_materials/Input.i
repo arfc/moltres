@@ -95,7 +95,7 @@ sigma_val=6
     block = 'fuel'
     property_tables_root = '../property_file_dir/full_core_cuboid_msre_comp_fuel_data_func_of_fuel_temp_'
     prop_names = 'rho k cp'
-    prop_values = '2.146e-3 .0553 1967' # Cammi 2011 at 908 K
+    prop_values = '2.146e-3 .0553 1967' # Robertson MSRE technical report @ 922 K
     interp_type = 'spline'
     temperature = ${global_temperature}
   [../]
