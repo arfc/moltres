@@ -25,7 +25,16 @@ PHASE_FIELD := yes
 include $(MOOSE_DIR)/modules/modules.mk
 ###############################################################################
 
-APPLICATION_DIR    := $(shell dirname `pwd`)/squirrel
+# Use the SQUIRREL submodule if it exists and SQUIRREL_DIR is not set
+SQUIRREL_SUBMODULE    := $(CURDIR)/squirrel
+ifneq ($(wildcard $(SQUIRREL_SUBMODULE)/Makefile),)
+  SQUIRREL_DIR        ?= $(SQUIRREL_SUBMODULE)
+else
+  SQUIRREL_DIR        ?= $(shell dirname `pwd`)/squirrel
+endif
+
+# squirrel
+APPLICATION_DIR    := $(SQUIRREL_DIR)
 APPLICATION_NAME   := squirrel
 include            $(FRAMEWORK_DIR)/app.mk
 
