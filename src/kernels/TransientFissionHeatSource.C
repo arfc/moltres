@@ -21,13 +21,8 @@ TransientFissionHeatSource::TransientFissionHeatSource(const InputParameters & p
     _num_groups(getParam<int>("num_groups")),
     _nt_scale(getParam<Real>("nt_scale"))
 {
-  int n = coupledComponents("group_fluxes");
-  if (!(n == _num_groups))
-  {
-    mooseError("The number of coupled variables doesn't match the number of groups.");
-  }
-  _group_fluxes.resize(n);
-  _flux_ids.resize(n);
+  _group_fluxes.resize(_num_groups);
+  _flux_ids.resize(_num_groups);
   for (int i = 0; i < _group_fluxes.size(); ++i)
   {
     _group_fluxes[i] = &coupledValue("group_fluxes", i);
