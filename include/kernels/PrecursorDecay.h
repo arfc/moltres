@@ -25,6 +25,7 @@ protected:
   const MaterialProperty<std::vector<Real> > & _d_decay_constant_d_temp;
   int _precursor_group;
   unsigned int _temp_id;
+  const VariableValue & _temp;
   Real _prec_scale;
 };
 

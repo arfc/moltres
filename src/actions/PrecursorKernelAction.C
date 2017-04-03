@@ -10,20 +10,21 @@ InputParameters validParams<PrecursorKernelAction>()
   InputParameters params = validParams<AddVariableAction>();
   params.addRequiredParam<int>("num_precursor_groups", "specifies the total number of precursors to create");
   params.addRequiredParam<std::string>("var_name_base", "specifies the base name of the variables");
-  params.addParam<VariableName>("temperature", "Name of temperature variable");
+  params.addRequiredCoupledVar("temperature", "Name of temperature variable");
   params.addParam<VariableName>("u", "Name of x-component of velocity");
   params.addParam<VariableName>("v", "Name of y-component of velocity");
   params.addParam<VariableName>("w", "Name of z-component of velocity");
   params.addParam<Real>("u_def", "Allows user to specify constant value for u component of velocity.");
   params.addParam<Real>("v_def", "Allows user to specify constant value for v component of velocity.");
   params.addParam<Real>("w_def", "Allows user to specify constant value for w component of velocity.");
-  params.addRequiredParam<std::vector<VariableName> >("group_fluxes", "All the variables that hold the group fluxes. These MUST be listed by decreasing energy/increasing group number.");
+  params.addRequiredCoupledVar("group_fluxes", "All the variables that hold the group fluxes. These MUST be listed by decreasing energy/increasing group number.");
   params.addRequiredParam<int>("num_groups", "The total number of energy groups.");
   params.addRequiredParam<std::vector<BoundaryName> >("outlet_boundaries", "Outflow boundaries.");
   params.addParam<std::vector<BoundaryName> >("inlet_boundaries", "Inflow boundaries.");
   params.addParam<bool>("nt_exp_form", true, "Whether concentrations should be in an expotential/logarithmic format.");
   params.addParam<bool>("jac_test", false, "Whether we're testing the Jacobian and should use some random initial conditions for the precursors.");
   params.addParam<Real>("prec_scale", "The amount by which the neutron fluxes are scaled.");
+  params.addParam<bool>("transient", true, "Whether to run a transient simulation.");
   return params;
 }
 
@@ -57,10 +58,9 @@ PrecursorKernelAction::act()
         InputParameters params = _factory.getValidParams("PrecursorSource");
         params.set<NonlinearVariableName>("variable") = var_name;
         params.set<int>("num_groups") = _num_groups;
-        params.set<std::vector<VariableName> >("group_fluxes") = getParam<std::vector<VariableName> >("group_fluxes");
         params.set<int>("precursor_group_number") = op;
-        if (isParamValid("temperature"))
-          params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
+        std::vector<std::string> include = {"temperature", "group_fluxes"};
+        params.applyOnlyParameters(parameters(), include);
         if (isParamValid("block"))
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
         params.set<bool>("use_exp_form") = getParam<bool>("nt_exp_form");
@@ -77,8 +77,8 @@ PrecursorKernelAction::act()
         InputParameters params = _factory.getValidParams("PrecursorDecay");
         params.set<NonlinearVariableName>("variable") = var_name;
         params.set<int>("precursor_group_number") = op;
-        if (isParamValid("temperature"))
-          params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
+        std::vector<std::string> include = {"temperature"};
+        params.applyOnlyParameters(parameters(), include);
         if (isParamValid("block"))
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
         params.set<bool>("use_exp_form") = false;
@@ -90,6 +90,7 @@ PrecursorKernelAction::act()
       //
       // Set up TimeDerivative kernels
       //
+      if (getParam<bool>("transient"))
       {
         InputParameters params = _factory.getValidParams("ScalarTransportTimeDerivative");
         params.set<NonlinearVariableName>("variable") = var_name;
