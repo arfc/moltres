@@ -60,7 +60,7 @@ PrecursorKernelAction::act()
         params.set<int>("num_groups") = _num_groups;
         params.set<int>("precursor_group_number") = op;
         std::vector<std::string> include = {"temperature", "group_fluxes"};
-        params.applyOnlyParameters(parameters(), include);
+        params.applySpecificParameters(parameters(), include);
         if (isParamValid("block"))
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
         params.set<bool>("use_exp_form") = getParam<bool>("nt_exp_form");
@@ -78,7 +78,7 @@ PrecursorKernelAction::act()
         params.set<NonlinearVariableName>("variable") = var_name;
         params.set<int>("precursor_group_number") = op;
         std::vector<std::string> include = {"temperature"};
-        params.applyOnlyParameters(parameters(), include);
+        params.applySpecificParameters(parameters(), include);
         if (isParamValid("block"))
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
         params.set<bool>("use_exp_form") = false;

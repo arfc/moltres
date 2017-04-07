@@ -1,7 +1,7 @@
 [Mesh]
   type = GeneratedMesh
   dim = 1
-  nx = 200
+  nx = 20
 []
 
 [Variables]
