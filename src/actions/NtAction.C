@@ -1,8 +1,11 @@
 #include "NtAction.h"
+
+// MOOSE includes
 #include "Factory.h"
 #include "Parser.h"
 #include "Conversion.h"
 #include "FEProblem.h"
+#include "NonlinearSystemBase.h"
 
 template<>
 InputParameters validParams<NtAction>()
@@ -59,8 +62,7 @@ NtAction::act()
 
       if (_current_task == "copy_nodal_vars")
       {
-        SystemBase * system;
-        system = &_problem->getNonlinearSystemBase();
+        SystemBase * system = &_problem->getNonlinearSystemBase();
         system->addVariableToCopy(var_name, var_name, "LATEST");
       }
     }
