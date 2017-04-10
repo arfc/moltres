@@ -28,7 +28,7 @@ PrecursorSource::PrecursorSource(const InputParameters & parameters) :
 {
   _group_fluxes.resize(_num_groups);
   _flux_ids.resize(_num_groups);
-  for (int i = 0; i < _group_fluxes.size(); ++i)
+  for (unsigned int i = 0; i < _group_fluxes.size(); ++i)
   {
     _group_fluxes[i] = &coupledValue("group_fluxes", i);
     _flux_ids[i] = coupled("group_fluxes", i);
@@ -39,7 +39,7 @@ Real
 PrecursorSource::computeQpResidual()
 {
   Real r = 0;
-  for (int i = 0; i < _num_groups; ++i)
+  for (unsigned int i = 0; i < _num_groups; ++i)
   {
     r += -_test[_i][_qp] * _beta_eff[_qp][_precursor_group] * _nsf[_qp][i] * computeConcentration((*_group_fluxes[i]), _qp) * _prec_scale;
   }
@@ -57,7 +57,7 @@ Real
 PrecursorSource::computeQpOffDiagJacobian(unsigned int jvar)
 {
   Real jac = 0;
-  for (int i = 0; i < _num_groups; ++i)
+  for (unsigned int i = 0; i < _num_groups; ++i)
     if (jvar == _flux_ids[i])
     {
       jac = -_test[_i][_qp] * _beta_eff[_qp][_precursor_group] * _nsf[_qp][i] * computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp) * _prec_scale;
@@ -66,7 +66,7 @@ PrecursorSource::computeQpOffDiagJacobian(unsigned int jvar)
 
   if (jvar == _temp_id)
   {
-    for (int i = 0; i < _num_groups; ++i)
+    for (unsigned int i = 0; i < _num_groups; ++i)
       jac += -_test[_i][_qp] * (_beta_eff[_qp][_precursor_group] * _d_nsf_d_temp[_qp][i] * _phi[_j][_qp] * computeConcentration((*_group_fluxes[i]), _qp) * _prec_scale + _d_beta_eff_d_temp[_qp][_precursor_group] * _phi[_j][_qp] * _nsf[_qp][i] * computeConcentration((*_group_fluxes[i]), _qp) * _prec_scale);
     return jac;
   }

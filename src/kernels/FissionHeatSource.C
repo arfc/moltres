@@ -19,14 +19,14 @@ FissionHeatSource::FissionHeatSource(const InputParameters & parameters) :
     _tot_fissions(getPostprocessorValue("tot_fissions")),
     _power(getParam<Real>("power"))
 {
-  int n = coupledComponents("group_fluxes");
+  unsigned int n = coupledComponents("group_fluxes");
   if (!(n == _num_groups))
   {
     mooseError("The number of coupled variables doesn't match the number of groups.");
   }
   _group_fluxes.resize(n);
   _flux_ids.resize(n);
-  for (int i = 0; i < _group_fluxes.size(); ++i)
+  for (unsigned int i = 0; i < _group_fluxes.size(); ++i)
   {
     _group_fluxes[i] = &coupledValue("group_fluxes", i);
     _flux_ids[i] = coupled("group_fluxes", i);
@@ -37,7 +37,7 @@ Real
 FissionHeatSource::computeQpResidual()
 {
   Real r = 0;
-  for (int i = 0; i < _num_groups; ++i)
+  for (unsigned int i = 0; i < _num_groups; ++i)
   {
     r += -_test[_i][_qp] * _fissxs[_qp][i] * (*_group_fluxes[i])[_qp] * _power / _tot_fissions;
   }
@@ -49,7 +49,7 @@ Real
 FissionHeatSource::computeQpJacobian()
 {
   Real jac = 0;
-  for (int i = 0; i < _num_groups; ++i)
+  for (unsigned int i = 0; i < _num_groups; ++i)
   {
     jac += -_test[_i][_qp] * _d_fissxs_d_temp[_qp][i] * (*_group_fluxes[i])[_qp] * _power / _tot_fissions;
   }
@@ -61,7 +61,7 @@ Real
 FissionHeatSource::computeQpOffDiagJacobian(unsigned int jvar)
 {
   Real jac = 0;
-  for (int i = 0; i < _num_groups; ++i)
+  for (unsigned int i = 0; i < _num_groups; ++i)
   {
     if (jvar == _flux_ids[i])
     {

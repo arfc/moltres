@@ -24,14 +24,14 @@ InScatter::InScatter(const InputParameters & parameters) :
     _temp_id(coupled("temperature")),
     _sss2_input(getParam<bool>("sss2_input"))
 {
-  int n = coupledComponents("group_fluxes");
+  unsigned int n = coupledComponents("group_fluxes");
   if (!(n == _num_groups))
   {
     mooseError("The number of coupled variables doesn't match the number of groups.");
   }
   _group_fluxes.resize(n);
   _flux_ids.resize(n);
-  for (int i = 0; i < _group_fluxes.size(); ++i)
+  for (unsigned int i = 0; i < _group_fluxes.size(); ++i)
   {
     _group_fluxes[i] = &coupledValue("group_fluxes", i);
     _flux_ids[i] = coupled("group_fluxes", i);
@@ -42,7 +42,7 @@ Real
 InScatter::computeQpResidual()
 {
   Real r = 0;
-  for (int i = 0; i < _num_groups; ++i)
+  for (unsigned int i = 0; i < _num_groups; ++i)
   {
     if (i == _group)
       continue;
@@ -65,7 +65,7 @@ Real
 InScatter::computeQpOffDiagJacobian(unsigned int jvar)
 {
   Real jac = 0;
-  for (int i = 0; i < _num_groups; ++i)
+  for (unsigned int i = 0; i < _num_groups; ++i)
   {
     if (jvar == _flux_ids[i]  && jvar != _group)
     {
@@ -79,7 +79,7 @@ InScatter::computeQpOffDiagJacobian(unsigned int jvar)
 
   if (jvar == _temp_id)
   {
-    for (int i = 0; i < _num_groups; ++i)
+    for (unsigned int i = 0; i < _num_groups; ++i)
     {
       if (i == _group)
         continue;

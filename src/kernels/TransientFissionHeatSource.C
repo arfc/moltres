@@ -23,7 +23,7 @@ TransientFissionHeatSource::TransientFissionHeatSource(const InputParameters & p
 {
   _group_fluxes.resize(_num_groups);
   _flux_ids.resize(_num_groups);
-  for (int i = 0; i < _group_fluxes.size(); ++i)
+  for (unsigned int i = 0; i < _group_fluxes.size(); ++i)
   {
     _group_fluxes[i] = &coupledValue("group_fluxes", i);
     _flux_ids[i] = coupled("group_fluxes", i);
@@ -34,7 +34,7 @@ Real
 TransientFissionHeatSource::computeQpResidual()
 {
   Real r = 0;
-  for (int i = 0; i < _num_groups; ++i)
+  for (unsigned int i = 0; i < _num_groups; ++i)
   {
     r += -_test[_i][_qp] * _fisse[_qp][i] * _fissxs[_qp][i] * computeConcentration((*_group_fluxes[i]), _qp) * _nt_scale;
   }
@@ -46,7 +46,7 @@ Real
 TransientFissionHeatSource::computeQpJacobian()
 {
   Real jac = 0;
-  for (int i = 0; i < _num_groups; ++i)
+  for (unsigned int i = 0; i < _num_groups; ++i)
   {
     jac += -_test[_i][_qp] * (_fisse[_qp][i] * _d_fissxs_d_temp[_qp][i] * _phi[_j][_qp] + _d_fisse_d_temp[_qp][i] * _phi[_j][_qp] * _fissxs[_qp][i]) * computeConcentration((*_group_fluxes[i]), _qp) * _nt_scale;
   }
@@ -58,7 +58,7 @@ Real
 TransientFissionHeatSource::computeQpOffDiagJacobian(unsigned int jvar)
 {
   Real jac = 0;
-  for (int i = 0; i < _num_groups; ++i)
+  for (unsigned int i = 0; i < _num_groups; ++i)
   {
     if (jvar == _flux_ids[i])
     {
