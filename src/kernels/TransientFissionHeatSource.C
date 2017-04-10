@@ -5,7 +5,7 @@ InputParameters validParams<TransientFissionHeatSource>()
 {
   InputParameters params = validParams<Kernel>();
   params += validParams<ScalarTransportBase>();
-  params.addRequiredParam<int>("num_groups", "The total numer of energy groups");
+  params.addRequiredParam<unsigned int>("num_groups", "The total numer of energy groups");
   params.addRequiredCoupledVar("group_fluxes", "All the variables that hold the group fluxes. These MUST be listed by decreasing energy/increasing group number.");
   params.addParam<Real>("nt_scale", 1, "Scaling of the neutron fluxes to aid convergence.");
   return params;
@@ -18,7 +18,7 @@ TransientFissionHeatSource::TransientFissionHeatSource(const InputParameters & p
     _d_fissxs_d_temp(getMaterialProperty<std::vector<Real> >("d_fissxs_d_temp")),
     _fisse(getMaterialProperty<std::vector<Real> >("fisse")),
     _d_fisse_d_temp(getMaterialProperty<std::vector<Real> >("d_fisse_d_temp")),
-    _num_groups(getParam<int>("num_groups")),
+    _num_groups(getParam<unsigned int>("num_groups")),
     _nt_scale(getParam<Real>("nt_scale"))
 {
   _group_fluxes.resize(_num_groups);

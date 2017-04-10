@@ -17,19 +17,18 @@ public:
   CoupledFissionEigenKernel(const InputParameters & parameters);
 
 protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
-  virtual Real computeQpOffDiagJacobian(unsigned int jvar);
+  virtual Real computeQpResidual() override;
+  virtual Real computeQpJacobian() override;
+  virtual Real computeQpOffDiagJacobian(unsigned int jvar) override;
 
   const MaterialProperty<std::vector<Real> > & _nsf;
-  const MaterialProperty<std::vector<Real> > & _d_nsf_d_temp;
   const MaterialProperty<std::vector<Real> > & _chi;
-  const MaterialProperty<std::vector<Real> > & _d_chi_d_temp;
-  int _group;
-  int _num_groups;
-  unsigned int _temp_id;
+  const MaterialProperty<Real> & _beta;
+  unsigned int _group;
+  unsigned int _num_groups;
   std::vector<const VariableValue *> _group_fluxes;
   std::vector<unsigned int> _flux_ids;
+  bool _account_delayed;
 };
 
 #endif //COUPLEDFISSIONEIGENKERNEL_H

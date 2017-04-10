@@ -8,7 +8,7 @@ template<>
 InputParameters validParams<NtTimeDerivative>()
 {
   InputParameters params = validParams<ScalarTransportTimeDerivative>();
-  params.addRequiredParam<int>("group_number", "The group for which this kernel controls diffusion");
+  params.addRequiredParam<unsigned int>("group_number", "The group for which this kernel controls diffusion");
   params.addCoupledVar("temperature", "The temperature used to interpolate the diffusion coefficient");
   return params;
 }
@@ -17,7 +17,7 @@ NtTimeDerivative::NtTimeDerivative(const InputParameters & parameters) :
     ScalarTransportTimeDerivative(parameters),
     _recipvel(getMaterialProperty<std::vector<Real> >("recipvel")),
     _d_recipvel_d_temp(getMaterialProperty<std::vector<Real> >("d_recipvel_d_temp")),
-    _group(getParam<int>("group_number") - 1),
+    _group(getParam<unsigned int>("group_number") - 1),
     _temp_id(coupled("temperature"))
 {
 }

@@ -5,7 +5,7 @@ InputParameters validParams<SigmaR>()
 {
   InputParameters params = validParams<Kernel>();
   params += validParams<ScalarTransportBase>();
-  params.addRequiredParam<int>("group_number", "The current energy group.");
+  params.addRequiredParam<unsigned int>("group_number", "The current energy group.");
   params.addCoupledVar("temperature", "The temperature used to interpolate material properties");
   return params;
 }
@@ -16,7 +16,7 @@ SigmaR::SigmaR(const InputParameters & parameters) :
     ScalarTransportBase(parameters),
     _remxs(getMaterialProperty<std::vector<Real> >("remxs")),
     _d_remxs_d_temp(getMaterialProperty<std::vector<Real> >("d_remxs_d_temp")),
-    _group(getParam<int>("group_number") - 1),
+    _group(getParam<unsigned int>("group_number") - 1),
     _temp_id(coupled("temperature"))
 {
 }

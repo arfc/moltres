@@ -5,7 +5,7 @@ InputParameters validParams<PrecursorDecay>()
 {
   InputParameters params = validParams<Kernel>();
   params += validParams<ScalarTransportBase>();
-  params.addRequiredParam<int>("precursor_group_number", "What precursor group this kernel is acting on.");
+  params.addRequiredParam<unsigned int>("precursor_group_number", "What precursor group this kernel is acting on.");
   params.addRequiredCoupledVar("temperature", "The temperature used to interpolate material properties.");
   params.addParam<Real>("prec_scale", 1, "The amount by which to scale precursors.");
   return params;
@@ -16,7 +16,7 @@ PrecursorDecay::PrecursorDecay(const InputParameters & parameters) :
     ScalarTransportBase(parameters),
     _decay_constant(getMaterialProperty<std::vector<Real> >("decay_constant")),
     _d_decay_constant_d_temp(getMaterialProperty<std::vector<Real> >("d_decay_constant_d_temp")),
-    _precursor_group(getParam<int>("precursor_group_number") - 1),
+    _precursor_group(getParam<unsigned int>("precursor_group_number") - 1),
     _temp_id(coupled("temperature")),
     _temp(coupledValue("temperature")),
     _prec_scale(getParam<Real>("prec_scale"))

@@ -25,7 +25,7 @@ protected:
   const MaterialProperty<std::vector<Real> > & _d_fissxs_d_temp;
   const MaterialProperty<std::vector<Real> > & _fisse;
   const MaterialProperty<std::vector<Real> > & _d_fisse_d_temp;
-  int _num_groups;
+  unsigned int _num_groups;
   std::vector<const VariableValue *> _group_fluxes;
   std::vector<unsigned int> _flux_ids;
   Real _nt_scale;

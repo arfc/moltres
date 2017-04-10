@@ -21,7 +21,7 @@ protected:
 
   const MaterialProperty<std::vector<Real> > & _recipvel;
   const MaterialProperty<std::vector<Real> > & _d_recipvel_d_temp;
-  int _group;
+  unsigned int _group;
   unsigned int _temp_id;
 };
 

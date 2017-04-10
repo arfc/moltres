@@ -8,7 +8,7 @@ template<>
 InputParameters validParams<PrecursorKernelAction>()
 {
   InputParameters params = validParams<AddVariableAction>();
-  params.addRequiredParam<int>("num_precursor_groups", "specifies the total number of precursors to create");
+  params.addRequiredParam<unsigned int>("num_precursor_groups", "specifies the total number of precursors to create");
   params.addRequiredParam<std::string>("var_name_base", "specifies the base name of the variables");
   params.addRequiredCoupledVar("temperature", "Name of temperature variable");
   params.addParam<VariableName>("u", "Name of x-component of velocity");
@@ -18,7 +18,7 @@ InputParameters validParams<PrecursorKernelAction>()
   params.addParam<Real>("v_def", "Allows user to specify constant value for v component of velocity.");
   params.addParam<Real>("w_def", "Allows user to specify constant value for w component of velocity.");
   params.addRequiredCoupledVar("group_fluxes", "All the variables that hold the group fluxes. These MUST be listed by decreasing energy/increasing group number.");
-  params.addRequiredParam<int>("num_groups", "The total number of energy groups.");
+  params.addRequiredParam<unsigned int>("num_groups", "The total number of energy groups.");
   params.addRequiredParam<std::vector<BoundaryName> >("outlet_boundaries", "Outflow boundaries.");
   params.addParam<std::vector<BoundaryName> >("inlet_boundaries", "Inflow boundaries.");
   params.addParam<bool>("nt_exp_form", true, "Whether concentrations should be in an expotential/logarithmic format.");
@@ -30,16 +30,16 @@ InputParameters validParams<PrecursorKernelAction>()
 
 PrecursorKernelAction::PrecursorKernelAction(const InputParameters & params) :
     AddVariableAction(params),
-    _num_precursor_groups(getParam<int>("num_precursor_groups")),
+    _num_precursor_groups(getParam<unsigned int>("num_precursor_groups")),
     _var_name_base(getParam<std::string>("var_name_base")),
-    _num_groups(getParam<int>("num_groups"))
+    _num_groups(getParam<unsigned int>("num_groups"))
 {
 }
 
 void
 PrecursorKernelAction::act()
 {
-  for (int op = 1; op <= _num_precursor_groups; ++op)
+  for (unsigned int op = 1; op <= _num_precursor_groups; ++op)
   {
     //
     // Create variable names
@@ -57,8 +57,8 @@ PrecursorKernelAction::act()
       {
         InputParameters params = _factory.getValidParams("PrecursorSource");
         params.set<NonlinearVariableName>("variable") = var_name;
-        params.set<int>("num_groups") = _num_groups;
-        params.set<int>("precursor_group_number") = op;
+        params.set<unsigned int>("num_groups") = _num_groups;
+        params.set<unsigned int>("precursor_group_number") = op;
         std::vector<std::string> include = {"temperature", "group_fluxes"};
         params.applySpecificParameters(parameters(), include);
         if (isParamValid("block"))
@@ -76,7 +76,7 @@ PrecursorKernelAction::act()
       {
         InputParameters params = _factory.getValidParams("PrecursorDecay");
         params.set<NonlinearVariableName>("variable") = var_name;
-        params.set<int>("precursor_group_number") = op;
+        params.set<unsigned int>("precursor_group_number") = op;
         std::vector<std::string> include = {"temperature"};
         params.applySpecificParameters(parameters(), include);
         if (isParamValid("block"))

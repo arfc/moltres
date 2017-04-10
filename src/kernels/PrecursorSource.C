@@ -5,9 +5,9 @@ InputParameters validParams<PrecursorSource>()
 {
   InputParameters params = validParams<Kernel>();
   params += validParams<ScalarTransportBase>();
-  params.addRequiredParam<int>("num_groups", "The total numer of energy groups");
+  params.addRequiredParam<unsigned int>("num_groups", "The total numer of energy groups");
   params.addRequiredCoupledVar("group_fluxes", "All the variables that hold the group fluxes. These MUST be listed by decreasing energy/increasing group number.");
-  params.addParam<int>("precursor_group_number", "What precursor group this kernel is acting on.");
+  params.addParam<unsigned int>("precursor_group_number", "What precursor group this kernel is acting on.");
   params.addCoupledVar("temperature", 800, "The temperature used to interpolate material properties.");
   params.addParam<Real>("prec_scale", 1, "The factor by which the neutron fluxes are scaled.");
   return params;
@@ -18,10 +18,10 @@ PrecursorSource::PrecursorSource(const InputParameters & parameters) :
     ScalarTransportBase(parameters),
     _nsf(getMaterialProperty<std::vector<Real> >("nsf")),
     _d_nsf_d_temp(getMaterialProperty<std::vector<Real> >("d_nsf_d_temp")),
-    _num_groups(getParam<int>("num_groups")),
+    _num_groups(getParam<unsigned int>("num_groups")),
     _beta_eff(getMaterialProperty<std::vector<Real> >("beta_eff")),
     _d_beta_eff_d_temp(getMaterialProperty<std::vector<Real> >("d_beta_eff_d_temp")),
-    _precursor_group(getParam<int>("precursor_group_number") - 1),
+    _precursor_group(getParam<unsigned int>("precursor_group_number") - 1),
     _temp(coupledValue("temperature")),
     _temp_id(coupled("temperature")),
     _prec_scale(getParam<Real>("prec_scale"))

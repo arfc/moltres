@@ -11,44 +11,44 @@ template<>
 InputParameters validParams<NtAction>()
 {
   InputParameters params = validParams<AddVariableAction>();
-  params.addRequiredParam<int>("num_precursor_groups", "specifies the total number of precursors to create");
+  params.addRequiredParam<unsigned int>("num_precursor_groups", "specifies the total number of precursors to create");
   params.addRequiredParam<std::string>("var_name_base", "specifies the base name of the variables");
-  params.addParam<VariableName>("temperature", "Name of temperature variable");
-  params.addParam<Real>("temperature_value", "Can decouple neutron and temperature simulations by passing in a temperature value here.");
+  params.addRequiredCoupledVar("temperature", "Name of temperature variable");
+  params.addCoupledVar("pre_concs", "All the variables that hold the precursor concentrations. These MUST be listed by increasing group number.");
   params.addParam<Real>("temp_scaling", "The amount by which to scale the temperature variable.");
-  params.addRequiredParam<int>("num_groups", "The total number of energy groups.");
-  params.addRequiredParam<bool>("use_exp_form", "Whether concentrations should be in an expotential/logarithmic format.");
+  params.addRequiredParam<unsigned int>("num_groups", "The total number of energy groups.");
+  params.addRequiredParam<bool>("use_exp_form", "Whether concentrations should be in an exponential/logarithmic format.");
   params.addParam<bool>("jac_test", false, "Whether we're testing the Jacobian and should use some random initial conditions for the precursors.");
   params.addParam<FunctionName>("nt_ic_function", "An initial condition function for the neutrons.");
-  params.addParam<bool>("use_source_stabilization", false, "Whether to use source stabilization.");
-  params.addParam<Real>("offset", "The value by which to offset the logarithmic stabilization.");
   params.addParam<std::vector<BoundaryName> >("vacuum_boundaries", "The boundaries on which to apply vacuum boundaries.");
   params.addParam<bool>("create_temperature_var", true, "Whether to create the temperature variable.");
   params.addParam<bool>("init_nts_from_file", false, "Whether to restart simulation using nt output from a previous simulation.");
   params.addParam<bool>("init_temperature_from_file", false, "Whether to restart simulation using temperature output from a previous simulation.");
   params.addParam<bool>("dg_for_temperature", true, "Whether the temperature variable should use discontinuous basis functions.");
   params.addParam<bool>("eigen", false, "Whether to run an eigen- instead of a transient- simulation.");
+  params.addRequiredParam<bool>("account_delayed", "Whether to account for delayed neutrons.");
+  params.addRequiredParam<bool>("sss2_input", "Whether the input follows sss2 form scattering matrices.");
   return params;
 }
 
 NtAction::NtAction(const InputParameters & params) :
     AddVariableAction(params),
-    _num_precursor_groups(getParam<int>("num_precursor_groups")),
+    _num_precursor_groups(getParam<unsigned int>("num_precursor_groups")),
     _var_name_base(getParam<std::string>("var_name_base")),
-    _num_groups(getParam<int>("num_groups"))
+    _num_groups(getParam<unsigned int>("num_groups"))
 {
-  if (!isParamValid("temperature") && !isParamValid("temperature_value"))
-    mooseError("You must either supply a coupled temperature variable or a value for the temperature.");
+  if (!isParamValid("pre_concs") && getParam<bool>("account_delayed"))
+    mooseError("If we're accounting for delayed neutrons, then you must supply 'pre_concs'.");
 }
 
 void
 NtAction::act()
 {
   std::vector<VariableName> all_var_names;
-  for (int op = 1; op <= _num_groups; ++op)
+  for (unsigned int op = 1; op <= _num_groups; ++op)
     all_var_names.push_back(_var_name_base + Moose::stringify(op));
 
-  for (int op = 1; op <= _num_groups; ++op)
+  for (unsigned int op = 1; op <= _num_groups; ++op)
   {
     std::string var_name = _var_name_base + Moose::stringify(op);
 
@@ -82,15 +82,13 @@ NtAction::act()
       {
         InputParameters params = _factory.getValidParams("NtTimeDerivative");
         params.set<NonlinearVariableName>("variable") = var_name;
-        params.set<int>("group_number") = op;
+        params.set<unsigned int>("group_number") = op;
         if (isParamValid("block"))
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
         if (isParamValid("use_exp_form"))
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
-        if (isParamValid("temperature"))
-          params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
-        else
-          params.defaultCoupledValue("temperature", getParam<Real>("temperature_value"));
+        std::vector<std::string> include = {"temperature"};
+        params.applySpecificParameters(parameters(), include);
 
         std::string kernel_name = "NtTimeDerivative_" + var_name;
         _problem->addKernel("NtTimeDerivative", kernel_name, params);
@@ -101,15 +99,13 @@ NtAction::act()
       {
         InputParameters params = _factory.getValidParams("GroupDiffusion");
         params.set<NonlinearVariableName>("variable") = var_name;
-        params.set<int>("group_number") = op;
+        params.set<unsigned int>("group_number") = op;
         if (isParamValid("block"))
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
         if (isParamValid("use_exp_form"))
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
-        if (isParamValid("temperature"))
-          params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
-        else
-          params.defaultCoupledValue("temperature", getParam<Real>("temperature_value"));
+        std::vector<std::string> include = {"temperature"};
+        params.applySpecificParameters(parameters(), include);
 
         std::string kernel_name = "GroupDiffusion_" + var_name;
         _problem->addKernel("GroupDiffusion", kernel_name, params);
@@ -120,15 +116,13 @@ NtAction::act()
       {
         InputParameters params = _factory.getValidParams("SigmaR");
         params.set<NonlinearVariableName>("variable") = var_name;
-        params.set<int>("group_number") = op;
+        params.set<unsigned int>("group_number") = op;
         if (isParamValid("block"))
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
         if (isParamValid("use_exp_form"))
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
-        if (isParamValid("temperature"))
-          params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
-        else
-          params.defaultCoupledValue("temperature", getParam<Real>("temperature_value"));
+        std::vector<std::string> include = {"temperature"};
+        params.applySpecificParameters(parameters(), include);
 
         std::string kernel_name = "SigmaR_" + var_name;
         _problem->addKernel("SigmaR", kernel_name, params);
@@ -139,18 +133,16 @@ NtAction::act()
       {
         InputParameters params = _factory.getValidParams("InScatter");
         params.set<NonlinearVariableName>("variable") = var_name;
-        params.set<int>("group_number") = op;
+        params.set<unsigned int>("group_number") = op;
         if (isParamValid("block"))
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
         if (isParamValid("use_exp_form"))
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
-        if (isParamValid("temperature"))
-          params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
-        else
-          params.defaultCoupledValue("temperature", getParam<Real>("temperature_value"));
+        std::vector<std::string> include = {"temperature"};
+        params.applySpecificParameters(parameters(), include);
 
-        params.set<int>("num_groups") = _num_groups;
-        // params.set<std::vector<VariableName> >("group_fluxes") = getParam<std::vector<VariableName> >("group_fluxes");
+        params.set<unsigned int>("num_groups") = _num_groups;
+        params.set<bool>("sss2_input") = getParam<bool>("sss2_input");
         params.set<std::vector<VariableName> >("group_fluxes") = all_var_names;
 
         std::string kernel_name = "InScatter_" + var_name;
@@ -162,19 +154,17 @@ NtAction::act()
       {
         InputParameters params = _factory.getValidParams("CoupledFissionKernel");
         params.set<NonlinearVariableName>("variable") = var_name;
-        params.set<int>("group_number") = op;
+        params.set<unsigned int>("group_number") = op;
         if (isParamValid("block"))
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
         if (isParamValid("use_exp_form"))
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
-        if (isParamValid("temperature"))
-          params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
-        else
-          params.defaultCoupledValue("temperature", getParam<Real>("temperature_value"));
+        std::vector<std::string> include = {"temperature"};
+        params.applySpecificParameters(parameters(), include);
 
-        params.set<int>("num_groups") = _num_groups;
-        // params.set<std::vector<VariableName> >("group_fluxes") = getParam<std::vector<VariableName> >("group_fluxes");
+        params.set<unsigned int>("num_groups") = _num_groups;
         params.set<std::vector<VariableName> >("group_fluxes") = all_var_names;
+        params.set<bool>("account_delayed") = getParam<bool>("account_delayed");
 
         std::string kernel_name = "CoupledFissionKernel_" + var_name;
         _problem->addKernel("CoupledFissionKernel", kernel_name, params);
@@ -183,22 +173,39 @@ NtAction::act()
       {
         InputParameters params = _factory.getValidParams("CoupledFissionEigenKernel");
         params.set<NonlinearVariableName>("variable") = var_name;
-        params.set<int>("group_number") = op;
+        params.set<unsigned int>("group_number") = op;
         if (isParamValid("block"))
           params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
         if (isParamValid("use_exp_form"))
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
-        if (isParamValid("temperature"))
-          params.set<std::vector<VariableName> >("temperature") = {getParam<VariableName>("temperature")};
-        else
-          params.defaultCoupledValue("temperature", getParam<Real>("temperature_value"));
+        std::vector<std::string> include = {"temperature"};
+        params.applySpecificParameters(parameters(), include);
 
-        params.set<int>("num_groups") = _num_groups;
-        // params.set<std::vector<VariableName> >("group_fluxes") = getParam<std::vector<VariableName> >("group_fluxes");
+        params.set<unsigned int>("num_groups") = _num_groups;
         params.set<std::vector<VariableName> >("group_fluxes") = all_var_names;
+        params.set<bool>("account_delayed") = getParam<bool>("account_delayed");
 
         std::string kernel_name = "CoupledFissionEigenKernel_" + var_name;
         _problem->addKernel("CoupledFissionEigenKernel", kernel_name, params);
+      }
+
+      // Set up DelayedNeutronSource
+
+      if (getParam<bool>("account_delayed"))
+      {
+        InputParameters params = _factory.getValidParams("DelayedNeutronSource");
+        params.set<NonlinearVariableName>("variable") = var_name;
+        params.set<unsigned int>("group_number") = op;
+        if (isParamValid("block"))
+          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+        if (isParamValid("use_exp_form"))
+          params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
+        std::vector<std::string> include = {"temperature", "pre_concs"};
+        params.applySpecificParameters(parameters(), include);
+        params.set<unsigned int>("num_precursor_groups") = _num_precursor_groups;
+
+        std::string kernel_name = "DelayedNeutronSource_" + var_name;
+        _problem->addKernel("DelayedNeutronSource", kernel_name, params);
       }
     }
 

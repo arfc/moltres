@@ -24,7 +24,7 @@ protected:
 
   const MaterialProperty<std::vector<Real> > & _remxs;
   const MaterialProperty<std::vector<Real> > & _d_remxs_d_temp;
-  int _group;
+  unsigned int _group;
   unsigned int _temp_id;
 };
 
