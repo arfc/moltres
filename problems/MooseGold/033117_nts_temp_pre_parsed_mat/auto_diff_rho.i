@@ -1,7 +1,5 @@
 flow_velocity=21.7 # cm/s. See MSRE-properties.ods
 nt_scale=1e13
-global_temperature=temp
-# global_temperature=922
 ini_temp=922
 diri_temp=922
 
@@ -10,14 +8,14 @@ diri_temp=922
   num_precursor_groups = 6
   use_exp_form = false
   group_fluxes = 'group1 group2'
-  temperature = ${global_temperature}
+  temperature = temp
   sss2_input = false
   pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6'
   account_delayed = true
 [../]
 
 [Mesh]
-  file = '2d_lattice_structured_smaller.msh'
+  file = '2d_lattice_structured.msh'
   # file = '2d_lattice_structured_jac.msh'
 [../]
 
@@ -82,7 +80,6 @@ diri_temp=922
   [./delayed_group1]
     type = DelayedNeutronSource
     variable = group1
-    group_number = 1
   [../]
   [./inscatter_group1]
     type = InScatter
@@ -113,12 +110,6 @@ diri_temp=922
     type = InScatter
     variable = group2
     group_number = 2
-  [../]
-  [./delayed_group2]
-    type = DelayedNeutronSource
-    variable = group1
-    group_number = 2
-    block = 'fuel'
   [../]
 
   # Temperature
@@ -189,7 +180,6 @@ diri_temp=922
     type = GenericMoltresMaterial
     property_tables_root = '../property_file_dir/newt_msre_fuel_'
     interp_type = 'spline'
-    temperature = ${global_temperature}
     block = 'fuel'
     prop_names = 'k cp'
     prop_values = '.0553 1967' # Robertson MSRE technical report @ 922 K
@@ -206,7 +196,6 @@ diri_temp=922
     type = GenericMoltresMaterial
     property_tables_root = '../property_file_dir/newt_msre_mod_'
     interp_type = 'spline'
-    temperature = ${global_temperature}
     prop_names = 'k cp'
     prop_values = '.312 1760' # Cammi 2011 at 908 K
     block = 'moder'
@@ -226,7 +215,7 @@ diri_temp=922
   end_time = 10000
 
   nl_rel_tol = 1e-6
-  nl_abs_tol = 1e-5
+  nl_abs_tol = 1e-6
 
   solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
@@ -239,6 +228,7 @@ diri_temp=922
   l_max_its = 100
 
   dtmin = 1e-5
+  # dtmax = 1
   # dt = 1e-3
   [./TimeStepper]
     type = IterationAdaptiveDT

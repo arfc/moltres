@@ -5,7 +5,6 @@ InputParameters validParams<DelayedNeutronSource>()
 {
   InputParameters params = validParams<Kernel>();
   params += validParams<ScalarTransportBase>();
-  params.addRequiredParam<unsigned int>("group_number", "The current energy group");
   params.addRequiredParam<unsigned int>("num_precursor_groups", "The number of precursor groups.");
   params.addCoupledVar("temperature", "The temperature used to interpolate material properties");
   params.addRequiredCoupledVar("pre_concs", "All the variables that hold the precursor concentrations. These MUST be listed by increasing group number.");
@@ -17,7 +16,6 @@ DelayedNeutronSource::DelayedNeutronSource(const InputParameters & parameters) :
     ScalarTransportBase(parameters),
     _decay_constant(getMaterialProperty<std::vector<Real> >("decay_constant")),
     _d_decay_constant_d_temp(getMaterialProperty<std::vector<Real> >("d_decay_constant_d_temp")),
-    _group(getParam<unsigned int>("group_number") - 1),
     _num_precursor_groups(getParam<unsigned int>("num_precursor_groups")),
     _temp_id(coupled("temperature")),
     _temp(coupledValue("temperature"))

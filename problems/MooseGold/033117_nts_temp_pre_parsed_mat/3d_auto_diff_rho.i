@@ -8,19 +8,17 @@ diri_temp=922
   num_precursor_groups = 6
   use_exp_form = false
   group_fluxes = 'group1 group2'
-  temperature = temp
   sss2_input = false
-  pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6'
   account_delayed = true
-[../]
+  temperature = 922
+  pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6'
+[]
 
 [Mesh]
-  file = '2d_lattice_structured.msh'
-  # file = '2d_lattice_structured_jac.msh'
-[../]
+  file = 'inverted_msre_cuboid_structured.msh'
+[]
 
 [Problem]
-  coord_type = RZ
 []
 
 [Variables]
@@ -36,10 +34,10 @@ diri_temp=922
     initial_condition = 1
     scaling = 1e4
   [../]
-  [./temp]
-    initial_condition = ${ini_temp}
-    scaling = 1e-4
-  [../]
+  # [./temp]
+  #   initial_condition = ${ini_temp}
+  #   scaling = 1e-4
+  # [../]
 []
 
 [PrecursorKernel]
@@ -47,8 +45,8 @@ diri_temp=922
   block = 'fuel'
   outlet_boundaries = 'fuel_tops'
   u_def = 0
-  v_def = ${flow_velocity}
-  w_def = 0
+  v_def = 0
+  w_def = ${flow_velocity}
   nt_exp_form = false
   family = MONOMIAL
   order = CONSTANT
@@ -77,10 +75,10 @@ diri_temp=922
     variable = group1
     group_number = 1
   [../]
-  [./delayed_group1]
-    type = DelayedNeutronSource
-    variable = group1
-  [../]
+  # [./delayed_group1]
+  #   type = DelayedNeutronSource
+  #   variable = group1
+  # [../]
   [./inscatter_group1]
     type = InScatter
     variable = group1
@@ -112,35 +110,35 @@ diri_temp=922
     group_number = 2
   [../]
 
-  # Temperature
-  [./temp_time_derivative]
-    type = MatINSTemperatureTimeDerivative
-    variable = temp
-  [../]
-  [./temp_source_fuel]
-    type = TransientFissionHeatSource
-    variable = temp
-    nt_scale=${nt_scale}
-    block = 'fuel'
-  [../]
-  # [./temp_source_mod]
-  #   type = GammaHeatSource
+  # # Temperature
+  # [./temp_time_derivative]
+  #   type = MatINSTemperatureTimeDerivative
   #   variable = temp
-  #   gamma = .0144 # Cammi .0144
-  #   block = 'moder'
-  #   average_fission_heat = 'average_fission_heat'
   # [../]
-  [./temp_diffusion]
-    type = MatDiffusion
-    D_name = 'k'
-    variable = temp
-  [../]
-  [./temp_advection_fuel]
-    type = ConservativeTemperatureAdvection
-    velocity = '0 ${flow_velocity} 0'
-    variable = temp
-    block = 'fuel'
-  [../]
+  # [./temp_source_fuel]
+  #   type = TransientFissionHeatSource
+  #   variable = temp
+  #   nt_scale=${nt_scale}
+  #   block = 'fuel'
+  # [../]
+  # # [./temp_source_mod]
+  # #   type = GammaHeatSource
+  # #   variable = temp
+  # #   gamma = .0144 # Cammi .0144
+  # #   block = 'moder'
+  # #   average_fission_heat = 'average_fission_heat'
+  # # [../]
+  # [./temp_diffusion]
+  #   type = MatDiffusion
+  #   D_name = 'k'
+  #   variable = temp
+  # [../]
+  # [./temp_advection_fuel]
+  #   type = ConservativeTemperatureAdvection
+  #   velocity = '0 ${flow_velocity} 0'
+  #   variable = temp
+  #   block = 'fuel'
+  # [../]
 []
 
 [BCs]
@@ -154,18 +152,18 @@ diri_temp=922
     boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
     variable = group2
   [../]
-  [./temp_diri_cg]
-    boundary = 'moder_bottoms fuel_bottoms outer_wall'
-    type = FunctionDirichletBC
-    function = 'temp_bc_func'
-    variable = temp
-  [../]
-  [./temp_advection_outlet]
-    boundary = 'fuel_tops'
-    type = TemperatureOutflowBC
-    variable = temp
-    velocity = '0 ${flow_velocity} 0'
-  [../]
+  # [./temp_diri_cg]
+  #   boundary = 'moder_bottoms fuel_bottoms moder_sides'
+  #   type = FunctionDirichletBC
+  #   function = 'temp_bc_func'
+  #   variable = temp
+  # [../]
+  # [./temp_advection_outlet]
+  #   boundary = 'fuel_tops'
+  #   type = TemperatureOutflowBC
+  #   variable = temp
+  #   velocity = '0 ${flow_velocity} 0'
+  # [../]
 []
 
 [Functions]
@@ -178,36 +176,36 @@ diri_temp=922
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
-    property_tables_root = '../../problems/MooseGold/property_file_dir/newt_msre_fuel_'
+    property_tables_root = '../property_file_dir/newt_msre_fuel_'
     interp_type = 'spline'
     block = 'fuel'
     prop_names = 'k cp'
     prop_values = '.0553 1967' # Robertson MSRE technical report @ 922 K
   [../]
-  [./rho_fuel]
-    type = DerivativeParsedMaterial
-    f_name = rho
-    function = '2.146e-3 * exp(-1.8 * 1.18e-4 * (temp - 922))'
-    args = 'temp'
-    derivative_order = 1
-    block = 'fuel'
-  [../]
+  # [./rho_fuel]
+  #   type = DerivativeParsedMaterial
+  #   f_name = rho
+  #   function = '2.146e-3 * exp(-1.8 * 1.18e-4 * (temp - 922))'
+  #   args = 'temp'
+  #   derivative_order = 1
+  #   block = 'fuel'
+  # [../]
   [./moder]
     type = GenericMoltresMaterial
-    property_tables_root = '../../problems/MooseGold/property_file_dir/newt_msre_mod_'
+    property_tables_root = '../property_file_dir/newt_msre_mod_'
     interp_type = 'spline'
     prop_names = 'k cp'
     prop_values = '.312 1760' # Cammi 2011 at 908 K
     block = 'moder'
   [../]
-  [./rho_moder]
-    type = DerivativeParsedMaterial
-    f_name = rho
-    function = '1.86e-3 * exp(-1.8 * 1.0e-5 * (temp - 922))'
-    args = 'temp'
-    derivative_order = 1
-    block = 'moder'
-  [../]
+  # [./rho_moder]
+  #   type = DerivativeParsedMaterial
+  #   f_name = rho
+  #   function = '1.86e-3 * exp(-1.8 * 1.0e-5 * (temp - 922))'
+  #   args = 'temp'
+  #   derivative_order = 1
+  #   block = 'moder'
+  # [../]
 []
 
 [Executioner]
@@ -227,8 +225,8 @@ diri_temp=922
   nl_max_its = 30
   l_max_its = 100
 
+  dtmax = 1
   dtmin = 1e-5
-  # dtmax = 1
   # dt = 1e-3
   [./TimeStepper]
     type = IterationAdaptiveDT
@@ -250,46 +248,46 @@ diri_temp=922
   [./group1_current]
     type = IntegralNewVariablePostprocessor
     variable = group1
-    outputs = 'console'
+    outputs = 'console csv'
   [../]
   [./group1_old]
     type = IntegralOldVariablePostprocessor
     variable = group1
-    outputs = 'console'
+    outputs = 'console csv'
   [../]
   [./multiplication]
     type = DivisionPostprocessor
     value1 = group1_current
     value2 = group1_old
-    outputs = 'console'
+    outputs = 'console csv'
   [../]
-  [./temp_fuel]
-    type = ElementAverageValue
-    variable = temp
-    block = 'fuel'
-    outputs = 'console'
-  [../]
-  [./temp_moder]
-    type = ElementAverageValue
-    variable = temp
-    block = 'moder'
-    outputs = 'console'
-  [../]
-  # [./average_fission_heat]
-  #   type = AverageFissionHeat
-  #   nt_scale = ${nt_scale}
-  #   execute_on = 'linear nonlinear'
-  #   outputs = 'console'
+  # [./temp_fuel]
+  #   type = ElementAverageValue
+  #   variable = temp
   #   block = 'fuel'
+  #   outputs = 'csv console'
   # [../]
+  # [./temp_moder]
+  #   type = ElementAverageValue
+  #   variable = temp
+  #   block = 'moder'
+  #   outputs = 'csv console'
+  # [../]
+  # # [./average_fission_heat]
+  # #   type = AverageFissionHeat
+  # #   nt_scale = ${nt_scale}
+  # #   execute_on = 'linear nonlinear'
+  # #   outputs = 'console'
+  # #   block = 'fuel'
+  # # [../]
 []
 
 [Outputs]
   print_perf_log = true
   print_linear_residuals = true
+  csv = true
   [./out]
     type = Exodus
-    execute_on = 'final'
   [../]
 []
 
