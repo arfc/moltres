@@ -1,0 +1,20 @@
+#!/bin/bash
+#PBS -l nodes=16:ppn=32:xe
+#PBS -l walltime=1:00:00
+#PBS -N eig_job
+#PBS -j oe
+
+### cd to the location where you submitted the job, if needed
+### note that you are on a PBS MOM node and not running interactively on a
+### compute node
+
+cd $PBS_O_WORKDIR
+
+# To add certain modules that you do not have added via ~/.modules
+. /opt/modules/default/init/bash # NEEDED to add module function to shell
+source /u/sciteam/al007/source_moose_env
+
+aprun -n 256 /u/sciteam/al007/projects/moltres/moltres-opt -i k-eig-922.i --color off > out922.txt &
+aprun -n 256 /u/sciteam/al007/projects/moltres/moltres-opt -i k-eig-1022.i --color off > out1022.txt &
+
+wait
