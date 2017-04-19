@@ -6,7 +6,7 @@
 // Forward Declaration
 class NtTimeDerivative;
 
-template<>
+template <>
 InputParameters validParams<NtTimeDerivative>();
 
 class NtTimeDerivative : public ScalarTransportTimeDerivative
@@ -19,10 +19,10 @@ protected:
   virtual Real computeQpJacobian() override;
   virtual Real computeQpOffDiagJacobian(unsigned int jvar) override;
 
-  const MaterialProperty<std::vector<Real> > & _recipvel;
-  const MaterialProperty<std::vector<Real> > & _d_recipvel_d_temp;
+  const MaterialProperty<std::vector<Real>> & _recipvel;
+  const MaterialProperty<std::vector<Real>> & _d_recipvel_d_temp;
   unsigned int _group;
   unsigned int _temp_id;
 };
 
-#endif //NTTIMEDERIVATIVE_H
+#endif // NTTIMEDERIVATIVE_H

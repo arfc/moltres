@@ -6,7 +6,7 @@
 // Forward Declarations
 class INSOutflowBC;
 
-template<>
+template <>
 InputParameters validParams<INSOutflowBC>();
 
 /**
@@ -19,7 +19,7 @@ class INSOutflowBC : public IntegratedBC
 public:
   INSOutflowBC(const InputParameters & parameters);
 
-  virtual ~INSOutflowBC(){}
+  virtual ~INSOutflowBC() {}
 
 protected:
   virtual Real computeQpResidual();
@@ -53,6 +53,5 @@ protected:
   unsigned _component;
   bool _integrate_p_by_parts;
 };
-
 
 #endif // INSOUTFLOWBC_H

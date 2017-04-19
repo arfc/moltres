@@ -1,25 +1,29 @@
 #include "CoupledFissionKernel.h"
 
-template<>
-InputParameters validParams<CoupledFissionKernel>()
+template <>
+InputParameters
+validParams<CoupledFissionKernel>()
 {
   InputParameters params = validParams<Kernel>();
   params += validParams<ScalarTransportBase>();
   params.addRequiredParam<unsigned int>("group_number", "The current energy group");
   params.addRequiredParam<unsigned int>("num_groups", "The total numer of energy groups");
-  params.addRequiredCoupledVar("temperature", "The temperature used to interpolate material properties");
-  params.addRequiredCoupledVar("group_fluxes", "All the variables that hold the group fluxes. These MUST be listed by decreasing energy/increasing group number.");
+  params.addRequiredCoupledVar("temperature",
+                               "The temperature used to interpolate material properties");
+  params.addRequiredCoupledVar("group_fluxes", "All the variables that hold the group fluxes. "
+                                               "These MUST be listed by decreasing "
+                                               "energy/increasing group number.");
   params.addRequiredParam<bool>("account_delayed", "Whether to account for delayed neutrons.");
   return params;
 }
 
-CoupledFissionKernel::CoupledFissionKernel(const InputParameters & parameters) :
-    Kernel(parameters),
+CoupledFissionKernel::CoupledFissionKernel(const InputParameters & parameters)
+  : Kernel(parameters),
     ScalarTransportBase(parameters),
-    _nsf(getMaterialProperty<std::vector<Real> >("nsf")),
-    _d_nsf_d_temp(getMaterialProperty<std::vector<Real> >("d_nsf_d_temp")),
-    _chi(getMaterialProperty<std::vector<Real> >("chi")),
-    _d_chi_d_temp(getMaterialProperty<std::vector<Real> >("d_chi_d_temp")),
+    _nsf(getMaterialProperty<std::vector<Real>>("nsf")),
+    _d_nsf_d_temp(getMaterialProperty<std::vector<Real>>("d_nsf_d_temp")),
+    _chi(getMaterialProperty<std::vector<Real>>("chi")),
+    _d_chi_d_temp(getMaterialProperty<std::vector<Real>>("d_chi_d_temp")),
     _beta(getMaterialProperty<Real>("beta")),
     _d_beta_d_temp(getMaterialProperty<Real>("d_beta_d_temp")),
     _group(getParam<unsigned int>("group_number") - 1),
@@ -82,7 +86,8 @@ CoupledFissionKernel::computeQpOffDiagJacobian(unsigned int jvar)
   {
     if (jvar == _flux_ids[i])
     {
-      jac = -_test[_i][_qp] * _chi[_qp][_group] * _nsf[_qp][i] * computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp);
+      jac = -_test[_i][_qp] * _chi[_qp][_group] * _nsf[_qp][i] *
+            computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp);
       if (_account_delayed)
         jac *= (1. - _beta[_qp]);
       break;
@@ -94,9 +99,14 @@ CoupledFissionKernel::computeQpOffDiagJacobian(unsigned int jvar)
     for (unsigned int i = 0; i < _num_groups; ++i)
     {
       if (_account_delayed)
-        jac += -_test[_i][_qp] * computeConcentration((*_group_fluxes[i]), _qp) * (_d_chi_d_temp[_qp][_group] * _phi[_j][_qp] * _nsf[_qp][i] * (1. - _beta[_qp]) + _chi[_qp][_group] * _d_nsf_d_temp[_qp][i] * _phi[_j][_qp] * (1. - _beta[_qp]) + _chi[_qp][_group] * _nsf[_qp][i] * -_d_beta_d_temp[_qp] * _phi[_j][_qp]);
+        jac += -_test[_i][_qp] * computeConcentration((*_group_fluxes[i]), _qp) *
+               (_d_chi_d_temp[_qp][_group] * _phi[_j][_qp] * _nsf[_qp][i] * (1. - _beta[_qp]) +
+                _chi[_qp][_group] * _d_nsf_d_temp[_qp][i] * _phi[_j][_qp] * (1. - _beta[_qp]) +
+                _chi[_qp][_group] * _nsf[_qp][i] * -_d_beta_d_temp[_qp] * _phi[_j][_qp]);
       else
-        jac += -_test[_i][_qp] * computeConcentration((*_group_fluxes[i]), _qp) * (_d_chi_d_temp[_qp][_group] * _phi[_j][_qp] * _nsf[_qp][i] + _chi[_qp][_group] * _d_nsf_d_temp[_qp][i] * _phi[_j][_qp]);
+        jac += -_test[_i][_qp] * computeConcentration((*_group_fluxes[i]), _qp) *
+               (_d_chi_d_temp[_qp][_group] * _phi[_j][_qp] * _nsf[_qp][i] +
+                _chi[_qp][_group] * _d_nsf_d_temp[_qp][i] * _phi[_j][_qp]);
     }
   }
 

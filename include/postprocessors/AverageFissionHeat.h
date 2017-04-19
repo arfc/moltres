@@ -3,10 +3,10 @@
 
 #include "ElmIntegTotFissHeatPostprocessor.h"
 
-//Forward Declarations
+// Forward Declarations
 class AverageFissionHeat;
 
-template<>
+template <>
 InputParameters validParams<AverageFissionHeat>();
 
 class AverageFissionHeat : public ElmIntegTotFissHeatPostprocessor

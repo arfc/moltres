@@ -6,8 +6,7 @@
 // Forward Declaration
 class ConservativeAdvectionNoBCBC;
 
-
-template<>
+template <>
 InputParameters validParams<ConservativeAdvectionNoBCBC>();
 
 class ConservativeAdvectionNoBCBC : public IntegratedBC

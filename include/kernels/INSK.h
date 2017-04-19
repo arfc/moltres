@@ -6,7 +6,7 @@
 // Forward Declarations
 class INSK;
 
-template<>
+template <>
 InputParameters validParams<INSK>();
 
 /**
@@ -19,7 +19,7 @@ class INSK : public Kernel
 public:
   INSK(const InputParameters & parameters);
 
-  virtual ~INSK(){}
+  virtual ~INSK() {}
 
 protected:
   virtual Real computeQpResidual();
@@ -54,6 +54,5 @@ protected:
   Real _C1eps;
   Real _C2eps;
 };
-
 
 #endif // INSK_H

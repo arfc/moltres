@@ -7,12 +7,10 @@
 // Forward Declaration
 class InScatter;
 
-template<>
+template <>
 InputParameters validParams<InScatter>();
 
-
-class InScatter : public Kernel,
-                  public ScalarTransportBase
+class InScatter : public Kernel, public ScalarTransportBase
 {
 public:
   InScatter(const InputParameters & parameters);
@@ -23,8 +21,8 @@ protected:
   virtual Real computeQpJacobian();
   virtual Real computeQpOffDiagJacobian(unsigned int jvar);
 
-  const MaterialProperty<std::vector<Real> > & _gtransfxs;
-  const MaterialProperty<std::vector<Real> > & _d_gtransfxs_d_temp;
+  const MaterialProperty<std::vector<Real>> & _gtransfxs;
+  const MaterialProperty<std::vector<Real>> & _d_gtransfxs_d_temp;
   unsigned int _group;
   unsigned int _num_groups;
   unsigned int _temp_id;
@@ -33,4 +31,4 @@ protected:
   bool _sss2_input;
 };
 
-#endif //INSCATTER_H
+#endif // INSCATTER_H

@@ -7,9 +7,8 @@
 // Forward Declaration
 class MatDiffusionAux;
 
-template<>
+template <>
 InputParameters validParams<MatDiffusionAux>();
-
 
 class MatDiffusionAux : public AuxKernel
 {
@@ -24,4 +23,4 @@ protected:
   const MaterialProperty<Real> * _diff;
 };
 
-#endif //MATDIFFUSIONAUX_H
+#endif // MATDIFFUSIONAUX_H

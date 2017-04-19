@@ -1,21 +1,24 @@
 #include "ElmIntegTotFissPostprocessor.h"
 
-template<>
-InputParameters validParams<ElmIntegTotFissPostprocessor>()
+template <>
+InputParameters
+validParams<ElmIntegTotFissPostprocessor>()
 {
   InputParameters params = validParams<ElementIntegralPostprocessor>();
   params += validParams<ScalarTransportBase>();
-  params.addRequiredCoupledVar("group_fluxes", "The group fluxes. MUST be arranged by decreasing energy/increasing group number.");
+  params.addRequiredCoupledVar(
+      "group_fluxes",
+      "The group fluxes. MUST be arranged by decreasing energy/increasing group number.");
   params.addRequiredParam<int>("num_groups", "The number of energy groups.");
   params.addParam<Real>("nt_scale", 1, "Scaling of the neutron fluxes to aid convergence.");
   return params;
 }
 
-ElmIntegTotFissPostprocessor::ElmIntegTotFissPostprocessor(const InputParameters & parameters) :
-    ElementIntegralPostprocessor(parameters),
+ElmIntegTotFissPostprocessor::ElmIntegTotFissPostprocessor(const InputParameters & parameters)
+  : ElementIntegralPostprocessor(parameters),
     ScalarTransportBase(parameters),
     _num_groups(getParam<int>("num_groups")),
-    _fissxs(getMaterialProperty<std::vector<Real> >("fissxs")),
+    _fissxs(getMaterialProperty<std::vector<Real>>("fissxs")),
     _vars(getCoupledMooseVars()),
     _nt_scale(getParam<Real>("nt_scale"))
 {

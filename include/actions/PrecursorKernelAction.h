@@ -3,7 +3,7 @@
 
 #include "AddVariableAction.h"
 
-class PrecursorKernelAction: public AddVariableAction
+class PrecursorKernelAction : public AddVariableAction
 {
 public:
   PrecursorKernelAction(const InputParameters & params);
@@ -20,7 +20,7 @@ protected:
   unsigned int _num_groups;
 };
 
-template<>
+template <>
 InputParameters validParams<PrecursorKernelAction>();
 
-#endif //PRECURSORKERNELACTION_H
+#endif // PRECURSORKERNELACTION_H

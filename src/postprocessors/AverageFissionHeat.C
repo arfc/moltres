@@ -1,16 +1,17 @@
 #include "AverageFissionHeat.h"
 
-template<>
-InputParameters validParams<AverageFissionHeat>()
+template <>
+InputParameters
+validParams<AverageFissionHeat>()
 {
   InputParameters params = validParams<ElmIntegTotFissHeatPostprocessor>();
   return params;
 }
 
-AverageFissionHeat::AverageFissionHeat(const InputParameters & parameters) :
-    ElmIntegTotFissHeatPostprocessor(parameters),
-    _volume(0)
-{}
+AverageFissionHeat::AverageFissionHeat(const InputParameters & parameters)
+  : ElmIntegTotFissHeatPostprocessor(parameters), _volume(0)
+{
+}
 
 void
 AverageFissionHeat::initialize()

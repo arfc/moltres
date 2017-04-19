@@ -1,7 +1,8 @@
 #include "INSK.h"
 
-template<>
-InputParameters validParams<INSK>()
+template <>
+InputParameters
+validParams<INSK>()
 {
   InputParameters params = validParams<Kernel>();
 
@@ -17,52 +18,48 @@ InputParameters validParams<INSK>()
   return params;
 }
 
+INSK::INSK(const InputParameters & parameters)
+  : Kernel(parameters),
 
+    // Coupled variables
+    _u_vel(coupledValue("u")),
+    _v_vel(coupledValue("v")),
+    _w_vel(coupledValue("w")),
+    _epsilon(coupledValue("epsilon")),
 
-INSK::INSK(const InputParameters & parameters) :
-  Kernel(parameters),
+    // Gradients
+    _grad_u_vel(coupledGradient("u")),
+    _grad_v_vel(coupledGradient("v")),
+    _grad_w_vel(coupledGradient("w")),
+    _grad_epsilon(coupledGradient("epsilon")),
 
-  // Coupled variables
-  _u_vel(coupledValue("u")),
-  _v_vel(coupledValue("v")),
-  _w_vel(coupledValue("w")),
-  _epsilon(coupledValue("epsilon")),
+    // Variable numberings
+    _u_vel_var_number(coupled("u")),
+    _v_vel_var_number(coupled("v")),
+    _w_vel_var_number(coupled("w")),
+    _epsilon_var_number(coupled("epsilon")),
 
-  // Gradients
-  _grad_u_vel(coupledGradient("u")),
-  _grad_v_vel(coupledGradient("v")),
-  _grad_w_vel(coupledGradient("w")),
-  _grad_epsilon(coupledGradient("epsilon")),
+    // Required parameters
+    _mu(getParam<Real>("mu")),
+    _rho(getParam<Real>("rho")),
+    _Cmu(0.09),
+    _sigk(1.00),
+    _sigeps(1.30),
+    _C1eps(1.44),
+    _C2eps(1.92)
 
-  // Variable numberings
-  _u_vel_var_number(coupled("u")),
-  _v_vel_var_number(coupled("v")),
-  _w_vel_var_number(coupled("w")),
-  _epsilon_var_number(coupled("epsilon")),
-
-  // Required parameters
-  _mu(getParam<Real>("mu")),
-  _rho(getParam<Real>("rho")),
-  _Cmu(0.09),
-  _sigk(1.00),
-  _sigeps(1.30),
-  _C1eps(1.44),
-  _C2eps(1.92)
-
-  // Material properties
-  // _dynamic_viscosity(getMaterialProperty<Real>("dynamic_viscosity"))
+// Material properties
+// _dynamic_viscosity(getMaterialProperty<Real>("dynamic_viscosity"))
 {
 }
 
-
-
-Real INSK::computeQpResidual()
+Real
+INSK::computeQpResidual()
 {
   // The convection part
-  Real convective_part = _rho *
-    (_u_vel[_qp]*_grad_u[_qp](0) +
-     _v_vel[_qp]*_grad_u[_qp](1) +
-     _w_vel[_qp]*_grad_u[_qp](2)) * _test[_i][_qp];
+  Real convective_part = _rho * (_u_vel[_qp] * _grad_u[_qp](0) + _v_vel[_qp] * _grad_u[_qp](1) +
+                                 _w_vel[_qp] * _grad_u[_qp](2)) *
+                         _test[_i][_qp];
 
   // The diffusive part
   Real eddy_visc = _rho * _Cmu * std::pow(_u[_qp], 2) / _epsilon[_qp];
@@ -73,9 +70,9 @@ Real INSK::computeQpResidual()
 
   // Source term from velocity gradients
   Real strain_tensor_double_dot_product = 0.;
-  for ( int m = 0; m < 3; m++ )
+  for (int m = 0; m < 3; m++)
   {
-    for ( int n = 0; n < 3; n++ )
+    for (int n = 0; n < 3; n++)
     {
       Real Em;
       switch (m)
@@ -111,13 +108,14 @@ Real INSK::computeQpResidual()
       strain_tensor_double_dot_product += Emn * Emn;
     }
   }
-  
+
   Real source_part = -_test[_i][_qp] * 2. * eddy_visc * strain_tensor_double_dot_product;
 
   return convective_part + diffusive_part + dissipative_part + source_part;
 }
 
-Real INSK::computeQpJacobian()
+Real
+INSK::computeQpJacobian()
 {
   RealVectorValue U(_u_vel[_qp], _v_vel[_qp], _w_vel[_qp]);
 
@@ -127,13 +125,14 @@ Real INSK::computeQpJacobian()
   // The diffusive part
   Real eddy_visc = _rho * _Cmu * std::pow(_u[_qp], 2) / _epsilon[_qp];
   Real d_eddy_visc_d_k = _rho * _Cmu * 2. * _u[_qp] / _epsilon[_qp] * _phi[_j][_qp];
-  Real diffusive_part = _grad_test[_i][_qp] * ((_mu + eddy_visc / _sigk) * _grad_phi[_j][_qp] + _grad_u[_qp] * d_eddy_visc_d_k / _sigk);
+  Real diffusive_part = _grad_test[_i][_qp] * ((_mu + eddy_visc / _sigk) * _grad_phi[_j][_qp] +
+                                               _grad_u[_qp] * d_eddy_visc_d_k / _sigk);
 
   // Source term from velocity gradients
   Real strain_tensor_double_dot_product = 0.;
-  for ( int m = 0; m < 3; m++ )
+  for (int m = 0; m < 3; m++)
   {
-    for ( int n = 0; n < 3; n++ )
+    for (int n = 0; n < 3; n++)
     {
       Real Em;
       switch (m)
@@ -169,13 +168,14 @@ Real INSK::computeQpJacobian()
       strain_tensor_double_dot_product += Emn * Emn;
     }
   }
-  
+
   Real source_part = -_test[_i][_qp] * 2. * d_eddy_visc_d_k * strain_tensor_double_dot_product;
 
   return convective_part + diffusive_part + source_part;
 }
 
-Real INSK::computeQpOffDiagJacobian(unsigned jvar)
+Real
+INSK::computeQpOffDiagJacobian(unsigned jvar)
 {
   // In Stokes/Laplacian version, off-diag Jacobian entries wrt u,v,w are zero
   if (jvar == _u_vel_var_number)
@@ -186,9 +186,9 @@ Real INSK::computeQpOffDiagJacobian(unsigned jvar)
 
     // Source term from velocity gradients
     Real d_strain_tensor_double_dot_product_d_u_vel = 0.;
-    for ( int m = 0; m < 3; m++ )
+    for (int m = 0; m < 3; m++)
     {
-      for ( int n = 0; n < 3; n++ )
+      for (int n = 0; n < 3; n++)
       {
         if (p == m || p == n)
         {
@@ -232,10 +232,11 @@ Real INSK::computeQpOffDiagJacobian(unsigned jvar)
         }
       }
     }
-  
+
     Real eddy_visc = _rho * _Cmu * std::pow(_u[_qp], 2) / _epsilon[_qp];
-    Real source_part = -_test[_i][_qp] * 2. * eddy_visc * d_strain_tensor_double_dot_product_d_u_vel;
-    
+    Real source_part =
+        -_test[_i][_qp] * 2. * eddy_visc * d_strain_tensor_double_dot_product_d_u_vel;
+
     return convective_part + source_part;
   }
 
@@ -247,9 +248,9 @@ Real INSK::computeQpOffDiagJacobian(unsigned jvar)
 
     // Source term from velocity gradients
     Real d_strain_tensor_double_dot_product_d_v_vel = 0.;
-    for ( int m = 0; m < 3; m++ )
+    for (int m = 0; m < 3; m++)
     {
-      for ( int n = 0; n < 3; n++ )
+      for (int n = 0; n < 3; n++)
       {
         if (p == m || p == n)
         {
@@ -293,10 +294,11 @@ Real INSK::computeQpOffDiagJacobian(unsigned jvar)
         }
       }
     }
-  
+
     Real eddy_visc = _rho * _Cmu * std::pow(_u[_qp], 2) / _epsilon[_qp];
-    Real source_part = -_test[_i][_qp] * 2. * eddy_visc * d_strain_tensor_double_dot_product_d_v_vel;
-    
+    Real source_part =
+        -_test[_i][_qp] * 2. * eddy_visc * d_strain_tensor_double_dot_product_d_v_vel;
+
     return convective_part + source_part;
   }
 
@@ -308,9 +310,9 @@ Real INSK::computeQpOffDiagJacobian(unsigned jvar)
 
     // Source term from velocity gradients
     Real d_strain_tensor_double_dot_product_d_w_vel = 0.;
-    for ( int m = 0; m < 3; m++ )
+    for (int m = 0; m < 3; m++)
     {
-      for ( int n = 0; n < 3; n++ )
+      for (int n = 0; n < 3; n++)
       {
         if (p == m || p == n)
         {
@@ -354,17 +356,19 @@ Real INSK::computeQpOffDiagJacobian(unsigned jvar)
         }
       }
     }
-  
+
     Real eddy_visc = _rho * _Cmu * std::pow(_u[_qp], 2) / _epsilon[_qp];
-    Real source_part = -_test[_i][_qp] * 2. * eddy_visc * d_strain_tensor_double_dot_product_d_w_vel;
-    
+    Real source_part =
+        -_test[_i][_qp] * 2. * eddy_visc * d_strain_tensor_double_dot_product_d_w_vel;
+
     return convective_part + source_part;
   }
 
   else if (jvar == _epsilon_var_number)
   {
     // The diffusive part
-    Real d_eddy_visc_d_epsilon = -_rho * _Cmu * std::pow(_u[_qp], 2) / std::pow(_epsilon[_qp], 2) * _phi[_j][_qp];
+    Real d_eddy_visc_d_epsilon =
+        -_rho * _Cmu * std::pow(_u[_qp], 2) / std::pow(_epsilon[_qp], 2) * _phi[_j][_qp];
     Real diffusive_part = _grad_test[_i][_qp] * d_eddy_visc_d_epsilon / _sigk * _grad_u[_qp];
 
     // Turbulent dissipative sink part
@@ -372,9 +376,9 @@ Real INSK::computeQpOffDiagJacobian(unsigned jvar)
 
     // Source term from velocity gradients
     Real strain_tensor_double_dot_product = 0.;
-    for ( int m = 0; m < 3; m++ )
+    for (int m = 0; m < 3; m++)
     {
-      for ( int n = 0; n < 3; n++ )
+      for (int n = 0; n < 3; n++)
       {
         Real Em;
         switch (m)
@@ -410,8 +414,9 @@ Real INSK::computeQpOffDiagJacobian(unsigned jvar)
         strain_tensor_double_dot_product += Emn * Emn;
       }
     }
-  
-    Real source_part = -_test[_i][_qp] * 2. * d_eddy_visc_d_epsilon * strain_tensor_double_dot_product;
+
+    Real source_part =
+        -_test[_i][_qp] * 2. * d_eddy_visc_d_epsilon * strain_tensor_double_dot_product;
 
     return diffusive_part + dissipative_part + source_part;
   }

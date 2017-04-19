@@ -7,12 +7,10 @@
 // Forward Declaration
 class GroupDiffusion;
 
-template<>
+template <>
 InputParameters validParams<GroupDiffusion>();
 
-
-class GroupDiffusion : public Kernel,
-                       public ScalarTransportBase
+class GroupDiffusion : public Kernel, public ScalarTransportBase
 {
 public:
   GroupDiffusion(const InputParameters & parameters);
@@ -22,10 +20,10 @@ protected:
   virtual Real computeQpJacobian();
   virtual Real computeQpOffDiagJacobian(unsigned int jvar);
 
-  const MaterialProperty<std::vector<Real> > & _diffcoef;
-  const MaterialProperty<std::vector<Real> > & _d_diffcoef_d_temp;
+  const MaterialProperty<std::vector<Real>> & _diffcoef;
+  const MaterialProperty<std::vector<Real>> & _d_diffcoef_d_temp;
   unsigned int _group;
   unsigned int _temp_id;
 };
 
-#endif //GROUPDIFFUSION_H
+#endif // GROUPDIFFUSION_H

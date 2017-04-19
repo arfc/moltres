@@ -1,7 +1,8 @@
 #include "VacuumConcBC.h"
 
-template<>
-InputParameters validParams<VacuumConcBC>()
+template <>
+InputParameters
+validParams<VacuumConcBC>()
 {
   InputParameters params = validParams<IntegratedBC>();
   params += validParams<ScalarTransportBase>();
@@ -9,11 +10,10 @@ InputParameters validParams<VacuumConcBC>()
   return params;
 }
 
-VacuumConcBC::VacuumConcBC(const InputParameters & parameters) :
-    IntegratedBC(parameters),
-    ScalarTransportBase(parameters),
-    _alpha(getParam<Real>("alpha"))
-{}
+VacuumConcBC::VacuumConcBC(const InputParameters & parameters)
+  : IntegratedBC(parameters), ScalarTransportBase(parameters), _alpha(getParam<Real>("alpha"))
+{
+}
 
 Real
 VacuumConcBC::computeQpResidual()

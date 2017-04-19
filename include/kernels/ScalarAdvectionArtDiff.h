@@ -7,20 +7,19 @@
 // Forward Declarations
 class ScalarAdvectionArtDiff;
 
-template<>
+template <>
 InputParameters validParams<ScalarAdvectionArtDiff>();
 
 /**
  * This class computes the residual and Jacobian contributions for the
  * incompressible Navier-Stokes temperature (energy) equation.
  */
-class ScalarAdvectionArtDiff : public Kernel,
-                               public ScalarTransportBase
+class ScalarAdvectionArtDiff : public Kernel, public ScalarTransportBase
 {
 public:
   ScalarAdvectionArtDiff(const InputParameters & parameters);
 
-  virtual ~ScalarAdvectionArtDiff(){}
+  virtual ~ScalarAdvectionArtDiff() {}
 
 protected:
   virtual Real computeQpResidual();
@@ -44,6 +43,5 @@ protected:
   Real _conc_scaling;
   Real _tau;
 };
-
 
 #endif // SCALARADVECTIONARTDIFF_H

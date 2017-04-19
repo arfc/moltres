@@ -1,8 +1,9 @@
 #include "LinLogPenaltyDirichletBC.h"
 #include "Function.h"
 
-template<>
-InputParameters validParams<LinLogPenaltyDirichletBC>()
+template <>
+InputParameters
+validParams<LinLogPenaltyDirichletBC>()
 {
   InputParameters params = validParams<IntegratedBC>();
   params += validParams<ScalarTransportBase>();
@@ -12,12 +13,13 @@ InputParameters validParams<LinLogPenaltyDirichletBC>()
   return params;
 }
 
-LinLogPenaltyDirichletBC::LinLogPenaltyDirichletBC(const InputParameters & parameters) :
-    IntegratedBC(parameters),
+LinLogPenaltyDirichletBC::LinLogPenaltyDirichletBC(const InputParameters & parameters)
+  : IntegratedBC(parameters),
     ScalarTransportBase(parameters),
     _p(getParam<Real>("penalty")),
     _v(getParam<Real>("value"))
-{}
+{
+}
 
 Real
 LinLogPenaltyDirichletBC::computeQpResidual()

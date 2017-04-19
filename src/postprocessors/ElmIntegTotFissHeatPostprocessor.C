@@ -1,15 +1,17 @@
 #include "ElmIntegTotFissHeatPostprocessor.h"
 
-template<>
-InputParameters validParams<ElmIntegTotFissHeatPostprocessor>()
+template <>
+InputParameters
+validParams<ElmIntegTotFissHeatPostprocessor>()
 {
   InputParameters params = validParams<ElmIntegTotFissPostprocessor>();
   return params;
 }
 
-ElmIntegTotFissHeatPostprocessor::ElmIntegTotFissHeatPostprocessor(const InputParameters & parameters) :
-    ElmIntegTotFissPostprocessor(parameters),
-    _fisse(getMaterialProperty<std::vector<Real> >("fisse"))
+ElmIntegTotFissHeatPostprocessor::ElmIntegTotFissHeatPostprocessor(
+    const InputParameters & parameters)
+  : ElmIntegTotFissPostprocessor(parameters),
+    _fisse(getMaterialProperty<std::vector<Real>>("fisse"))
 {
 }
 

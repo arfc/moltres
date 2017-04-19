@@ -1,7 +1,8 @@
 #include "IntegralOldVariablePostprocessor.h"
 
-template<>
-InputParameters validParams<IntegralOldVariablePostprocessor>()
+template <>
+InputParameters
+validParams<IntegralOldVariablePostprocessor>()
 {
   InputParameters params = validParams<ElementIntegralPostprocessor>();
   params += validParams<ScalarTransportBase>();
@@ -9,8 +10,9 @@ InputParameters validParams<IntegralOldVariablePostprocessor>()
   return params;
 }
 
-IntegralOldVariablePostprocessor::IntegralOldVariablePostprocessor(const InputParameters & parameters) :
-    ElementIntegralPostprocessor(parameters),
+IntegralOldVariablePostprocessor::IntegralOldVariablePostprocessor(
+    const InputParameters & parameters)
+  : ElementIntegralPostprocessor(parameters),
     ScalarTransportBase(parameters),
     MooseVariableInterface(this, false),
     _u_old(coupledValueOld("variable")),

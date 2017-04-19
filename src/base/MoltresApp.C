@@ -61,8 +61,9 @@
 #include "PrecursorKernelAction.h"
 #include "NtAction.h"
 
-template<>
-InputParameters validParams<MoltresApp>()
+template <>
+InputParameters
+validParams<MoltresApp>()
 {
   InputParameters params = validParams<MooseApp>();
 
@@ -73,8 +74,7 @@ InputParameters validParams<MoltresApp>()
   return params;
 }
 
-MoltresApp::MoltresApp(InputParameters parameters) :
-    MooseApp(parameters)
+MoltresApp::MoltresApp(InputParameters parameters) : MooseApp(parameters)
 {
   Moose::registerObjects(_factory);
   ModulesApp::registerObjects(_factory);
@@ -87,12 +87,14 @@ MoltresApp::MoltresApp(InputParameters parameters) :
   MoltresApp::associateSyntax(_syntax, _action_factory);
 }
 
-MoltresApp::~MoltresApp()
-{
-}
+MoltresApp::~MoltresApp() {}
 
 // External entry point for dynamic application loading
-extern "C" void MoltresApp__registerApps() { MoltresApp::registerApps(); }
+extern "C" void
+MoltresApp__registerApps()
+{
+  MoltresApp::registerApps();
+}
 void
 MoltresApp::registerApps()
 {
@@ -100,7 +102,11 @@ MoltresApp::registerApps()
 }
 
 // External entry point for dynamic object registration
-extern "C" void MoltresApp__registerObjects(Factory & factory) { MoltresApp::registerObjects(factory); }
+extern "C" void
+MoltresApp__registerObjects(Factory & factory)
+{
+  MoltresApp::registerObjects(factory);
+}
 void
 MoltresApp::registerObjects(Factory & factory)
 {
@@ -148,7 +154,11 @@ MoltresApp::registerObjects(Factory & factory)
 }
 
 // External entry point for dynamic syntax association
-extern "C" void MoltresApp__associateSyntax(Syntax & syntax, ActionFactory & action_factory) { MoltresApp::associateSyntax(syntax, action_factory); }
+extern "C" void
+MoltresApp__associateSyntax(Syntax & syntax, ActionFactory & action_factory)
+{
+  MoltresApp::associateSyntax(syntax, action_factory);
+}
 void
 MoltresApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
 {

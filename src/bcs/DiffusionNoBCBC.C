@@ -1,18 +1,16 @@
 #include "DiffusionNoBCBC.h"
 
-
-template<>
-InputParameters validParams<DiffusionNoBCBC>()
+template <>
+InputParameters
+validParams<DiffusionNoBCBC>()
 {
   InputParameters params = validParams<IntegratedBC>();
-  params.addClassDescription("The Laplacian operator ($-\\nabla \\cdot \\nabla u$), with the weak form of $(\\nabla \\phi_i, \\nabla u_h)$.");
+  params.addClassDescription("The Laplacian operator ($-\\nabla \\cdot \\nabla u$), with the weak "
+                             "form of $(\\nabla \\phi_i, \\nabla u_h)$.");
   return params;
 }
 
-DiffusionNoBCBC::DiffusionNoBCBC(const InputParameters & parameters) :
-    IntegratedBC(parameters)
-{
-}
+DiffusionNoBCBC::DiffusionNoBCBC(const InputParameters & parameters) : IntegratedBC(parameters) {}
 
 Real
 DiffusionNoBCBC::computeQpResidual()

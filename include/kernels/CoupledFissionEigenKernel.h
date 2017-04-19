@@ -4,14 +4,13 @@
 #include "EigenKernel.h"
 #include "ScalarTransportBase.h"
 
-//Forward Declarations
+// Forward Declarations
 class CoupledFissionEigenKernel;
 
-template<>
+template <>
 InputParameters validParams<CoupledFissionEigenKernel>();
 
-class CoupledFissionEigenKernel : public EigenKernel,
-                                  public ScalarTransportBase
+class CoupledFissionEigenKernel : public EigenKernel, public ScalarTransportBase
 {
 public:
   CoupledFissionEigenKernel(const InputParameters & parameters);
@@ -21,8 +20,8 @@ protected:
   virtual Real computeQpJacobian() override;
   virtual Real computeQpOffDiagJacobian(unsigned int jvar) override;
 
-  const MaterialProperty<std::vector<Real> > & _nsf;
-  const MaterialProperty<std::vector<Real> > & _chi;
+  const MaterialProperty<std::vector<Real>> & _nsf;
+  const MaterialProperty<std::vector<Real>> & _chi;
   const MaterialProperty<Real> & _beta;
   unsigned int _group;
   unsigned int _num_groups;
@@ -31,4 +30,4 @@ protected:
   bool _account_delayed;
 };
 
-#endif //COUPLEDFISSIONEIGENKERNEL_H
+#endif // COUPLEDFISSIONEIGENKERNEL_H

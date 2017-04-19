@@ -6,14 +6,12 @@
 
 class LinLogPenaltyDirichletBC;
 
-template<>
+template <>
 InputParameters validParams<LinLogPenaltyDirichletBC>();
 
-class LinLogPenaltyDirichletBC : public IntegratedBC,
-                                 public ScalarTransportBase
+class LinLogPenaltyDirichletBC : public IntegratedBC, public ScalarTransportBase
 {
 public:
-
   LinLogPenaltyDirichletBC(const InputParameters & parameters);
 
 protected:

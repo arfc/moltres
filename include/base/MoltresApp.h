@@ -5,7 +5,7 @@
 
 class MoltresApp;
 
-template<>
+template <>
 InputParameters validParams<MoltresApp>();
 
 class MoltresApp : public MooseApp

@@ -1,16 +1,20 @@
 #include "GammaHeatSource.h"
 
-template<>
-InputParameters validParams<GammaHeatSource>()
+template <>
+InputParameters
+validParams<GammaHeatSource>()
 {
   InputParameters params = validParams<Kernel>();
-  params.addRequiredParam<PostprocessorName>("average_fission_heat", "The average fission heat being generated in the fuel portion of the reactor.");
-  params.addRequiredParam<Real>("gamma", "The ratio of power density generated in the moderator vs. the fuel.");
+  params.addRequiredParam<PostprocessorName>(
+      "average_fission_heat",
+      "The average fission heat being generated in the fuel portion of the reactor.");
+  params.addRequiredParam<Real>(
+      "gamma", "The ratio of power density generated in the moderator vs. the fuel.");
   return params;
 }
 
-GammaHeatSource::GammaHeatSource(const InputParameters & parameters) :
-    Kernel(parameters),
+GammaHeatSource::GammaHeatSource(const InputParameters & parameters)
+  : Kernel(parameters),
     _average_fission_heat(getPostprocessorValue("average_fission_heat")),
     _gamma(getParam<Real>("gamma"))
 {

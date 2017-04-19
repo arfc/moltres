@@ -4,14 +4,13 @@
 #include "Kernel.h"
 #include "ScalarTransportBase.h"
 
-//Forward Declarations
+// Forward Declarations
 class PrecursorDecay;
 
-template<>
+template <>
 InputParameters validParams<PrecursorDecay>();
 
-class PrecursorDecay : public Kernel,
-                       public ScalarTransportBase
+class PrecursorDecay : public Kernel, public ScalarTransportBase
 {
 public:
   PrecursorDecay(const InputParameters & parameters);
@@ -21,12 +20,12 @@ protected:
   virtual Real computeQpJacobian();
   virtual Real computeQpOffDiagJacobian(unsigned int jvar);
 
-  const MaterialProperty<std::vector<Real> > & _decay_constant;
-  const MaterialProperty<std::vector<Real> > & _d_decay_constant_d_temp;
+  const MaterialProperty<std::vector<Real>> & _decay_constant;
+  const MaterialProperty<std::vector<Real>> & _d_decay_constant_d_temp;
   unsigned int _precursor_group;
   unsigned int _temp_id;
   const VariableValue & _temp;
   Real _prec_scale;
 };
 
-#endif //PRECURSORDECAY_H
+#endif // PRECURSORDECAY_H

@@ -3,14 +3,13 @@
 
 #include "ElmIntegTotFissPostprocessor.h"
 
-//Forward Declarations
+// Forward Declarations
 class ElmIntegTotFissHeatPostprocessor;
 
-template<>
+template <>
 InputParameters validParams<ElmIntegTotFissHeatPostprocessor>();
 
-class ElmIntegTotFissHeatPostprocessor :
-  public ElmIntegTotFissPostprocessor
+class ElmIntegTotFissHeatPostprocessor : public ElmIntegTotFissPostprocessor
 {
 public:
   ElmIntegTotFissHeatPostprocessor(const InputParameters & parameters);
@@ -18,7 +17,7 @@ public:
 protected:
   virtual Real computeFluxMultiplier(int index) override;
 
-  const MaterialProperty<std::vector<Real> > & _fisse;
+  const MaterialProperty<std::vector<Real>> & _fisse;
 };
 
 #endif

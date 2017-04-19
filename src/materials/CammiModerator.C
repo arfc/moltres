@@ -2,17 +2,16 @@
 #include "MooseUtils.h"
 // #define PRINT(var) #var
 
-template<>
-InputParameters validParams<CammiModerator>()
+template <>
+InputParameters
+validParams<CammiModerator>()
 {
   InputParameters params = validParams<GenericMoltresMaterial>();
   return params;
 }
 
-
-CammiModerator::CammiModerator(const InputParameters & parameters) :
-    GenericMoltresMaterial(parameters),
-    _k(declareProperty<Real>("k"))
+CammiModerator::CammiModerator(const InputParameters & parameters)
+  : GenericMoltresMaterial(parameters), _k(declareProperty<Real>("k"))
 {
 }
 

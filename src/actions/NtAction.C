@@ -7,32 +7,51 @@
 #include "FEProblem.h"
 #include "NonlinearSystemBase.h"
 
-template<>
-InputParameters validParams<NtAction>()
+template <>
+InputParameters
+validParams<NtAction>()
 {
   InputParameters params = validParams<AddVariableAction>();
-  params.addRequiredParam<unsigned int>("num_precursor_groups", "specifies the total number of precursors to create");
+  params.addRequiredParam<unsigned int>("num_precursor_groups",
+                                        "specifies the total number of precursors to create");
   params.addRequiredParam<std::string>("var_name_base", "specifies the base name of the variables");
   params.addRequiredCoupledVar("temperature", "Name of temperature variable");
-  params.addCoupledVar("pre_concs", "All the variables that hold the precursor concentrations. These MUST be listed by increasing group number.");
+  params.addCoupledVar("pre_concs", "All the variables that hold the precursor concentrations. "
+                                    "These MUST be listed by increasing group number.");
   params.addParam<Real>("temp_scaling", "The amount by which to scale the temperature variable.");
   params.addRequiredParam<unsigned int>("num_groups", "The total number of energy groups.");
-  params.addRequiredParam<bool>("use_exp_form", "Whether concentrations should be in an exponential/logarithmic format.");
-  params.addParam<bool>("jac_test", false, "Whether we're testing the Jacobian and should use some random initial conditions for the precursors.");
-  params.addParam<FunctionName>("nt_ic_function", "An initial condition function for the neutrons.");
-  params.addParam<std::vector<BoundaryName> >("vacuum_boundaries", "The boundaries on which to apply vacuum boundaries.");
-  params.addParam<bool>("create_temperature_var", true, "Whether to create the temperature variable.");
-  params.addParam<bool>("init_nts_from_file", false, "Whether to restart simulation using nt output from a previous simulation.");
-  params.addParam<bool>("init_temperature_from_file", false, "Whether to restart simulation using temperature output from a previous simulation.");
-  params.addParam<bool>("dg_for_temperature", true, "Whether the temperature variable should use discontinuous basis functions.");
-  params.addParam<bool>("eigen", false, "Whether to run an eigen- instead of a transient- simulation.");
+  params.addRequiredParam<bool>(
+      "use_exp_form", "Whether concentrations should be in an exponential/logarithmic format.");
+  params.addParam<bool>("jac_test", false, "Whether we're testing the Jacobian and should use some "
+                                           "random initial conditions for the precursors.");
+  params.addParam<FunctionName>("nt_ic_function",
+                                "An initial condition function for the neutrons.");
+  params.addParam<std::vector<BoundaryName>>("vacuum_boundaries",
+                                             "The boundaries on which to apply vacuum boundaries.");
+  params.addParam<bool>(
+      "create_temperature_var", true, "Whether to create the temperature variable.");
+  params.addParam<bool>(
+      "init_nts_from_file",
+      false,
+      "Whether to restart simulation using nt output from a previous simulation.");
+  params.addParam<bool>(
+      "init_temperature_from_file",
+      false,
+      "Whether to restart simulation using temperature output from a previous simulation.");
+  params.addParam<bool>(
+      "dg_for_temperature",
+      true,
+      "Whether the temperature variable should use discontinuous basis functions.");
+  params.addParam<bool>(
+      "eigen", false, "Whether to run an eigen- instead of a transient- simulation.");
   params.addRequiredParam<bool>("account_delayed", "Whether to account for delayed neutrons.");
-  params.addRequiredParam<bool>("sss2_input", "Whether the input follows sss2 form scattering matrices.");
+  params.addRequiredParam<bool>("sss2_input",
+                                "Whether the input follows sss2 form scattering matrices.");
   return params;
 }
 
-NtAction::NtAction(const InputParameters & params) :
-    AddVariableAction(params),
+NtAction::NtAction(const InputParameters & params)
+  : AddVariableAction(params),
     _num_precursor_groups(getParam<unsigned int>("num_precursor_groups")),
     _var_name_base(getParam<std::string>("var_name_base")),
     _num_groups(getParam<unsigned int>("num_groups"))
@@ -84,7 +103,8 @@ NtAction::act()
         params.set<NonlinearVariableName>("variable") = var_name;
         params.set<unsigned int>("group_number") = op;
         if (isParamValid("block"))
-          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("block");
         if (isParamValid("use_exp_form"))
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
         std::vector<std::string> include = {"temperature"};
@@ -101,7 +121,8 @@ NtAction::act()
         params.set<NonlinearVariableName>("variable") = var_name;
         params.set<unsigned int>("group_number") = op;
         if (isParamValid("block"))
-          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("block");
         if (isParamValid("use_exp_form"))
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
         std::vector<std::string> include = {"temperature"};
@@ -118,7 +139,8 @@ NtAction::act()
         params.set<NonlinearVariableName>("variable") = var_name;
         params.set<unsigned int>("group_number") = op;
         if (isParamValid("block"))
-          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("block");
         if (isParamValid("use_exp_form"))
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
         std::vector<std::string> include = {"temperature"};
@@ -135,7 +157,8 @@ NtAction::act()
         params.set<NonlinearVariableName>("variable") = var_name;
         params.set<unsigned int>("group_number") = op;
         if (isParamValid("block"))
-          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("block");
         if (isParamValid("use_exp_form"))
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
         std::vector<std::string> include = {"temperature"};
@@ -143,7 +166,7 @@ NtAction::act()
 
         params.set<unsigned int>("num_groups") = _num_groups;
         params.set<bool>("sss2_input") = getParam<bool>("sss2_input");
-        params.set<std::vector<VariableName> >("group_fluxes") = all_var_names;
+        params.set<std::vector<VariableName>>("group_fluxes") = all_var_names;
 
         std::string kernel_name = "InScatter_" + var_name;
         _problem->addKernel("InScatter", kernel_name, params);
@@ -156,14 +179,15 @@ NtAction::act()
         params.set<NonlinearVariableName>("variable") = var_name;
         params.set<unsigned int>("group_number") = op;
         if (isParamValid("block"))
-          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("block");
         if (isParamValid("use_exp_form"))
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
         std::vector<std::string> include = {"temperature"};
         params.applySpecificParameters(parameters(), include);
 
         params.set<unsigned int>("num_groups") = _num_groups;
-        params.set<std::vector<VariableName> >("group_fluxes") = all_var_names;
+        params.set<std::vector<VariableName>>("group_fluxes") = all_var_names;
         params.set<bool>("account_delayed") = getParam<bool>("account_delayed");
 
         std::string kernel_name = "CoupledFissionKernel_" + var_name;
@@ -175,14 +199,15 @@ NtAction::act()
         params.set<NonlinearVariableName>("variable") = var_name;
         params.set<unsigned int>("group_number") = op;
         if (isParamValid("block"))
-          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("block");
         if (isParamValid("use_exp_form"))
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
         std::vector<std::string> include = {"temperature"};
         params.applySpecificParameters(parameters(), include);
 
         params.set<unsigned int>("num_groups") = _num_groups;
-        params.set<std::vector<VariableName> >("group_fluxes") = all_var_names;
+        params.set<std::vector<VariableName>>("group_fluxes") = all_var_names;
         params.set<bool>("account_delayed") = getParam<bool>("account_delayed");
 
         std::string kernel_name = "CoupledFissionEigenKernel_" + var_name;
@@ -197,7 +222,8 @@ NtAction::act()
         params.set<NonlinearVariableName>("variable") = var_name;
         params.set<unsigned int>("group_number") = op;
         if (isParamValid("block"))
-          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("block");
         if (isParamValid("use_exp_form"))
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
         std::vector<std::string> include = {"temperature", "pre_concs"};
@@ -217,7 +243,8 @@ NtAction::act()
         // Set up vacuum boundary conditions
 
         InputParameters params = _factory.getValidParams("VacuumConcBC");
-        params.set<std::vector<BoundaryName> >("boundary") = getParam<std::vector<BoundaryName> >("vacuum_boundaries");
+        params.set<std::vector<BoundaryName>>("boundary") =
+            getParam<std::vector<BoundaryName>>("vacuum_boundaries");
         params.set<NonlinearVariableName>("variable") = var_name;
         if (isParamValid("use_exp_form"))
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
@@ -229,14 +256,16 @@ NtAction::act()
     if (_current_task == "add_ic" && !getParam<bool>("init_nts_from_file"))
     {
       if (getParam<bool>("jac_test") && isParamValid("nt_ic_function"))
-        mooseError("jac_test creates RandomICs. So are you sure you want to pass an initial condition function?");
+        mooseError("jac_test creates RandomICs. So are you sure you want to pass an initial "
+                   "condition function?");
 
       if (getParam<bool>("jac_test"))
       {
         InputParameters params = _factory.getValidParams("RandomIC");
         params.set<VariableName>("variable") = var_name;
         if (isParamValid("block"))
-          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("block");
         params.set<Real>("min") = 0;
         params.set<Real>("max") = 1;
 
@@ -248,7 +277,8 @@ NtAction::act()
         InputParameters params = _factory.getValidParams("FunctionIC");
         params.set<VariableName>("variable") = var_name;
         if (isParamValid("block"))
-          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("block");
         params.set<FunctionName>("function") = getParam<FunctionName>("nt_ic_function");
 
         std::string ic_name = "FunctionIC_" + var_name;
@@ -259,7 +289,8 @@ NtAction::act()
         InputParameters params = _factory.getValidParams("ConstantIC");
         params.set<VariableName>("variable") = var_name;
         if (isParamValid("block"))
-          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("block");
         if (getParam<bool>("use_exp_form"))
           params.set<Real>("value") = 0;
         else
@@ -269,7 +300,6 @@ NtAction::act()
         _problem->addInitialCondition("ConstantIC", ic_name, params);
       }
     }
-
 
     if (getParam<bool>("use_exp_form"))
     {
@@ -294,9 +324,10 @@ NtAction::act()
       {
         InputParameters params = _factory.getValidParams("Density");
         params.set<AuxVariableName>("variable") = aux_var_name;
-        params.set<std::vector<VariableName> >("density_log") = {var_name};
+        params.set<std::vector<VariableName>>("density_log") = {var_name};
         if (isParamValid("block"))
-          params.set<std::vector<SubdomainName> >("block") = getParam<std::vector<SubdomainName> >("block");
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("block");
 
         std::string aux_kernel_name = "Density_" + aux_var_name;
         _problem->addAuxKernel("Density", aux_kernel_name, params);
@@ -325,7 +356,8 @@ NtAction::act()
 
     if (_current_task == "add_variable")
     {
-      _pars.set<Real>("scaling") = isParamValid("temp_scaling") ? getParam<Real>("temp_scaling") : 1;
+      _pars.set<Real>("scaling") =
+          isParamValid("temp_scaling") ? getParam<Real>("temp_scaling") : 1;
       Real scale_factor = getParam<Real>("scaling");
       FEType fe_type(getParam<bool>("dg_for_temperature") ? FIRST : FIRST,
                      getParam<bool>("dg_for_temperature") ? L2_LAGRANGE : LAGRANGE);

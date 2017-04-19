@@ -1,14 +1,15 @@
 #include "DivisionPostprocessor.h"
 
-template<>
-InputParameters validParams<DivisionPostprocessor>()
+template <>
+InputParameters
+validParams<DivisionPostprocessor>()
 {
   InputParameters params = validParams<DifferencePostprocessor>();
   return params;
 }
 
-DivisionPostprocessor::DivisionPostprocessor(const InputParameters & parameters) :
-    DifferencePostprocessor(parameters)
+DivisionPostprocessor::DivisionPostprocessor(const InputParameters & parameters)
+  : DifferencePostprocessor(parameters)
 {
 }
 

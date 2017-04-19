@@ -1,16 +1,19 @@
 #include "SelfFissionEigenKernel.h"
 
-template<>
-InputParameters validParams<SelfFissionEigenKernel>()
+template <>
+InputParameters
+validParams<SelfFissionEigenKernel>()
 {
   InputParameters params = validParams<EigenKernel>();
-  params.addRequiredParam<MaterialPropertyName>("nu_f", "The number of neutrons produced per fission.");
-  params.addRequiredParam<MaterialPropertyName>("sigma_f", "The macroscopic fission cross section.");
+  params.addRequiredParam<MaterialPropertyName>("nu_f",
+                                                "The number of neutrons produced per fission.");
+  params.addRequiredParam<MaterialPropertyName>("sigma_f",
+                                                "The macroscopic fission cross section.");
   return params;
 }
 
-SelfFissionEigenKernel::SelfFissionEigenKernel(const InputParameters & parameters) :
-    EigenKernel(parameters),
+SelfFissionEigenKernel::SelfFissionEigenKernel(const InputParameters & parameters)
+  : EigenKernel(parameters),
     _nu_f(getMaterialProperty<Real>("nu_f")),
     _sigma_f(getMaterialProperty<Real>("sigma_f"))
 {

@@ -4,14 +4,13 @@
 #include "Kernel.h"
 #include "ScalarTransportBase.h"
 
-//Forward Declarations
+// Forward Declarations
 class PrecursorSource;
 
-template<>
+template <>
 InputParameters validParams<PrecursorSource>();
 
-class PrecursorSource : public Kernel,
-                        public ScalarTransportBase
+class PrecursorSource : public Kernel, public ScalarTransportBase
 {
 public:
   PrecursorSource(const InputParameters & parameters);
@@ -21,11 +20,11 @@ protected:
   virtual Real computeQpJacobian();
   virtual Real computeQpOffDiagJacobian(unsigned int jvar);
 
-  const MaterialProperty<std::vector<Real> > & _nsf;
-  const MaterialProperty<std::vector<Real> > & _d_nsf_d_temp;
+  const MaterialProperty<std::vector<Real>> & _nsf;
+  const MaterialProperty<std::vector<Real>> & _d_nsf_d_temp;
   unsigned int _num_groups;
-  const MaterialProperty<std::vector<Real> > & _beta_eff;
-  const MaterialProperty<std::vector<Real> > & _d_beta_eff_d_temp;
+  const MaterialProperty<std::vector<Real>> & _beta_eff;
+  const MaterialProperty<std::vector<Real>> & _d_beta_eff_d_temp;
   unsigned int _precursor_group;
   const VariableValue & _temp;
   unsigned int _temp_id;
@@ -34,4 +33,4 @@ protected:
   Real _prec_scale;
 };
 
-#endif //PRECURSORSOURCE_H
+#endif // PRECURSORSOURCE_H

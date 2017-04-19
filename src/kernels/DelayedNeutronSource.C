@@ -1,21 +1,24 @@
 #include "DelayedNeutronSource.h"
 
-template<>
-InputParameters validParams<DelayedNeutronSource>()
+template <>
+InputParameters
+validParams<DelayedNeutronSource>()
 {
   InputParameters params = validParams<Kernel>();
   params += validParams<ScalarTransportBase>();
   params.addRequiredParam<unsigned int>("num_precursor_groups", "The number of precursor groups.");
   params.addCoupledVar("temperature", "The temperature used to interpolate material properties");
-  params.addRequiredCoupledVar("pre_concs", "All the variables that hold the precursor concentrations. These MUST be listed by increasing group number.");
+  params.addRequiredCoupledVar("pre_concs", "All the variables that hold the precursor "
+                                            "concentrations. These MUST be listed by increasing "
+                                            "group number.");
   return params;
 }
 
-DelayedNeutronSource::DelayedNeutronSource(const InputParameters & parameters) :
-    Kernel(parameters),
+DelayedNeutronSource::DelayedNeutronSource(const InputParameters & parameters)
+  : Kernel(parameters),
     ScalarTransportBase(parameters),
-    _decay_constant(getMaterialProperty<std::vector<Real> >("decay_constant")),
-    _d_decay_constant_d_temp(getMaterialProperty<std::vector<Real> >("d_decay_constant_d_temp")),
+    _decay_constant(getMaterialProperty<std::vector<Real>>("decay_constant")),
+    _d_decay_constant_d_temp(getMaterialProperty<std::vector<Real>>("d_decay_constant_d_temp")),
     _num_precursor_groups(getParam<unsigned int>("num_precursor_groups")),
     _temp_id(coupled("temperature")),
     _temp(coupledValue("temperature"))
@@ -58,14 +61,16 @@ DelayedNeutronSource::computeQpOffDiagJacobian(unsigned int jvar)
   {
     if (jvar == _pre_ids[i])
     {
-      jac += -_test[_i][_qp] * _decay_constant[_qp][i] * computeConcentrationDerivative((*_pre_concs[i]), _phi, _j, _qp);
+      jac += -_test[_i][_qp] * _decay_constant[_qp][i] *
+             computeConcentrationDerivative((*_pre_concs[i]), _phi, _j, _qp);
       break;
     }
   }
 
   if (jvar == _temp_id)
     for (unsigned int i = 0; i < _num_precursor_groups; ++i)
-      jac += -_test[_i][_qp] * computeConcentration((*_pre_concs[i]), _qp) * _d_decay_constant_d_temp[_qp][i] * _phi[_j][_qp];
+      jac += -_test[_i][_qp] * computeConcentration((*_pre_concs[i]), _qp) *
+             _d_decay_constant_d_temp[_qp][i] * _phi[_j][_qp];
 
   return jac;
 }

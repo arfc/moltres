@@ -4,14 +4,13 @@
 #include "Kernel.h"
 #include "ScalarTransportBase.h"
 
-//Forward Declarations
+// Forward Declarations
 class CoupledFissionKernel;
 
-template<>
+template <>
 InputParameters validParams<CoupledFissionKernel>();
 
-class CoupledFissionKernel : public Kernel,
-                             public ScalarTransportBase
+class CoupledFissionKernel : public Kernel, public ScalarTransportBase
 {
 public:
   CoupledFissionKernel(const InputParameters & parameters);
@@ -21,10 +20,10 @@ protected:
   virtual Real computeQpJacobian();
   virtual Real computeQpOffDiagJacobian(unsigned int jvar);
 
-  const MaterialProperty<std::vector<Real> > & _nsf;
-  const MaterialProperty<std::vector<Real> > & _d_nsf_d_temp;
-  const MaterialProperty<std::vector<Real> > & _chi;
-  const MaterialProperty<std::vector<Real> > & _d_chi_d_temp;
+  const MaterialProperty<std::vector<Real>> & _nsf;
+  const MaterialProperty<std::vector<Real>> & _d_nsf_d_temp;
+  const MaterialProperty<std::vector<Real>> & _chi;
+  const MaterialProperty<std::vector<Real>> & _d_chi_d_temp;
   const MaterialProperty<Real> & _beta;
   const MaterialProperty<Real> & _d_beta_d_temp;
   unsigned int _group;
@@ -36,4 +35,4 @@ protected:
   bool _account_delayed;
 };
 
-#endif //COUPLEDFISSIONKERNEL_H
+#endif // COUPLEDFISSIONKERNEL_H

@@ -5,10 +5,10 @@
 #include "ScalarTransportBase.h"
 #include "MooseVariableInterface.h"
 
-//Forward Declarations
+// Forward Declarations
 class IntegralOldVariablePostprocessor;
 
-template<>
+template <>
 InputParameters validParams<IntegralOldVariablePostprocessor>();
 
 /**
@@ -18,10 +18,9 @@ InputParameters validParams<IntegralOldVariablePostprocessor>();
  * Note that specializations of this integral are possible by deriving from this
  * class and overriding computeQpIntegral().
  */
-class IntegralOldVariablePostprocessor :
-  public ElementIntegralPostprocessor,
-  public ScalarTransportBase,
-  public MooseVariableInterface
+class IntegralOldVariablePostprocessor : public ElementIntegralPostprocessor,
+                                         public ScalarTransportBase,
+                                         public MooseVariableInterface
 {
 public:
   IntegralOldVariablePostprocessor(const InputParameters & parameters);

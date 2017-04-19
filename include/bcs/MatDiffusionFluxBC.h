@@ -5,7 +5,7 @@
 
 class MatDiffusionFluxBC;
 
-template<>
+template <>
 InputParameters validParams<MatDiffusionFluxBC>();
 
 class MatDiffusionFluxBC : public IntegratedBC

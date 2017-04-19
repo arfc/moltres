@@ -6,7 +6,7 @@
 // Forward Declarations
 class INSSymmetryAxisBC;
 
-template<>
+template <>
 InputParameters validParams<INSSymmetryAxisBC>();
 
 /**
@@ -19,7 +19,7 @@ class INSSymmetryAxisBC : public IntegratedBC
 public:
   INSSymmetryAxisBC(const InputParameters & parameters);
 
-  virtual ~INSSymmetryAxisBC(){}
+  virtual ~INSSymmetryAxisBC() {}
 
 protected:
   virtual Real computeQpResidual();
@@ -53,6 +53,5 @@ protected:
   unsigned _component;
   bool _integrate_p_by_parts;
 };
-
 
 #endif // INSSYMMETRYAXISBC_H

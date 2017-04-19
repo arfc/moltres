@@ -1,16 +1,18 @@
 #include "MatDiffusionFluxBC.h"
 
-template<>
-InputParameters validParams<MatDiffusionFluxBC>()
+template <>
+InputParameters
+validParams<MatDiffusionFluxBC>()
 {
   InputParameters params = validParams<IntegratedBC>();
-  params.addRequiredParam<MaterialPropertyName>("prop_name", "the name of the material property we are going to use");
+  params.addRequiredParam<MaterialPropertyName>(
+      "prop_name", "the name of the material property we are going to use");
 
   return params;
 }
 
-MatDiffusionFluxBC::MatDiffusionFluxBC(const InputParameters & parameters) :
-    IntegratedBC(parameters)
+MatDiffusionFluxBC::MatDiffusionFluxBC(const InputParameters & parameters)
+  : IntegratedBC(parameters)
 {
   _diff = &getMaterialProperty<Real>("prop_name");
 }

@@ -3,10 +3,10 @@
 
 #include "Kernel.h"
 
-//Forward Declarations
+// Forward Declarations
 class GammaHeatSource;
 
-template<>
+template <>
 InputParameters validParams<GammaHeatSource>();
 
 class GammaHeatSource : public Kernel
@@ -22,4 +22,4 @@ protected:
   Real _gamma;
 };
 
-#endif //GAMMAEHEATSOURCE_H
+#endif // GAMMAEHEATSOURCE_H

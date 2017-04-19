@@ -5,7 +5,7 @@
 
 class DiffusionNoBCBC;
 
-template<>
+template <>
 InputParameters validParams<DiffusionNoBCBC>();
 
 /**
@@ -22,6 +22,5 @@ protected:
 
   virtual Real computeQpJacobian() override;
 };
-
 
 #endif /* DIFFUSIONNOBCBC_H */

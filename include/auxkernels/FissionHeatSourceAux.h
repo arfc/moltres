@@ -3,10 +3,10 @@
 
 #include "AuxKernel.h"
 
-//Forward Declarations
+// Forward Declarations
 class FissionHeatSourceAux;
 
-template<>
+template <>
 InputParameters validParams<FissionHeatSourceAux>();
 
 class FissionHeatSourceAux : public AuxKernel
@@ -17,8 +17,8 @@ public:
 protected:
   virtual Real computeValue();
 
-  const MaterialProperty<std::vector<Real> > & _fissxs;
-  const MaterialProperty<std::vector<Real> > & _d_fissxs_d_temp;
+  const MaterialProperty<std::vector<Real>> & _fissxs;
+  const MaterialProperty<std::vector<Real>> & _d_fissxs_d_temp;
   unsigned int _num_groups;
   const PostprocessorValue & _tot_fissions;
   Real _power;
@@ -26,4 +26,4 @@ protected:
   std::vector<unsigned int> _flux_ids;
 };
 
-#endif //FISSIONEHEATSOURCE_H
+#endif // FISSIONEHEATSOURCE_H

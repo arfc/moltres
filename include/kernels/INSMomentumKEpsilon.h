@@ -6,7 +6,7 @@
 // Forward Declarations
 class INSMomentumKEpsilon;
 
-template<>
+template <>
 InputParameters validParams<INSMomentumKEpsilon>();
 
 /**
@@ -19,7 +19,7 @@ class INSMomentumKEpsilon : public Kernel
 public:
   INSMomentumKEpsilon(const InputParameters & parameters);
 
-  virtual ~INSMomentumKEpsilon(){}
+  virtual ~INSMomentumKEpsilon() {}
 
 protected:
   virtual Real computeQpResidual();
@@ -57,6 +57,5 @@ protected:
   unsigned _component;
   bool _integrate_p_by_parts;
 };
-
 
 #endif // INSMOMENTUMKEPSILON_H

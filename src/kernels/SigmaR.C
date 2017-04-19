@@ -1,7 +1,8 @@
 #include "SigmaR.h"
 
-template<>
-InputParameters validParams<SigmaR>()
+template <>
+InputParameters
+validParams<SigmaR>()
 {
   InputParameters params = validParams<Kernel>();
   params += validParams<ScalarTransportBase>();
@@ -10,12 +11,11 @@ InputParameters validParams<SigmaR>()
   return params;
 }
 
-
-SigmaR::SigmaR(const InputParameters & parameters) :
-    Kernel(parameters),
+SigmaR::SigmaR(const InputParameters & parameters)
+  : Kernel(parameters),
     ScalarTransportBase(parameters),
-    _remxs(getMaterialProperty<std::vector<Real> >("remxs")),
-    _d_remxs_d_temp(getMaterialProperty<std::vector<Real> >("d_remxs_d_temp")),
+    _remxs(getMaterialProperty<std::vector<Real>>("remxs")),
+    _d_remxs_d_temp(getMaterialProperty<std::vector<Real>>("d_remxs_d_temp")),
     _group(getParam<unsigned int>("group_number") - 1),
     _temp_id(coupled("temperature"))
 {
@@ -37,7 +37,8 @@ Real
 SigmaR::computeQpOffDiagJacobian(unsigned int jvar)
 {
   if (jvar == _temp_id)
-    return _test[_i][_qp] * _d_remxs_d_temp[_qp][_group] * _phi[_j][_qp] * computeConcentration(_u, _qp);
+    return _test[_i][_qp] * _d_remxs_d_temp[_qp][_group] * _phi[_j][_qp] *
+           computeConcentration(_u, _qp);
   else
     return 0;
 }

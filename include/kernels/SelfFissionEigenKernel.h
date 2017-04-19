@@ -3,10 +3,10 @@
 
 #include "EigenKernel.h"
 
-//Forward Declarations
+// Forward Declarations
 class SelfFissionEigenKernel;
 
-template<>
+template <>
 InputParameters validParams<SelfFissionEigenKernel>();
 
 class SelfFissionEigenKernel : public EigenKernel
@@ -22,4 +22,4 @@ protected:
   const MaterialProperty<Real> & _sigma_f;
 };
 
-#endif //SELFFISSIONEIGENKERNEL_H
+#endif // SELFFISSIONEIGENKERNEL_H

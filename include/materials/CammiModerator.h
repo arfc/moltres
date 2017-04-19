@@ -7,7 +7,7 @@
 
 class CammiModerator;
 
-template<>
+template <>
 InputParameters validParams<CammiModerator>();
 
 class CammiModerator : public GenericMoltresMaterial
@@ -21,4 +21,4 @@ protected:
   MaterialProperty<Real> & _k;
 };
 
-#endif //CAMMIMODERATOR_H
+#endif // CAMMIMODERATOR_H

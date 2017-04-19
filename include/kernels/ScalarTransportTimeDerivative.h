@@ -7,15 +7,13 @@
 // Forward Declaration
 class ScalarTransportTimeDerivative;
 
-template<>
+template <>
 InputParameters validParams<ScalarTransportTimeDerivative>();
 
-class ScalarTransportTimeDerivative : public TimeKernel,
-                                      public ScalarTransportBase
+class ScalarTransportTimeDerivative : public TimeKernel, public ScalarTransportBase
 {
 public:
   ScalarTransportTimeDerivative(const InputParameters & parameters);
-
 
 protected:
   virtual Real computeQpResidual();
@@ -25,4 +23,4 @@ protected:
   Real _conc_scaling;
 };
 
-#endif //SCALARTRANSPORTTIMEDERIVATIVE_H
+#endif // SCALARTRANSPORTTIMEDERIVATIVE_H

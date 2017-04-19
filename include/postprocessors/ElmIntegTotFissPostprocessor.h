@@ -4,15 +4,13 @@
 #include "ElementIntegralPostprocessor.h"
 #include "ScalarTransportBase.h"
 
-//Forward Declarations
+// Forward Declarations
 class ElmIntegTotFissPostprocessor;
 
-template<>
+template <>
 InputParameters validParams<ElmIntegTotFissPostprocessor>();
 
-class ElmIntegTotFissPostprocessor :
-  public ElementIntegralPostprocessor,
-  public ScalarTransportBase
+class ElmIntegTotFissPostprocessor : public ElementIntegralPostprocessor, public ScalarTransportBase
 {
 
 public:
@@ -23,7 +21,7 @@ protected:
   virtual Real computeFluxMultiplier(int index);
 
   int _num_groups;
-  const MaterialProperty<std::vector<Real> > & _fissxs;
+  const MaterialProperty<std::vector<Real>> & _fissxs;
   std::vector<MooseVariable *> _vars;
   Real _nt_scale;
   std::vector<const VariableValue *> _group_fluxes;

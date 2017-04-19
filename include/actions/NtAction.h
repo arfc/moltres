@@ -3,7 +3,7 @@
 
 #include "AddVariableAction.h"
 
-class NtAction: public AddVariableAction
+class NtAction : public AddVariableAction
 {
 public:
   NtAction(const InputParameters & params);
@@ -20,7 +20,7 @@ protected:
   unsigned int _num_groups;
 };
 
-template<>
+template <>
 InputParameters validParams<NtAction>();
 
-#endif //NTACTION_H
+#endif // NTACTION_H

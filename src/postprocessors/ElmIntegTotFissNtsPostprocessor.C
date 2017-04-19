@@ -1,19 +1,22 @@
 #include "ElmIntegTotFissNtsPostprocessor.h"
 
-template<>
-InputParameters validParams<ElmIntegTotFissNtsPostprocessor>()
+template <>
+InputParameters
+validParams<ElmIntegTotFissNtsPostprocessor>()
 {
   InputParameters params = validParams<ElementIntegralPostprocessor>();
-  params.addRequiredCoupledVar("group_fluxes", "The group fluxes. MUST be arranged by decreasing energy/increasing group number.");
+  params.addRequiredCoupledVar(
+      "group_fluxes",
+      "The group fluxes. MUST be arranged by decreasing energy/increasing group number.");
   params.addRequiredParam<int>("num_groups", "The number of energy groups.");
   return params;
 }
 
-ElmIntegTotFissNtsPostprocessor::ElmIntegTotFissNtsPostprocessor(const InputParameters & parameters) :
-    ElementIntegralPostprocessor(parameters),
+ElmIntegTotFissNtsPostprocessor::ElmIntegTotFissNtsPostprocessor(const InputParameters & parameters)
+  : ElementIntegralPostprocessor(parameters),
     // MooseVariableInterface(this, false),
     _num_groups(getParam<int>("num_groups")),
-    _nsf(getMaterialProperty<std::vector<Real> >("nsf")),
+    _nsf(getMaterialProperty<std::vector<Real>>("nsf")),
     _vars(getCoupledMooseVars())
 {
   addMooseVariableDependency(_vars);

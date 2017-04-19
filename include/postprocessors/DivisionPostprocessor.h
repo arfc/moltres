@@ -5,7 +5,7 @@
 
 class DivisionPostprocessor;
 
-template<>
+template <>
 InputParameters validParams<DivisionPostprocessor>();
 
 /**
@@ -20,6 +20,5 @@ public:
 
   virtual PostprocessorValue getValue() override;
 };
-
 
 #endif /* DIVISIONPOSTPROCESSOR_H */

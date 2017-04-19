@@ -7,7 +7,7 @@
 
 class CammiFuel;
 
-template<>
+template <>
 InputParameters validParams<CammiFuel>();
 
 class CammiFuel : public GenericMoltresMaterial
@@ -22,4 +22,4 @@ protected:
   MaterialProperty<Real> & _k;
 };
 
-#endif //CAMMIFUEL_H
+#endif // CAMMIFUEL_H

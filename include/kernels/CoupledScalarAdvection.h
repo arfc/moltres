@@ -7,20 +7,19 @@
 // Forward Declarations
 class CoupledScalarAdvection;
 
-template<>
+template <>
 InputParameters validParams<CoupledScalarAdvection>();
 
 /**
  * This class computes the residual and Jacobian contributions for the
  * incompressible Navier-Stokes temperature (energy) equation.
  */
-class CoupledScalarAdvection : public Kernel,
-                               public ScalarTransportBase
+class CoupledScalarAdvection : public Kernel, public ScalarTransportBase
 {
 public:
   CoupledScalarAdvection(const InputParameters & parameters);
 
-  virtual ~CoupledScalarAdvection(){}
+  virtual ~CoupledScalarAdvection() {}
 
 protected:
   virtual Real computeQpResidual();
@@ -43,6 +42,5 @@ protected:
 
   Real _conc_scaling;
 };
-
 
 #endif // COUPLEDSCALARADVECTION_H

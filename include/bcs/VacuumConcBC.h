@@ -4,10 +4,10 @@
 #include "IntegratedBC.h"
 #include "ScalarTransportBase.h"
 
-//Forward Declarations
+// Forward Declarations
 class VacuumConcBC;
 
-template<>
+template <>
 InputParameters validParams<VacuumConcBC>();
 
 /**
@@ -16,11 +16,9 @@ InputParameters validParams<VacuumConcBC>();
  * Hence, \f$ D\frac{du}{dn}=-\frac{u}{2} \f$ and \f$ -\frac{u}{2} \f$ is substituted into
  * the Neumann BC term produced from integrating the diffusion operator by parts.
  */
-class VacuumConcBC : public IntegratedBC,
-                     public ScalarTransportBase
+class VacuumConcBC : public IntegratedBC, public ScalarTransportBase
 {
 public:
-
   /**
    * Factory constructor, takes parameters so that all derived classes can be built using the same
    * constructor.
@@ -36,4 +34,4 @@ protected:
   Real _alpha;
 };
 
-#endif //VACUUMCONCBC_H
+#endif // VACUUMCONCBC_H
