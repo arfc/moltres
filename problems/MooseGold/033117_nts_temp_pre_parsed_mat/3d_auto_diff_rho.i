@@ -144,12 +144,12 @@ diri_temp=922
 [BCs]
   [./vacuum_group1]
     type = VacuumConcBC
-    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
+    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops moder_sides'
     variable = group1
   [../]
   [./vacuum_group2]
     type = VacuumConcBC
-    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
+    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops moder_sides'
     variable = group2
   [../]
   # [./temp_diri_cg]
