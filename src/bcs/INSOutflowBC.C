@@ -108,7 +108,7 @@ INSOutflowBC::computeQpJacobian()
 }
 
 Real
-INSOutflowBC::computeQpOffDiagJacobian(unsigned jvar)
+INSOutflowBC::computeQpOffDiagJacobian(unsigned /*jvar*/)
 {
   return 0.;
 }

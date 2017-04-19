@@ -103,7 +103,7 @@ INSSymmetryAxisBC::computeQpJacobian()
 }
 
 Real
-INSSymmetryAxisBC::computeQpOffDiagJacobian(unsigned jvar)
+INSSymmetryAxisBC::computeQpOffDiagJacobian(unsigned /*jvar*/)
 {
   return 0.;
 }
