@@ -26,17 +26,20 @@ diri_temp=922
   [./group1]
     order = FIRST
     family = LAGRANGE
-    initial_condition = 1
+    initial_from_file_var = group1
+    inital_from_file_timestep = LATEST
     scaling = 1e4
   [../]
   [./group2]
     order = FIRST
     family = LAGRANGE
-    initial_condition = 1
+    initial_from_file_var = group2
+    inital_from_file_timestep = LATEST
     scaling = 1e4
   [../]
   [./temp]
-    initial_condition = ${ini_temp}
+    initial_from_file_var = temp
+    inital_from_file_timestep = LATEST
     scaling = 1e-4
   [../]
 []
@@ -51,7 +54,8 @@ diri_temp=922
   nt_exp_form = false
   family = MONOMIAL
   order = CONSTANT
-  jac_test = true
+  # jac_test = true
+  init_from_file = true
 []
 
 [Kernels]

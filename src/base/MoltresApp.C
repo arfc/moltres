@@ -15,7 +15,6 @@
 #include "FissionHeatSource.h"
 #include "TransientFissionHeatSource.h"
 #include "INSMomentumKEpsilon.h"
-#include "INSK.h"
 #include "SigmaR.h"
 #include "CoupledFissionEigenKernel.h"
 #include "CoupledFissionKernel.h"
@@ -127,7 +126,6 @@ MoltresApp::registerObjects(Factory & factory)
   registerKernel(CoupledFissionKernel);
   registerKernel(SelfFissionEigenKernel);
   registerKernel(INSMomentumKEpsilon);
-  registerKernel(INSK);
   registerKernel(GroupDiffusion);
   registerBoundaryCondition(LinLogPenaltyDirichletBC);
   registerBoundaryCondition(ScalarAdvectionArtDiffNoBCBC);

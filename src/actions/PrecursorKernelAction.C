@@ -3,6 +3,7 @@
 #include "Parser.h"
 #include "Conversion.h"
 #include "FEProblem.h"
+#include "NonlinearSystemBase.h"
 
 template <>
 InputParameters
@@ -22,19 +23,24 @@ validParams<PrecursorKernelAction>()
                         "Allows user to specify constant value for v component of velocity.");
   params.addParam<Real>("w_def",
                         "Allows user to specify constant value for w component of velocity.");
-  params.addRequiredCoupledVar("group_fluxes", "All the variables that hold the group fluxes. "
-                                               "These MUST be listed by decreasing "
-                                               "energy/increasing group number.");
+  params.addRequiredCoupledVar("group_fluxes",
+                               "All the variables that hold the group fluxes. "
+                               "These MUST be listed by decreasing "
+                               "energy/increasing group number.");
   params.addRequiredParam<unsigned int>("num_groups", "The total number of energy groups.");
   params.addRequiredParam<std::vector<BoundaryName>>("outlet_boundaries", "Outflow boundaries.");
   params.addParam<std::vector<BoundaryName>>("inlet_boundaries", "Inflow boundaries.");
   params.addParam<bool>("nt_exp_form",
                         true,
                         "Whether concentrations should be in an expotential/logarithmic format.");
-  params.addParam<bool>("jac_test", false, "Whether we're testing the Jacobian and should use some "
-                                           "random initial conditions for the precursors.");
+  params.addParam<bool>("jac_test",
+                        false,
+                        "Whether we're testing the Jacobian and should use some "
+                        "random initial conditions for the precursors.");
   params.addParam<Real>("prec_scale", "The amount by which the neutron fluxes are scaled.");
   params.addParam<bool>("transient", true, "Whether to run a transient simulation.");
+  params.addParam<bool>(
+      "init_from_file", false, "Whether to initialize the precursors from a file.");
   return params;
 }
 
@@ -51,11 +57,26 @@ PrecursorKernelAction::act()
 {
   for (unsigned int op = 1; op <= _num_precursor_groups; ++op)
   {
+    std::string var_name = _var_name_base + Moose::stringify(op);
+
+    //
+    // See whether we want to use an old solution
+    //
+    if (getParam<bool>("init_from_file"))
+    {
+      if (_current_task == "check_copy_nodal_vars")
+        _app.setFileRestart() = true;
+
+      if (_current_task == "copy_nodal_vars")
+      {
+        SystemBase * system = &_problem->getNonlinearSystemBase();
+        system->addVariableToCopy(var_name, var_name, "LATEST");
+      }
+    }
+
     //
     // Create variable names
     //
-
-    std::string var_name = _var_name_base + Moose::stringify(op);
 
     if (_current_task == "add_variable")
       addVariable(var_name);
@@ -165,7 +186,7 @@ PrecursorKernelAction::act()
 
     // Set up ICs
 
-    if (_current_task == "add_ic")
+    if (_current_task == "add_ic" && !getParam<bool>("init_from_file"))
     {
       if (getParam<bool>("jac_test"))
       {
