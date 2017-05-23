@@ -42,3 +42,18 @@
 [Outputs]
   exodus = true
 []
+
+[ICs]
+  [./u_ic]
+    type = FunctionIC
+    variable = u
+    function = u_func
+  [../]
+[]
+
+[Functions]
+  [./u_func]
+    type = ParsedFunction
+    value = 'x'
+  [../]
+[]

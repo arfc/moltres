@@ -11,12 +11,13 @@ public:
   virtual void act();
 
 protected:
-  /// number of grains to create
+  /// number of precursor groups
   unsigned int _num_precursor_groups;
 
-  /// base name for the order parameter variables
+  /// base name for neutron variables
   std::string _var_name_base;
 
+  /// number of energy groups
   unsigned int _num_groups;
 };
 
