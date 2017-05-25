@@ -148,7 +148,7 @@ sigma_val=6
   solve_type = 'PJFNK'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -ksp_gmres_restart'
-  petsc_options_value = 'asm	  lu	       2	       preonly	     31'
+  petsc_options_value = 'asm      lu           2               preonly       31'
 
   nl_max_its = 20
   l_max_its = 10

@@ -50,7 +50,7 @@
 []
 
 [Debug]
-	show_var_residual_norms = true
+        show_var_residual_norms = true
 []
 
 [Outputs]

@@ -19,7 +19,7 @@
     full = true
     solve_type = 'NEWTON'
     # petsc_options_iname = '-pc_type -sub_pc_type -sub_ksp_type'
-    # petsc_options_value = 'asm	    lu		 preonly'
+    # petsc_options_value = 'asm            lu           preonly'
     petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type -pc_factor_mat_solver_package'
     petsc_options_value = 'lu NONZERO 1.e-10 preonly mumps'
   [../]
@@ -37,7 +37,7 @@
 []
 
 [Debug]
-	show_var_residual_norms = true
+        show_var_residual_norms = true
 []
 
 [Outputs]

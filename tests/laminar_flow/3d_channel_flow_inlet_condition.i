@@ -49,7 +49,7 @@ ymax=1.2
 []
 
 [Debug]
-	show_var_residual_norms = true
+        show_var_residual_norms = true
 []
 
 [Outputs]
