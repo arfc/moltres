@@ -19,5 +19,4 @@ Line Loop(13) = {4, -6, 3};
 Plane Surface(14) = {13};
 Surface Loop(15) = {8, 10, 12, 14};
 Volume(16) = {15};
-Physical Surface("Boundary") = {8, 10, 12, 14};
 Physical Volume("Domain") = {16};
