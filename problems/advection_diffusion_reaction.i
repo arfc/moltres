@@ -56,7 +56,7 @@ k_coeff = 1
   type = Steady
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   petsc_options_iname = '-pc_type -sub_pc_type -sub_ksp_type'
-  petsc_options_value = 'asm	  lu	       preonly'
+  petsc_options_value = 'asm      lu           preonly'
 
   solve_type = 'NEWTON'
 []

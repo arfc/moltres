@@ -88,7 +88,7 @@
 []
 
 [Debug]
-	show_var_residual_norms = true
+        show_var_residual_norms = true
 []
 
 [Outputs]
@@ -100,7 +100,7 @@
 []
 
 [Variables]
-  # Velocity in radial direction	
+  # Velocity in radial direction
   [./u]
     family = LAGRANGE
     order = SECOND
