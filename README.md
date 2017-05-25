@@ -1,8 +1,15 @@
 Moltres
 =====
 
-Moltres is a MOOSE-application code design for simulation of molten salt
-reactors. 
+Moltres is a MOOSE-application code designed for simulation of molten salt
+reactors.
+
+## Use
+
+Moltres documentation can be found at arfc/github.io/software/moltres. Doxygen
+pages are [here](https://arfc.github.io/moltres/). Outlines of the kernels and
+boundary conditions used to construct the Moltres governing equations can be
+found on the [Moltres wiki](http://arfc.github.io/software/moltres/wiki/).
 
 ## Install
 
@@ -20,15 +27,21 @@ make -j8
 ```
 
 You may also compile a debug version of Moltres by running `METHOD=dbg make
--j8`.
+-j8`. Note that you should replace `8` with the number of processors available
+on your machine.
+
+## Testing
+
+To ensure that Moltres is functioning properly, run `./run_tests -j8` from the
+root of the Moltres directory.
 
 ## Development
 
 If you ever want to contribute changes to the Moltres repository, make sure you
-run `./scripts/install-format-hook.sh` before making any commits. This will
+run `scripts/install-format-hook.sh` before making any commits. This will
 ensure that any commits you make adhere to the MOOSE/Moltres C++ style.
 
-## Contact 
+## Contact
 
 Contact Alex Lindsay at al007@illinois.edu for more information or
 even better, please post to our discussion list at

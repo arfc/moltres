@@ -12,7 +12,7 @@ diri_temp=922
   sss2_input = false
   pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6'
   account_delayed = true
-[../]
+[]
 
 [Mesh]
   file = '2d_lattice_structured.msh'
