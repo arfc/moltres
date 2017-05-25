@@ -90,7 +90,7 @@
 []
 
 [Variables]
-  # Velocity in radial direction	
+  # Velocity in radial direction
   [./u]
     family = LAGRANGE
     order = SECOND

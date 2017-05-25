@@ -120,7 +120,7 @@ diri_temp=922
     group_number = 2
     block = 'fuel'
   [../]
-  
+
   # Temperature
   [./temp_time_derivative]
     type = MatINSTemperatureTimeDerivative
