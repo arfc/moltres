@@ -120,7 +120,7 @@ If you keep your fork's branches up to date (i.e., "push" your changes before
 you leave), only your *local* copies of your branches may be different when you
 next sit down at the other location.
 
-### Workflow: The Beginning
+#### Workflow: The Beginning
 
 Now, for the workflow! This is by no means the only way to perform this
 type of workflow, but I assume that you wish to handle conflicts as
