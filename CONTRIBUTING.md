@@ -16,19 +16,19 @@
 ## General Notes
 
 -   The terminology we use is based on the
-    `Integrator Workflow   <http://en.wikipedia.org/wiki/Integrator_workflow>`\_
+    [Integrator Workflow ](http://en.wikipedia.org/wiki/Integrator_workflow).
 
 -   Use a branching workflow similar to the one described
-    at http://progit.org/book/ch3-4.html.
+    in the [progit gitbook](http://progit.org/book/ch3-4.html).
 
 -   Keep your own "master" and "develop" branches in sync with the
     main repository's "master" and "develop" branches. Specifically,
     do not push your own commits directly to your "master" and
     "develop" branches.
 
--   Any commit should *pass all tests* (see `Running Tests`\_).
+-   Any commit should *pass all tests* (see [Running Tests](#running-tests)).
 
--   See the `An Example`\_ section below for a full walk through
+-   See the [An Example](#an-example) section below for a full walk through.
 
 -   In addition to a review of the algorithmic and logical changes in
     your contribution, it will be reviewed on a variety of levels
@@ -43,14 +43,14 @@
     another developer.
 
 -   You may want to review this
-    `tutorial   <https://help.github.com/articles/using-pull-requests/>`\_
+    [tutorial](https://help.github.com/articles/using-pull-requests/)
     before you make a pull request to the develop branch.
 
 ## Reviewing a Pull Request
 
 -   Look over the code.
 
--   Check that it meets the `MOOSE style guidelines <http://mooseframework.org/wiki/CodeStandards/>`\_.
+-   Check that it meets the [MOOSE style guidelines](http://mooseframework.org/wiki/CodeStandards/).
 
 -   Make inline review comments concerning improvements.
 
@@ -101,7 +101,7 @@ repo, we will have two branches in our fork: "master" and "develop".
 #### Acquiring a Fork of the Moltres Repository
 
 A fork is *your* copy of Moltres. Github offers an excellent
-`tutorial <http://help.github.com/fork-a-repo/>`\_ on how to set one up.
+[tutorial](http://help.github.com/fork-a-repo/) on how to set one up.
 The rest of this example assumes you have set up the "upstream"
 repository as `moltres/core`. Note that git refers to your fork as
 "origin".
@@ -168,7 +168,7 @@ Sometimes, your pull request will be held by the reviewer until further
 changes are made to appease the reviewer's concerns. This may be
 frustrating, but please act rationally, discuss the issues on the GitHub
 space made for your pull request, consult the
-`style guide <http://moltres.github.com/devdoc/style_guide.html>`\_,
+[style guide](http://moltres.github.com/devdoc/style_guide.html),
 email the developer listhost for further advice, and make changes to
 your topic branch accordingly. The pull request will be updated with
 those changes when you push them to your fork. When you think your
@@ -180,5 +180,5 @@ with the button made available to you.
 A good description of a git workflow with good graphics is available at
 [nvie](http://nvie.com/posts/a-successful-git-branching-model/).
 
-This contributor document was isnpired by the one written by the `Cyclus team
-<github.com/cyclus/cyclus>`\_.
+This contributor document was isnpired by the one written by the [Cyclus team
+](github.com/cyclus/cyclus).
