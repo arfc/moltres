@@ -11,7 +11,7 @@
 
 ------------------------------------------------------------------------
 
-# The developer Workflow 
+# The Developer Workflow 
 
 ## General Notes
 
@@ -177,8 +177,8 @@ with the button made available to you.
 
 #### See also
 
-A good description of a git workflow with good graphics is available at
-[nvie](http://nvie.com/posts/a-successful-git-branching-model/).
+A good description of a git workflow with good graphics is available 
+[here](http://nvie.com/posts/a-successful-git-branching-model/).
 
 This contributor document was isnpired by the one written by the [Cyclus team
 ](github.com/cyclus/cyclus).
