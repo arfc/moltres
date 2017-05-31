@@ -21,10 +21,10 @@
 -   Use a branching workflow similar to the one described
     in the [progit gitbook](http://progit.org/book/ch3-4.html).
 
--   Keep your own "master" and "develop" branches in sync with the
-    main repository's "master" and "develop" branches. Specifically,
+-   Keep your own "master" and "devel" branches in sync with the
+    main repository's "master" and "devel" branches. Specifically,
     do not push your own commits directly to your "master" and
-    "develop" branches.
+    "devel" branches.
 
 -   Any commit should *pass all tests* (see [Running Tests](#running-tests)).
 
@@ -39,12 +39,12 @@
 ## Issuing a Pull Request
 
 -   When you are ready to move changes from one of your topic branches
-    into the "develop" branch, it must be reviewed and accepted by
-    another developer.
+    into the "devel" branch, it must be reviewed and accepted by
+    another develer.
 
 -   You may want to review this
     [tutorial](https://help.github.com/articles/using-pull-requests/)
-    before you make a pull request to the develop branch.
+    before you make a pull request to the devel branch.
 
 ## Reviewing a Pull Request
 
@@ -60,7 +60,7 @@
 -   Click the green "Merge Pull Request" button.
 
 -   Note: if the button is not available, the requester needs to merge
-    or rebase from the current HEAD of the blessed's "develop"
+    or rebase from the current HEAD of the blessed's "devel"
     (or "master") branch.
 
 ## Running Tests
@@ -75,9 +75,9 @@ root of the Moltres directory.
 
 ## Cautions
 
--   **NEVER** merge the "master" branch into the "develop" branch.
+-   **NEVER** merge the "master" branch into the "devel" branch.
     Changes should only flow *to* the "master" branch *from* the
-    "develop" branch.
+    "devel" branch.
 
 ## An Example
 
@@ -91,12 +91,12 @@ For the sake of simplicity, let us assume that we want a single
 all of our work that may not yet pass tests or even compile, but where
 we also want to save our progress. Let us call this branch "Work". So,
 when all is said and done, in our fork there will be three branches:
-"master", "develop", and "Work".
+"master", "devel", and "Work".
 
 ### Acquiring Moltres and Workflow
 
 We begin with a fork of the main Moltres repository. After initially forking the
-repo, we will have two branches in our fork: "master" and "develop".
+repo, we will have two branches in our fork: "master" and "devel".
 
 #### Acquiring a Fork of the Moltres Repository
 
@@ -111,9 +111,9 @@ work .../moltres\_dir/\$ git push origin work
 
 We now have the following situation: 
 
-- there exists the main copy of the master and develop branches, 
-- there exists your fork's copy of the master, develop, and Work branches, 
- -*AND* there exists your *local* copy of the master, develop, and Work branches. 
+- there exists the main copy of the master and devel branches, 
+- there exists your fork's copy of the master, devel, and Work branches, 
+ -*AND* there exists your *local* copy of the master, devel, and Work branches. 
 
 It is important now to note that you may wish to work from home or the office.
 If you keep your fork's branches up to date (i.e., "push" your changes before
@@ -131,18 +131,18 @@ to continue working a bit. To begin, let's update our *home's local
 branches*. ::
 
 ```
-    .../moltres_dir/$ git checkout develop
-    .../moltres_dir/$ git pull upstream develop
-    .../moltres_dir/$ git push origin develop
+    .../moltres_dir/$ git checkout devel
+    .../moltres_dir/$ git pull upstream devel
+    .../moltres_dir/$ git push origin devel
 
     .../moltres_dir/$ git checkout work
     .../moltres_dir/$ git pull origin work
-    .../moltres_dir/$ git rebase develop
+    .../moltres_dir/$ git rebase devel
     .../moltres_dir/$ git push origin work
 ```
 
 Perhaps a little explanation is required. We first want to make sure
-that this new local copy of the develop branch is up-to-date with
+that this new local copy of the devel branch is up-to-date with
 respect to the remote origin's branch and remote upstream's branch. If
 there was a change from the remote upstream's branch, we want to push
 that to origin. We then follow the same process to update the work
@@ -151,7 +151,7 @@ branch, except:
 1.  we don't need to worry about the *upstream* repo because it doesn't
     have a work branch, and
 2.  we want to incorporate any changes which may have been introduced in
-    the develop branch update.
+    the devel branch update.
 
 #### Workflow: The End
 
@@ -161,7 +161,7 @@ to a stopping point where you have finished your project on your work
 branch *AND* it compiles *AND* it runs input files correctly *AND* it
 passes all tests! Perhaps you have found Nirvana. In any case, you've
 performed the final commit to your work branch, so it's time to make a
-pull request online and wait for our developer friends to review and
+pull request online and wait for our develer friends to review and
 accept it.
 
 Sometimes, your pull request will be held by the reviewer until further
@@ -169,7 +169,7 @@ changes are made to appease the reviewer's concerns. This may be
 frustrating, but please act rationally, discuss the issues on the GitHub
 space made for your pull request, consult the
 [style guide](http://moltres.github.com/devdoc/style_guide.html),
-email the developer listhost for further advice, and make changes to
+email the develer listhost for further advice, and make changes to
 your topic branch accordingly. The pull request will be updated with
 those changes when you push them to your fork. When you think your
 request is ready for another review, you can reopen the review yourself
