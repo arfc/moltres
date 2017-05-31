@@ -1,3 +1,5 @@
+# The Developer Workflow 
+
 -   [General Notes](#general-notes)
 -   [Issuing a Pull Request](#issuing-a-pull-request)
 -   [Reviewing a Pull Request](#reviewing-a-pull-request)
@@ -10,8 +12,6 @@
 -   [Releases](#releases)
 
 ------------------------------------------------------------------------
-
-# The Developer Workflow 
 
 ## General Notes
 
