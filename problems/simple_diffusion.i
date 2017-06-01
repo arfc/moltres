@@ -1,9 +1,13 @@
 [Mesh]
-  # type = GeneratedMesh
-  # dim = 1
-  # nx = 10
-  # xmax = 10
-  file = progression.msh
+  type = GeneratedMesh
+  dim = 3
+  nx = 2
+  ny = 2
+  nz = 2
+  xmin = -1
+  ymin = -1
+  zmin = -1
+  # file = progression.msh
 []
 
 [Variables]
