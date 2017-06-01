@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/65950715.svg)](https://zenodo.org/badge/latestdoi/65950715)
+
 Moltres
 =====
 
