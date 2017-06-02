@@ -212,7 +212,7 @@
   # [../]
   # r-momentum, space
   [./x_momentum_space]
-    type = INSMomentum
+    type = INSMomentumLaplaceForm
     variable = u
     u = u
     v = v
@@ -221,7 +221,7 @@
   [../]
   # z-momentum, space
   [./y_momentum_space]
-    type = INSMomentum
+    type = INSMomentumLaplaceForm
     variable = v
     u = u
     v = v

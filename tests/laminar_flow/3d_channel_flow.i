@@ -110,7 +110,7 @@ zmax=0.4
   #   function = 'inlet_func'
   # [../]
   # [./ux_out]
-  #   type = INSMomentumNoBCBC
+  #   type = INSMomentumNoBCBCLaplaceForm
   #   boundary = right
   #   variable = ux
   #   u = ux
@@ -120,7 +120,7 @@ zmax=0.4
   #   component = 0
   # [../]
   [./uy_out]
-    type = INSMomentumNoBCBC
+    type = INSMomentumNoBCBCLaplaceForm
     boundary = right
     variable = uy
     u = ux
@@ -130,7 +130,7 @@ zmax=0.4
     component = 1
   [../]
   [./uz_out]
-    type = INSMomentumNoBCBC
+    type = INSMomentumNoBCBCLaplaceForm
     boundary = right
     variable = uz
     u = ux
@@ -182,7 +182,7 @@ zmax=0.4
   #   variable = uz
   # [../]
   [./x_momentum_space]
-    type = INSMomentum
+    type = INSMomentumLaplaceForm
     variable = ux
     u = ux
     v = uy
@@ -191,7 +191,7 @@ zmax=0.4
     component = 0
   [../]
   [./y_momentum_space]
-    type = INSMomentum
+    type = INSMomentumLaplaceForm
     variable = uy
     u = ux
     v = uy
@@ -200,7 +200,7 @@ zmax=0.4
     component = 1
   [../]
   [./z_momentum_space]
-    type = INSMomentum
+    type = INSMomentumLaplaceForm
     variable = uz
     u = ux
     v = uy

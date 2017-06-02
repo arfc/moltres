@@ -167,7 +167,7 @@
   #   value = 0
   # [../]
   # [./u_out]
-  #   type = INSMomentumNoBCBC
+  #   type = INSMomentumNoBCBCLaplaceForm
   #   boundary = top
   #   variable = u
   #   u = u
@@ -176,7 +176,7 @@
   #   component = 0
   # [../]
   # [./v_out]
-  #   type = INSMomentumNoBCBC
+  #   type = INSMomentumNoBCBCLaplaceForm
   #   boundary = top
   #   variable = v
   #   u = u
@@ -250,7 +250,7 @@
   # [../]
   # r-momentum, space
   [./x_momentum_space]
-    type = INSMomentum
+    type = INSMomentumLaplaceForm
     variable = u
     u = u
     v = v
@@ -259,7 +259,7 @@
   [../]
   # z-momentum, space
   [./y_momentum_space]
-    type = INSMomentum
+    type = INSMomentumLaplaceForm
     variable = v
     u = u
     v = v

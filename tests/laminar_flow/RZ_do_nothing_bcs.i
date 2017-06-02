@@ -92,7 +92,7 @@
     function = 'inlet_func'
   [../]
   [./u_out]
-    type = INSMomentumNoBCBC
+    type = INSMomentumNoBCBCLaplaceForm
     boundary = top
     variable = u
     u = u
@@ -101,7 +101,7 @@
     component = 0
   [../]
   [./v_out]
-    type = INSMomentumNoBCBC
+    type = INSMomentumNoBCBCLaplaceForm
     boundary = top
     variable = v
     u = u
