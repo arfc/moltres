@@ -1,9 +1,5 @@
 # Model emulating Cammi et. al.
 [GlobalParams]
-  # rho = 3327 # kg/m^3
-  # mu = 0.01 # kg/(m*s)
-  rho = 1
-  mu = 1
   integrate_p_by_parts = true
   gravity = '0 0 0'
 []
