@@ -216,3 +216,11 @@ zmax=0.4
     value = 'sin(pi * z / ${zmax}) * sin(pi * y / ${ymax})'
   [../]
 []
+
+[Materials]
+  [./const]
+    type = GenericConstantMaterial
+    prop_names = 'mu rho'
+    prop_values = '1 1'
+  [../]
+[]

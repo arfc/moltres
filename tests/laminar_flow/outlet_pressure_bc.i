@@ -232,3 +232,11 @@
     value = '1 * (1 - x)^2'
   [../]
 []
+
+[Materials]
+  [./const]
+    type = GenericConstantMaterial
+    prop_names = 'mu rho'
+    prop_values = '1 1'
+  [../]
+[]

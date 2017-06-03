@@ -198,3 +198,11 @@
     value = '1 - 4 * (x^2 + y^2)'
   [../]
 []
+
+[Materials]
+  [./const]
+    type = GenericConstantMaterial
+    prop_names = 'mu rho'
+    prop_values = '1 1'
+  [../]
+[]

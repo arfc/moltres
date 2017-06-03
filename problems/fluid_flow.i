@@ -48,6 +48,7 @@
     solve_type = 'NEWTON'
     petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type'
     petsc_options_value = 'lu NONZERO 1.e-10 preonly'
+    ksp_norm = none
   [../]
   [./JFNK]
     type = SMP
@@ -269,5 +270,13 @@
     type = ParsedFunction
     value = '-4 * x^2 + 1'
     # value = '-16 * (x - 0.25)^2 + 1'
+  [../]
+[]
+
+[Materials]
+  [./const]
+    type = GenericConstantMaterial
+    prop_names = 'mu rho'
+    prop_values = '1 1'
   [../]
 []

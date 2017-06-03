@@ -161,3 +161,11 @@
     value = '-4 * x^2 + 1'
   [../]
 []
+
+[Materials]
+  [./const]
+    type = GenericConstantMaterial
+    prop_names = 'mu rho'
+    prop_values = '1 1'
+  [../]
+[]
