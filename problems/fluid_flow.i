@@ -1,9 +1,5 @@
 # Model emulating Cammi et. al.
 [GlobalParams]
-  # rho = 3327 # kg/m^3
-  # mu = 0.01 # kg/(m*s)
-  rho = 1
-  mu = 1
   integrate_p_by_parts = false
   gravity = '0 0 0'
   coord_type = RZ
@@ -52,6 +48,7 @@
     solve_type = 'NEWTON'
     petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type'
     petsc_options_value = 'lu NONZERO 1.e-10 preonly'
+    ksp_norm = none
   [../]
   [./JFNK]
     type = SMP
@@ -167,7 +164,7 @@
   #   value = 0
   # [../]
   [./u_out]
-    type = INSMomentumNoBCBC
+    type = INSMomentumNoBCBCLaplaceForm
     boundary = top
     variable = u
     u = u
@@ -176,7 +173,7 @@
     component = 0
   [../]
   [./v_out]
-    type = INSMomentumNoBCBC
+    type = INSMomentumNoBCBCLaplaceForm
     boundary = top
     variable = v
     u = u
@@ -250,7 +247,7 @@
   # [../]
   # r-momentum, space
   [./x_momentum_space]
-    type = INSMomentum
+    type = INSMomentumLaplaceForm
     variable = u
     u = u
     v = v
@@ -259,7 +256,7 @@
   [../]
   # z-momentum, space
   [./y_momentum_space]
-    type = INSMomentum
+    type = INSMomentumLaplaceForm
     variable = v
     u = u
     v = v
@@ -273,5 +270,13 @@
     type = ParsedFunction
     value = '-4 * x^2 + 1'
     # value = '-16 * (x - 0.25)^2 + 1'
+  [../]
+[]
+
+[Materials]
+  [./const]
+    type = GenericConstantMaterial
+    prop_names = 'mu rho'
+    prop_values = '1 1'
   [../]
 []

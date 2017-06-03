@@ -3,8 +3,6 @@ ymax=1.2
 zmax=0.4
 
 [GlobalParams]
-  rho = 1
-  mu = 1
   integrate_p_by_parts = false
   gravity = '0 0 0'
   coord_type = XYZ
@@ -110,7 +108,7 @@ zmax=0.4
   #   function = 'inlet_func'
   # [../]
   # [./ux_out]
-  #   type = INSMomentumNoBCBC
+  #   type = INSMomentumNoBCBCLaplaceForm
   #   boundary = right
   #   variable = ux
   #   u = ux
@@ -120,7 +118,7 @@ zmax=0.4
   #   component = 0
   # [../]
   [./uy_out]
-    type = INSMomentumNoBCBC
+    type = INSMomentumNoBCBCLaplaceForm
     boundary = right
     variable = uy
     u = ux
@@ -130,7 +128,7 @@ zmax=0.4
     component = 1
   [../]
   [./uz_out]
-    type = INSMomentumNoBCBC
+    type = INSMomentumNoBCBCLaplaceForm
     boundary = right
     variable = uz
     u = ux
@@ -182,7 +180,7 @@ zmax=0.4
   #   variable = uz
   # [../]
   [./x_momentum_space]
-    type = INSMomentum
+    type = INSMomentumLaplaceForm
     variable = ux
     u = ux
     v = uy
@@ -191,7 +189,7 @@ zmax=0.4
     component = 0
   [../]
   [./y_momentum_space]
-    type = INSMomentum
+    type = INSMomentumLaplaceForm
     variable = uy
     u = ux
     v = uy
@@ -200,7 +198,7 @@ zmax=0.4
     component = 1
   [../]
   [./z_momentum_space]
-    type = INSMomentum
+    type = INSMomentumLaplaceForm
     variable = uz
     u = ux
     v = uy
@@ -216,5 +214,13 @@ zmax=0.4
     # value = '-(2/${xmax})^2 * (2/${ymax})^2 * (x - ${xmax}/2)^2 * (y - ${ymax}/2)^2 + 1'
     # value = '16 / (${xmax}^2 * ${ymax}^2) * y * (y - ${ymax}) * x * (x - ${xmax})'
     value = 'sin(pi * z / ${zmax}) * sin(pi * y / ${ymax})'
+  [../]
+[]
+
+[Materials]
+  [./const]
+    type = GenericConstantMaterial
+    prop_names = 'mu rho'
+    prop_values = '1 1'
   [../]
 []
