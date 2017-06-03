@@ -1,9 +1,5 @@
 # Model emulating Cammi et. al.
 [GlobalParams]
-  # rho = 3327 # kg/m^3
-  # mu = 0.01 # kg/(m*s)
-  rho = 1
-  mu = 1
   integrate_p_by_parts = false
   gravity = '0 0 0'
 []
@@ -212,7 +208,7 @@
   # [../]
   # r-momentum, space
   [./x_momentum_space]
-    type = INSMomentum
+    type = INSMomentumLaplaceForm
     variable = u
     u = u
     v = v
@@ -221,7 +217,7 @@
   [../]
   # z-momentum, space
   [./y_momentum_space]
-    type = INSMomentum
+    type = INSMomentumLaplaceForm
     variable = v
     u = u
     v = v
@@ -234,5 +230,13 @@
   [./inlet_func]
     type = ParsedFunction
     value = '1 * (1 - x)^2'
+  [../]
+[]
+
+[Materials]
+  [./const]
+    type = GenericConstantMaterial
+    prop_names = 'mu rho'
+    prop_values = '1 1'
   [../]
 []

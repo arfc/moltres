@@ -1,6 +1,4 @@
 [GlobalParams]
-  rho = 1
-  mu = 1
   integrate_p_by_parts = true
   gravity = '0 0 0'
   coord_type = RZ
@@ -145,5 +143,13 @@
   [./inlet_func]
     type = ParsedFunction
     value = '-4 * x^2 + 1'
+  [../]
+[]
+
+[Materials]
+  [./const]
+    type = GenericConstantMaterial
+    prop_names = 'mu rho'
+    prop_values = '1 1'
   [../]
 []
