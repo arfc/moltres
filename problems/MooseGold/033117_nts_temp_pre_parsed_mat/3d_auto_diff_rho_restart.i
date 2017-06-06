@@ -15,7 +15,7 @@ diri_temp=922
 []
 
 [Mesh]
-  file = '3d_msre_29x29_136.msh'
+  file = '3d_auto_diff_rho_out.e'
   # file = jac_test.msh
 []
 
