@@ -15,7 +15,7 @@ diri_temp=922
 []
 
 [Mesh]
-  file = '3d_msre_29x29_136.msh'
+  file = '3d_auto_diff_rho_out.e'
   # file = jac_test.msh
 []
 
@@ -27,19 +27,19 @@ diri_temp=922
     order = FIRST
     family = LAGRANGE
     initial_from_file_var = group1
-    inital_from_file_timestep = LATEST
+    initial_from_file_timestep = LATEST
     scaling = 1e4
   [../]
   [./group2]
     order = FIRST
     family = LAGRANGE
     initial_from_file_var = group2
-    inital_from_file_timestep = LATEST
+    initial_from_file_timestep = LATEST
     scaling = 1e4
   [../]
   [./temp]
     initial_from_file_var = temp
-    inital_from_file_timestep = LATEST
+    initial_from_file_timestep = LATEST
     scaling = 1e-4
   [../]
 []
