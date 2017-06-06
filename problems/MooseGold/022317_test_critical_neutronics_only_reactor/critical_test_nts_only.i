@@ -44,7 +44,7 @@ global_temperature=922
   solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor -snes_test_display'
   petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
-  petsc_options_value = 'asm	  lu	       1	       preonly	     1e-3'
+  petsc_options_value = 'asm      lu           1               preonly       1e-3'
 
   # petsc_options_iname = '-snes_type'
   # petsc_options_value = 'test'

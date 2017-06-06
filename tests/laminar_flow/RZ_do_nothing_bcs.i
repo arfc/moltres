@@ -1,6 +1,4 @@
 [GlobalParams]
-  rho = 1
-  mu = 1
   integrate_p_by_parts = false
   gravity = '0 0 0'
   coord_type = RZ
@@ -50,7 +48,7 @@
 []
 
 [Debug]
-	show_var_residual_norms = true
+        show_var_residual_norms = true
 []
 
 [Outputs]
@@ -92,7 +90,7 @@
     function = 'inlet_func'
   [../]
   [./u_out]
-    type = INSMomentumNoBCBC
+    type = INSMomentumNoBCBCLaplaceForm
     boundary = top
     variable = u
     u = u
@@ -101,7 +99,7 @@
     component = 0
   [../]
   [./v_out]
-    type = INSMomentumNoBCBC
+    type = INSMomentumNoBCBCLaplaceForm
     boundary = top
     variable = v
     u = u
@@ -161,5 +159,13 @@
   [./inlet_func]
     type = ParsedFunction
     value = '-4 * x^2 + 1'
+  [../]
+[]
+
+[Materials]
+  [./const]
+    type = GenericConstantMaterial
+    prop_names = 'mu rho'
+    prop_values = '1 1'
   [../]
 []

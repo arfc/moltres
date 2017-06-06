@@ -9,7 +9,7 @@ if [[ -f $hookfile ]]; then
     echo "'$hookfile' already exists - aborting" 1>&2
 else
     echo '#!/bin/bash
-    patch=$(git clang-format --diff)
+    patch=$(git clang-format --diff include src test unit)
     if [[ "$patch" =~ "no modified files to format" || "$patch" =~ "clang-format did not modify any files" ]]; then
        echo "" > /dev/null
     else
@@ -34,7 +34,7 @@ if [[ -f $squirrel_hookfile ]]; then
 fi
 
 echo '#!/bin/bash
-patch=$(git clang-format --diff)
+patch=$(git clang-format --diff include src test unit)
 if [[ "$patch" =~ "no modified files to format" || "$patch" =~ "clang-format did not modify any files" ]]; then
     echo "" > /dev/null
 else

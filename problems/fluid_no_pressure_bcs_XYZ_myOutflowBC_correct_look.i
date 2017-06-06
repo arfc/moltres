@@ -1,9 +1,5 @@
 # Model emulating Cammi et. al.
 [GlobalParams]
-  # rho = 3327 # kg/m^3
-  # mu = 0.01 # kg/(m*s)
-  rho = 1
-  mu = 1
   integrate_p_by_parts = true
   gravity = '0 0 0'
   coord_type = XYZ
@@ -89,7 +85,7 @@
 []
 
 [Debug]
-	show_var_residual_norms = true
+        show_var_residual_norms = true
 []
 
 [Outputs]
@@ -101,7 +97,7 @@
 []
 
 [Variables]
-  # Velocity in radial direction	
+  # Velocity in radial direction
   [./u]
     family = LAGRANGE
     order = SECOND
@@ -167,7 +163,7 @@
   #   value = 0
   # [../]
   # [./u_out]
-  #   type = INSMomentumNoBCBC
+  #   type = INSMomentumNoBCBCLaplaceForm
   #   boundary = top
   #   variable = u
   #   u = u
@@ -176,7 +172,7 @@
   #   component = 0
   # [../]
   # [./v_out]
-  #   type = INSMomentumNoBCBC
+  #   type = INSMomentumNoBCBCLaplaceForm
   #   boundary = top
   #   variable = v
   #   u = u
@@ -250,7 +246,7 @@
   # [../]
   # r-momentum, space
   [./x_momentum_space]
-    type = INSMomentum
+    type = INSMomentumLaplaceForm
     variable = u
     u = u
     v = v
@@ -259,7 +255,7 @@
   [../]
   # z-momentum, space
   [./y_momentum_space]
-    type = INSMomentum
+    type = INSMomentumLaplaceForm
     variable = v
     u = u
     v = v
@@ -273,5 +269,13 @@
     type = ParsedFunction
     # value = '4 * (.5 - x)^2'
     value = '-16 * (x - 0.25)^2 + 1'
+  [../]
+[]
+
+[Materials]
+  [./const]
+    type = GenericConstantMaterial
+    prop_names = 'mu rho'
+    prop_values = '1 1'
   [../]
 []
