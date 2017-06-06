@@ -16,16 +16,18 @@ validParams<GenericMoltresMaterial>()
                                "The number of delayed neutron precursor groups.");
   params.addCoupledVar(
       "temperature", 937, "The temperature field for determining group constants.");
-  MooseEnum interp_type("bicubic_spline spline least_squares none");
+  MooseEnum interp_type("bicubic_spline spline least_squares monotone_cubic none");
   params.addRequiredParam<MooseEnum>(
       "interp_type", interp_type, "The type of interpolation to perform.");
   params.addParam<std::vector<Real>>("fuel_temp_points",
                                      "The fuel temperature interpolation points.");
   params.addParam<std::vector<Real>>("mod_temp_points",
                                      "The moderator temperature interpolation points.");
-  params.addParam<PostprocessorName>("other_temp", 0, "If doing bivariable interpolation, need to "
-                                                      "supply a postprocessor for the average "
-                                                      "temperature of the other material.");
+  params.addParam<PostprocessorName>("other_temp",
+                                     0,
+                                     "If doing bivariable interpolation, need to "
+                                     "supply a postprocessor for the average "
+                                     "temperature of the other material.");
   params.addParam<std::string>("material", "Must specify either *fuel* or *moderator*.");
   params.addParam<bool>(
       "sss2_input", true, "Whether serpent 2 was used to generate the input files.");
@@ -120,6 +122,9 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
   else if (_interp_type == "spline")
     splineConstruct(property_tables_root, xsec_names);
 
+  else if (_interp_type == "monotone_cubic")
+    monotoneCubicConstruct(property_tables_root, xsec_names);
+
   else if (_interp_type == "bicubic_spline")
     bicubicSplineConstruct(property_tables_root, xsec_names, parameters);
 
@@ -193,6 +198,44 @@ GenericMoltresMaterial::splineConstruct(std::string & property_tables_root,
       for (decltype(o) k = 0; k < o; ++k)
         _xsec_spline_interpolators[xsec_names[j]][k].setData(temperature,
                                                              xsec_map[xsec_names[j]][k]);
+    }
+    else
+      mooseError("Unable to open file " + file_name);
+  }
+}
+
+void
+GenericMoltresMaterial::monotoneCubicConstruct(std::string & property_tables_root,
+                                               std::vector<std::string> xsec_names)
+{
+  Real value;
+  for (decltype(xsec_names.size()) j = 0; j < xsec_names.size(); ++j)
+  {
+    std::vector<Real> temperature;
+    std::string file_name = property_tables_root + _file_map[xsec_names[j]] + ".txt";
+    const std::string & file_name_ref = file_name;
+    std::ifstream myfile(file_name_ref.c_str());
+
+    auto o = _vec_lengths[xsec_names[j]];
+
+    std::map<std::string, std::vector<std::vector<Real>>> xsec_map;
+    xsec_map[xsec_names[j]].resize(o);
+    _xsec_monotone_cubic_interpolators[xsec_names[j]].resize(o);
+    if (myfile.is_open())
+    {
+      while (myfile >> value)
+      {
+        temperature.push_back(value);
+        for (decltype(o) k = 0; k < o; ++k)
+        {
+          myfile >> value;
+          xsec_map[xsec_names[j]][k].push_back(value);
+        }
+      }
+      myfile.close();
+      for (decltype(o) k = 0; k < o; ++k)
+        _xsec_monotone_cubic_interpolators[xsec_names[j]][k].setData(temperature,
+                                                                     xsec_map[xsec_names[j]][k]);
     }
     else
       mooseError("Unable to open file " + file_name);
@@ -415,6 +458,58 @@ GenericMoltresMaterial::splineComputeQpProperties()
 }
 
 void
+GenericMoltresMaterial::monotoneCubicComputeQpProperties()
+{
+  for (decltype(_num_groups) i = 0; i < _num_groups; ++i)
+  {
+    _remxs[_qp][i] = _xsec_monotone_cubic_interpolators["REMXS"][i].sample(_temperature[_qp]);
+    _fissxs[_qp][i] = _xsec_monotone_cubic_interpolators["FISSXS"][i].sample(_temperature[_qp]);
+    _nsf[_qp][i] = _xsec_monotone_cubic_interpolators["NSF"][i].sample(_temperature[_qp]);
+    _fisse[_qp][i] = _xsec_monotone_cubic_interpolators["FISSE"][i].sample(_temperature[_qp]) *
+                     1e6 * 1.6e-19; // convert from MeV to Joules
+    _diffcoef[_qp][i] = _xsec_monotone_cubic_interpolators["DIFFCOEF"][i].sample(_temperature[_qp]);
+    _recipvel[_qp][i] = _xsec_monotone_cubic_interpolators["RECIPVEL"][i].sample(_temperature[_qp]);
+    _chi[_qp][i] = _xsec_monotone_cubic_interpolators["CHI"][i].sample(_temperature[_qp]);
+    _d_remxs_d_temp[_qp][i] =
+        _xsec_monotone_cubic_interpolators["REMXS"][i].sampleDerivative(_temperature[_qp]);
+    _d_fissxs_d_temp[_qp][i] =
+        _xsec_monotone_cubic_interpolators["FISSXS"][i].sampleDerivative(_temperature[_qp]);
+    _d_nsf_d_temp[_qp][i] =
+        _xsec_monotone_cubic_interpolators["NSF"][i].sampleDerivative(_temperature[_qp]);
+    _d_fisse_d_temp[_qp][i] =
+        _xsec_monotone_cubic_interpolators["FISSE"][i].sampleDerivative(_temperature[_qp]) * 1e6 *
+        1.6e-19; // convert from MeV to Joules
+    _d_diffcoef_d_temp[_qp][i] =
+        _xsec_monotone_cubic_interpolators["DIFFCOEF"][i].sampleDerivative(_temperature[_qp]);
+    _d_recipvel_d_temp[_qp][i] =
+        _xsec_monotone_cubic_interpolators["RECIPVEL"][i].sampleDerivative(_temperature[_qp]);
+    _d_chi_d_temp[_qp][i] =
+        _xsec_monotone_cubic_interpolators["CHI"][i].sampleDerivative(_temperature[_qp]);
+  }
+  for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
+  {
+    _gtransfxs[_qp][i] =
+        _xsec_monotone_cubic_interpolators["GTRANSFXS"][i].sample(_temperature[_qp]);
+    _d_gtransfxs_d_temp[_qp][i] =
+        _xsec_monotone_cubic_interpolators["GTRANSFXS"][i].sampleDerivative(_temperature[_qp]);
+  }
+  _beta[_qp] = 0;
+  _d_beta_d_temp[_qp] = 0;
+  for (decltype(_num_groups) i = 0; i < _num_precursor_groups; ++i)
+  {
+    _beta_eff[_qp][i] = _xsec_monotone_cubic_interpolators["BETA_EFF"][i].sample(_temperature[_qp]);
+    _d_beta_eff_d_temp[_qp][i] =
+        _xsec_monotone_cubic_interpolators["BETA_EFF"][i].sampleDerivative(_temperature[_qp]);
+    _beta[_qp] += _beta_eff[_qp][i];
+    _d_beta_d_temp[_qp] += _d_beta_eff_d_temp[_qp][i];
+    _decay_constant[_qp][i] =
+        _xsec_monotone_cubic_interpolators["DECAY_CONSTANT"][i].sample(_temperature[_qp]);
+    _d_decay_constant_d_temp[_qp][i] =
+        _xsec_monotone_cubic_interpolators["DECAY_CONSTANT"][i].sampleDerivative(_temperature[_qp]);
+  }
+}
+
+void
 GenericMoltresMaterial::fuelBicubic()
 {
   for (decltype(_num_groups) i = 0; i < _num_groups; ++i)
@@ -608,6 +703,9 @@ GenericMoltresMaterial::computeQpProperties()
 
   if (_interp_type == "spline")
     splineComputeQpProperties();
+
+  else if (_interp_type == "monotone_cubic")
+    monotoneCubicComputeQpProperties();
 
   else if (_interp_type == "bicubic_spline")
     bicubicSplineComputeQpProperties();
