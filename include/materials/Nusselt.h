@@ -18,7 +18,7 @@ public:
 protected:
   virtual void computeQpProperties();
 
-  MaterialProperty<Real> & _k;
+  const MaterialProperty<Real> & _k;
   Real _l_value;
   MaterialProperty<Real> & _nu;
   MaterialProperty<Real> & _h;

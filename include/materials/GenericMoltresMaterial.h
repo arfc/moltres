@@ -5,6 +5,7 @@
 #include "SplineInterpolation.h"
 #include "BicubicSplineInterpolation.h"
 #include "MonotoneCubicInterpolation.h"
+#include "LinearInterpolation.h"
 
 class GenericMoltresMaterial;
 
@@ -21,6 +22,7 @@ protected:
   void splineConstruct(std::string & property_tables_root, std::vector<std::string> xsec_names);
   void monotoneCubicConstruct(std::string & property_tables_root,
                               std::vector<std::string> xsec_names);
+  void linearConstruct(std::string & property_tables_root, std::vector<std::string> xsec_names);
   void bicubicSplineConstruct(std::string & property_tables_root,
                               std::vector<std::string> xsec_names,
                               const InputParameters & parameters);
@@ -29,6 +31,7 @@ protected:
   virtual void dummyComputeQpProperties();
   virtual void splineComputeQpProperties();
   virtual void monotoneCubicComputeQpProperties();
+  virtual void linearComputeQpProperties();
   virtual void fuelBicubic();
   virtual void moderatorBicubic();
   virtual void bicubicSplineComputeQpProperties();
@@ -68,6 +71,7 @@ protected:
   std::map<std::string, std::vector<Real>> _xsec_map;
   std::map<std::string, std::vector<SplineInterpolation>> _xsec_spline_interpolators;
   std::map<std::string, std::vector<MonotoneCubicInterpolation>> _xsec_monotone_cubic_interpolators;
+  std::map<std::string, std::vector<LinearInterpolation>> _xsec_linear_interpolators;
   std::map<std::string, std::vector<BicubicSplineInterpolation>> _xsec_bicubic_spline_interpolators;
   std::map<std::string, int> _vec_lengths;
   std::map<std::string, std::string> _file_map;

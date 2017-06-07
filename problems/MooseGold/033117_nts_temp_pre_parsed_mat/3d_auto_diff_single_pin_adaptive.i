@@ -291,8 +291,9 @@ diri_temp=922
   print_perf_log = true
   print_linear_residuals = true
   csv = true
-  [./out]
+  [./exodus]
     type = Exodus
+    file_base = ''
   [../]
 []
 

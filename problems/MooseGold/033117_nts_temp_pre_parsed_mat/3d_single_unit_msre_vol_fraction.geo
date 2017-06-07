@@ -28,8 +28,8 @@ Line Loop(10) = {4, 1, 2, -3};
 Plane Surface(11) = {9, 10};
 Plane Surface(12) = {10};
 
-Transfinite Line {8, 5, 6, 7} = 14;
-Transfinite Line {2, 1, 4, 3} = 7;
+Transfinite Line {8, 5, 6, 7} = 21;
+Transfinite Line {2, 1, 4, 3} = 11;
 Transfinite Surface {12};
 Recombine Surface {11, 12};
 
