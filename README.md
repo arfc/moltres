@@ -51,7 +51,7 @@ If you ever want to contribute changes to the Moltres repository, make sure you
 run `scripts/install-format-hook.sh` before making any commits. This will
 ensure that any commits you make adhere to the MOOSE/Moltres C++ style. Pull
 requests should be submitted to the `devel` branch of the `arfc/moltres`
-repository. Each pull request is automatically tested for style and for whether
+repository. Each pull request is automatically tested for style, and for whether
 it breaks any of the core Moltres physics capabilities.
 
 ## Contact
