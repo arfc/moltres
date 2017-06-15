@@ -1,6 +1,6 @@
 # flow_velocity=21.7 # cm/s. See MSRE-properties.ods
 fuel_velocity_max_inlet = 43.4
-fuel_sq_rad = 39.94
+fuel_sq_rad = 33.28
 nt_scale=1e13
 ini_temp=922
 diri_temp=922
@@ -47,9 +47,10 @@ diri_temp=922
   var_name_base = pre
   block = 'fuel'
   outlet_boundaries = 'fuel_tops'
-  u_def = 0
-  v_def = 0
-  w_def = ${flow_velocity}
+  u_func = vel_x_func
+  v_func = vel_y_func
+  w_func = vel_z_func
+  constant_velocity_values = false
   nt_exp_form = false
   family = MONOMIAL
   order = CONSTANT
@@ -137,8 +138,10 @@ diri_temp=922
     variable = temp
   [../]
   [./temp_advection_fuel]
-    type = ConservativeTemperatureAdvection
-    velocity = '0 0 ${flow_velocity}'
+    type = VelocityFunctionTemperatureAdvection
+    vel_x_func = vel_x_func
+    vel_y_func = vel_y_func
+    vel_z_func = vel_z_func
     variable = temp
     block = 'fuel'
   [../]
@@ -163,9 +166,11 @@ diri_temp=922
   [../]
   [./temp_advection_outlet]
     boundary = 'fuel_tops'
-    type = TemperatureOutflowBC
+    type = VelocityFunctionTemperatureOutflowBC
     variable = temp
-    velocity = '0 0 ${flow_velocity}'
+    vel_x_func = vel_x_func
+    vel_y_func = vel_y_func
+    vel_z_func = vel_z_func
   [../]
 []
 
@@ -173,6 +178,18 @@ diri_temp=922
   [./temp_bc_func]
     type = ParsedFunction
     value = '${ini_temp} - (${ini_temp} - ${diri_temp}) * tanh(t/1e-2)'
+  [../]
+  [./vel_x_func]
+    type = ParsedFunction
+    value = '0'
+  [../]
+  [./vel_y_func]
+    type = ParsedFunction
+    value = '0'
+  [../]
+  [./vel_z_func]
+    type = ParsedFunction
+    value = '${fuel_velocity_max_inlet} * cos(pi * x / (2 * ${fuel_sq_rad})) * cos(pi * y / (2 * ${fuel_sq_rad}))'
   [../]
 []
 
@@ -290,9 +307,7 @@ diri_temp=922
   print_perf_log = true
   print_linear_residuals = true
   csv = true
-  [./out]
-    type = Exodus
-  [../]
+  exodus = true
 []
 
 [Debug]

@@ -17,12 +17,21 @@ validParams<PrecursorKernelAction>()
   params.addParam<VariableName>("u", "Name of x-component of velocity");
   params.addParam<VariableName>("v", "Name of y-component of velocity");
   params.addParam<VariableName>("w", "Name of z-component of velocity");
+  params.addParam<bool>("constant_velocity_values",
+                        true,
+                        "Whether the velocity components are constant with respect to space");
   params.addParam<Real>("u_def",
                         "Allows user to specify constant value for u component of velocity.");
   params.addParam<Real>("v_def",
                         "Allows user to specify constant value for v component of velocity.");
   params.addParam<Real>("w_def",
                         "Allows user to specify constant value for w component of velocity.");
+  params.addParam<FunctionName>(
+      "u_func", "Allows user to specify function value for u component of velocity.");
+  params.addParam<FunctionName>(
+      "v_func", "Allows user to specify function value for v component of velocity.");
+  params.addParam<FunctionName>(
+      "w_func", "Allows user to specify function value for w component of velocity.");
   params.addRequiredCoupledVar("group_fluxes",
                                "All the variables that hold the group fluxes. "
                                "These MUST be listed by decreasing "
@@ -140,6 +149,7 @@ PrecursorKernelAction::act()
 
     if (_current_task == "add_dg_kernel")
     {
+      if (getParam<bool>("constant_velocity_values"))
       {
         InputParameters params = _factory.getValidParams("DGConvection");
         params.set<NonlinearVariableName>("variable") = var_name;
@@ -153,10 +163,24 @@ PrecursorKernelAction::act()
         std::string kernel_name = "DGConvection_" + var_name;
         _problem->addDGKernel("DGConvection", kernel_name, params);
       }
+      else
+      {
+        InputParameters params = _factory.getValidParams("DGFunctionConvection");
+        params.set<NonlinearVariableName>("variable") = var_name;
+        if (isParamValid("block"))
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("block");
+        params.set<FunctionName>("vel_x_func") = getParam<FunctionName>("u_func");
+        params.set<FunctionName>("vel_y_func") = getParam<FunctionName>("v_func");
+        params.set<FunctionName>("vel_z_func") = getParam<FunctionName>("w_func");
+        std::string kernel_name = "DGFunctionConvection_" + var_name;
+        _problem->addDGKernel("DGFunctionConvection", kernel_name, params);
+      }
     }
 
     if (_current_task == "add_bc")
     {
+      if (getParam<bool>("constant_velocity_values"))
       {
         InputParameters params = _factory.getValidParams("OutflowBC");
         params.set<NonlinearVariableName>("variable") = var_name;
@@ -168,6 +192,19 @@ PrecursorKernelAction::act()
 
         std::string kernel_name = "OutflowBC_" + var_name;
         _problem->addBoundaryCondition("OutflowBC", kernel_name, params);
+      }
+      else
+      {
+        InputParameters params = _factory.getValidParams("VelocityFunctionOutflowBC");
+        params.set<NonlinearVariableName>("variable") = var_name;
+        params.set<std::vector<BoundaryName>>("boundary") =
+            getParam<std::vector<BoundaryName>>("outlet_boundaries");
+        params.set<FunctionName>("vel_x_func") = getParam<FunctionName>("u_func");
+        params.set<FunctionName>("vel_y_func") = getParam<FunctionName>("v_func");
+        params.set<FunctionName>("vel_z_func") = getParam<FunctionName>("w_func");
+
+        std::string kernel_name = "VelocityFunctionOutflowBC_" + var_name;
+        _problem->addBoundaryCondition("VelocityFunctionOutflowBC", kernel_name, params);
       }
       // {
       //   InputParameters params = _factory.getValidParams("InflowBC");
