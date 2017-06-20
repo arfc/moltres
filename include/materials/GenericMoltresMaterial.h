@@ -65,9 +65,12 @@ protected:
 
   MooseEnum _interp_type;
   const PostprocessorValue & _other_temp;
+  const PostprocessorValue & _peak_power_density;
+  Real _peak_power_density_set_point;
+  Real _controller_gain;
 
-  int _num_groups;
-  int _num_precursor_groups;
+  unsigned _num_groups;
+  unsigned _num_precursor_groups;
   std::map<std::string, std::vector<Real>> _xsec_map;
   std::map<std::string, std::vector<SplineInterpolation>> _xsec_spline_interpolators;
   std::map<std::string, std::vector<MonotoneCubicInterpolation>> _xsec_monotone_cubic_interpolators;

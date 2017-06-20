@@ -10,6 +10,7 @@ validParams<FissionHeatSourceTransientAux>()
                                "All the variables that hold the group fluxes. "
                                "These MUST be listed by decreasing "
                                "energy/increasing group number.");
+  params.addParam<Real>("nt_scale", 1, "Scaling of the neutron fluxes to aid convergence.");
   return params;
 }
 
@@ -17,7 +18,8 @@ FissionHeatSourceTransientAux::FissionHeatSourceTransientAux(const InputParamete
   : AuxKernel(parameters),
     _fissxs(getMaterialProperty<std::vector<Real>>("fissxs")),
     _fisse(getMaterialProperty<std::vector<Real>>("fisse")),
-    _num_groups(getParam<unsigned int>("num_groups"))
+    _num_groups(getParam<unsigned int>("num_groups")),
+    _nt_scale(getParam<Real>("nt_scale"))
 {
   auto n = coupledComponents("group_fluxes");
   if (!(n == _num_groups))
@@ -34,7 +36,7 @@ FissionHeatSourceTransientAux::computeValue()
 {
   Real r = 0;
   for (unsigned int i = 0; i < _num_groups; ++i)
-    r += _fisse[_qp][i] * _fissxs[_qp][i] * (*_group_fluxes[i])[_qp];
+    r += _fisse[_qp][i] * _fissxs[_qp][i] * (*_group_fluxes[i])[_qp] * _nt_scale;
 
   return r;
 }

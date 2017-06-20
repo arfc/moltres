@@ -54,6 +54,8 @@
 
 // AuxKernels
 #include "FissionHeatSourceAux.h"
+#include "FissionHeatSourceTransientAux.h"
+#include "ModeratorHeatSourceTransientAux.h"
 #include "MatDiffusionAux.h"
 
 // Actions
@@ -150,6 +152,8 @@ MoltresApp::registerObjects(Factory & factory)
   registerPostprocessor(ElmIntegTotFissNtsPostprocessor);
   registerPostprocessor(AverageFissionHeat);
   registerAux(FissionHeatSourceAux);
+  registerAux(FissionHeatSourceTransientAux);
+  registerAux(ModeratorHeatSourceTransientAux);
   registerAux(MatDiffusionAux);
 }
 

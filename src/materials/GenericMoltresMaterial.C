@@ -10,10 +10,10 @@ validParams<GenericMoltresMaterial>()
   params.addRequiredParam<std::string>(
       "property_tables_root",
       "The file root name containing interpolation tables for material properties.");
-  params.addRequiredParam<int>("num_groups",
-                               "The number of groups the energy spectrum is divided into.");
-  params.addRequiredParam<int>("num_precursor_groups",
-                               "The number of delayed neutron precursor groups.");
+  params.addRequiredParam<unsigned>("num_groups",
+                                    "The number of groups the energy spectrum is divided into.");
+  params.addRequiredParam<unsigned>("num_precursor_groups",
+                                    "The number of delayed neutron precursor groups.");
   params.addCoupledVar(
       "temperature", 937, "The temperature field for determining group constants.");
   MooseEnum interp_type("bicubic_spline spline least_squares monotone_cubic linear none");
@@ -31,8 +31,16 @@ validParams<GenericMoltresMaterial>()
   params.addParam<std::string>("material", "Must specify either *fuel* or *moderator*.");
   params.addParam<bool>(
       "sss2_input", true, "Whether serpent 2 was used to generate the input files.");
-  params.addParam<PostprocessorName>("peak_power_density",
-                                     "The postprocess describing
+  params.addParam<PostprocessorName>(
+      "peak_power_density", 0, "The postprocessor which holds the peak power density.");
+  params.addParam<Real>(
+      "peak_power_density_set_point", 10, "The peak power density set point in W/cm^3");
+  params.addParam<Real>("controller_gain",
+                        1e-2,
+                        "For every W/cm^3 that the peak power density is "
+                        "greater than the peak power density set point, "
+                        "the absorption cross section gets incremented by "
+                        "this amount");
   return params;
 }
 
@@ -63,10 +71,13 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     _d_beta_d_temp(declareProperty<Real>("d_beta_d_temp")),
     _d_decay_constant_d_temp(declareProperty<std::vector<Real>>("d_decay_constant_d_temp")),
     _interp_type(getParam<MooseEnum>("interp_type")),
-    _other_temp(getPostprocessorValue("other_temp"))
+    _other_temp(getPostprocessorValue("other_temp")),
+    _peak_power_density(getPostprocessorValue("peak_power_density")),
+    _peak_power_density_set_point(getParam<Real>("peak_power_density_set_point")),
+    _controller_gain(getParam<Real>("controller_gain"))
 {
-  _num_groups = getParam<int>("num_groups");
-  _num_precursor_groups = getParam<int>("num_precursor_groups");
+  _num_groups = getParam<unsigned>("num_groups");
+  _num_precursor_groups = getParam<unsigned>("num_precursor_groups");
   std::string property_tables_root = getParam<std::string>("property_tables_root");
   std::vector<std::string> xsec_names{"FLUX",
                                       "REMXS",
@@ -644,8 +655,8 @@ GenericMoltresMaterial::fuelBicubic()
     _gtransfxs[_qp][i] =
         _xsec_bicubic_spline_interpolators["GTRANSFXS"][i].sample(_temperature[_qp], _other_temp);
     _d_gtransfxs_d_temp[_qp][i] =
-        _xsec_bicubic_spline_interpolators["GTRANSFXS"]
-                                          [i].sampleDerivative(_temperature[_qp], _other_temp, 1);
+        _xsec_bicubic_spline_interpolators["GTRANSFXS"][i].sampleDerivative(
+            _temperature[_qp], _other_temp, 1);
   }
   for (decltype(_num_groups) i = 0; i < _num_precursor_groups; ++i)
   {
@@ -656,8 +667,8 @@ GenericMoltresMaterial::fuelBicubic()
     _decay_constant[_qp][i] = _xsec_bicubic_spline_interpolators["DECAY_CONSTANT"][i].sample(
         _temperature[_qp], _other_temp);
     _d_decay_constant_d_temp[_qp][i] =
-        _xsec_bicubic_spline_interpolators["DECAY_CONSTANT"]
-                                          [i].sampleDerivative(_temperature[_qp], _other_temp, 1);
+        _xsec_bicubic_spline_interpolators["DECAY_CONSTANT"][i].sampleDerivative(
+            _temperature[_qp], _other_temp, 1);
   }
 }
 
@@ -702,8 +713,8 @@ GenericMoltresMaterial::moderatorBicubic()
     _gtransfxs[_qp][i] =
         _xsec_bicubic_spline_interpolators["GTRANSFXS"][i].sample(_other_temp, _temperature[_qp]);
     _d_gtransfxs_d_temp[_qp][i] =
-        _xsec_bicubic_spline_interpolators["GTRANSFXS"]
-                                          [i].sampleDerivative(_other_temp, _temperature[_qp], 2);
+        _xsec_bicubic_spline_interpolators["GTRANSFXS"][i].sampleDerivative(
+            _other_temp, _temperature[_qp], 2);
   }
   for (decltype(_num_groups) i = 0; i < _num_precursor_groups; ++i)
   {
@@ -714,8 +725,8 @@ GenericMoltresMaterial::moderatorBicubic()
     _decay_constant[_qp][i] = _xsec_bicubic_spline_interpolators["DECAY_CONSTANT"][i].sample(
         _other_temp, _temperature[_qp]);
     _d_decay_constant_d_temp[_qp][i] =
-        _xsec_bicubic_spline_interpolators["DECAY_CONSTANT"]
-                                          [i].sampleDerivative(_other_temp, _temperature[_qp], 2);
+        _xsec_bicubic_spline_interpolators["DECAY_CONSTANT"][i].sampleDerivative(
+            _other_temp, _temperature[_qp], 2);
   }
 }
 
@@ -812,4 +823,7 @@ GenericMoltresMaterial::computeQpProperties()
 
   else if (_interp_type == "none")
     dummyComputeQpProperties();
+
+  for (unsigned i = 0; i < _num_groups; ++i)
+    _remxs[_qp][i] += _controller_gain * (_peak_power_density - _peak_power_density_set_point);
 }
