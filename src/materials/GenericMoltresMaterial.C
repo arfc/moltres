@@ -31,6 +31,8 @@ validParams<GenericMoltresMaterial>()
   params.addParam<std::string>("material", "Must specify either *fuel* or *moderator*.");
   params.addParam<bool>(
       "sss2_input", true, "Whether serpent 2 was used to generate the input files.");
+  params.addParam<PostprocessorName>("peak_power_density",
+                                     "The postprocess describing
   return params;
 }
 
@@ -642,8 +644,8 @@ GenericMoltresMaterial::fuelBicubic()
     _gtransfxs[_qp][i] =
         _xsec_bicubic_spline_interpolators["GTRANSFXS"][i].sample(_temperature[_qp], _other_temp);
     _d_gtransfxs_d_temp[_qp][i] =
-        _xsec_bicubic_spline_interpolators["GTRANSFXS"][i].sampleDerivative(
-            _temperature[_qp], _other_temp, 1);
+        _xsec_bicubic_spline_interpolators["GTRANSFXS"]
+                                          [i].sampleDerivative(_temperature[_qp], _other_temp, 1);
   }
   for (decltype(_num_groups) i = 0; i < _num_precursor_groups; ++i)
   {
@@ -654,8 +656,8 @@ GenericMoltresMaterial::fuelBicubic()
     _decay_constant[_qp][i] = _xsec_bicubic_spline_interpolators["DECAY_CONSTANT"][i].sample(
         _temperature[_qp], _other_temp);
     _d_decay_constant_d_temp[_qp][i] =
-        _xsec_bicubic_spline_interpolators["DECAY_CONSTANT"][i].sampleDerivative(
-            _temperature[_qp], _other_temp, 1);
+        _xsec_bicubic_spline_interpolators["DECAY_CONSTANT"]
+                                          [i].sampleDerivative(_temperature[_qp], _other_temp, 1);
   }
 }
 
@@ -700,8 +702,8 @@ GenericMoltresMaterial::moderatorBicubic()
     _gtransfxs[_qp][i] =
         _xsec_bicubic_spline_interpolators["GTRANSFXS"][i].sample(_other_temp, _temperature[_qp]);
     _d_gtransfxs_d_temp[_qp][i] =
-        _xsec_bicubic_spline_interpolators["GTRANSFXS"][i].sampleDerivative(
-            _other_temp, _temperature[_qp], 2);
+        _xsec_bicubic_spline_interpolators["GTRANSFXS"]
+                                          [i].sampleDerivative(_other_temp, _temperature[_qp], 2);
   }
   for (decltype(_num_groups) i = 0; i < _num_precursor_groups; ++i)
   {
@@ -712,8 +714,8 @@ GenericMoltresMaterial::moderatorBicubic()
     _decay_constant[_qp][i] = _xsec_bicubic_spline_interpolators["DECAY_CONSTANT"][i].sample(
         _other_temp, _temperature[_qp]);
     _d_decay_constant_d_temp[_qp][i] =
-        _xsec_bicubic_spline_interpolators["DECAY_CONSTANT"][i].sampleDerivative(
-            _other_temp, _temperature[_qp], 2);
+        _xsec_bicubic_spline_interpolators["DECAY_CONSTANT"]
+                                          [i].sampleDerivative(_other_temp, _temperature[_qp], 2);
   }
 }
 
