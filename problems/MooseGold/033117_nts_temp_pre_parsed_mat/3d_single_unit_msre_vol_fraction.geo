@@ -1,10 +1,10 @@
 Geometry.CopyMeshingMethod = 1;
 // Mesh.RandomFactor = 1e-6;
-graph_sqc_rad = 36; // See MSRE-properties.ods cell u46: 33.28
-fuel_sqc_rad = 83; // See MSRE-properties.ods cell u41: 70.17
+graph_sqc_rad = 33.28; // See MSRE-properties.ods cell u46: 33.28
+fuel_sqc_rad = 70.17; // See MSRE-properties.ods cell u41: 70.17
 pitch = 2 * fuel_sqc_rad;
 num_cells = 1;
-height = 175; // p. 101 robertson design report part 1: 162.56
+height = 162.56; // p. 101 robertson design report part 1: 162.56
 lc = 2*graph_sqc_rad;
 
 Point(1) = {-graph_sqc_rad, -graph_sqc_rad, 0, lc};
@@ -28,8 +28,8 @@ Line Loop(10) = {4, 1, 2, -3};
 Plane Surface(11) = {9, 10};
 Plane Surface(12) = {10};
 
-Transfinite Line {8, 5, 6, 7} = 20;
-Transfinite Line {2, 1, 4, 3} = 10;
+Transfinite Line {8, 5, 6, 7} = 10;
+Transfinite Line {2, 1, 4, 3} = 5;
 Transfinite Surface {12};
 Recombine Surface {11, 12};
 
@@ -78,14 +78,14 @@ moder_sides[] = {};
 moder_tops[] = {};
 For index In {0:num_cells*num_cells-1}
 // For index In {3:5}
-fuel_out[] = Extrude {0, 0, height} { Surface{fuel_surfaces[index]}; Layers{10}; Recombine; };
+fuel_out[] = Extrude {0, 0, height} { Surface{fuel_surfaces[index]}; Layers{5}; Recombine; };
 fuel_volumes += fuel_out[1];
 fuel_tops += fuel_out[0];
 fuel_sides += fuel_out[4];
 fuel_sides += fuel_out[5];
 fuel_sides += fuel_out[2];
 fuel_sides += fuel_out[3];
-moder_out[] = Extrude {0, 0, height} { Surface{moder_surfaces[index]}; Layers{10}; Recombine; };
+moder_out[] = Extrude {0, 0, height} { Surface{moder_surfaces[index]}; Layers{5}; Recombine; };
 moder_volumes += moder_out[1];
 moder_tops += moder_out[0];
 moder_sides += moder_out[2];
