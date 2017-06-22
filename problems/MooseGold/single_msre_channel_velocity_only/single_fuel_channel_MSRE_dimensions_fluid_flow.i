@@ -1,4 +1,6 @@
 # This input file tests outflow boundary conditions for the incompressible NS equations.
+width = 3.048
+height = 1.016
 
 [GlobalParams]
   gravity = '0 0 0'
@@ -6,18 +8,7 @@
 []
 
 [Mesh]
-  type = GeneratedMesh
-  dim = 3
-  # xmax = 3.048
-  # ymax = 1.016
-  # zmax = 162.56
-  xmax = 1
-  ymax = 1
-  zmax = 10
-  nx = 5
-  ny = 5
-  nz = 5
-  elem_type = HEX27
+  file = single_fuel_channel_msre_dimensions_bump.msh
 []
 
 
@@ -91,6 +82,12 @@
 []
 
 [BCs]
+  # [./pin_p]
+  #   type = DirichletBC
+  #   variable = p
+  #   value = 0
+  #   boundary = 'entrance'
+  # [../]
   [./x_no_slip]
     type = DirichletBC
     variable = vel_x
@@ -122,16 +119,8 @@
     type = GenericConstantMaterial
     block = 0
     prop_names = 'rho mu'
-    # prop_values = '2.15e-3  8.28e-5'
-    prop_values = '1 2'
-  [../]
-[]
-
-[Preconditioning]
-  [./SMP_PJFNK]
-    type = SMP
-    full = true
-    solve_type = NEWTON
+    prop_values = '2.15e-3  8.28e-5'
+    # prop_values = '1 2'
   [../]
 []
 
@@ -139,20 +128,30 @@
   show_var_residual_norms = true
 []
 
+[Preconditioning]
+  [./SMP_PJFNK]
+    type = SMP
+    full = true
+    solve_type = NEWTON
+    ksp_norm = none
+  [../]
+[]
+
 [Executioner]
   type = Steady
   # type = Transient
-  # dt = 0.1
+  # dt = 5e-5
   # num_steps = 5
-  petsc_options_iname = '-ksp_gmres_restart -pc_type -sub_pc_type -sub_pc_factor_levels'
-  petsc_options_value = '300                bjacobi  ilu          4'
-  # petsc_options_iname = '-pc_type -sub_pc_type -sub_pc_factor_levels'
-  # petsc_options_value = 'asm	  ilu	       2'
+  # petsc_options_iname = '-ksp_gmres_restart -pc_type -sub_pc_type -sub_pc_factor_levels'
+  # petsc_options_value = '300                bjacobi  ilu          4'
+  # petsc_options_iname = '-pc_type -sub_pc_type'
+  # petsc_options_value = 'asm	  lu'
+  petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type -snes_linesearch_minlambda'
+  petsc_options_value = 'lu NONZERO 1.e-10 preonly 1e-3'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   # line_search = none
-  # nl_rel_tol = 1e-12
-  nl_max_its = 6
-  l_tol = 1e-6
+  nl_rel_tol = 1e-8
+  nl_max_its = 50
   l_max_its = 300
 []
 
@@ -165,11 +164,8 @@
 [Functions]
   [./inlet_func]
     type = ParsedFunction
-    # value = '21.73'
-    # value = 1
     # value = 'tanh(x/1e-2) * tanh((1 - x)/1e-2) * tanh(y/1e-2) * tanh((1-y)/1e-2)'
-    # value = 'tanh(x/1e-3) * tanh((1 - x)/1e-3) * tanh(y/1e-3) * tanh((1-y)/1e-3)'
-    value = 'tanh(x/1e-3) * 2'
+    value = '21.73 * tanh(x/1e-2) * tanh((${width} - x)/1e-2) * tanh(y/1e-2) * tanh((${height}-y)/1e-2)'
   [../]
 []
 
