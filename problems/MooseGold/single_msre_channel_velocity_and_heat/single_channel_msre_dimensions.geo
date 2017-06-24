@@ -129,7 +129,7 @@ Line(41) = {6, 11};
 //+ y-normal
 Line(42) = {5, 9};
 
-Transfinite Line{1, 5, 7, 12, 28, 32, 37, 40} = 31 Using Progression 1.3;
+Transfinite Line{1, 5, 7, 12, 28, 32, 37, 40} = 61 Using Progression 1.1;
 Transfinite Line{2, 3, 4, 6, 8, 9, 10, 11, 30, 34, 36, 39, 27, 29, 31, 33, 35, 38, 41, 42} = 13 Using Bump 0.05;
 
 //+
