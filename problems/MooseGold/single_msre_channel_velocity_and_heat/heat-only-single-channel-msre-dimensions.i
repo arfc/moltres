@@ -3,17 +3,19 @@ width = 3.048
 height = 1.016
 length = 162.56
 
-[GlobalParams]
-  gravity = '0 0 0'
-  integrate_p_by_parts = true
-[]
-
 [Mesh]
   file = single_channel_msre_dimensions.msh
 []
 
 
 [Variables]
+  [./temp]
+    order = FIRST
+    family = LAGRANGE
+  [../]
+[]
+
+[AuxVariables]
   [./vel_x]
     order = SECOND
     family = LAGRANGE
@@ -34,52 +36,9 @@ length = 162.56
     family = LAGRANGE
     block = 'fuel'
   [../]
-  [./temp]
-    order = FIRST
-    family = LAGRANGE
-  [../]
 []
 
 [Kernels]
-  [./mass]
-    type = INSMass
-    variable = p
-    u = vel_x
-    v = vel_y
-    w = vel_z
-    p = p
-    block = 'fuel'
-  [../]
-  [./x_momentum_space]
-    type = INSMomentumLaplaceForm
-    variable = vel_x
-    u = vel_x
-    v = vel_y
-    w = vel_z
-    p = p
-    component = 0
-    block = 'fuel'
-  [../]
-  [./y_momentum_space]
-    type = INSMomentumLaplaceForm
-    variable = vel_y
-    u = vel_x
-    v = vel_y
-    w = vel_z
-    p = p
-    component = 1
-    block = 'fuel'
-  [../]
-  [./z_momentum_space]
-    type = INSMomentumLaplaceForm
-    variable = vel_z
-    u = vel_x
-    v = vel_y
-    w = vel_z
-    p = p
-    component = 2
-    block = 'fuel'
-  [../]
   [./temp_fuel_transport]
     type = INSTemperature
     u = vel_x
@@ -106,51 +65,9 @@ length = 162.56
     function = mod_source_function
     block = 'moderator'
   [../]
-  # [./x_time]
-  #   type = INSMomentumTimeDerivative
-  #   variable = vel_x
-  # [../]
-  # [./y_time]
-  #   type = INSMomentumTimeDerivative
-  #   variable = vel_y
-  # [../]
-  # [./z_time]
-  #   type = INSMomentumTimeDerivative
-  #   variable = vel_z
-  # [../]
 []
 
 [BCs]
-  # [./pin_p]
-  #   type = DirichletBC
-  #   variable = p
-  #   value = 0
-  #   boundary = 'entrance'
-  # [../]
-  [./x_no_slip]
-    type = DirichletBC
-    variable = vel_x
-    boundary = 'fuel_bottom fuel_side_walls fuel_mod_interface'
-    value = 0.0
-  [../]
-  [./y_no_slip]
-    type = DirichletBC
-    variable = vel_y
-    boundary = 'fuel_bottom fuel_side_walls fuel_mod_interface'
-    value = 0.0
-  [../]
-  [./z_no_slip]
-    type = DirichletBC
-    variable = vel_z
-    boundary = 'fuel_side_walls fuel_mod_interface'
-    value = 0
-  [../]
-  [./z_inlet]
-    type = FunctionDirichletBC
-    variable = vel_z
-    boundary = 'fuel_bottom'
-    function = 'inlet_func'
-  [../]
   [./temp_inlet]
     boundary = 'fuel_bottom'
     variable = temp
@@ -163,8 +80,8 @@ length = 162.56
   [./fuel]
     type = GenericConstantMaterial
     block = 'fuel'
-    prop_names = 'rho mu k cp'
-    prop_values = '2.15e-3  8.28e-5 .0553 1967'
+    prop_names = 'rho k cp'
+    prop_values = '2.15e-3 .0553 1967'
   [../]
   [./moderator]
     type = GenericConstantMaterial
@@ -188,8 +105,10 @@ length = 162.56
 []
 
 [Executioner]
-  type = Steady
-  # type = Transient
+  # type = Steady
+  type = Transient
+  dt = 1
+  num_steps = 1
   # dt = 5e-5
   # num_steps = 5
   # petsc_options_iname = '-ksp_gmres_restart -pc_type -sub_pc_type -sub_pc_factor_levels'
@@ -213,11 +132,6 @@ length = 162.56
 []
 
 [Functions]
-  [./inlet_func]
-    type = ParsedFunction
-    # value = 'tanh(x/1e-2) * tanh((1 - x)/1e-2) * tanh(y/1e-2) * tanh((1-y)/1e-2)'
-    value = '21.73 * tanh(x/1e-2) * tanh((${width} - x)/1e-2) * tanh(y/1e-2) * tanh((${height}-y)/1e-2)'
-  [../]
   [./fuel_source_function]
     type = ParsedFunction
     value = '10 * sin(pi * z / ${length})'
@@ -237,5 +151,45 @@ length = 162.56
     type = FunctionIC
     variable = temp
     function = temp_ic
+  [../]
+[]
+
+[MultiApps]
+  [./sub]
+    type = TransientMultiApp
+    app_type = MoltresApp
+    positions = '0 0 0'
+    input_files = solution_aux_exodus.i
+  [../]
+[]
+
+[Transfers]
+  [./vel_x]
+    type = MultiAppNearestNodeTransfer
+    direction = from_multiapp
+    multi_app = sub
+    source_variable = vel_x
+    variable = vel_x
+  [../]
+  [./vel_y]
+    type = MultiAppNearestNodeTransfer
+    direction = from_multiapp
+    multi_app = sub
+    source_variable = vel_y
+    variable = vel_y
+  [../]
+  [./vel_z]
+    type = MultiAppNearestNodeTransfer
+    direction = from_multiapp
+    multi_app = sub
+    source_variable = vel_z
+    variable = vel_z
+  [../]
+  [./p]
+    type = MultiAppNearestNodeTransfer
+    direction = from_multiapp
+    multi_app = sub
+    source_variable = p
+    variable = p
   [../]
 []
