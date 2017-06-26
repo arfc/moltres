@@ -197,3 +197,7 @@ Physical Surface("fuel_mod_interface") = {18, 14};
 Physical Surface("fuel_side_walls") = {20, 16};
 //+
 Physical Surface("fuel_bottom") = {24};
+//+
+Physical Surface("moderator_bottoms") = {62, 50};
+//+
+Physical Surface("moderator_tops") = {60, 52};

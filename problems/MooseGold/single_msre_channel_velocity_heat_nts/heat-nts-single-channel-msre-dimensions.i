@@ -26,13 +26,13 @@ nt_scale=1e13
   [./group1]
     order = FIRST
     family = LAGRANGE
-    initial_condition = 1
+    # initial_condition = 1
     # scaling = 1e4
   [../]
   [./group2]
     order = FIRST
     family = LAGRANGE
-    initial_condition = 1
+    # initial_condition = 1
     # scaling = 1e4
   [../]
   [./temp]
@@ -169,6 +169,16 @@ nt_scale=1e13
     value = 900
     type = DirichletBC
   [../]
+  [./vacuum_group1]
+    type = VacuumConcBC
+    boundary = 'fuel_bottom fuel_top moderator_bottoms moderator_tops'
+    variable = group1
+  [../]
+  [./vacuum_group2]
+    type = VacuumConcBC
+    boundary = 'fuel_bottom fuel_top moderator_bottoms moderator_tops'
+    variable = group2
+  [../]
 []
 
 [Materials]
@@ -235,13 +245,9 @@ nt_scale=1e13
 []
 
 [Functions]
-  [./fuel_source_function]
+  [./nt_ic]
     type = ParsedFunction
     value = '10 * sin(pi * z / ${length})'
-  [../]
-  [./mod_source_function]
-    type = ParsedFunction
-    value = '.0144 * 4'
   [../]
   [./temp_ic]
     type = ParsedFunction
@@ -250,10 +256,20 @@ nt_scale=1e13
 []
 
 [ICs]
-  [./fuel]
+  [./temp]
     type = FunctionIC
     variable = temp
     function = temp_ic
+  [../]
+  [./group1]
+    type = FunctionIC
+    variable = group1
+    function = nt_ic
+  [../]
+  [./group2]
+    type = FunctionIC
+    variable = group2
+    function = nt_ic
   [../]
 []
 
