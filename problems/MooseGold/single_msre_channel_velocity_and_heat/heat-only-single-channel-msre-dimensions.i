@@ -17,19 +17,19 @@ length = 162.56
 
 [AuxVariables]
   [./vel_x]
-    order = SECOND
-    family = LAGRANGE
-    block = 'fuel'
+    # order = SECOND
+    # family = LAGRANGE
+    # block = 'fuel'
   [../]
   [./vel_y]
-    order = SECOND
-    family = LAGRANGE
-    block = 'fuel'
+    # order = SECOND
+    # family = LAGRANGE
+    # block = 'fuel'
   [../]
   [./vel_z]
-    order = SECOND
-    family = LAGRANGE
-    block = 'fuel'
+    # order = SECOND
+    # family = LAGRANGE
+    # block = 'fuel'
   [../]
   [./p]
     order = FIRST
