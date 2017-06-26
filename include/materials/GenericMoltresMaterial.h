@@ -4,6 +4,8 @@
 #include "GenericConstantMaterial.h"
 #include "SplineInterpolation.h"
 #include "BicubicSplineInterpolation.h"
+#include "MonotoneCubicInterpolation.h"
+#include "LinearInterpolation.h"
 
 class GenericMoltresMaterial;
 
@@ -18,6 +20,9 @@ public:
 protected:
   void dummyConstruct(std::string & property_tables_root, std::vector<std::string> xsec_names);
   void splineConstruct(std::string & property_tables_root, std::vector<std::string> xsec_names);
+  void monotoneCubicConstruct(std::string & property_tables_root,
+                              std::vector<std::string> xsec_names);
+  void linearConstruct(std::string & property_tables_root, std::vector<std::string> xsec_names);
   void bicubicSplineConstruct(std::string & property_tables_root,
                               std::vector<std::string> xsec_names,
                               const InputParameters & parameters);
@@ -25,6 +30,8 @@ protected:
                              std::vector<std::string> xsec_names);
   virtual void dummyComputeQpProperties();
   virtual void splineComputeQpProperties();
+  virtual void monotoneCubicComputeQpProperties();
+  virtual void linearComputeQpProperties();
   virtual void fuelBicubic();
   virtual void moderatorBicubic();
   virtual void bicubicSplineComputeQpProperties();
@@ -58,11 +65,16 @@ protected:
 
   MooseEnum _interp_type;
   const PostprocessorValue & _other_temp;
+  const PostprocessorValue & _peak_power_density;
+  Real _peak_power_density_set_point;
+  Real _controller_gain;
 
-  int _num_groups;
-  int _num_precursor_groups;
+  unsigned _num_groups;
+  unsigned _num_precursor_groups;
   std::map<std::string, std::vector<Real>> _xsec_map;
   std::map<std::string, std::vector<SplineInterpolation>> _xsec_spline_interpolators;
+  std::map<std::string, std::vector<MonotoneCubicInterpolation>> _xsec_monotone_cubic_interpolators;
+  std::map<std::string, std::vector<LinearInterpolation>> _xsec_linear_interpolators;
   std::map<std::string, std::vector<BicubicSplineInterpolation>> _xsec_bicubic_spline_interpolators;
   std::map<std::string, int> _vec_lengths;
   std::map<std::string, std::string> _file_map;
@@ -80,6 +92,8 @@ protected:
   std::vector<std::vector<Real>> _gtransfxs_consts = std::vector<std::vector<Real>>(2);
   std::vector<std::vector<Real>> _beta_eff_consts = std::vector<std::vector<Real>>(2);
   std::vector<std::vector<Real>> _decay_constants_consts = std::vector<std::vector<Real>>(2);
+
+  bool _perform_control;
 };
 
 #endif // GENERICMOLTRESMATERIAL_H

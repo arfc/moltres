@@ -1,14 +1,12 @@
 flow_velocity=21.7 # cm/s. See MSRE-properties.ods
 nt_scale=1e13
-ini_temp=922
-diri_temp=922
 
 [GlobalParams]
   num_groups = 2
   num_precursor_groups = 6
   use_exp_form = false
   group_fluxes = 'group1 group2'
-  temperature = temp
+  temperature = 922
   sss2_input = false
   pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6'
   account_delayed = true
@@ -18,7 +16,6 @@ diri_temp=922
 
 [Mesh]
   file = '2d_lattice_structured.msh'
-  # file = '2d_lattice_structured_jac.msh'
 [../]
 
 [Problem]
@@ -37,10 +34,6 @@ diri_temp=922
     family = LAGRANGE
     initial_condition = 1
     scaling = 1e4
-  [../]
-  [./temp]
-    initial_condition = ${ini_temp}
-    scaling = 1e-4
   [../]
 []
 
@@ -120,34 +113,6 @@ diri_temp=922
     variable = group2
     group_number = 2
   [../]
-
-  # Temperature
-  [./temp_time_derivative]
-    type = MatINSTemperatureTimeDerivative
-    variable = temp
-  [../]
-  [./temp_source_fuel]
-    type = TransientFissionHeatSource
-    variable = temp
-    block = 'fuel'
-  [../]
-  [./temp_source_mod]
-    type = GammaHeatSource
-    variable = temp
-    block = 'moder'
-    average_fission_heat = 'average_fission_heat'
-  [../]
-  [./temp_diffusion]
-    type = MatDiffusion
-    D_name = 'k'
-    variable = temp
-  [../]
-  [./temp_advection_fuel]
-    type = ConservativeTemperatureAdvection
-    velocity = '0 ${flow_velocity} 0'
-    variable = temp
-    block = 'fuel'
-  [../]
 []
 
 [BCs]
@@ -160,18 +125,6 @@ diri_temp=922
     type = VacuumConcBC
     boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
     variable = group2
-  [../]
-  [./temp_diri_cg]
-    boundary = 'moder_bottoms fuel_bottoms outer_wall'
-    type = FunctionDirichletBC
-    function = 'temp_bc_func'
-    variable = temp
-  [../]
-  [./temp_advection_outlet]
-    boundary = 'fuel_tops'
-    type = TemperatureOutflowBC
-    variable = temp
-    velocity = '0 ${flow_velocity} 0'
   [../]
 []
 
@@ -189,49 +142,25 @@ diri_temp=922
   [../]
 []
 
-[Functions]
-  [./temp_bc_func]
-    type = ParsedFunction
-    value = '${ini_temp} - (${ini_temp} - ${diri_temp}) * tanh(t/1e-2)'
-  [../]
-[]
-
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
     property_tables_root = '../property_file_dir/newt_msre_fuel_'
     interp_type = 'spline'
     block = 'fuel'
-    prop_names = 'k cp'
-    prop_values = '.0553 1967' # Robertson MSRE technical report @ 922 K
+    prop_names = 'k cp rho'
+    prop_values = '.0553 1967 2.146e-3' # Robertson MSRE technical report @ 922 K
     peak_power_density = peak_power_density
-    controller_gain = 0
-  [../]
-  [./rho_fuel]
-    type = DerivativeParsedMaterial
-    f_name = rho
-    function = '2.146e-3 * exp(-1.8 * 1.18e-4 * (temp - 922))'
-    args = 'temp'
-    derivative_order = 1
-    block = 'fuel'
+    controller_gain = 1e-5
   [../]
   [./moder]
     type = GenericMoltresMaterial
     property_tables_root = '../property_file_dir/newt_msre_mod_'
     interp_type = 'spline'
-    prop_names = 'k cp'
-    prop_values = '.312 1760' # Cammi 2011 at 908 K
+    prop_names = 'k cp rho'
+    prop_values = '.312 1760 1.86e-3' # Cammi 2011 at 908 K
     block = 'moder'
-    peak_power_density = peak_power_density
     controller_gain = 0
-  [../]
-  [./rho_moder]
-    type = DerivativeParsedMaterial
-    f_name = rho
-    function = '1.86e-3 * exp(-1.8 * 1.0e-5 * (temp - 922))'
-    args = 'temp'
-    derivative_order = 1
-    block = 'moder'
   [../]
 []
 
@@ -250,6 +179,7 @@ diri_temp=922
   # petsc_options_iname = '-snes_type'
   # petsc_options_value = 'test'
 
+  line_search = none
   nl_max_its = 30
   l_max_its = 100
 
@@ -289,21 +219,16 @@ diri_temp=922
     value2 = group1_old
     outputs = 'console csv'
   [../]
-  [./temp_fuel]
-    type = ElementAverageValue
-    variable = temp
-    block = 'fuel'
-    outputs = 'csv console'
-  [../]
-  [./temp_moder]
-    type = ElementAverageValue
-    variable = temp
-    block = 'moder'
-    outputs = 'csv console'
+  [./peak_power_density]
+    type = ElementExtremeValue
+    value_type = max
+    variable = power_density
+    execute_on = 'linear nonlinear timestep_begin'
   [../]
   [./average_fission_heat]
     type = AverageFissionHeat
-    execute_on = 'linear nonlinear'
+    nt_scale = ${nt_scale}
+    # execute_on = 'linear nonlinear'
     outputs = 'csv console'
     block = 'fuel'
   [../]
@@ -313,7 +238,9 @@ diri_temp=922
   print_perf_log = true
   print_linear_residuals = true
   csv = true
-  exodus = true
+  [./exodus]
+    type = Exodus
+  [../]
 []
 
 [Debug]
