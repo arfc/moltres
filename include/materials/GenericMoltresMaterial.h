@@ -92,6 +92,8 @@ protected:
   std::vector<std::vector<Real>> _gtransfxs_consts = std::vector<std::vector<Real>>(2);
   std::vector<std::vector<Real>> _beta_eff_consts = std::vector<std::vector<Real>>(2);
   std::vector<std::vector<Real>> _decay_constants_consts = std::vector<std::vector<Real>>(2);
+
+  bool _perform_control;
 };
 
 #endif // GENERICMOLTRESMATERIAL_H

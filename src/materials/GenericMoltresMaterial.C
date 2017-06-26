@@ -76,6 +76,11 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     _peak_power_density_set_point(getParam<Real>("peak_power_density_set_point")),
     _controller_gain(getParam<Real>("controller_gain"))
 {
+  if (parameters.isParamSetByUser("peak_power_density"))
+    _perform_control = true;
+  else
+    _perform_control = false;
+
   _num_groups = getParam<unsigned>("num_groups");
   _num_precursor_groups = getParam<unsigned>("num_precursor_groups");
   std::string property_tables_root = getParam<std::string>("property_tables_root");
@@ -824,6 +829,7 @@ GenericMoltresMaterial::computeQpProperties()
   else if (_interp_type == "none")
     dummyComputeQpProperties();
 
-  for (unsigned i = 0; i < _num_groups; ++i)
-    _remxs[_qp][i] += _controller_gain * (_peak_power_density - _peak_power_density_set_point);
+  if (_perform_control)
+    for (unsigned i = 0; i < _num_groups; ++i)
+      _remxs[_qp][i] += _controller_gain * (_peak_power_density - _peak_power_density_set_point);
 }
