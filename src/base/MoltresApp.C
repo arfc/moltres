@@ -40,6 +40,7 @@
 #include "GenericMoltresMaterial.h"
 #include "CammiFuel.h"
 #include "CammiModerator.h"
+#include "Nusselt.h"
 
 // Postprocessors
 #include "AverageFissionHeat.h"
@@ -53,6 +54,8 @@
 
 // AuxKernels
 #include "FissionHeatSourceAux.h"
+#include "FissionHeatSourceTransientAux.h"
+#include "ModeratorHeatSourceTransientAux.h"
 #include "MatDiffusionAux.h"
 
 // Actions
@@ -139,6 +142,7 @@ MoltresApp::registerObjects(Factory & factory)
   registerMaterial(GenericMoltresMaterial);
   registerMaterial(CammiFuel);
   registerMaterial(CammiModerator);
+  registerMaterial(Nusselt);
   registerPostprocessor(IntegralOldVariablePostprocessor);
   registerPostprocessor(ElementL2Diff);
   registerPostprocessor(IntegralNewVariablePostprocessor);
@@ -148,6 +152,8 @@ MoltresApp::registerObjects(Factory & factory)
   registerPostprocessor(ElmIntegTotFissNtsPostprocessor);
   registerPostprocessor(AverageFissionHeat);
   registerAux(FissionHeatSourceAux);
+  registerAux(FissionHeatSourceTransientAux);
+  registerAux(ModeratorHeatSourceTransientAux);
   registerAux(MatDiffusionAux);
 }
 

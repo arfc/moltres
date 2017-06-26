@@ -1,4 +1,6 @@
-flow_velocity=21.7 # cm/s. See MSRE-properties.ods
+# flow_velocity=21.7 # cm/s. See MSRE-properties.ods
+fuel_velocity_max_inlet = 43.4
+fuel_sq_rad = 39.94
 nt_scale=1e13
 ini_temp=922
 diri_temp=922
@@ -8,21 +10,18 @@ diri_temp=922
   num_precursor_groups = 6
   use_exp_form = false
   group_fluxes = 'group1 group2'
-  temperature = temp
   sss2_input = false
-  pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6'
   account_delayed = true
-  gamma = .0144 # Cammi .0144
-  nt_scale = ${nt_scale}
+  temperature = temp
+  pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6'
 []
 
 [Mesh]
-  file = '2d_lattice_structured.msh'
-  # file = '2d_lattice_structured_jac.msh'
-[../]
+  file = '3d_single_unit_msre_vol_fraction.msh'
+  # file = jac_test.msh
+[]
 
 [Problem]
-  coord_type = RZ
 []
 
 [Variables]
@@ -30,24 +29,17 @@ diri_temp=922
     order = FIRST
     family = LAGRANGE
     initial_condition = 1
-    scaling = 1e4
+    # scaling = 1e4
   [../]
   [./group2]
     order = FIRST
     family = LAGRANGE
     initial_condition = 1
-    scaling = 1e4
+    # scaling = 1e4
   [../]
   [./temp]
     initial_condition = ${ini_temp}
     scaling = 1e-4
-  [../]
-[]
-
-[AuxVariables]
-  [./power_density]
-    order = CONSTANT
-    family = MONOMIAL
   [../]
 []
 
@@ -56,8 +48,8 @@ diri_temp=922
   block = 'fuel'
   outlet_boundaries = 'fuel_tops'
   u_def = 0
-  v_def = ${flow_velocity}
-  w_def = 0
+  v_def = 0
+  w_def = ${flow_velocity}
   nt_exp_form = false
   family = MONOMIAL
   order = CONSTANT
@@ -129,14 +121,16 @@ diri_temp=922
   [./temp_source_fuel]
     type = TransientFissionHeatSource
     variable = temp
+    nt_scale=${nt_scale}
     block = 'fuel'
   [../]
-  [./temp_source_mod]
-    type = GammaHeatSource
-    variable = temp
-    block = 'moder'
-    average_fission_heat = 'average_fission_heat'
-  [../]
+  # [./temp_source_mod]
+  #   type = GammaHeatSource
+  #   variable = temp
+  #   gamma = .0144 # Cammi .0144
+  #   block = 'moder'
+  #   average_fission_heat = 'average_fission_heat'
+  # [../]
   [./temp_diffusion]
     type = MatDiffusion
     D_name = 'k'
@@ -144,7 +138,7 @@ diri_temp=922
   [../]
   [./temp_advection_fuel]
     type = ConservativeTemperatureAdvection
-    velocity = '0 ${flow_velocity} 0'
+    velocity = '0 0 ${flow_velocity}'
     variable = temp
     block = 'fuel'
   [../]
@@ -153,16 +147,16 @@ diri_temp=922
 [BCs]
   [./vacuum_group1]
     type = VacuumConcBC
-    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
+    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops moder_sides'
     variable = group1
   [../]
   [./vacuum_group2]
     type = VacuumConcBC
-    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
+    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops moder_sides'
     variable = group2
   [../]
   [./temp_diri_cg]
-    boundary = 'moder_bottoms fuel_bottoms outer_wall'
+    boundary = 'moder_bottoms fuel_bottoms moder_sides'
     type = FunctionDirichletBC
     function = 'temp_bc_func'
     variable = temp
@@ -171,21 +165,7 @@ diri_temp=922
     boundary = 'fuel_tops'
     type = TemperatureOutflowBC
     variable = temp
-    velocity = '0 ${flow_velocity} 0'
-  [../]
-[]
-
-[AuxKernels]
-  [./fuel]
-    block = 'fuel'
-    type = FissionHeatSourceTransientAux
-    variable = power_density
-  [../]
-  [./moderator]
-    block = 'moder'
-    type = ModeratorHeatSourceTransientAux
-    average_fission_heat = 'average_fission_heat'
-    variable = power_density
+    velocity = '0 0 ${flow_velocity}'
   [../]
 []
 
@@ -200,12 +180,10 @@ diri_temp=922
   [./fuel]
     type = GenericMoltresMaterial
     property_tables_root = '../property_file_dir/newt_msre_fuel_'
-    interp_type = 'spline'
+    interp_type = 'monotone_cubic'
     block = 'fuel'
     prop_names = 'k cp'
     prop_values = '.0553 1967' # Robertson MSRE technical report @ 922 K
-    peak_power_density = peak_power_density
-    controller_gain = 0
   [../]
   [./rho_fuel]
     type = DerivativeParsedMaterial
@@ -218,12 +196,10 @@ diri_temp=922
   [./moder]
     type = GenericMoltresMaterial
     property_tables_root = '../property_file_dir/newt_msre_mod_'
-    interp_type = 'spline'
+    interp_type = 'monotone_cubic'
     prop_names = 'k cp'
     prop_values = '.312 1760' # Cammi 2011 at 908 K
     block = 'moder'
-    peak_power_density = peak_power_density
-    controller_gain = 0
   [../]
   [./rho_moder]
     type = DerivativeParsedMaterial
@@ -240,10 +216,9 @@ diri_temp=922
   end_time = 10000
 
   nl_rel_tol = 1e-6
-  nl_abs_tol = 6e-6
+  nl_abs_tol = 1e-6
 
-  # solve_type = 'NEWTON'
-  solve_type = 'PJFNK'
+  solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
   petsc_options_value = 'asm      lu           1               preonly       1e-3'
@@ -251,10 +226,10 @@ diri_temp=922
   # petsc_options_value = 'test'
 
   nl_max_its = 30
-  l_max_its = 100
+  l_max_its = 200
 
+#   dtmax = 1
   dtmin = 1e-5
-  # dtmax = 1
   # dt = 1e-3
   [./TimeStepper]
     type = IterationAdaptiveDT
@@ -262,6 +237,7 @@ diri_temp=922
     cutback_factor = 0.4
     growth_factor = 1.2
     optimal_iterations = 20
+    linear_iteration_ratio = 1000
   [../]
 []
 
@@ -301,19 +277,22 @@ diri_temp=922
     block = 'moder'
     outputs = 'csv console'
   [../]
-  [./average_fission_heat]
-    type = AverageFissionHeat
-    execute_on = 'linear nonlinear'
-    outputs = 'csv console'
-    block = 'fuel'
-  [../]
+  # [./average_fission_heat]
+  #   type = AverageFissionHeat
+  #   nt_scale = ${nt_scale}
+  #   execute_on = 'linear nonlinear'
+  #   outputs = 'console'
+  #   block = 'fuel'
+  # [../]
 []
 
 [Outputs]
   print_perf_log = true
   print_linear_residuals = true
   csv = true
-  exodus = true
+  [./out]
+    type = Exodus
+  [../]
 []
 
 [Debug]

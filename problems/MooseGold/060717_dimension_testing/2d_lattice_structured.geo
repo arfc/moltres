@@ -1,6 +1,6 @@
 Geometry.CopyMeshingMethod = 1;
 R = 72.5;
-H = 153;
+H = 151.75;
 num_segments = 14;
 pitch = R / num_segments;
 x = .237952211;
