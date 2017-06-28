@@ -76,6 +76,11 @@ nt_scale=1e13
 
 [Kernels]
   # Neutronics
+  [./time_group1]
+    type = NtTimeDerivative
+    variable = group1
+    group_number = 1
+  [../]
   [./diff_group1]
     type = GroupDiffusion
     variable = group1
@@ -120,8 +125,17 @@ nt_scale=1e13
     variable = group2
     group_number = 2
   [../]
+  [./time_group2]
+    type = NtTimeDerivative
+    variable = group2
+    group_number = 2
+  [../]
 
-[./temp_fuel_transport]
+  [./temp_time_derivative]
+    type = MatINSTemperatureTimeDerivative
+    variable = temp
+  [../]
+  [./temp_fuel_transport]
     type = INSTemperature
     u = vel_x
     v = vel_y
@@ -169,23 +183,23 @@ nt_scale=1e13
     value = 900
     type = DirichletBC
   [../]
-  [./vacuum_group1]
-    type = VacuumConcBC
-    boundary = 'fuel_bottom fuel_top moderator_bottoms moderator_tops'
-    variable = group1
-  [../]
-  [./vacuum_group2]
-    type = VacuumConcBC
-    boundary = 'fuel_bottom fuel_top moderator_bottoms moderator_tops'
-    variable = group2
-  [../]
+  # [./vacuum_group1]
+  #   type = VacuumConcBC
+  #   boundary = 'fuel_bottom fuel_top moderator_bottoms moderator_tops'
+  #   variable = group1
+  # [../]
+  # [./vacuum_group2]
+  #   type = VacuumConcBC
+  #   boundary = 'fuel_bottom fuel_top moderator_bottoms moderator_tops'
+  #   variable = group2
+  # [../]
 []
 
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
     property_tables_root = '../property_file_dir/newt_msre_fuel_'
-    interp_type = 'monotone_cubic'
+    interp_type = 'spline'
     block = 'fuel'
     prop_names = 'k cp rho'
     prop_values = '.0553 1967 2.146e-3' # Robertson MSRE technical report @ 922 K
@@ -195,7 +209,7 @@ nt_scale=1e13
   [./moder]
     type = GenericMoltresMaterial
     property_tables_root = '../property_file_dir/newt_msre_mod_'
-    interp_type = 'monotone_cubic'
+    interp_type = 'spline'
     prop_names = 'k cp rho'
     prop_values = '.312 1760 1.86e-3' # Cammi 2011 at 908 K
     block = 'moderator'
@@ -217,24 +231,50 @@ nt_scale=1e13
   [../]
 []
 
+# [Executioner]
+#   # type = Steady
+#   type = Transient
+#   dt = 1
+#   num_steps = 1
+#   petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type -snes_linesearch_minlambda'
+#   petsc_options_value = 'lu NONZERO 1.e-10 preonly 1e-3'
+#   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
+#   # line_search = none
+#   nl_rel_tol = 1e-8
+#   nl_max_its = 50
+#   l_max_its = 300
+# []
+
 [Executioner]
-  # type = Steady
   type = Transient
-  dt = 1
-  num_steps = 1
-  # dt = 5e-5
-  # num_steps = 5
-  # petsc_options_iname = '-ksp_gmres_restart -pc_type -sub_pc_type -sub_pc_factor_levels'
-  # petsc_options_value = '300                bjacobi  ilu          4'
-  # petsc_options_iname = '-pc_type -sub_pc_type'
-  # petsc_options_value = 'asm	  lu'
+  end_time = 10000
+
+  nl_rel_tol = 1e-6
+  nl_abs_tol = 1e-6
+
+  solve_type = 'NEWTON'
+  petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
+  # petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
+  # petsc_options_value = 'asm      lu           1               preonly       1e-3'
   petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type -snes_linesearch_minlambda'
   petsc_options_value = 'lu NONZERO 1.e-10 preonly 1e-3'
-  petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  # line_search = none
-  nl_rel_tol = 1e-8
-  nl_max_its = 50
-  l_max_its = 300
+  # petsc_options_iname = '-snes_type'
+  # petsc_options_value = 'test'
+
+  nl_max_its = 30
+  l_max_its = 200
+
+#   dtmax = 1
+  dtmin = 1e-5
+  # dt = 1e-3
+  [./TimeStepper]
+    type = IterationAdaptiveDT
+    dt = 1e-3
+    cutback_factor = 0.4
+    growth_factor = 1.2
+    optimal_iterations = 20
+    linear_iteration_ratio = 1000
+  [../]
 []
 
 [Outputs]
@@ -314,6 +354,34 @@ nt_scale=1e13
 []
 
 [Postprocessors]
+  [./group1_current]
+    type = IntegralNewVariablePostprocessor
+    variable = group1
+    outputs = 'console csv'
+  [../]
+  [./group1_old]
+    type = IntegralOldVariablePostprocessor
+    variable = group1
+    outputs = 'console csv'
+  [../]
+  [./multiplication]
+    type = DivisionPostprocessor
+    value1 = group1_current
+    value2 = group1_old
+    outputs = 'console csv'
+  [../]
+  [./temp_fuel]
+    type = ElementAverageValue
+    variable = temp
+    block = 'fuel'
+    outputs = 'csv console'
+  [../]
+  [./temp_moder]
+    type = ElementAverageValue
+    variable = temp
+    block = 'moderator'
+    outputs = 'csv console'
+  [../]
   [./average_fission_heat]
     type = AverageFissionHeat
     execute_on = 'linear nonlinear'
