@@ -183,16 +183,16 @@ nt_scale=1e13
     value = 900
     type = DirichletBC
   [../]
-  # [./vacuum_group1]
-  #   type = VacuumConcBC
-  #   boundary = 'fuel_bottom fuel_top moderator_bottoms moderator_tops'
-  #   variable = group1
-  # [../]
-  # [./vacuum_group2]
-  #   type = VacuumConcBC
-  #   boundary = 'fuel_bottom fuel_top moderator_bottoms moderator_tops'
-  #   variable = group2
-  # [../]
+  [./vacuum_group1]
+    type = VacuumConcBC
+    boundary = 'fuel_bottom fuel_top moderator_bottoms moderator_tops'
+    variable = group1
+  [../]
+  [./vacuum_group2]
+    type = VacuumConcBC
+    boundary = 'fuel_bottom fuel_top moderator_bottoms moderator_tops'
+    variable = group2
+  [../]
 []
 
 [Materials]
@@ -315,10 +315,11 @@ nt_scale=1e13
 
 [MultiApps]
   [./sub]
-    type = TransientMultiApp
+    type = FullSolveMultiApp
     app_type = MoltresApp
     positions = '0 0 0'
     input_files = solution_aux_exodus.i
+    execute_on = 'initial'
   [../]
 []
 
@@ -329,6 +330,7 @@ nt_scale=1e13
     multi_app = sub
     source_variable = vel_x
     variable = vel_x
+    execute_on = 'initial'
   [../]
   [./vel_y]
     type = MultiAppNearestNodeTransfer
@@ -336,6 +338,7 @@ nt_scale=1e13
     multi_app = sub
     source_variable = vel_y
     variable = vel_y
+    execute_on = 'initial'
   [../]
   [./vel_z]
     type = MultiAppNearestNodeTransfer
@@ -343,6 +346,7 @@ nt_scale=1e13
     multi_app = sub
     source_variable = vel_z
     variable = vel_z
+    execute_on = 'initial'
   [../]
   [./p]
     type = MultiAppNearestNodeTransfer
@@ -350,6 +354,7 @@ nt_scale=1e13
     multi_app = sub
     source_variable = p
     variable = p
+    execute_on = 'initial'
   [../]
 []
 
