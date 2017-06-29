@@ -1,9 +1,5 @@
-fuel_width=3.048
-fuel_height=1.016
-cell_width=5.08
-
 [Mesh]
-  file = msre_squares.msh
+  file = half-fuel-channel-msre-dimensions.msh
 []
 
 
@@ -33,13 +29,13 @@ cell_width=5.08
 
 [BCs]
   [./u_inlet]
-    boundary = 'fuel_bottoms'
+    boundary = 'left'
     variable = u
     value = 1
     type = DirichletBC
   [../]
   [./u_outlet]
-    boundary = 'fuel_tops'
+    boundary = 'right'
     variable = u
     value = 0
     type = DirichletBC
@@ -60,8 +56,6 @@ cell_width=5.08
 []
 
 [Executioner]
-  # num_steps = 1
-  # dt = 1
   type = Steady
   nl_rel_tol = 1e-6
   nl_abs_tol = 1e-6
@@ -78,21 +72,15 @@ cell_width=5.08
   print_perf_log = true
   exodus = true
   csv = true
+  execute_on = 'timestep_end'
 []
 
 [MultiApps]
   [./sub_horizontal]
     type = FullSolveMultiApp
     app_type = MoltresApp
-    positions = '-1.524 2.032 0 -1.524 -3.048 0'
+    positions = '0 0 0'
     input_files = solution_aux_exodus.i
-    execute_on = 'initial'
-  [../]
-  [./sub_vertical]
-    type = FullSolveMultiApp
-    app_type = MoltresApp
-    positions = '2.032 1.524 0 -3.048 1.524 0'
-    input_files = rotated_solution_aux_exodus.i
     execute_on = 'initial'
   [../]
 []
@@ -126,38 +114,6 @@ cell_width=5.08
     type = MultiAppNearestNodeTransfer
     direction = from_multiapp
     multi_app = sub_horizontal
-    source_variable = p
-    variable = p
-    execute_on = 'initial'
-  [../]
-  [./vel_x_vertical]
-    type = MultiAppNearestNodeTransfer
-    direction = from_multiapp
-    multi_app = sub_vertical
-    source_variable = vel_x
-    variable = vel_x
-    execute_on = 'initial'
-  [../]
-  [./vel_y_vertical]
-    type = MultiAppNearestNodeTransfer
-    direction = from_multiapp
-    multi_app = sub_vertical
-    source_variable = vel_y
-    variable = vel_y
-    execute_on = 'initial'
-  [../]
-  [./vel_z_vertical]
-    type = MultiAppNearestNodeTransfer
-    direction = from_multiapp
-    multi_app = sub_vertical
-    source_variable = vel_z
-    variable = vel_z
-    execute_on = 'initial'
-  [../]
-  [./p_vertical]
-    type = MultiAppNearestNodeTransfer
-    direction = from_multiapp
-    multi_app = sub_vertical
     source_variable = p
     variable = p
     execute_on = 'initial'

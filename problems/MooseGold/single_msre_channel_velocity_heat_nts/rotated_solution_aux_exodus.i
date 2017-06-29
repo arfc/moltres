@@ -1,5 +1,5 @@
 [Mesh]
-  file = single_fuel_channel_MSRE_dimensions_fluid_flow_out.e
+  file = single_fuel_channel_msre_dimensions_bump_rotated.msh
   parallel_type = replicated
 []
 
@@ -38,38 +38,50 @@
 []
 
 [AuxKernels]
-  [./vel_x_left]
+  [./vel_x]
     type = SolutionAux
-    solution = soln_left
+    solution = soln
     variable = vel_x
     from_variable = vel_x
   [../]
-  [./vel_y_left]
+  [./vel_y]
     type = SolutionAux
-    solution = soln_left
+    solution = soln
     variable = vel_y
     from_variable = vel_y
   [../]
-  [./vel_z_left]
+  [./vel_z]
     type = SolutionAux
-    solution = soln_left
+    solution = soln
     variable = vel_z
     from_variable = vel_z
   [../]
-  [./p_left]
+  [./p]
     type = SolutionAux
-    solution = soln_left
+    solution = soln
     variable = p
     from_variable = p
   [../]
 []
 
 [UserObjects]
-  [./soln_left]
+  [./soln]
     type = SolutionUserObject
     mesh = single_fuel_channel_MSRE_dimensions_fluid_flow_out.e
     system_variables = 'vel_x vel_y vel_z p'
     timestep = LATEST
+    rotation0_vector = '0 0 1'
+    rotation0_angle = 90
+    transformation_order = rotation0
+  [../]
+[]
+
+[BCs]
+  [./stuff]
+    type = DirichletBC
+    variable = u
+    boundary = '1 2'
+    value = 0.0
   [../]
 []
 
