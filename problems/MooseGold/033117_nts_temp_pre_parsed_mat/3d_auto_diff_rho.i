@@ -19,6 +19,14 @@ diri_temp=922
   # file = jac_test.msh
 []
 
+[MeshModifiers]
+  [./scale]
+    type = Transform
+    transform = SCALE
+    vector_value = '1 1 .5'
+  [../]
+[]
+
 [Problem]
 []
 

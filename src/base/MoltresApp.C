@@ -41,6 +41,8 @@
 #include "CammiFuel.h"
 #include "CammiModerator.h"
 #include "Nusselt.h"
+#include "GraphiteTwoGrpXSFunctionMaterial.h"
+#include "MsreFuelTwoGrpXSFunctionMaterial.h"
 
 // Postprocessors
 #include "AverageFissionHeat.h"
@@ -143,6 +145,8 @@ MoltresApp::registerObjects(Factory & factory)
   registerMaterial(CammiFuel);
   registerMaterial(CammiModerator);
   registerMaterial(Nusselt);
+  registerMaterial(GraphiteTwoGrpXSFunctionMaterial);
+  registerMaterial(MsreFuelTwoGrpXSFunctionMaterial);
   registerPostprocessor(IntegralOldVariablePostprocessor);
   registerPostprocessor(ElementL2Diff);
   registerPostprocessor(IntegralNewVariablePostprocessor);
