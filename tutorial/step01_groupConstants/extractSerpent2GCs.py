@@ -31,7 +31,7 @@ def makePropertiesDir(inmats, outdir, filebase, mapFile, unimapFile, serp1=False
     coeList = dict([(mat,sss.parse_coe(mat+'.coe')) for mat in inmats])
 
     # the constants moltres looks for:
-    goodStuff = ['BETA_EFF','CHI','DECAY_CONSTANT','DIFF_COEF','FISSE','GTRANSFXS','NSF','RECIPVEL','REMXS','FISSXS']
+    goodStuff = ['BETA_EFF','CHI','DECAY_CONSTANT','DIFFCOEF','FISSE','GTRANSFXS','NSF','RECIPVEL','REMXS','FISSXS']
     goodMap   = dict([(thing, 'INF_'+thing) for thing in goodStuff])
 
     # the name for the group transfer XS matrix is different in serpent
@@ -41,7 +41,7 @@ def makePropertiesDir(inmats, outdir, filebase, mapFile, unimapFile, serp1=False
     goodMap['CHI'] = 'INF_CHIP' # include production. chip, chit, or chid???
     goodMap['DECAY_CONSTANT']='LAMBDA'
     goodMap['RECIPVEL'] = 'INF_INVV'
-    goodMap['DIFF_COEF'] = 'INF_DIFFCOEF'
+    goodMap['DIFFCOEF'] = 'INF_DIFFCOEF'
     goodMap['FISSE'] = 'INF_KAPPA'
     goodMap['FISSXS'] = 'INF_FISS'
 
