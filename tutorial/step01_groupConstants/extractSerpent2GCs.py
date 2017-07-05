@@ -31,7 +31,7 @@ def makePropertiesDir(inmats, outdir, filebase, mapFile, unimapFile, serp1=False
     coeList = dict([(mat,sss.parse_coe(mat+'.coe')) for mat in inmats])
 
     # the constants moltres looks for:
-    goodStuff = ['BETA_EFF','CHI','DECAY_CONSTANT','DIFF_COEF','FISSE','GTRANSFXS','NSF','RECIPVEL','REMXS']
+    goodStuff = ['BETA_EFF','CHI','DECAY_CONSTANT','DIFF_COEF','FISSE','GTRANSFXS','NSF','RECIPVEL','REMXS','FISSXS']
     goodMap   = dict([(thing, 'INF_'+thing) for thing in goodStuff])
 
     # the name for the group transfer XS matrix is different in serpent
@@ -43,6 +43,7 @@ def makePropertiesDir(inmats, outdir, filebase, mapFile, unimapFile, serp1=False
     goodMap['RECIPVEL'] = 'INF_INVV'
     goodMap['DIFF_COEF'] = 'INF_DIFFCOEF'
     goodMap['FISSE'] = 'INF_KAPPA'
+    goodMap['FISSXS'] = 'INF_FISS'
 
     # map material names to universe names from serpent
     with open(unimapFile) as fh:
@@ -65,7 +66,7 @@ def makePropertiesDir(inmats, outdir, filebase, mapFile, unimapFile, serp1=False
             raise Exception('Couldnt find a material corresponding to branch {}'.format(item))
 
         for coefficient in goodStuff:
-            with open(outdir+'/'+filebase+currentMat+'_'+coefficient, 'a') as fh:
+            with open(outdir+'/'+filebase+currentMat+'_'+coefficient+'.txt', 'a') as fh:
                 strData = coeList[currentMat][1][uniMap[currentMat]][item]["rod0"][goodMap[coefficient]]
                 if coefficient == 'DECAY_CONSTANT' or coefficient == 'BETA_EFF':
                     # some additional formatting is needed here
