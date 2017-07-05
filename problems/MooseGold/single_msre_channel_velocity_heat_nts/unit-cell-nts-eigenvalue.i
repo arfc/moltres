@@ -18,7 +18,7 @@ nt_scale=1e13
 []
 
 [Mesh]
-  file = single_channel_msre_dimensions.msh
+  file = msre_squares.msh
 []
 
 
@@ -112,13 +112,13 @@ nt_scale=1e13
 [BCs]
   [./vacuum_group1]
     type = VacuumConcBC
-    boundary = 'fuel_bottom fuel_top moderator_bottoms moderator_tops'
+    boundary = 'fuel_bottoms fuel_tops moderator_bottoms moderator_tops'
     # boundary = 'fuel_bottom moderator_bottoms'
     variable = group1
   [../]
   [./vacuum_group2]
     type = VacuumConcBC
-    boundary = 'fuel_bottom fuel_top moderator_bottoms moderator_tops'
+    boundary = 'fuel_bottoms fuel_tops moderator_bottoms moderator_tops'
     # boundary = 'fuel_bottom moderator_bottoms'
     variable = group2
   [../]
