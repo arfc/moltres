@@ -3,7 +3,9 @@
 
 #include "Kernel.h"
 
-// Forward Declarations
+/** This kernel will likely only be used with k-eigenvalue calculation mode 
+ * with neutrons only, since the power is normalized in this case.
+ */
 class FissionHeatSource;
 
 template <>
