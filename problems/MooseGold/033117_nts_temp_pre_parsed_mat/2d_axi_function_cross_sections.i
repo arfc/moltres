@@ -12,17 +12,21 @@ diri_temp=922
   sss2_input = false
   pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6'
   account_delayed = true
-  gamma = .0144 # Cammi .0144
-  nt_scale = ${nt_scale}
 []
 
 [Mesh]
   file = '2d_lattice_structured.msh'
-  # file = 2d_split_mesh/auto_diff_rho_in.e
-  # file = auto_diff_rho_in.e
-  # nemesis = true
-  # parallel_type = DISTRIBUTED
+  # file = '2d_lattice_structured_jac.msh'
 [../]
+
+[MeshModifiers]
+  [./scale]
+    type = Transform
+    transform = SCALE
+    vector_value = '1 1 1'
+  [../]
+[]
+
 
 [Problem]
   coord_type = RZ
@@ -33,24 +37,17 @@ diri_temp=922
     order = FIRST
     family = LAGRANGE
     initial_condition = 1
-    scaling = 1e4
+    # scaling = 1e4
   [../]
   [./group2]
     order = FIRST
     family = LAGRANGE
     initial_condition = 1
-    scaling = 1e4
+    # scaling = 1e4
   [../]
   [./temp]
     initial_condition = ${ini_temp}
     scaling = 1e-4
-  [../]
-[]
-
-[AuxVariables]
-  [./power_density]
-    order = CONSTANT
-    family = MONOMIAL
   [../]
 []
 
@@ -132,14 +129,16 @@ diri_temp=922
   [./temp_source_fuel]
     type = TransientFissionHeatSource
     variable = temp
+    nt_scale=${nt_scale}
     block = 'fuel'
   [../]
-  [./temp_source_mod]
-    type = GammaHeatSource
-    variable = temp
-    block = 'moder'
-    average_fission_heat = 'average_fission_heat'
-  [../]
+  # [./temp_source_mod]
+  #   type = GammaHeatSource
+  #   variable = temp
+  #   gamma = .0144 # Cammi .0144
+  #   block = 'moder'
+  #   average_fission_heat = 'average_fission_heat'
+  # [../]
   [./temp_diffusion]
     type = MatDiffusion
     D_name = 'k'
@@ -178,20 +177,6 @@ diri_temp=922
   [../]
 []
 
-[AuxKernels]
-  [./fuel]
-    block = 'fuel'
-    type = FissionHeatSourceTransientAux
-    variable = power_density
-  [../]
-  [./moderator]
-    block = 'moder'
-    type = ModeratorHeatSourceTransientAux
-    average_fission_heat = 'average_fission_heat'
-    variable = power_density
-  [../]
-[]
-
 [Functions]
   [./temp_bc_func]
     type = ParsedFunction
@@ -201,14 +186,10 @@ diri_temp=922
 
 [Materials]
   [./fuel]
-    type = GenericMoltresMaterial
-    property_tables_root = '../property_file_dir/newt_msre_fuel_'
-    interp_type = 'spline'
+    type = MsreFuelTwoGrpXSFunctionMaterial
     block = 'fuel'
     prop_names = 'k cp'
     prop_values = '.0553 1967' # Robertson MSRE technical report @ 922 K
-    peak_power_density = peak_power_density
-    controller_gain = 0
   [../]
   [./rho_fuel]
     type = DerivativeParsedMaterial
@@ -219,14 +200,10 @@ diri_temp=922
     block = 'fuel'
   [../]
   [./moder]
-    type = GenericMoltresMaterial
-    property_tables_root = '../property_file_dir/newt_msre_mod_'
-    interp_type = 'spline'
+    type = GraphiteTwoGrpXSFunctionMaterial
     prop_names = 'k cp'
     prop_values = '.312 1760' # Cammi 2011 at 908 K
     block = 'moder'
-    peak_power_density = peak_power_density
-    controller_gain = 0
   [../]
   [./rho_moder]
     type = DerivativeParsedMaterial
@@ -243,17 +220,16 @@ diri_temp=922
   end_time = 10000
 
   nl_rel_tol = 1e-6
-  nl_abs_tol = 6e-6
+  nl_abs_tol = 1e-6
 
   solve_type = 'NEWTON'
-  # solve_type = 'PJFNK'
-  line_search = none
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   # petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
   # petsc_options_value = 'asm      lu           1               preonly       1e-3'
   petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type -snes_linesearch_minlambda'
-  petsc_options_value = 'lu NONZERO 1.e-10 preonly 1e-3'
-  # petsc_options_iname = '-snes_type'
+  petsc_options_value = 'lu       NONZERO               1e-10                   preonly   1e-3'
+  line_search = 'none'
+  #  petsc_options_iname = '-snes_type'
   # petsc_options_value = 'test'
 
   nl_max_its = 30
@@ -283,45 +259,47 @@ diri_temp=922
   [./group1_current]
     type = IntegralNewVariablePostprocessor
     variable = group1
-    outputs = 'console csv'
+    outputs = 'console exodus'
   [../]
   [./group1_old]
     type = IntegralOldVariablePostprocessor
     variable = group1
-    outputs = 'console csv'
+    outputs = 'console exodus'
   [../]
   [./multiplication]
     type = DivisionPostprocessor
     value1 = group1_current
     value2 = group1_old
-    outputs = 'console csv'
+    outputs = 'console exodus'
   [../]
   [./temp_fuel]
     type = ElementAverageValue
     variable = temp
     block = 'fuel'
-    outputs = 'csv console'
+    outputs = 'exodus console'
   [../]
   [./temp_moder]
     type = ElementAverageValue
     variable = temp
     block = 'moder'
-    outputs = 'csv console'
+    outputs = 'exodus console'
   [../]
-  [./average_fission_heat]
-    type = AverageFissionHeat
-    execute_on = 'linear nonlinear'
-    outputs = 'csv console'
-    block = 'fuel'
-  [../]
+  # [./average_fission_heat]
+  #   type = AverageFissionHeat
+  #   nt_scale = ${nt_scale}
+  #   execute_on = 'linear nonlinear'
+  #   outputs = 'console'
+  #   block = 'fuel'
+  # [../]
 []
 
 [Outputs]
   print_perf_log = true
   print_linear_residuals = true
-  csv = true
-  # exodus = true
-  nemesis = true
+  [./exodus]
+    type = Exodus
+    execute_on = 'timestep_end final'
+  [../]
 []
 
 [Debug]

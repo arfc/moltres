@@ -310,9 +310,18 @@ diri_temp=922
   [../]
   [./average_fission_heat]
     type = AverageFissionHeat
-    execute_on = 'linear nonlinear'
+    execute_on = 'timestep_end'
+    # execute_on = 'linear nonlinear timestep_end'
     outputs = 'csv console'
     block = 'fuel'
+  [../]
+  [./peak_power_density]
+    type = ElementExtremeValue
+    value_type = max
+    variable = power_density
+    execute_on = 'timestep_end'
+    # execute_on = 'linear nonlinear timestep_end'
+    outputs = 'csv console'
   [../]
 []
 
@@ -320,8 +329,8 @@ diri_temp=922
   print_perf_log = true
   print_linear_residuals = true
   csv = true
-  # exodus = true
-  nemesis = true
+  exodus = true
+  # nemesis = true
 []
 
 [Debug]

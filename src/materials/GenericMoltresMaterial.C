@@ -825,7 +825,7 @@ GenericMoltresMaterial::computeQpProperties()
   else if (_interp_type == "none")
     dummyComputeQpProperties();
 
-  if (_perform_control)
+  if (_perform_control && _peak_power_density > _peak_power_density_set_point)
     for (unsigned i = 0; i < _num_groups; ++i)
       _remxs[_qp][i] += _controller_gain * (_peak_power_density - _peak_power_density_set_point);
 }
