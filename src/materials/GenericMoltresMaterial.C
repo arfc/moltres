@@ -84,10 +84,8 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
   _num_groups = getParam<unsigned>("num_groups");
   _num_precursor_groups = getParam<unsigned>("num_precursor_groups");
   std::string property_tables_root = getParam<std::string>("property_tables_root");
-  std::vector<std::string> xsec_names{"FLUX",
-                                      "REMXS",
+  std::vector<std::string> xsec_names{"REMXS",
                                       "FISSXS",
-                                      "NUBAR",
                                       "NSF",
                                       "FISSE",
                                       "DIFFCOEF",
@@ -110,7 +108,6 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
 
   _file_map["REMXS"] = "REMXS";
   _file_map["NSF"] = "NSF";
-  _file_map["NUBAR"] = "NUBAR";
   _file_map["DIFFCOEF"] = "DIFFCOEF";
   _file_map["BETA_EFF"] = "BETA_EFF";
   if (getParam<bool>("sss2_input"))
@@ -416,7 +413,6 @@ GenericMoltresMaterial::leastSquaresConstruct(std::string & property_tables_root
   _flux_consts = xsec_map["FLUX"];
   _remxs_consts = xsec_map["REMXS"];
   _fissxs_consts = xsec_map["FISSXS"];
-  _nubar_consts = xsec_map["NUBAR"];
   _nsf_consts = xsec_map["NSF"];
   _fisse_consts = xsec_map["FISSE"];
   _diffcoeff_consts = xsec_map["DIFFCOEF"];
