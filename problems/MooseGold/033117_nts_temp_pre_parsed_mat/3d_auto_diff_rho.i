@@ -2,6 +2,11 @@ flow_velocity=21.7 # cm/s. See MSRE-properties.ods
 nt_scale=1e13
 ini_temp=922
 diri_temp=922
+base_height=136
+scale=.99
+height=${* ${base_height} ${scale}}
+width=145
+offset=2.5
 
 [GlobalParams]
   num_groups = 2
@@ -23,7 +28,7 @@ diri_temp=922
   [./scale]
     type = Transform
     transform = SCALE
-    vector_value = '1 1 .5'
+    vector_value = '1 1 ${scale}'
   [../]
 []
 
@@ -34,13 +39,13 @@ diri_temp=922
   [./group1]
     order = FIRST
     family = LAGRANGE
-    initial_condition = 1
+#     initial_condition = 1
     scaling = 1e4
   [../]
   [./group2]
     order = FIRST
     family = LAGRANGE
-    initial_condition = 1
+#     initial_condition = 1
     scaling = 1e4
   [../]
   [./temp]
@@ -180,13 +185,15 @@ diri_temp=922
     type = ParsedFunction
     value = '${ini_temp} - (${ini_temp} - ${diri_temp}) * tanh(t/1e-2)'
   [../]
+  [./nt_ic_func]
+    type = ParsedFunction
+    value = 'sin(pi * z / ${height}) * sin(pi * (x + ${offset}) / ${width}) * sin(pi * (y + ${offset}) / ${width})'
+  [../]
 []
 
 [Materials]
   [./fuel]
-    type = GenericMoltresMaterial
-    property_tables_root = '../property_file_dir/newt_msre_fuel_'
-    interp_type = 'spline'
+    type = MsreFuelTwoGrpXSFunctionMaterial
     block = 'fuel'
     prop_names = 'k cp'
     prop_values = '.0553 1967' # Robertson MSRE technical report @ 922 K
@@ -200,9 +207,7 @@ diri_temp=922
     block = 'fuel'
   [../]
   [./moder]
-    type = GenericMoltresMaterial
-    property_tables_root = '../property_file_dir/newt_msre_mod_'
-    interp_type = 'spline'
+    type = GraphiteTwoGrpXSFunctionMaterial
     prop_names = 'k cp'
     prop_values = '.312 1760' # Cammi 2011 at 908 K
     block = 'moder'
@@ -225,9 +230,12 @@ diri_temp=922
   nl_abs_tol = 1e-6
 
   solve_type = 'NEWTON'
+  line_search = 'none'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
-  petsc_options_value = 'asm      lu           1               preonly       1e-3'
+  petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type'
+  petsc_options_value = 'lu	  NONZERO		1e-10			preonly'
+#   petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
+#   petsc_options_value = 'asm      lu           1               preonly       1e-3'
   # petsc_options_iname = '-snes_type'
   # petsc_options_value = 'test'
 
@@ -235,11 +243,11 @@ diri_temp=922
   l_max_its = 200
 
 #   dtmax = 1
-  dtmin = 1e-5
+  dtmin = 1e-7
   # dt = 1e-3
   [./TimeStepper]
     type = IterationAdaptiveDT
-    dt = 1e-3
+    dt = 1e-6
     cutback_factor = 0.4
     growth_factor = 1.2
     optimal_iterations = 20
@@ -251,6 +259,7 @@ diri_temp=922
   [./SMP]
     type = SMP
     full = true
+    ksp_norm = none
   [../]
 []
 
@@ -305,7 +314,7 @@ diri_temp=922
   show_var_residual_norms = true
 []
 
-# [ICs]
+[ICs]
 #   [./temp_ic]
 #     type = RandomIC
 #     variable = temp
@@ -324,4 +333,14 @@ diri_temp=922
 #     min = .5
 #     max = 1.5
 #   [../]
-# []
+  [./group1_ic]
+    type = FunctionIC
+    variable = group1
+    function = 'nt_ic_func'
+  [../]
+  [./group2_ic]
+    type = FunctionIC
+    variable = group2
+    function = 'nt_ic_func'
+  [../]
+[]

@@ -15,7 +15,10 @@ diri_temp=922
 []
 
 [Mesh]
-  file = '3d_msre_29x29_136.msh'
+#   file = '3d_msre_29x29_136.msh'
+  file = split_mesh/3d_auto_diff_rho_in.e
+  nemesis = true
+  skip_partioning = true
 []
 
 [Problem]
@@ -215,13 +218,14 @@ diri_temp=922
   nl_rel_tol = 1e-6
   nl_abs_tol = 1e-6
 
-  solve_type = 'PJFNK'
+  solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
-  petsc_options_value = 'asm      lu           1               preonly       1e-3'
+#   petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
+#   petsc_options_value = 'asm      lu           1               preonly       1e-3'
   # petsc_options_iname = '-snes_type'
   # petsc_options_value = 'test'
-
+  petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type -snes_linesearch_minlambda'
+  petsc_options_value = 'lu	  NONZERO		1e-10			preonly	  1e-3'
   nl_max_its = 30
   l_max_its = 200
 
@@ -242,7 +246,7 @@ diri_temp=922
   [./SMP]
     type = SMP
     full = true
-#     ksp_norm = none
+    ksp_norm = none
   [../]
 []
 
@@ -288,9 +292,8 @@ diri_temp=922
   print_perf_log = true
   print_linear_residuals = true
   csv = true
-  [./out]
-    type = Exodus
-  [../]
+  exodus = true
+  nemesis = true
 []
 
 [Debug]
