@@ -8,19 +8,20 @@ diri_temp=922
   num_precursor_groups = 6
   use_exp_form = false
   group_fluxes = 'group1 group2'
-  temperature = temp
   sss2_input = false
-  pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6'
   account_delayed = true
+  temperature = temp
+  pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6'
 []
 
 [Mesh]
-  file = '2d_lattice_structured.msh'
-  # file = '2d_lattice_structured_jac.msh'
-[../]
+#   file = '3d_msre_29x29_136.msh'
+  file = split_mesh/3d_auto_diff_rho_in.e
+  nemesis = true
+  skip_partioning = true
+[]
 
 [Problem]
-  coord_type = RZ
 []
 
 [Variables]
@@ -47,8 +48,8 @@ diri_temp=922
   block = 'fuel'
   outlet_boundaries = 'fuel_tops'
   u_def = 0
-  v_def = ${flow_velocity}
-  w_def = 0
+  v_def = 0
+  w_def = ${flow_velocity}
   nt_exp_form = false
   family = MONOMIAL
   order = CONSTANT
@@ -137,7 +138,7 @@ diri_temp=922
   [../]
   [./temp_advection_fuel]
     type = ConservativeTemperatureAdvection
-    velocity = '0 ${flow_velocity} 0'
+    velocity = '0 0 ${flow_velocity}'
     variable = temp
     block = 'fuel'
   [../]
@@ -146,16 +147,16 @@ diri_temp=922
 [BCs]
   [./vacuum_group1]
     type = VacuumConcBC
-    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
+    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops moder_sides'
     variable = group1
   [../]
   [./vacuum_group2]
     type = VacuumConcBC
-    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
+    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops moder_sides'
     variable = group2
   [../]
   [./temp_diri_cg]
-    boundary = 'moder_bottoms fuel_bottoms outer_wall'
+    boundary = 'moder_bottoms fuel_bottoms moder_sides'
     type = FunctionDirichletBC
     function = 'temp_bc_func'
     variable = temp
@@ -164,7 +165,7 @@ diri_temp=922
     boundary = 'fuel_tops'
     type = TemperatureOutflowBC
     variable = temp
-    velocity = '0 ${flow_velocity} 0'
+    velocity = '0 0 ${flow_velocity}'
   [../]
 []
 
@@ -178,7 +179,7 @@ diri_temp=922
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
-    property_tables_root = '../../property_file_dir/newt_msre_fuel_'
+    property_tables_root = '../property_file_dir/newt_msre_fuel_'
     interp_type = 'spline'
     block = 'fuel'
     prop_names = 'k cp'
@@ -194,7 +195,7 @@ diri_temp=922
   [../]
   [./moder]
     type = GenericMoltresMaterial
-    property_tables_root = '../../property_file_dir/newt_msre_mod_'
+    property_tables_root = '../property_file_dir/newt_msre_mod_'
     interp_type = 'spline'
     prop_names = 'k cp'
     prop_values = '.312 1760' # Cammi 2011 at 908 K
@@ -219,17 +220,17 @@ diri_temp=922
 
   solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type -snes_linesearch_minlambda'
-  petsc_options_value = 'lu       NONZERO               1e-10                   preonly   1e-3'
-  line_search = 'none'
-   # petsc_options_iname = '-snes_type'
+#   petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
+#   petsc_options_value = 'asm      lu           1               preonly       1e-3'
+  # petsc_options_iname = '-snes_type'
   # petsc_options_value = 'test'
-
+  petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type -snes_linesearch_minlambda'
+  petsc_options_value = 'lu	  NONZERO		1e-10			preonly	  1e-3'
   nl_max_its = 30
-  l_max_its = 100
+  l_max_its = 200
 
+#   dtmax = 1
   dtmin = 1e-5
-  # dtmax = 1
   # dt = 1e-3
   [./TimeStepper]
     type = IterationAdaptiveDT
@@ -237,6 +238,7 @@ diri_temp=922
     cutback_factor = 0.4
     growth_factor = 1.2
     optimal_iterations = 20
+    linear_iteration_ratio = 1000
   [../]
 []
 
@@ -252,30 +254,30 @@ diri_temp=922
   [./group1_current]
     type = IntegralNewVariablePostprocessor
     variable = group1
-    outputs = 'console exodus'
+    outputs = 'console csv'
   [../]
   [./group1_old]
     type = IntegralOldVariablePostprocessor
     variable = group1
-    outputs = 'console exodus'
+    outputs = 'console csv'
   [../]
   [./multiplication]
     type = DivisionPostprocessor
     value1 = group1_current
     value2 = group1_old
-    outputs = 'console exodus'
+    outputs = 'console csv'
   [../]
   [./temp_fuel]
     type = ElementAverageValue
     variable = temp
     block = 'fuel'
-    outputs = 'exodus console'
+    outputs = 'csv console'
   [../]
   [./temp_moder]
     type = ElementAverageValue
     variable = temp
     block = 'moder'
-    outputs = 'exodus console'
+    outputs = 'csv console'
   [../]
   # [./average_fission_heat]
   #   type = AverageFissionHeat
@@ -289,11 +291,9 @@ diri_temp=922
 [Outputs]
   print_perf_log = true
   print_linear_residuals = true
-  [./exodus]
-    type = Exodus
-    file_base = 'auto_diff_rho'
-    execute_on = 'final'
-  [../]
+  csv = true
+  exodus = true
+  nemesis = true
 []
 
 [Debug]
