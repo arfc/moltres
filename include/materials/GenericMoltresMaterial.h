@@ -12,6 +12,29 @@ class GenericMoltresMaterial;
 template <>
 InputParameters validParams<GenericMoltresMaterial>();
 
+/**
+ * This class hinges on the `interp_type` chosen by the user. The user can choose from the
+ * following interpolation types:
+ *
+ * "normal interpolations"
+ * bicubic_spline : used when cross section is a function of two different temperatures (say fuel
+ *                  and moderator). Performs bicubic spline interpolation. Example input property
+ *                  table: property_file_dir/msr2g_Th_U_two_mat_homogenization_fuel_interp_NSF.txt
+ * spline :         cubic spline interpolation for single temperature. Example input property
+ *                  table: property_file_dir/newt_msre_fuel_NSF.txt
+ * monotone_cubic : monotone cubic interpolation for single temperature. Same input property table
+ *                  structure as spline
+ * linear :         linear interpolation for single temperature. Same input property table
+ *                  structure as spline
+ *
+ * "special interpolations"
+ * none :           no interpolation is done. The cross section value for each group is read from
+ *                  the first temperature row in the interpolation table
+ * least_squares :  user should have performed a linear least squares fit on cross section data
+ *                  and should supply interpolation table with each row corresponding to energy
+ *                  group. Each row should have two columns corresponding to 'a' and 'b' where
+ *                  xsec(T) = a * T + b
+ */
 class GenericMoltresMaterial : public GenericConstantMaterial
 {
 public:
