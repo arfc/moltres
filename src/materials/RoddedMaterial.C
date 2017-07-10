@@ -6,7 +6,7 @@ InputParameters
 validParams<RoddedMaterial>()
 {
   InputParameters params = validParams<GenericMoltresMaterial>();
-  params.addRequiredParam<VariableValue>("rodPosition", "Position of the control rod.");
+  params.addRequiredCoupledVar("rodPosition", "Position of the control rod.");
   params.addRequiredParam<Real>("absorb_factor",
                                 "The material inherits from some other. How much more absorbing?");
   return params;
@@ -15,7 +15,7 @@ validParams<RoddedMaterial>()
 RoddedMaterial::RoddedMaterial(const InputParameters & parameters)
   : GenericMoltresMaterial(parameters),
     _absorb_factor(getParam<Real>("absorb_factor")),
-    _rod_pos(getParam<VariableValue>("rodPosition"))
+    _rod_pos(coupledValue("rodPosition"))
 {
   if (_interp_type != "spline")
     mooseError("Only spline works with this class. It's meant for testing.");
