@@ -1,13 +1,12 @@
 #include "RoddedMaterial.h"
-#include "GenericMoltresMaterial.h"
 #include "MooseUtils.h"
 
-template <typename GenericMoltresMaterial>
+template <>
 InputParameters
 validParams<RoddedMaterial>()
 {
-  InputParameters params = validParams<RoddedMaterial>();
-  params.addRequiredParam<ScalarVariable>("rodPosition", "Position of the control rod.");
+  InputParameters params = validParams<GenericMoltresMaterial>();
+  params.addRequiredParam<VariableValue>("rodPosition", "Position of the control rod.");
   params.addRequiredParam<Real>("absorb_factor",
                                 "The material inherits from some other. How much more absorbing?");
   return params;
@@ -16,7 +15,7 @@ validParams<RoddedMaterial>()
 RoddedMaterial::RoddedMaterial(const InputParameters & parameters)
   : GenericMoltresMaterial(parameters),
     _absorb_factor(getParam<Real>("absorb_factor")),
-    _rod_pos(getParam<ScalarVariable>("rodPosition"))
+    _rod_pos(getParam<VariableValue>("rodPosition"))
 {
   if (_interp_type != "spline")
     mooseError("Only spline works with this class. It's meant for testing.");
@@ -97,7 +96,7 @@ RoddedMaterial::computeQpProperties()
   _d_beta_eff_d_temp[_qp].resize(_vec_lengths["BETA_EFF"]);
   _d_decay_constant_d_temp[_qp].resize(_vec_lengths["DECAY_CONSTANT"]);
 
-  if (_q_point[_qp][2] < _rod_pos)
+  if (_q_point[_qp](2) < _rod_pos[_qp])
     GenericMoltresMaterial::computeQpProperties();
   else
     computeSplineAbsorbingQpProperties();
