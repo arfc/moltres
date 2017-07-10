@@ -2,12 +2,10 @@
 # This script extracts group constants from Serpent 2. It should be able to do all of the work, no
 # need to specify how many energy groups, or anything like that. Also, this could be imported into
 # other python scripts if needed, maybe for parametric studies.
-
 import os
 import numpy as np
 import argparse
 import subprocess
-
 try:
     from pyne import serpent as sss
 except ImportError as err:
@@ -31,19 +29,10 @@ def makePropertiesDir(inmats, outdir, filebase, mapFile, unimapFile, serp1=False
     coeList = dict([(mat,sss.parse_coe(mat+'.coe')) for mat in inmats])
 
     # the constants moltres looks for:
-    goodStuff = ['BETA_EFF','CHI','DECAY_CONSTANT','DIFFCOEF','FISSE','GTRANSFXS','NSF','RECIPVEL','REMXS','FISSXS']
+    goodStuff = ['BETA_EFF','CHIT','LAMBDA','DIFFCOEF','KAPPA','SP0','NSF','INVV','REMXS','FISS']
     goodMap   = dict([(thing, 'INF_'+thing) for thing in goodStuff])
-
-    # the name for the group transfer XS matrix is different in serpent
-    # and moltres, so this gets fixed:
-    goodMap['GTRANSFXS'] = 'INF_SP0' # scattering + production in 0 legendre moment
     goodMap['BETA_EFF'] = 'BETA_EFF'
-    goodMap['CHI'] = 'INF_CHIP' # include production. chip, chit, or chid???
-    goodMap['DECAY_CONSTANT']='LAMBDA'
-    goodMap['RECIPVEL'] = 'INF_INVV'
-    goodMap['DIFFCOEF'] = 'INF_DIFFCOEF'
-    goodMap['FISSE'] = 'INF_KAPPA'
-    goodMap['FISSXS'] = 'INF_FISS'
+    goodMap['LAMBDA'] = 'LAMBDA'
 
     # map material names to universe names from serpent
     with open(unimapFile) as fh:
@@ -68,7 +57,7 @@ def makePropertiesDir(inmats, outdir, filebase, mapFile, unimapFile, serp1=False
         for coefficient in goodStuff:
             with open(outdir+'/'+filebase+currentMat+'_'+coefficient+'.txt', 'a') as fh:
                 strData = coeList[currentMat][1][uniMap[currentMat]][item]["rod0"][goodMap[coefficient]]
-                if coefficient == 'DECAY_CONSTANT' or coefficient == 'BETA_EFF':
+                if coefficient == 'LAMBDA' or coefficient == 'BETA_EFF':
                     # some additional formatting is needed here
                     strData = strData[1:7]
                 strData = ' '.join([str(dat) for dat in strData]) if isinstance(strData,list) else strData
