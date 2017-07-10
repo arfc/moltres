@@ -135,13 +135,13 @@ offset=2.5
     nt_scale=${nt_scale}
     block = 'fuel'
   [../]
-  # [./temp_source_mod]
-  #   type = GammaHeatSource
-  #   variable = temp
-  #   gamma = .0144 # Cammi .0144
-  #   block = 'moder'
-  #   average_fission_heat = 'average_fission_heat'
-  # [../]
+  [./temp_source_mod]
+    type = GammaHeatSource
+    variable = temp
+    gamma = .0144 # Cammi .0144
+    block = 'moder'
+    average_fission_heat = 'average_fission_heat'
+  [../]
   [./temp_diffusion]
     type = MatDiffusion
     D_name = 'k'
@@ -292,22 +292,20 @@ offset=2.5
     block = 'moder'
     outputs = 'csv console'
   [../]
-  # [./average_fission_heat]
-  #   type = AverageFissionHeat
-  #   nt_scale = ${nt_scale}
-  #   execute_on = 'linear nonlinear'
-  #   outputs = 'console'
-  #   block = 'fuel'
-  # [../]
+  [./average_fission_heat]
+    type = AverageFissionHeat
+    nt_scale = ${nt_scale}
+    execute_on = 'linear nonlinear'
+    outputs = 'console'
+    block = 'fuel'
+  [../]
 []
 
 [Outputs]
   print_perf_log = true
   print_linear_residuals = true
   csv = true
-  [./out]
-    type = Exodus
-  [../]
+  exodus = true
 []
 
 [Debug]
