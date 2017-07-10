@@ -20,16 +20,15 @@ offset=2.5
 []
 
 [Mesh]
-  file = '3d_msre_29x29_136.msh'
-  # file = jac_test.msh
+  file = converged_3d_steady_state.e
 []
 
 [MeshModifiers]
-  [./scale]
-    type = Transform
-    transform = SCALE
-    vector_value = '1 1 ${scale}'
-  [../]
+  # [./scale]
+  #   type = Transform
+  #   transform = SCALE
+  #   vector_value = '1 1 ${scale}'
+  # [../]
 []
 
 [Problem]
@@ -41,16 +40,22 @@ offset=2.5
     family = LAGRANGE
 #     initial_condition = 1
     scaling = 1e4
+    initial_from_file_var = group1
+    initial_from_file_timestep = LATEST
   [../]
   [./group2]
     order = FIRST
     family = LAGRANGE
 #     initial_condition = 1
     scaling = 1e4
+    initial_from_file_var = group2
+    initial_from_file_timestep = LATEST
   [../]
   [./temp]
     initial_condition = ${ini_temp}
     scaling = 1e-4
+    initial_from_file_var = temp
+    initial_from_file_timestep = LATEST
   [../]
 []
 

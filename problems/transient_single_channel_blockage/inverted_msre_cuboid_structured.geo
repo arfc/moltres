@@ -1,5 +1,5 @@
 Geometry.CopyMeshingMethod = 1;
-Geometry.AutoCoherence = 0;
+// Geometry.AutoCoherence = 0;
 // Mesh.RandomFactor = 1e-6;
 graph_sqc_rad = 1.18585;
 fuel_sqc_rad = 2.5;
@@ -133,8 +133,13 @@ Physical Surface ("moder_tops") = { fuel_tops[] };
 Physical Surface ("fuel_bottoms") = { moder_surfaces[] };
 Physical Surface ("fuel_tops") = { moder_tops[] };
 Physical Surface ("moder_sides") = { fuel_sides[] };
-//+
+
 Physical Volume("blocked_fuel") = {492};
-fuel_volumes -= {492};
 Physical Volume ("moder") = { fuel_volumes[] };
 Physical Volume ("fuel") = { moder_volumes[] };
+Physical Volume ("fuel") -= {492};
+//+
+Physical Surface("blocked_fuel_top") = {27516};
+Physical Surface("blocked_fuel_bottom") = {3438};
+Physical Surface("fuel_bottoms") -= {3438};
+Physical Surface("fuel_tops") -= {27516};
