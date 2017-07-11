@@ -20,7 +20,7 @@ offset=2.5
 []
 
 [Mesh]
-  file = converged_3d_steady_state.e
+  file = load_to_new_mesh_master_out.e
 []
 
 [MeshModifiers]
@@ -36,23 +36,16 @@ offset=2.5
 
 [Variables]
   [./group1]
-    order = FIRST
-    family = LAGRANGE
-#     initial_condition = 1
     scaling = 1e4
     initial_from_file_var = group1
     initial_from_file_timestep = LATEST
   [../]
   [./group2]
-    order = FIRST
-    family = LAGRANGE
-#     initial_condition = 1
     scaling = 1e4
     initial_from_file_var = group2
     initial_from_file_timestep = LATEST
   [../]
   [./temp]
-    initial_condition = ${ini_temp}
     scaling = 1e-4
     initial_from_file_var = temp
     initial_from_file_timestep = LATEST
@@ -60,16 +53,30 @@ offset=2.5
 []
 
 [PrecursorKernel]
-  var_name_base = pre
-  block = 'fuel'
-  outlet_boundaries = 'fuel_tops'
-  u_def = 0
-  v_def = 0
-  w_def = ${flow_velocity}
-  nt_exp_form = false
-  family = MONOMIAL
-  order = CONSTANT
-  jac_test = true
+  [./primary_fuel]
+    var_name_base = pre
+    block = 'fuel blocked_fuel'
+    outlet_boundaries = 'fuel_tops'
+    u_def = 0
+    v_def = 0
+    w_def = ${flow_velocity}
+    nt_exp_form = false
+    family = MONOMIAL
+    order = CONSTANT
+    init_from_file = true
+    kernel_block = 'fuel'
+  [../]
+  [./blocked_fuel]
+    var_name_base = pre
+    kernel_block = 'blocked_fuel'
+    outlet_boundaries = 'blocked_fuel_top'
+    u_def = 0
+    v_def = 0
+    w_def = 0
+    nt_exp_form = false
+    create_vars = false
+    object_suffix = blocked
+  [../]
 []
 
 [Kernels]
@@ -140,13 +147,13 @@ offset=2.5
     nt_scale=${nt_scale}
     block = 'fuel'
   [../]
-  # [./temp_source_mod]
-  #   type = GammaHeatSource
-  #   variable = temp
-  #   gamma = .0144 # Cammi .0144
-  #   block = 'moder'
-  #   average_fission_heat = 'average_fission_heat'
-  # [../]
+  [./temp_source_mod]
+    type = GammaHeatSource
+    variable = temp
+    gamma = .0144 # Cammi .0144
+    block = 'moder'
+    average_fission_heat = 'average_fission_heat'
+  [../]
   [./temp_diffusion]
     type = MatDiffusion
     D_name = 'k'
@@ -163,12 +170,12 @@ offset=2.5
 [BCs]
   [./vacuum_group1]
     type = VacuumConcBC
-    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops moder_sides'
+    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops moder_sides blocked_fuel_top blocked_fuel_bottom'
     variable = group1
   [../]
   [./vacuum_group2]
     type = VacuumConcBC
-    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops moder_sides'
+    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops moder_sides blocked_fuel_top blocked_fuel_bottom'
     variable = group2
   [../]
   [./temp_diri_cg]
@@ -190,16 +197,12 @@ offset=2.5
     type = ParsedFunction
     value = '${ini_temp} - (${ini_temp} - ${diri_temp}) * tanh(t/1e-2)'
   [../]
-  [./nt_ic_func]
-    type = ParsedFunction
-    value = 'sin(pi * z / ${height}) * sin(pi * (x + ${offset}) / ${width}) * sin(pi * (y + ${offset}) / ${width})'
-  [../]
 []
 
 [Materials]
   [./fuel]
     type = MsreFuelTwoGrpXSFunctionMaterial
-    block = 'fuel'
+    block = 'fuel blocked_fuel'
     prop_names = 'k cp'
     prop_values = '.0553 1967' # Robertson MSRE technical report @ 922 K
   [../]
@@ -209,7 +212,7 @@ offset=2.5
     function = '2.146e-3 * exp(-1.8 * 1.18e-4 * (temp - 922))'
     args = 'temp'
     derivative_order = 1
-    block = 'fuel'
+    block = 'fuel blocked_fuel'
   [../]
   [./moder]
     type = GraphiteTwoGrpXSFunctionMaterial
@@ -297,55 +300,22 @@ offset=2.5
     block = 'moder'
     outputs = 'csv console'
   [../]
-  # [./average_fission_heat]
-  #   type = AverageFissionHeat
-  #   nt_scale = ${nt_scale}
-  #   execute_on = 'linear nonlinear'
-  #   outputs = 'console'
-  #   block = 'fuel'
-  # [../]
+  [./average_fission_heat]
+    type = AverageFissionHeat
+    nt_scale = ${nt_scale}
+    execute_on = 'linear nonlinear'
+    outputs = 'console'
+    block = 'fuel'
+  [../]
 []
 
 [Outputs]
   print_perf_log = true
   print_linear_residuals = true
   csv = true
-  [./out]
-    type = Exodus
-  [../]
+  exodus = true
 []
 
 [Debug]
   show_var_residual_norms = true
-[]
-
-[ICs]
-#   [./temp_ic]
-#     type = RandomIC
-#     variable = temp
-#     min = 922
-#     max = 1022
-#   [../]
-#   [./group1_ic]
-#     type = RandomIC
-#     variable = group1
-#     min = .5
-#     max = 1.5
-#   [../]
-#   [./group2_ic]
-#     type = RandomIC
-#     variable = group2
-#     min = .5
-#     max = 1.5
-#   [../]
-  [./group1_ic]
-    type = FunctionIC
-    variable = group1
-    function = 'nt_ic_func'
-  [../]
-  [./group2_ic]
-    type = FunctionIC
-    variable = group2
-    function = 'nt_ic_func'
-  [../]
 []
