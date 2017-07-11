@@ -139,7 +139,9 @@ Physical Volume ("moder") = { fuel_volumes[] };
 Physical Volume ("fuel") = { moder_volumes[] };
 Physical Volume ("fuel") -= {492};
 //+
-Physical Surface("blocked_fuel_top") = {27516};
-Physical Surface("blocked_fuel_bottom") = {3438};
-Physical Surface("fuel_bottoms") -= {3438};
-Physical Surface("fuel_tops") -= {27516};
+//+
+Physical Surface("blocked_fuel_top") = {24156};
+//+
+Physical Surface("blocked_fuel_bottom") = {2462};
+Physical Surface("fuel_bottoms") -= {2462};
+Physical Surface("fuel_tops") -= {24156};
