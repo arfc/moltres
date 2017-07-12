@@ -20,15 +20,15 @@ offset=2.5
 []
 
 [Mesh]
-  file = load_to_new_mesh_master_out.e
+  file = msre_vol_frac_29x29_h_136.msh
 []
 
 [MeshModifiers]
-  # [./scale]
-  #   type = Transform
-  #   transform = SCALE
-  #   vector_value = '1 1 ${scale}'
-  # [../]
+  [./scale]
+    type = Transform
+    transform = SCALE
+    vector_value = '1 1 ${scale}'
+  [../]
 []
 
 [Problem]
@@ -37,18 +37,15 @@ offset=2.5
 [Variables]
   [./group1]
     scaling = 1e4
-    initial_from_file_var = group1
-    initial_from_file_timestep = LATEST
+    initial_condition = 1
   [../]
   [./group2]
     scaling = 1e4
-    initial_from_file_var = group2
-    initial_from_file_timestep = LATEST
+    initial_condition = 1
   [../]
   [./temp]
     scaling = 1e-4
-    initial_from_file_var = temp
-    initial_from_file_timestep = LATEST
+    initial_condition = ${ini_temp}
   [../]
 []
 
@@ -56,26 +53,14 @@ offset=2.5
   [./primary_fuel]
     var_name_base = pre
     block = 'fuel blocked_fuel'
-    outlet_boundaries = 'fuel_tops'
+    outlet_boundaries = 'fuel_tops blocked_fuel_top'
     u_def = 0
     v_def = 0
     w_def = ${flow_velocity}
     nt_exp_form = false
     family = MONOMIAL
     order = CONSTANT
-    init_from_file = true
-    kernel_block = 'fuel'
-  [../]
-  [./blocked_fuel]
-    var_name_base = pre
-    kernel_block = 'blocked_fuel'
-    outlet_boundaries = 'blocked_fuel_top'
-    u_def = 0
-    v_def = 0
-    w_def = 0
-    nt_exp_form = false
-    create_vars = false
-    object_suffix = blocked
+    kernel_block = 'fuel blocked_fuel'
   [../]
 []
 
@@ -100,10 +85,12 @@ offset=2.5
     type = CoupledFissionKernel
     variable = group1
     group_number = 1
+    block = 'fuel blocked_fuel'
   [../]
   [./delayed_group1]
     type = DelayedNeutronSource
     variable = group1
+    block = 'fuel blocked_fuel'
   [../]
   [./inscatter_group1]
     type = InScatter
@@ -129,6 +116,7 @@ offset=2.5
     type = CoupledFissionKernel
     variable = group2
     group_number = 2
+    block = 'fuel blocked_fuel'
   [../]
   [./inscatter_group2]
     type = InScatter
@@ -145,7 +133,7 @@ offset=2.5
     type = TransientFissionHeatSource
     variable = temp
     nt_scale=${nt_scale}
-    block = 'fuel'
+    block = 'fuel blocked_fuel'
   [../]
   [./temp_source_mod]
     type = GammaHeatSource
@@ -163,7 +151,7 @@ offset=2.5
     type = ConservativeTemperatureAdvection
     velocity = '0 0 ${flow_velocity}'
     variable = temp
-    block = 'fuel'
+    block = 'fuel blocked_fuel'
   [../]
 []
 
@@ -179,13 +167,13 @@ offset=2.5
     variable = group2
   [../]
   [./temp_diri_cg]
-    boundary = 'moder_bottoms fuel_bottoms moder_sides'
+    boundary = 'moder_bottoms fuel_bottoms moder_sides blocked_fuel_bottom'
     type = FunctionDirichletBC
     function = 'temp_bc_func'
     variable = temp
   [../]
   [./temp_advection_outlet]
-    boundary = 'fuel_tops'
+    boundary = 'fuel_tops blocked_fuel_top'
     type = TemperatureOutflowBC
     variable = temp
     velocity = '0 0 ${flow_velocity}'
@@ -242,17 +230,13 @@ offset=2.5
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type'
   petsc_options_value = 'lu	  NONZERO		1e-10			preonly'
-#   petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
-#   petsc_options_value = 'asm      lu           1               preonly       1e-3'
   # petsc_options_iname = '-snes_type'
   # petsc_options_value = 'test'
 
   nl_max_its = 30
   l_max_its = 200
 
-#   dtmax = 1
   dtmin = 1e-7
-  # dt = 1e-3
   [./TimeStepper]
     type = IterationAdaptiveDT
     dt = 1e-6
@@ -305,7 +289,7 @@ offset=2.5
     nt_scale = ${nt_scale}
     execute_on = 'linear nonlinear'
     outputs = 'console'
-    block = 'fuel'
+    block = 'fuel blocked_fuel'
   [../]
 []
 

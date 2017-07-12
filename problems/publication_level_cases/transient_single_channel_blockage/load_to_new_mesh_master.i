@@ -99,7 +99,7 @@ height=${* ${base_height} ${scale}}
     execute_on = 'initial'
   [../]
   [./pre1]
-    type = MultiAppNearestNodeTransfer
+    type = MultiAppMeshFunctionTransfer
     direction = from_multiapp
     multi_app = sub
     source_variable = pre1
@@ -107,7 +107,7 @@ height=${* ${base_height} ${scale}}
     execute_on = 'initial'
   [../]
   [./pre2]
-    type = MultiAppNearestNodeTransfer
+    type = MultiAppMeshFunctionTransfer
     direction = from_multiapp
     multi_app = sub
     source_variable = pre2
@@ -115,7 +115,7 @@ height=${* ${base_height} ${scale}}
     execute_on = 'initial'
   [../]
   [./pre3]
-    type = MultiAppNearestNodeTransfer
+    type = MultiAppMeshFunctionTransfer
     direction = from_multiapp
     multi_app = sub
     source_variable = pre3
@@ -123,7 +123,7 @@ height=${* ${base_height} ${scale}}
     execute_on = 'initial'
   [../]
   [./pre4]
-    type = MultiAppNearestNodeTransfer
+    type = MultiAppMeshFunctionTransfer
     direction = from_multiapp
     multi_app = sub
     source_variable = pre4
@@ -131,7 +131,7 @@ height=${* ${base_height} ${scale}}
     execute_on = 'initial'
   [../]
   [./pre5]
-    type = MultiAppNearestNodeTransfer
+    type = MultiAppMeshFunctionTransfer
     direction = from_multiapp
     multi_app = sub
     source_variable = pre5
@@ -139,7 +139,7 @@ height=${* ${base_height} ${scale}}
     execute_on = 'initial'
   [../]
   [./pre6]
-    type = MultiAppNearestNodeTransfer
+    type = MultiAppMeshFunctionTransfer
     direction = from_multiapp
     multi_app = sub
     source_variable = pre6

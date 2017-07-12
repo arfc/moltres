@@ -109,7 +109,7 @@ PrecursorKernelAction::act()
         std::vector<std::string> include = {"temperature", "group_fluxes"};
         params.applySpecificParameters(parameters(), include);
         if (isParamValid("kernel_block"))
-          params.set<std::vector<SubdomainName>>("kernel_block") =
+          params.set<std::vector<SubdomainName>>("block") =
               getParam<std::vector<SubdomainName>>("kernel_block");
         params.set<bool>("use_exp_form") = getParam<bool>("nt_exp_form");
 
@@ -128,7 +128,7 @@ PrecursorKernelAction::act()
         std::vector<std::string> include = {"temperature"};
         params.applySpecificParameters(parameters(), include);
         if (isParamValid("kernel_block"))
-          params.set<std::vector<SubdomainName>>("kernel_block") =
+          params.set<std::vector<SubdomainName>>("block") =
               getParam<std::vector<SubdomainName>>("kernel_block");
         params.set<bool>("use_exp_form") = false;
 
@@ -145,7 +145,7 @@ PrecursorKernelAction::act()
         params.set<NonlinearVariableName>("variable") = var_name;
         params.set<bool>("implicit") = true;
         if (isParamValid("kernel_block"))
-          params.set<std::vector<SubdomainName>>("kernel_block") =
+          params.set<std::vector<SubdomainName>>("block") =
               getParam<std::vector<SubdomainName>>("kernel_block");
         params.set<bool>("use_exp_form") = false;
 
@@ -161,7 +161,7 @@ PrecursorKernelAction::act()
         InputParameters params = _factory.getValidParams("DGConvection");
         params.set<NonlinearVariableName>("variable") = var_name;
         if (isParamValid("kernel_block"))
-          params.set<std::vector<SubdomainName>>("kernel_block") =
+          params.set<std::vector<SubdomainName>>("block") =
               getParam<std::vector<SubdomainName>>("kernel_block");
         RealVectorValue vel = {
             getParam<Real>("u_def"), getParam<Real>("v_def"), getParam<Real>("w_def")};
@@ -175,7 +175,7 @@ PrecursorKernelAction::act()
         InputParameters params = _factory.getValidParams("DGFunctionConvection");
         params.set<NonlinearVariableName>("variable") = var_name;
         if (isParamValid("kernel_block"))
-          params.set<std::vector<SubdomainName>>("kernel_block") =
+          params.set<std::vector<SubdomainName>>("block") =
               getParam<std::vector<SubdomainName>>("kernel_block");
         params.set<FunctionName>("vel_x_func") = getParam<FunctionName>("u_func");
         params.set<FunctionName>("vel_y_func") = getParam<FunctionName>("v_func");
@@ -237,7 +237,7 @@ PrecursorKernelAction::act()
         InputParameters params = _factory.getValidParams("RandomIC");
         params.set<VariableName>("variable") = var_name;
         if (isParamValid("kernel_block"))
-          params.set<std::vector<SubdomainName>>("kernel_block") =
+          params.set<std::vector<SubdomainName>>("block") =
               getParam<std::vector<SubdomainName>>("kernel_block");
         params.set<Real>("min") = 0;
         params.set<Real>("max") = 1;
