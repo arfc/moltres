@@ -51,8 +51,12 @@ validParams<PrecursorKernelAction>()
   params.addParam<bool>(
       "init_from_file", false, "Whether to initialize the precursors from a file.");
   params.addParam<bool>("create_vars", true, "Whether this action should create the variables.");
-  params.addParam<std::string>("object_suffix", "", "An optional suffix string that can be helpful to avoid object name crashing.");
-  params.addParam<std::vector<SubdomainName>>("kernel_block", "Kernel bock can be different from block.");
+  params.addParam<std::string>(
+      "object_suffix",
+      "",
+      "An optional suffix string that can be helpful to avoid object name crashing.");
+  params.addParam<std::vector<SubdomainName>>("kernel_block",
+                                              "Kernel bock can be different from block.");
   return params;
 }
 
@@ -111,6 +115,9 @@ PrecursorKernelAction::act()
         if (isParamValid("kernel_block"))
           params.set<std::vector<SubdomainName>>("block") =
               getParam<std::vector<SubdomainName>>("kernel_block");
+        else if (isParamValid("block"))
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("block");
         params.set<bool>("use_exp_form") = getParam<bool>("nt_exp_form");
 
         std::string kernel_name = "PrecursorSource_" + var_name + "_" + _object_suffix;
@@ -130,6 +137,9 @@ PrecursorKernelAction::act()
         if (isParamValid("kernel_block"))
           params.set<std::vector<SubdomainName>>("block") =
               getParam<std::vector<SubdomainName>>("kernel_block");
+        else if (isParamValid("block"))
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("block");
         params.set<bool>("use_exp_form") = false;
 
         std::string kernel_name = "PrecursorDecay_" + var_name + "_" + _object_suffix;
@@ -147,9 +157,13 @@ PrecursorKernelAction::act()
         if (isParamValid("kernel_block"))
           params.set<std::vector<SubdomainName>>("block") =
               getParam<std::vector<SubdomainName>>("kernel_block");
+        else if (isParamValid("block"))
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("block");
         params.set<bool>("use_exp_form") = false;
 
-        std::string kernel_name = "ScalarTransportTimeDerivative_" + var_name + "_" + _object_suffix;
+        std::string kernel_name =
+            "ScalarTransportTimeDerivative_" + var_name + "_" + _object_suffix;
         _problem->addKernel("ScalarTransportTimeDerivative", kernel_name, params);
       }
     }
@@ -163,6 +177,9 @@ PrecursorKernelAction::act()
         if (isParamValid("kernel_block"))
           params.set<std::vector<SubdomainName>>("block") =
               getParam<std::vector<SubdomainName>>("kernel_block");
+        else if (isParamValid("block"))
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("block");
         RealVectorValue vel = {
             getParam<Real>("u_def"), getParam<Real>("v_def"), getParam<Real>("w_def")};
         params.set<RealVectorValue>("velocity") = vel;
@@ -177,6 +194,9 @@ PrecursorKernelAction::act()
         if (isParamValid("kernel_block"))
           params.set<std::vector<SubdomainName>>("block") =
               getParam<std::vector<SubdomainName>>("kernel_block");
+        else if (isParamValid("block"))
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("block");
         params.set<FunctionName>("vel_x_func") = getParam<FunctionName>("u_func");
         params.set<FunctionName>("vel_y_func") = getParam<FunctionName>("v_func");
         params.set<FunctionName>("vel_z_func") = getParam<FunctionName>("w_func");
@@ -239,6 +259,9 @@ PrecursorKernelAction::act()
         if (isParamValid("kernel_block"))
           params.set<std::vector<SubdomainName>>("block") =
               getParam<std::vector<SubdomainName>>("kernel_block");
+        else if (isParamValid("block"))
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("block");
         params.set<Real>("min") = 0;
         params.set<Real>("max") = 1;
 
