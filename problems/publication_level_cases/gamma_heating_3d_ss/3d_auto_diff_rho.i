@@ -55,16 +55,18 @@ offset=2.5
 []
 
 [PrecursorKernel]
-  var_name_base = pre
-  block = 'fuel'
-  outlet_boundaries = 'fuel_tops'
-  u_def = 0
-  v_def = 0
-  w_def = ${flow_velocity}
-  nt_exp_form = false
-  family = MONOMIAL
-  order = CONSTANT
-  jac_test = true
+  [./pres]
+    var_name_base = pre
+    block = 'fuel'
+    outlet_boundaries = 'fuel_tops'
+    u_def = 0
+    v_def = 0
+    w_def = ${flow_velocity}
+    nt_exp_form = false
+    family = MONOMIAL
+    order = CONSTANT
+    jac_test = true
+  [../]
 []
 
 [Kernels]
