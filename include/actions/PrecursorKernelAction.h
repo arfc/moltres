@@ -19,6 +19,9 @@ protected:
 
   /// number of energy groups
   unsigned int _num_groups;
+
+  /// optional object name suffix
+  std::string _object_suffix;
 };
 
 template <>

@@ -43,16 +43,18 @@ diri_temp=922
 []
 
 [PrecursorKernel]
-  var_name_base = pre
-  block = 'fuel'
-  outlet_boundaries = 'fuel_tops'
-  u_def = 0
-  v_def = ${flow_velocity}
-  w_def = 0
-  nt_exp_form = false
-  family = MONOMIAL
-  order = CONSTANT
-  # jac_test = true
+  [./pres]
+    var_name_base = pre
+    block = 'fuel'
+    outlet_boundaries = 'fuel_tops'
+    u_def = 0
+    v_def = ${flow_velocity}
+    w_def = 0
+    nt_exp_form = false
+    family = MONOMIAL
+    order = CONSTANT
+    # jac_test = true
+  [../]
 []
 
 [Kernels]
@@ -76,10 +78,12 @@ diri_temp=922
     type = CoupledFissionKernel
     variable = group1
     group_number = 1
+    block = 'fuel'
   [../]
   [./delayed_group1]
     type = DelayedNeutronSource
     variable = group1
+    block = 'fuel'
   [../]
   [./inscatter_group1]
     type = InScatter
@@ -105,6 +109,7 @@ diri_temp=922
     type = CoupledFissionKernel
     variable = group2
     group_number = 2
+    block = 'fuel'
   [../]
   [./inscatter_group2]
     type = InScatter

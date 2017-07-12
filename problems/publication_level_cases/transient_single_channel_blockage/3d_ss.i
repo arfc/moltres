@@ -20,8 +20,7 @@ offset=2.5
 []
 
 [Mesh]
-  file = '3d_msre_29x29_136.msh'
-  # file = jac_test.msh
+  file = msre_vol_frac_29x29_h_136.msh
 []
 
 [MeshModifiers]
@@ -37,34 +36,32 @@ offset=2.5
 
 [Variables]
   [./group1]
-    order = FIRST
-    family = LAGRANGE
-#     initial_condition = 1
     scaling = 1e4
+    initial_condition = 1
   [../]
   [./group2]
-    order = FIRST
-    family = LAGRANGE
-#     initial_condition = 1
     scaling = 1e4
+    initial_condition = 1
   [../]
   [./temp]
-    initial_condition = ${ini_temp}
     scaling = 1e-4
+    initial_condition = ${ini_temp}
   [../]
 []
 
 [PrecursorKernel]
-  var_name_base = pre
-  block = 'fuel'
-  outlet_boundaries = 'fuel_tops'
-  u_def = 0
-  v_def = 0
-  w_def = ${flow_velocity}
-  nt_exp_form = false
-  family = MONOMIAL
-  order = CONSTANT
-  jac_test = true
+  [./primary_fuel]
+    var_name_base = pre
+    block = 'fuel blocked_fuel'
+    outlet_boundaries = 'fuel_tops blocked_fuel_top'
+    u_def = 0
+    v_def = 0
+    w_def = ${flow_velocity}
+    nt_exp_form = false
+    family = MONOMIAL
+    order = CONSTANT
+    kernel_block = 'fuel blocked_fuel'
+  [../]
 []
 
 [Kernels]
@@ -88,10 +85,12 @@ offset=2.5
     type = CoupledFissionKernel
     variable = group1
     group_number = 1
+    block = 'fuel blocked_fuel'
   [../]
   [./delayed_group1]
     type = DelayedNeutronSource
     variable = group1
+    block = 'fuel blocked_fuel'
   [../]
   [./inscatter_group1]
     type = InScatter
@@ -117,6 +116,7 @@ offset=2.5
     type = CoupledFissionKernel
     variable = group2
     group_number = 2
+    block = 'fuel blocked_fuel'
   [../]
   [./inscatter_group2]
     type = InScatter
@@ -133,15 +133,15 @@ offset=2.5
     type = TransientFissionHeatSource
     variable = temp
     nt_scale=${nt_scale}
-    block = 'fuel'
+    block = 'fuel blocked_fuel'
   [../]
-  # [./temp_source_mod]
-  #   type = GammaHeatSource
-  #   variable = temp
-  #   gamma = .0144 # Cammi .0144
-  #   block = 'moder'
-  #   average_fission_heat = 'average_fission_heat'
-  # [../]
+  [./temp_source_mod]
+    type = GammaHeatSource
+    variable = temp
+    gamma = .0144 # Cammi .0144
+    block = 'moder'
+    average_fission_heat = 'average_fission_heat'
+  [../]
   [./temp_diffusion]
     type = MatDiffusion
     D_name = 'k'
@@ -151,29 +151,29 @@ offset=2.5
     type = ConservativeTemperatureAdvection
     velocity = '0 0 ${flow_velocity}'
     variable = temp
-    block = 'fuel'
+    block = 'fuel blocked_fuel'
   [../]
 []
 
 [BCs]
   [./vacuum_group1]
     type = VacuumConcBC
-    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops moder_sides'
+    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops moder_sides blocked_fuel_top blocked_fuel_bottom'
     variable = group1
   [../]
   [./vacuum_group2]
     type = VacuumConcBC
-    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops moder_sides'
+    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops moder_sides blocked_fuel_top blocked_fuel_bottom'
     variable = group2
   [../]
   [./temp_diri_cg]
-    boundary = 'moder_bottoms fuel_bottoms moder_sides'
+    boundary = 'moder_bottoms fuel_bottoms moder_sides blocked_fuel_bottom'
     type = FunctionDirichletBC
     function = 'temp_bc_func'
     variable = temp
   [../]
   [./temp_advection_outlet]
-    boundary = 'fuel_tops'
+    boundary = 'fuel_tops blocked_fuel_top'
     type = TemperatureOutflowBC
     variable = temp
     velocity = '0 0 ${flow_velocity}'
@@ -185,16 +185,12 @@ offset=2.5
     type = ParsedFunction
     value = '${ini_temp} - (${ini_temp} - ${diri_temp}) * tanh(t/1e-2)'
   [../]
-  [./nt_ic_func]
-    type = ParsedFunction
-    value = 'sin(pi * z / ${height}) * sin(pi * (x + ${offset}) / ${width}) * sin(pi * (y + ${offset}) / ${width})'
-  [../]
 []
 
 [Materials]
   [./fuel]
     type = MsreFuelTwoGrpXSFunctionMaterial
-    block = 'fuel'
+    block = 'fuel blocked_fuel'
     prop_names = 'k cp'
     prop_values = '.0553 1967' # Robertson MSRE technical report @ 922 K
   [../]
@@ -204,7 +200,7 @@ offset=2.5
     function = '2.146e-3 * exp(-1.8 * 1.18e-4 * (temp - 922))'
     args = 'temp'
     derivative_order = 1
-    block = 'fuel'
+    block = 'fuel blocked_fuel'
   [../]
   [./moder]
     type = GraphiteTwoGrpXSFunctionMaterial
@@ -234,17 +230,13 @@ offset=2.5
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type'
   petsc_options_value = 'lu	  NONZERO		1e-10			preonly'
-#   petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
-#   petsc_options_value = 'asm      lu           1               preonly       1e-3'
   # petsc_options_iname = '-snes_type'
   # petsc_options_value = 'test'
 
   nl_max_its = 30
   l_max_its = 200
 
-#   dtmax = 1
   dtmin = 1e-7
-  # dt = 1e-3
   [./TimeStepper]
     type = IterationAdaptiveDT
     dt = 1e-6
@@ -292,55 +284,22 @@ offset=2.5
     block = 'moder'
     outputs = 'csv console'
   [../]
-  # [./average_fission_heat]
-  #   type = AverageFissionHeat
-  #   nt_scale = ${nt_scale}
-  #   execute_on = 'linear nonlinear'
-  #   outputs = 'console'
-  #   block = 'fuel'
-  # [../]
+  [./average_fission_heat]
+    type = AverageFissionHeat
+    nt_scale = ${nt_scale}
+    execute_on = 'linear nonlinear'
+    outputs = 'console'
+    block = 'fuel blocked_fuel'
+  [../]
 []
 
 [Outputs]
   print_perf_log = true
   print_linear_residuals = true
   csv = true
-  [./out]
-    type = Exodus
-  [../]
+  exodus = true
 []
 
 [Debug]
   show_var_residual_norms = true
-[]
-
-[ICs]
-#   [./temp_ic]
-#     type = RandomIC
-#     variable = temp
-#     min = 922
-#     max = 1022
-#   [../]
-#   [./group1_ic]
-#     type = RandomIC
-#     variable = group1
-#     min = .5
-#     max = 1.5
-#   [../]
-#   [./group2_ic]
-#     type = RandomIC
-#     variable = group2
-#     min = .5
-#     max = 1.5
-#   [../]
-  [./group1_ic]
-    type = FunctionIC
-    variable = group1
-    function = 'nt_ic_func'
-  [../]
-  [./group2_ic]
-    type = FunctionIC
-    variable = group2
-    function = 'nt_ic_func'
-  [../]
 []
