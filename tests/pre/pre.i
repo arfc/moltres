@@ -20,15 +20,17 @@ global_temperature=922
 []
 
 [PrecursorKernel]
-  var_name_base = pre
-  outlet_boundaries = 'fuel_tops'
-  u_def = 0
-  v_def = ${flow_velocity}
-  w_def = 0
-  nt_exp_form = false
-  family = MONOMIAL
-  order = CONSTANT
-  block = 'fuel'
+  [./pres]
+    var_name_base = pre
+    outlet_boundaries = 'fuel_tops'
+    u_def = 0
+    v_def = ${flow_velocity}
+    w_def = 0
+    nt_exp_form = false
+    family = MONOMIAL
+    order = CONSTANT
+    block = 'fuel'
+  [../]
 []
 
 [Materials]

@@ -50,6 +50,13 @@ validParams<PrecursorKernelAction>()
   params.addParam<bool>("transient", true, "Whether to run a transient simulation.");
   params.addParam<bool>(
       "init_from_file", false, "Whether to initialize the precursors from a file.");
+  params.addParam<bool>("create_vars", true, "Whether this action should create the variables.");
+  params.addParam<std::string>(
+      "object_suffix",
+      "",
+      "An optional suffix string that can be helpful to avoid object name crashing.");
+  params.addParam<std::vector<SubdomainName>>("kernel_block",
+                                              "Kernel bock can be different from block.");
   return params;
 }
 
@@ -57,7 +64,8 @@ PrecursorKernelAction::PrecursorKernelAction(const InputParameters & params)
   : AddVariableAction(params),
     _num_precursor_groups(getParam<unsigned int>("num_precursor_groups")),
     _var_name_base(getParam<std::string>("var_name_base")),
-    _num_groups(getParam<unsigned int>("num_groups"))
+    _num_groups(getParam<unsigned int>("num_groups")),
+    _object_suffix(getParam<std::string>("object_suffix"))
 {
 }
 
@@ -68,27 +76,30 @@ PrecursorKernelAction::act()
   {
     std::string var_name = _var_name_base + Moose::stringify(op);
 
-    //
-    // See whether we want to use an old solution
-    //
-    if (getParam<bool>("init_from_file"))
+    if (getParam<bool>("create_vars"))
     {
-      if (_current_task == "check_copy_nodal_vars")
-        _app.setFileRestart() = true;
-
-      if (_current_task == "copy_nodal_vars")
+      //
+      // See whether we want to use an old solution
+      //
+      if (getParam<bool>("init_from_file"))
       {
-        SystemBase * system = &_problem->getNonlinearSystemBase();
-        system->addVariableToCopy(var_name, var_name, "LATEST");
+        if (_current_task == "check_copy_nodal_vars")
+          _app.setFileRestart() = true;
+
+        if (_current_task == "copy_nodal_vars")
+        {
+          SystemBase * system = &_problem->getNonlinearSystemBase();
+          system->addVariableToCopy(var_name, var_name, "LATEST");
+        }
       }
+
+      //
+      // Create variable names
+      //
+
+      if (_current_task == "add_variable")
+        addVariable(var_name);
     }
-
-    //
-    // Create variable names
-    //
-
-    if (_current_task == "add_variable")
-      addVariable(var_name);
 
     if (_current_task == "add_kernel")
     {
@@ -101,12 +112,15 @@ PrecursorKernelAction::act()
         params.set<unsigned int>("precursor_group_number") = op;
         std::vector<std::string> include = {"temperature", "group_fluxes"};
         params.applySpecificParameters(parameters(), include);
-        if (isParamValid("block"))
+        if (isParamValid("kernel_block"))
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("kernel_block");
+        else if (isParamValid("block"))
           params.set<std::vector<SubdomainName>>("block") =
               getParam<std::vector<SubdomainName>>("block");
         params.set<bool>("use_exp_form") = getParam<bool>("nt_exp_form");
 
-        std::string kernel_name = "PrecursorSource_" + var_name;
+        std::string kernel_name = "PrecursorSource_" + var_name + "_" + _object_suffix;
         _problem->addKernel("PrecursorSource", kernel_name, params);
       }
 
@@ -120,12 +134,15 @@ PrecursorKernelAction::act()
         params.set<unsigned int>("precursor_group_number") = op;
         std::vector<std::string> include = {"temperature"};
         params.applySpecificParameters(parameters(), include);
-        if (isParamValid("block"))
+        if (isParamValid("kernel_block"))
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("kernel_block");
+        else if (isParamValid("block"))
           params.set<std::vector<SubdomainName>>("block") =
               getParam<std::vector<SubdomainName>>("block");
         params.set<bool>("use_exp_form") = false;
 
-        std::string kernel_name = "PrecursorDecay_" + var_name;
+        std::string kernel_name = "PrecursorDecay_" + var_name + "_" + _object_suffix;
         _problem->addKernel("PrecursorDecay", kernel_name, params);
       }
 
@@ -137,12 +154,16 @@ PrecursorKernelAction::act()
         InputParameters params = _factory.getValidParams("ScalarTransportTimeDerivative");
         params.set<NonlinearVariableName>("variable") = var_name;
         params.set<bool>("implicit") = true;
-        if (isParamValid("block"))
+        if (isParamValid("kernel_block"))
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("kernel_block");
+        else if (isParamValid("block"))
           params.set<std::vector<SubdomainName>>("block") =
               getParam<std::vector<SubdomainName>>("block");
         params.set<bool>("use_exp_form") = false;
 
-        std::string kernel_name = "ScalarTransportTimeDerivative_" + var_name;
+        std::string kernel_name =
+            "ScalarTransportTimeDerivative_" + var_name + "_" + _object_suffix;
         _problem->addKernel("ScalarTransportTimeDerivative", kernel_name, params);
       }
     }
@@ -153,27 +174,33 @@ PrecursorKernelAction::act()
       {
         InputParameters params = _factory.getValidParams("DGConvection");
         params.set<NonlinearVariableName>("variable") = var_name;
-        if (isParamValid("block"))
+        if (isParamValid("kernel_block"))
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("kernel_block");
+        else if (isParamValid("block"))
           params.set<std::vector<SubdomainName>>("block") =
               getParam<std::vector<SubdomainName>>("block");
         RealVectorValue vel = {
             getParam<Real>("u_def"), getParam<Real>("v_def"), getParam<Real>("w_def")};
         params.set<RealVectorValue>("velocity") = vel;
 
-        std::string kernel_name = "DGConvection_" + var_name;
+        std::string kernel_name = "DGConvection_" + var_name + "_" + _object_suffix;
         _problem->addDGKernel("DGConvection", kernel_name, params);
       }
       else
       {
         InputParameters params = _factory.getValidParams("DGFunctionConvection");
         params.set<NonlinearVariableName>("variable") = var_name;
-        if (isParamValid("block"))
+        if (isParamValid("kernel_block"))
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("kernel_block");
+        else if (isParamValid("block"))
           params.set<std::vector<SubdomainName>>("block") =
               getParam<std::vector<SubdomainName>>("block");
         params.set<FunctionName>("vel_x_func") = getParam<FunctionName>("u_func");
         params.set<FunctionName>("vel_y_func") = getParam<FunctionName>("v_func");
         params.set<FunctionName>("vel_z_func") = getParam<FunctionName>("w_func");
-        std::string kernel_name = "DGFunctionConvection_" + var_name;
+        std::string kernel_name = "DGFunctionConvection_" + var_name + "_" + _object_suffix;
         _problem->addDGKernel("DGFunctionConvection", kernel_name, params);
       }
     }
@@ -190,7 +217,7 @@ PrecursorKernelAction::act()
             getParam<Real>("u_def"), getParam<Real>("v_def"), getParam<Real>("w_def")};
         params.set<RealVectorValue>("velocity") = vel;
 
-        std::string kernel_name = "OutflowBC_" + var_name;
+        std::string kernel_name = "OutflowBC_" + var_name + "_" + _object_suffix;
         _problem->addBoundaryCondition("OutflowBC", kernel_name, params);
       }
       else
@@ -203,7 +230,7 @@ PrecursorKernelAction::act()
         params.set<FunctionName>("vel_y_func") = getParam<FunctionName>("v_func");
         params.set<FunctionName>("vel_z_func") = getParam<FunctionName>("w_func");
 
-        std::string kernel_name = "VelocityFunctionOutflowBC_" + var_name;
+        std::string kernel_name = "VelocityFunctionOutflowBC_" + var_name + "_" + _object_suffix;
         _problem->addBoundaryCondition("VelocityFunctionOutflowBC", kernel_name, params);
       }
       // {
@@ -229,7 +256,10 @@ PrecursorKernelAction::act()
       {
         InputParameters params = _factory.getValidParams("RandomIC");
         params.set<VariableName>("variable") = var_name;
-        if (isParamValid("block"))
+        if (isParamValid("kernel_block"))
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("kernel_block");
+        else if (isParamValid("block"))
           params.set<std::vector<SubdomainName>>("block") =
               getParam<std::vector<SubdomainName>>("block");
         params.set<Real>("min") = 0;

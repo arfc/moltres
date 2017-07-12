@@ -170,7 +170,7 @@ MoltresApp__associateSyntax(Syntax & syntax, ActionFactory & action_factory)
 void
 MoltresApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
 {
-  syntax.registerActionSyntax("PrecursorKernelAction", "PrecursorKernel");
+  syntax.registerActionSyntax("PrecursorKernelAction", "PrecursorKernel/*");
   syntax.registerActionSyntax("NtAction", "Nt");
 
   registerAction(PrecursorKernelAction, "add_kernel");
@@ -178,6 +178,8 @@ MoltresApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
   registerAction(PrecursorKernelAction, "add_variable");
   registerAction(PrecursorKernelAction, "add_ic");
   registerAction(PrecursorKernelAction, "add_dg_kernel");
+  registerAction(PrecursorKernelAction, "check_copy_nodal_vars");
+  registerAction(PrecursorKernelAction, "copy_nodal_vars");
   registerAction(NtAction, "add_kernel");
   registerAction(NtAction, "add_bc");
   registerAction(NtAction, "add_variable");

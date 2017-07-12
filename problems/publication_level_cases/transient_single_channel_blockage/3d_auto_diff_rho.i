@@ -20,16 +20,15 @@ offset=2.5
 []
 
 [Mesh]
-  file = '3d_msre_29x29_136.msh'
-  # file = jac_test.msh
+  file = 3d_ss_out.e
 []
 
 [MeshModifiers]
-  [./scale]
-    type = Transform
-    transform = SCALE
-    vector_value = '1 1 ${scale}'
-  [../]
+  # [./scale]
+  #   type = Transform
+  #   transform = SCALE
+  #   vector_value = '1 1 ${scale}'
+  # [../]
 []
 
 [Problem]
@@ -37,27 +36,26 @@ offset=2.5
 
 [Variables]
   [./group1]
-    order = FIRST
-    family = LAGRANGE
-#     initial_condition = 1
     scaling = 1e4
+    initial_from_file_var = group1
+    initial_from_file_timestep = LATEST
   [../]
   [./group2]
-    order = FIRST
-    family = LAGRANGE
-#     initial_condition = 1
     scaling = 1e4
+    initial_from_file_var = group2
+    initial_from_file_timestep = LATEST
   [../]
   [./temp]
-    initial_condition = ${ini_temp}
     scaling = 1e-4
+    initial_from_file_var = temp
+    initial_from_file_timestep = LATEST
   [../]
 []
 
 [PrecursorKernel]
-  [./pres]
+  [./primary_fuel]
     var_name_base = pre
-    block = 'fuel'
+    block = 'fuel blocked_fuel'
     outlet_boundaries = 'fuel_tops'
     u_def = 0
     v_def = 0
@@ -65,7 +63,19 @@ offset=2.5
     nt_exp_form = false
     family = MONOMIAL
     order = CONSTANT
-    jac_test = true
+    init_from_file = true
+    kernel_block = 'fuel'
+  [../]
+  [./blocked_fuel]
+    var_name_base = pre
+    kernel_block = 'blocked_fuel'
+    outlet_boundaries = 'blocked_fuel_top'
+    u_def = 0
+    v_def = 0
+    w_def = 0
+    nt_exp_form = false
+    create_vars = false
+    object_suffix = blocked
   [../]
 []
 
@@ -90,10 +100,12 @@ offset=2.5
     type = CoupledFissionKernel
     variable = group1
     group_number = 1
+    block = 'fuel blocked_fuel'
   [../]
   [./delayed_group1]
     type = DelayedNeutronSource
     variable = group1
+    block = 'fuel blocked_fuel'
   [../]
   [./inscatter_group1]
     type = InScatter
@@ -119,6 +131,7 @@ offset=2.5
     type = CoupledFissionKernel
     variable = group2
     group_number = 2
+    block = 'fuel blocked_fuel'
   [../]
   [./inscatter_group2]
     type = InScatter
@@ -135,7 +148,7 @@ offset=2.5
     type = TransientFissionHeatSource
     variable = temp
     nt_scale=${nt_scale}
-    block = 'fuel'
+    block = 'fuel blocked_fuel'
   [../]
   [./temp_source_mod]
     type = GammaHeatSource
@@ -160,12 +173,12 @@ offset=2.5
 [BCs]
   [./vacuum_group1]
     type = VacuumConcBC
-    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops moder_sides'
+    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops moder_sides blocked_fuel_top blocked_fuel_bottom'
     variable = group1
   [../]
   [./vacuum_group2]
     type = VacuumConcBC
-    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops moder_sides'
+    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops moder_sides blocked_fuel_top blocked_fuel_bottom'
     variable = group2
   [../]
   [./temp_diri_cg]
@@ -187,16 +200,12 @@ offset=2.5
     type = ParsedFunction
     value = '${ini_temp} - (${ini_temp} - ${diri_temp}) * tanh(t/1e-2)'
   [../]
-  [./nt_ic_func]
-    type = ParsedFunction
-    value = 'sin(pi * z / ${height}) * sin(pi * (x + ${offset}) / ${width}) * sin(pi * (y + ${offset}) / ${width})'
-  [../]
 []
 
 [Materials]
   [./fuel]
     type = MsreFuelTwoGrpXSFunctionMaterial
-    block = 'fuel'
+    block = 'fuel blocked_fuel'
     prop_names = 'k cp'
     prop_values = '.0553 1967' # Robertson MSRE technical report @ 922 K
   [../]
@@ -206,7 +215,7 @@ offset=2.5
     function = '2.146e-3 * exp(-1.8 * 1.18e-4 * (temp - 922))'
     args = 'temp'
     derivative_order = 1
-    block = 'fuel'
+    block = 'fuel blocked_fuel'
   [../]
   [./moder]
     type = GraphiteTwoGrpXSFunctionMaterial
@@ -249,7 +258,7 @@ offset=2.5
   # dt = 1e-3
   [./TimeStepper]
     type = IterationAdaptiveDT
-    dt = 1e-6
+    dt = 5e-3
     cutback_factor = 0.4
     growth_factor = 1.2
     optimal_iterations = 20
@@ -299,7 +308,7 @@ offset=2.5
     nt_scale = ${nt_scale}
     execute_on = 'linear nonlinear'
     outputs = 'console'
-    block = 'fuel'
+    block = 'fuel blocked_fuel'
   [../]
 []
 
@@ -308,39 +317,9 @@ offset=2.5
   print_linear_residuals = true
   csv = true
   exodus = true
+  file_base = temp
 []
 
 [Debug]
   show_var_residual_norms = true
-[]
-
-[ICs]
-#   [./temp_ic]
-#     type = RandomIC
-#     variable = temp
-#     min = 922
-#     max = 1022
-#   [../]
-#   [./group1_ic]
-#     type = RandomIC
-#     variable = group1
-#     min = .5
-#     max = 1.5
-#   [../]
-#   [./group2_ic]
-#     type = RandomIC
-#     variable = group2
-#     min = .5
-#     max = 1.5
-#   [../]
-  [./group1_ic]
-    type = FunctionIC
-    variable = group1
-    function = 'nt_ic_func'
-  [../]
-  [./group2_ic]
-    type = FunctionIC
-    variable = group2
-    function = 'nt_ic_func'
-  [../]
 []
