@@ -33,7 +33,8 @@ protected:
   virtual void computeSplineAbsorbingQpProperties();
 
   Real _absorb_factor;
-  VariableValue _rod_pos;
+  const VariableValue & _rod_pos;
+  MooseEnum _rod_dim;
 };
 
 #endif // RODDEDMATERIAL_H

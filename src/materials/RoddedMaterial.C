@@ -9,13 +9,16 @@ validParams<RoddedMaterial>()
   params.addRequiredCoupledVar("rodPosition", "Position of the control rod.");
   params.addRequiredParam<Real>("absorb_factor",
                                 "The material inherits from some other. How much more absorbing?");
+  MooseEnum validDims("x y z", "z");
+  params.addParam<MooseEnum>("rodDimension", validDims, "Dimension that the rod is parallel to.");
   return params;
 }
 
 RoddedMaterial::RoddedMaterial(const InputParameters & parameters)
   : GenericMoltresMaterial(parameters),
     _absorb_factor(getParam<Real>("absorb_factor")),
-    _rod_pos(coupledValue("rodPosition"))
+    _rod_pos(coupledScalarValue("rodPosition")),
+    _rod_dim(getParam<MooseEnum>("rodDimension"))
 {
   if (_interp_type != "spline")
     mooseError("Only spline works with this class. It's meant for testing.");
@@ -26,7 +29,8 @@ RoddedMaterial::computeSplineAbsorbingQpProperties()
 {
   for (decltype(_num_groups) i = 0; i < _num_groups; ++i)
   {
-    _remxs[_qp][i] = _xsec_spline_interpolators["REMXS"][i].sample(_temperature[_qp]) * _absorb_factor;
+    _remxs[_qp][i] =
+        _xsec_spline_interpolators["REMXS"][i].sample(_temperature[_qp]) * _absorb_factor;
     _fissxs[_qp][i] = _xsec_spline_interpolators["FISSXS"][i].sample(_temperature[_qp]);
     _nsf[_qp][i] = _xsec_spline_interpolators["NSF"][i].sample(_temperature[_qp]);
     _fisse[_qp][i] = _xsec_spline_interpolators["FISSE"][i].sample(_temperature[_qp]) * 1e6 *
@@ -96,7 +100,7 @@ RoddedMaterial::computeQpProperties()
   _d_beta_eff_d_temp[_qp].resize(_vec_lengths["BETA_EFF"]);
   _d_decay_constant_d_temp[_qp].resize(_vec_lengths["DECAY_CONSTANT"]);
 
-  if (_q_point[_qp](2) < _rod_pos[_qp])
+  if (_q_point[_qp](_rod_dim) < _rod_pos[0])
     GenericMoltresMaterial::computeQpProperties();
   else
     computeSplineAbsorbingQpProperties();

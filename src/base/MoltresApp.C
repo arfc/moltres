@@ -43,6 +43,7 @@
 #include "Nusselt.h"
 #include "GraphiteTwoGrpXSFunctionMaterial.h"
 #include "MsreFuelTwoGrpXSFunctionMaterial.h"
+#include "RoddedMaterial.h"
 
 // Postprocessors
 #include "AverageFissionHeat.h"
@@ -147,6 +148,7 @@ MoltresApp::registerObjects(Factory & factory)
   registerMaterial(Nusselt);
   registerMaterial(GraphiteTwoGrpXSFunctionMaterial);
   registerMaterial(MsreFuelTwoGrpXSFunctionMaterial);
+  registerMaterial(RoddedMaterial);
   registerPostprocessor(IntegralOldVariablePostprocessor);
   registerPostprocessor(ElementL2Diff);
   registerPostprocessor(IntegralNewVariablePostprocessor);
