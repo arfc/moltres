@@ -55,16 +55,18 @@ diri_temp=922
 []
 
 [PrecursorKernel]
-  var_name_base = pre
-  block = 'fuel'
-  outlet_boundaries = 'fuel_tops'
-  u_def = 0
-  v_def = ${flow_velocity}
-  w_def = 0
-  nt_exp_form = false
-  family = MONOMIAL
-  order = CONSTANT
-  # jac_test = true
+  [./pres]
+    var_name_base = pre
+    block = 'fuel'
+    outlet_boundaries = 'fuel_tops'
+    u_def = 0
+    v_def = ${flow_velocity}
+    w_def = 0
+    nt_exp_form = false
+    family = MONOMIAL
+    order = CONSTANT
+    # jac_test = true
+  [../]
 []
 
 [Kernels]
@@ -202,13 +204,13 @@ diri_temp=922
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
-    property_tables_root = '../property_file_dir/newt_msre_fuel_'
+    property_tables_root = '../../property_file_dir/newt_msre_fuel_'
     interp_type = 'spline'
     block = 'fuel'
     prop_names = 'k cp'
     prop_values = '.0553 1967' # Robertson MSRE technical report @ 922 K
     peak_power_density = peak_power_density
-    controller_gain = 0
+    controller_gain = 1e-4
   [../]
   [./rho_fuel]
     type = DerivativeParsedMaterial
@@ -220,7 +222,7 @@ diri_temp=922
   [../]
   [./moder]
     type = GenericMoltresMaterial
-    property_tables_root = '../property_file_dir/newt_msre_mod_'
+    property_tables_root = '../../property_file_dir/newt_msre_mod_'
     interp_type = 'spline'
     prop_names = 'k cp'
     prop_values = '.312 1760' # Cammi 2011 at 908 K
@@ -245,16 +247,11 @@ diri_temp=922
   nl_rel_tol = 1e-6
   nl_abs_tol = 6e-6
 
-  solve_type = 'NEWTON'
-  # solve_type = 'PJFNK'
+  solve_type = 'PJFNK'
   line_search = none
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  # petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
-  # petsc_options_value = 'asm      lu           1               preonly       1e-3'
-  petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type -snes_linesearch_minlambda'
-  petsc_options_value = 'lu NONZERO 1.e-10 preonly 1e-3'
-  # petsc_options_iname = '-snes_type'
-  # petsc_options_value = 'test'
+  petsc_options_iname = '-pc_type'
+  petsc_options_value = 'lu'
 
   nl_max_its = 30
   l_max_its = 100
@@ -275,7 +272,6 @@ diri_temp=922
   [./SMP]
     type = SMP
     full = true
-    ksp_norm = none
   [../]
 []
 
@@ -310,8 +306,7 @@ diri_temp=922
   [../]
   [./average_fission_heat]
     type = AverageFissionHeat
-    execute_on = 'timestep_end'
-    # execute_on = 'linear nonlinear timestep_end'
+    execute_on = 'linear nonlinear'
     outputs = 'csv console'
     block = 'fuel'
   [../]
@@ -319,8 +314,7 @@ diri_temp=922
     type = ElementExtremeValue
     value_type = max
     variable = power_density
-    execute_on = 'timestep_end'
-    # execute_on = 'linear nonlinear timestep_end'
+    execute_on = 'linear nonlinear'
     outputs = 'csv console'
   [../]
 []
