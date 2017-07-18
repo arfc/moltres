@@ -62,9 +62,11 @@
 #include "MatDiffusionAux.h"
 
 // Actions
-
 #include "PrecursorKernelAction.h"
 #include "NtAction.h"
+
+// DiracKernels
+#include "DiracHX.h"
 
 template <>
 InputParameters
@@ -161,6 +163,7 @@ MoltresApp::registerObjects(Factory & factory)
   registerAux(FissionHeatSourceTransientAux);
   registerAux(ModeratorHeatSourceTransientAux);
   registerAux(MatDiffusionAux);
+  registerDiracKernel(DiracHX);
 }
 
 // External entry point for dynamic syntax association

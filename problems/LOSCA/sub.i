@@ -4,14 +4,14 @@ ini_temp=922
 diri_temp=922
 
 [GlobalParams]
-  num_groups = 2
+  num_groups = 0
   num_precursor_groups = 6
   use_exp_form = false
-  group_fluxes = 'group1 group2'
+  group_fluxes = ''
   temperature = temp
   sss2_input = false
   pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6'
-  account_delayed = true
+  # account_delayed = true
 []
 
 [Mesh]
@@ -19,25 +19,24 @@ diri_temp=922
   dim = 1
   nx = 600
   xmax = 500
-  elem_type = QUAD4
+  elem_type = EDGE
 [../]
 
 [Variables]
   [./temp]
-    initial_condition = ${ini_temp}
+    initial_condition = 945 #approx steady outlet of other problem
     scaling = 1e-4
-    initial_from_file_var = temp
-    initial_from_file_timestep = LATEST
+    family = MONOMIAL
+    order = FIRST
   [../]
 []
 
 [PrecursorKernel]
  [./core]
   var_name_base = pre
-  block = 'fuel'
-  outlet_boundaries = 'fuel_tops'
-  u_def = 0
-  v_def = ${flow_velocity}
+  outlet_boundaries = 'right'
+  u_def = ${flow_velocity}
+  v_def = 0
   w_def = 0
   nt_exp_form = false
   family = MONOMIAL
@@ -55,7 +54,6 @@ diri_temp=922
     type = TransientFissionHeatSource
     variable = temp
     nt_scale=${nt_scale}
-    block = 'fuel'
   [../]
   # [./temp_source_mod]
   #   type = GammaHeatSource
@@ -71,9 +69,8 @@ diri_temp=922
   [../]
   [./temp_advection_fuel]
     type = ConservativeTemperatureAdvection
-    velocity = '0 ${flow_velocity} 0'
+    velocity = '${flow_velocity} 0 0'
     variable = temp
-    block = 'fuel'
   [../]
 []
 
@@ -81,7 +78,8 @@ diri_temp=922
   [./heat_exchanger]
     type = DiracHX
     variable = temp
-    value = heatRemovalFcn
+    power = 4e3 # see controls
+    point = '250 0 0'
   [../]
 []
 
@@ -97,26 +95,30 @@ diri_temp=922
     boundary = 'right'
     type = TemperatureOutflowBC
     variable = temp
-    velocity = '0 ${flow_velocity} 0'
+    velocity = '${flow_velocity} 0 0'
   [../]
 []
 
 [Functions]
-  [./temp_bc_func]
-    type = ParsedFunction
-    value = '${ini_temp} - (${ini_temp} - ${diri_temp}) * tanh(t/1e-2)'
-  [../]
   [./heatRemovalFcn]
     type = ParsedFunction
-    value = '4e6 * ( 1 - tanh( (t-50)/50 ) )' # start losing cooling at t=50s
+    value = '4e3 * ( 1 - tanh( (t-50) ) )' # start losing cooling at t=50s
+[]
+
+[Controls]
+  [./hxFuncCtrl]
+    type = RealFunctionControl
+    parameter = DiracKernels/heat_exchanger/power
+    function = heatRemovalFcn
+    execute_on = 'initial timestep_begin'
+  [../]
 []
 
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
-    property_tables_root = '../../problems/MooseGold/property_file_dir/newt_msre_fuel_'
+    property_tables_root = '../../property_file_dir/newt_msre_fuel_'
     interp_type = 'spline'
-    block = 'fuel'
     prop_names = 'k cp'
     prop_values = '.0553 1967' # Robertson MSRE technical report @ 922 K
   [../]
@@ -126,7 +128,6 @@ diri_temp=922
     function = '2.146e-3 * exp(-1.8 * 1.18e-4 * (temp - 922))'
     args = 'temp'
     derivative_order = 1
-    block = 'fuel'
   [../]
 []
 
@@ -176,6 +177,10 @@ diri_temp=922
     type = SideAverageValue
     variable = temp
     boundary = 'right'
+  [../]
+  [./coreEndTemp]
+    type = Receiver
+  [../]
 []
 
 [Outputs]
@@ -193,19 +198,19 @@ diri_temp=922
 []
 
 # connect inlet and outlet to multiapp
-[Transfers]
-  [./from_loop]
-    type = MultiAppPostprocessorTransfer
-    multi_app = MoltresApp
-    from_postprocessor = loopEndTemp
-    to_postprocessor = outlet_mean_temp
-    direction = from_multiapp
-  [../]
-  [./to_loop]
-    type = MultiAppPostprocessorTransfer
-    multi_app = MoltresApp
-    from_postprocessor = coreEndTemp
-    to_postprocessor = coreEndTemp
-    direction = to_multiapp
-  [../]
-[]
+# [Transfers]
+#   [./to_core]
+#     type = MultiAppPostprocessorTransfer
+#     multi_app = MoltresApp
+#     from_postprocessor = loopEndTemp
+#     to_postprocessor = inlet_mean_temp
+#     direction = to_multiapp
+#   [../]
+#   [./from_core]
+#     type = MultiAppPostprocessorTransfer
+#     multi_app = MoltresApp
+#     from_postprocessor = coreEndTemp
+#     to_postprocessor = coreEndTemp
+#     direction = to_multiapp
+#   [../]
+# []

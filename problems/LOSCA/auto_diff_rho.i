@@ -38,7 +38,6 @@ diri_temp=922
     initial_from_file_timestep = LATEST
   [../]
   [./temp]
-    initial_condition = ${ini_temp}
     scaling = 1e-4
     initial_from_file_var = temp
     initial_from_file_timestep = LATEST
@@ -167,7 +166,7 @@ diri_temp=922
   [./fuel_bottoms_looped]
     boundary = 'fuel_bottoms'
     type = PostprocessorDirichletBC
-    postprocessor = outlet_mean_temp
+    postprocessor = inlet_mean_temp
     variable = temp
   [../]
   [./temp_advection_outlet]
@@ -178,17 +177,10 @@ diri_temp=922
   [../]
 []
 
-[Functions]
-  [./temp_bc_func]
-    type = ParsedFunction
-    value = '${ini_temp} - (${ini_temp} - ${diri_temp}) * tanh(t/1e-2)'
-  [../]
-[]
-
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
-    property_tables_root = '../../problems/MooseGold/property_file_dir/newt_msre_fuel_'
+    property_tables_root = '../../property_file_dir/newt_msre_fuel_'
     interp_type = 'spline'
     block = 'fuel'
     prop_names = 'k cp'
@@ -204,7 +196,7 @@ diri_temp=922
   [../]
   [./moder]
     type = GenericMoltresMaterial
-    property_tables_root = '../../problems/MooseGold/property_file_dir/newt_msre_mod_'
+    property_tables_root = '../../property_file_dir/newt_msre_mod_'
     interp_type = 'spline'
     prop_names = 'k cp'
     prop_values = '.312 1760' # Cammi 2011 at 908 K
@@ -287,7 +279,6 @@ diri_temp=922
   [../]
   [./coreEndTemp]
     type = SideAverageValue
-    PostprocessorName = 'outlet_mean_temp'
     variable = temp
     boundary = 'fuel_tops'
     outputs = 'exodus console'
@@ -299,6 +290,10 @@ diri_temp=922
   #   outputs = 'console'
   #   block = 'fuel'
   # [../]
+  # MULTIAPP
+  [./inlet_mean_temp]
+    type = Receiver
+  [../]
 []
 
 [Outputs]
@@ -316,7 +311,7 @@ diri_temp=922
 []
 
 [MultiApps]
-  [./some_multi]
+  [./loopApp]
     type = TransientMultiApp
     app_type = MoltresApp
     execute_on = timestep_end
@@ -329,14 +324,15 @@ diri_temp=922
 [Transfers]
   [./from_loop]
     type = MultiAppPostprocessorTransfer
-    multi_app = MoltresApp
+    multi_app = loopApp
     from_postprocessor = loopEndTemp
-    to_postprocessor = outlet_mean_temp
+    to_postprocessor = inlet_mean_temp
     direction = from_multiapp
+    reduction_type = average
   [../]
   [./to_loop]
     type = MultiAppPostprocessorTransfer
-    multi_app = MoltresApp
+    multi_app = loopApp
     from_postprocessor = coreEndTemp
     to_postprocessor = coreEndTemp
     direction = to_multiapp
