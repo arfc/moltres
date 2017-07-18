@@ -36,16 +36,18 @@ diri_temp=922
 []
 
 [PrecursorKernel]
-  var_name_base = pre
-  block = 'fuel'
-  outlet_boundaries = 'fuel_tops'
-  u_def = 0
-  v_def = ${flow_velocity}
-  w_def = 0
-  nt_exp_form = false
-  family = MONOMIAL
-  order = CONSTANT
-  # jac_test = true
+  [./pres]
+    var_name_base = pre
+    block = 'fuel'
+    outlet_boundaries = 'fuel_tops'
+    u_def = 0
+    v_def = ${flow_velocity}
+    w_def = 0
+    nt_exp_form = false
+    family = MONOMIAL
+    order = CONSTANT
+    # jac_test = true
+  [../]
 []
 
 [Nt]
@@ -161,7 +163,6 @@ diri_temp=922
     prop_values = '.312 1760' # Cammi 2011 at 908 K
     block = 'cRod'
     rodDimension = 'y'
-    variable = rodPosition
     rodPosition = rodPosition
     absorb_factor = 1e6 # how much more absorbing than usual in absorbing region?
   [../]
@@ -183,22 +184,18 @@ diri_temp=922
   nl_rel_tol = 1e-6
   nl_abs_tol = 1e-6
 
-  solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
+  solve_type = 'NEWTON'
   petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type -snes_linesearch_minlambda'
   petsc_options_value = 'lu       NONZERO               1e-10                   preonly   1e-3'
   line_search = 'none'
-   # petsc_options_iname = '-snes_type'
-  # petsc_options_value = 'test'
 
   nl_max_its = 30
   l_max_its = 100
   [./TimeStepper]
-    type = IterationAdaptiveDT
-    dt = 1e-8
-    cutback_factor = 0.5
-    growth_factor = 1.05
-    optimal_iterations = 20
+    type = PostprocessorDT
+    postprocessor = limit_k
+    dt = 0.1
   [../]
 []
 
@@ -214,30 +211,30 @@ diri_temp=922
   [./group1_current]
     type = IntegralNewVariablePostprocessor
     variable = group1
-    outputs = 'console exodus'
+    outputs = 'console csv'
   [../]
   [./group1_old]
     type = IntegralOldVariablePostprocessor
     variable = group1
-    outputs = 'console exodus'
+    outputs = 'console csv'
   [../]
   [./multiplication]
     type = DivisionPostprocessor
     value1 = group1_current
     value2 = group1_old
-    outputs = 'console exodus'
+    outputs = 'console csv'
   [../]
   [./temp_fuel]
     type = ElementAverageValue
     variable = temp
     block = 'fuel'
-    outputs = 'exodus console'
+    outputs = 'csv console'
   [../]
   [./temp_moder]
     type = ElementAverageValue
     variable = temp
     block = 'moder'
-    outputs = 'exodus console'
+    outputs = 'csv console'
   [../]
   [./average_fission_heat]
      type = AverageFissionHeat
@@ -246,16 +243,23 @@ diri_temp=922
      outputs = 'console'
      block = 'fuel'
   [../]
+  [./limit_k]
+    type = LimitK
+    execute_on = 'timestep_end'
+    k_postprocessor = multiplication
+    growth_factor = 1.2
+    cutback_factor = .4
+    k_threshold = 1.5
+  [../]
 []
 
 [Outputs]
   print_perf_log = true
   print_linear_residuals = true
-  [./exodus]
-    type = Exodus
-    file_base = 'rodded'
-    execute_on = 'timestep_end'
-  [../]
+  csv = true
+  exodus = true
+  execute_on = 'timestep_end final'
+  file_base = 'out'
 []
 
 [Debug]
