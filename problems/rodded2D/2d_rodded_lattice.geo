@@ -9,7 +9,7 @@ graph_rad = pitch;
 rodRad = 2.0; // CR radius
 lc = 1;
 lx = 0.4;
-ly = 10;
+ly = 2.5;
 
 Point(1) = {0, 0, 0, lc};
 Point(2) = {fuel_rad, 0, 0, lc};
