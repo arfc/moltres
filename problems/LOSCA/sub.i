@@ -19,15 +19,15 @@ diri_temp=922
   dim = 1
   nx = 600
   xmax = 500
-  elem_type = EDGE
+  elem_type = EDGE2
 [../]
 
 [Variables]
   [./temp]
-    initial_condition = 945 #approx steady outlet of other problem
+    initial_condition = 930 #approx steady outlet of other problem
     scaling = 1e-4
     family = MONOMIAL
-    order = FIRST
+    order = CONSTANT
   [../]
 []
 
@@ -40,7 +40,7 @@ diri_temp=922
   w_def = 0
   nt_exp_form = false
   family = MONOMIAL
-  order = CONSTANT
+  order = FIRST
  [../]
 []
 
@@ -50,11 +50,11 @@ diri_temp=922
     type = MatINSTemperatureTimeDerivative
     variable = temp
   [../]
-  [./temp_source_fuel]
-    type = TransientFissionHeatSource
-    variable = temp
-    nt_scale=${nt_scale}
-  [../]
+  # [./temp_source_fuel]
+  #   type = TransientFissionHeatSource
+  #   variable = temp
+  #   nt_scale=${nt_scale}
+  # [../]
   # [./temp_source_mod]
   #   type = GammaHeatSource
   #   variable = temp
@@ -62,17 +62,26 @@ diri_temp=922
   #   block = 'moder'
   #   average_fission_heat = 'average_fission_heat'
   # [../]
-  [./temp_diffusion]
-    type = MatDiffusion
-    D_name = 'k'
+  # [./temp_diffusion]
+  #   type = MatDiffusion
+  #   D_name = 'k'
+  #   variable = temp
+  # [../]
+  # [./temp_advection_fuel]
+  #   type = ConservativeTemperatureAdvection
+  #   velocity = '${flow_velocity} 0 0'
+  #   variable = temp
+  # [../]
+[]
+
+[DGKernels]
+  [./temp_adv]
+    type = DGTemperatureAdvection
     variable = temp
-  [../]
-  [./temp_advection_fuel]
-    type = ConservativeTemperatureAdvection
     velocity = '${flow_velocity} 0 0'
-    variable = temp
   [../]
 []
+
 
 [DiracKernels]
   [./heat_exchanger]
@@ -87,10 +96,17 @@ diri_temp=922
 [BCs]
   [./fuel_bottoms_looped]
     boundary = 'left'
-    type = PostprocessorDirichletBC
+    type = PostprocessorTempInflowBC
     postprocessor = coreEndTemp
     variable = temp
+    velocity = '${flow_velocity} 0 0'
   [../]
+  # [./diri]
+  #   boundary = 'left'
+  #   type = DirichletBC
+  #   variable = temp
+  #   value = 930
+  # [../]
   [./temp_advection_outlet]
     boundary = 'right'
     type = TemperatureOutflowBC
@@ -189,7 +205,7 @@ diri_temp=922
   [./exodus]
     type = Exodus
     file_base = 'sub'
-    execute_on = 'timestep_end'
+    execute_on = 'timestep_begin'
   [../]
 []
 

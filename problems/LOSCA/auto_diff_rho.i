@@ -9,8 +9,7 @@ diri_temp=922
   use_exp_form = false
   group_fluxes = 'group1 group2'
   temperature = temp
-  sss2_input = false
-  pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6'
+  sss2_input = false pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6'
   account_delayed = true
 []
 
@@ -216,8 +215,8 @@ diri_temp=922
   type = Transient
   end_time = 10000
 
-  nl_rel_tol = 1e-6
-  nl_abs_tol = 1e-6
+  nl_rel_tol = 1e-5
+  nl_abs_tol = 1e-5
 
   solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
@@ -271,28 +270,17 @@ diri_temp=922
     block = 'fuel'
     outputs = 'exodus console'
   [../]
-  [./temp_moder]
-    type = ElementAverageValue
-    variable = temp
-    block = 'moder'
-    outputs = 'exodus console'
-  [../]
   [./coreEndTemp]
     type = SideAverageValue
     variable = temp
     boundary = 'fuel_tops'
     outputs = 'exodus console'
   [../]
-  # [./average_fission_heat]
-  #   type = AverageFissionHeat
-  #   nt_scale = ${nt_scale}
-  #   execute_on = 'linear nonlinear'
-  #   outputs = 'console'
-  #   block = 'fuel'
-  # [../]
   # MULTIAPP
   [./inlet_mean_temp]
     type = Receiver
+    initialize_old = true
+    execute_on = 'timestep_begin'
   [../]
 []
 
@@ -314,7 +302,7 @@ diri_temp=922
   [./loopApp]
     type = TransientMultiApp
     app_type = MoltresApp
-    execute_on = timestep_end
+    execute_on = timestep_begin
     positions = '100.0 100.0 0.0'
    input_files = 'sub.i'
  [../]
@@ -328,7 +316,7 @@ diri_temp=922
     from_postprocessor = loopEndTemp
     to_postprocessor = inlet_mean_temp
     direction = from_multiapp
-    reduction_type = average
+    reduction_type = maximum
   [../]
   [./to_loop]
     type = MultiAppPostprocessorTransfer
