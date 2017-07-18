@@ -46,6 +46,7 @@
 #include "RoddedMaterial.h"
 
 // Postprocessors
+#include "LimitK.h"
 #include "AverageFissionHeat.h"
 #include "ElementL2Diff.h"
 #include "DivisionPostprocessor.h"
@@ -149,6 +150,7 @@ MoltresApp::registerObjects(Factory & factory)
   registerMaterial(GraphiteTwoGrpXSFunctionMaterial);
   registerMaterial(MsreFuelTwoGrpXSFunctionMaterial);
   registerMaterial(RoddedMaterial);
+  registerPostprocessor(LimitK);
   registerPostprocessor(IntegralOldVariablePostprocessor);
   registerPostprocessor(ElementL2Diff);
   registerPostprocessor(IntegralNewVariablePostprocessor);
