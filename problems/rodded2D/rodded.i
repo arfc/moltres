@@ -185,9 +185,9 @@ diri_temp=922
   nl_abs_tol = 1e-6
 
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  solve_type = 'NEWTON'
-  petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type -snes_linesearch_minlambda'
-  petsc_options_value = 'lu       NONZERO               1e-10                   preonly   1e-3'
+  solve_type = 'PJFNK'
+  petsc_options_iname = '-pc_type'
+  petsc_options_value = 'lu'
   line_search = 'none'
 
   nl_max_its = 30
@@ -203,7 +203,7 @@ diri_temp=922
   [./SMP]
     type = SMP
     full = true
-    ksp_norm = none
+    # ksp_norm = none
   [../]
 []
 
