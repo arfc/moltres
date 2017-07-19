@@ -1,0 +1,202 @@
+# test that diracHX, DG kernels for heat transport are working
+# test does a sinusoid heat removal in the loop
+# Courant # = 0.5
+
+flow_velocity=0.5 # cm/s. See MSRE-properties.ods
+nt_scale=1e13
+ini_temp=922
+diri_temp=922
+
+[GlobalParams]
+  num_groups = 0
+  num_precursor_groups = 6
+  use_exp_form = false
+  group_fluxes = ''
+  temperature = temp
+  sss2_input = false
+  pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6'
+  # account_delayed = true
+[]
+
+[Mesh]
+  type = GeneratedMesh
+  dim = 1
+  nx = 100
+  xmax = 100
+  elem_type = EDGE2
+[../]
+
+[Variables]
+  [./temp]
+    initial_condition = 930 #approx steady outlet of other problem
+    scaling = 1e-4
+    family = MONOMIAL
+    order = CONSTANT
+  [../]
+[]
+
+[PrecursorKernel]
+ [./core]
+  var_name_base = pre
+  outlet_boundaries = 'right'
+  u_def = ${flow_velocity}
+  v_def = 0
+  w_def = 0
+  nt_exp_form = false
+  family = MONOMIAL
+  order = FIRST
+ [../]
+[]
+
+[Kernels]
+  # Temperature
+  [./temp_time_derivative]
+    type = MatINSTemperatureTimeDerivative
+    variable = temp
+  [../]
+  # [./temp_source_fuel]
+  #   type = TransientFissionHeatSource
+  #   variable = temp
+  #   nt_scale=${nt_scale}
+  # [../]
+  # [./temp_source_mod]
+  #   type = GammaHeatSource
+  #   variable = temp
+  #   gamma = .0144 # Cammi .0144
+  #   block = 'moder'
+  #   average_fission_heat = 'average_fission_heat'
+  # [../]
+  # [./temp_diffusion]
+  #   type = MatDiffusion
+  #   D_name = 'k'
+  #   variable = temp
+  # [../]
+  # [./temp_advection_fuel]
+  #   type = ConservativeTemperatureAdvection
+  #   velocity = '${flow_velocity} 0 0'
+  #   variable = temp
+  # [../]
+[]
+
+[DGKernels]
+  [./temp_adv]
+    type = DGTemperatureAdvection
+    variable = temp
+    velocity = '${flow_velocity} 0 0'
+  [../]
+[]
+
+
+[DiracKernels]
+  [./heat_exchanger]
+    type = DiracHX
+    variable = temp
+    power = 100 # see controls
+    point = '50 0 0'
+  [../]
+[]
+
+
+[BCs]
+  [./fuel_bottoms_looped]
+    boundary = 'left'
+    type = TemperatureInflowBC
+    variable = temp
+    velocity = '${flow_velocity} 0 0'
+    inlet_conc = 930
+  [../]
+  [./temp_advection_outlet]
+    boundary = 'right'
+    type = TemperatureOutflowBC
+    variable = temp
+    velocity = '${flow_velocity} 0 0'
+  [../]
+[]
+
+[Functions]
+  [./heatRemovalFcn]
+    type = ParsedFunction
+    value = '1e2 + 1e2 * sin(t/5) ' # start losing cooling at t=50s
+  [../]
+[]
+
+[Controls]
+  [./hxFuncCtrl]
+    type = RealFunctionControl
+    parameter = DiracKernels/heat_exchanger/power
+    function = heatRemovalFcn
+    execute_on = 'initial timestep_begin'
+  [../]
+[]
+
+[Materials]
+  [./fuel]
+    type = GenericMoltresMaterial
+    property_tables_root = '../../property_file_dir/newt_msre_fuel_'
+    interp_type = 'spline'
+    prop_names = 'k cp'
+    prop_values = '.0553 1967' # Robertson MSRE technical report @ 922 K
+  [../]
+  [./rho_fuel]
+    type = DerivativeParsedMaterial
+    f_name = rho
+    function = '2.146e-3 * exp(-1.8 * 1.18e-4 * (temp - 922))'
+    args = 'temp'
+    derivative_order = 1
+  [../]
+[]
+
+[Executioner]
+  type = Transient
+  end_time = 100
+
+  nl_rel_tol = 1e-8
+  nl_abs_tol = 1e-8
+  scheme = crank-nicolson
+
+  solve_type = 'NEWTON'
+  petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
+  petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
+  petsc_options_value = 'asm      lu           1               preonly       1e-3'
+  # petsc_options_iname = '-snes_type'
+  # petsc_options_value = 'test'
+
+  [./TimeStepper]
+    type = ConstantDT
+    dt = 1
+  [../]
+[]
+
+[Preconditioning]
+  [./SMP]
+    type = SMP
+    full = true
+  [../]
+[]
+
+[Postprocessors]
+  [./temp_fuel]
+    type = ElementAverageValue
+    variable = temp
+    outputs = 'exodus console'
+  [../]
+  [./loopEndTemp]
+    type = SideAverageValue
+    variable = temp
+    boundary = 'right'
+  [../]
+[]
+
+[Outputs]
+  print_perf_log = true
+  print_linear_residuals = true
+  [./exodus]
+    type = Exodus
+    file_base = 'sub'
+    execute_on = 'timestep_begin'
+  [../]
+[]
+
+[Debug]
+  show_var_residual_norms = true
+[]
