@@ -54,7 +54,6 @@
 #include "ElmIntegTotFissPostprocessor.h"
 #include "ElmIntegTotFissHeatPostprocessor.h"
 #include "ElmIntegTotFissNtsPostprocessor.h"
-#include "RealControlParameterReporter.h"
 
 // AuxKernels
 #include "FissionHeatSourceAux.h"
@@ -160,7 +159,6 @@ MoltresApp::registerObjects(Factory & factory)
   registerPostprocessor(ElmIntegTotFissHeatPostprocessor);
   registerPostprocessor(ElmIntegTotFissNtsPostprocessor);
   registerPostprocessor(AverageFissionHeat);
-  registerPostprocessor(RealControlParameterReporter);
   registerAux(FissionHeatSourceAux);
   registerAux(FissionHeatSourceTransientAux);
   registerAux(ModeratorHeatSourceTransientAux);
