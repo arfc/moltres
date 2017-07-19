@@ -9,4 +9,4 @@ Simulates a loss of secondary cooling accident in 2D MSRE-like system.
    may be good since the temperature appears to very gently oscillate in steady-state, thus never making
    it to the 10000 s mark.
 2) the input in HXFailure will look in the above directory for the correct output files to kick the simulation
-   off on
+   off on steady-state.
