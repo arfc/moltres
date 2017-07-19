@@ -19,7 +19,7 @@ public:
   virtual Real computeQpResidual() override;
 
 protected:
-  Real _power;
+  const Real & _power;
   Point _point;
 };
 
