@@ -51,7 +51,6 @@ diri_temp=922
 [Nt]
   var_name_base = group
   vacuum_boundaries = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall cRod_top cRod_bot'
-  quasistatic = true
   create_temperature_var = false
 []
 
