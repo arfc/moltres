@@ -10,3 +10,8 @@ Simulates a loss of secondary cooling accident in 2D MSRE-like system.
    it to the 10000 s mark.
 2) the input in HXFailure will look in the above directory for the correct output files to kick the simulation
    off on steady-state.
+
+3) The HXFailAdiabatic case is just like HXFailure, but instead of holding vessel walls at 900K, the vessel walls are
+   held at inlet temperature. This models perfect heat conduction between the downcomer and core with zero conduction
+   to the outside world. Ideally, some asymtotic temperature should be reached given that the reactor has a negative temperature
+   coefficient of reactivity for all temperatures over operating temp.
