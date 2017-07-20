@@ -2,17 +2,19 @@ flow_velocity=21.7 # cm/s. See MSRE-properties.ods
 nt_scale=1e13
 ini_temp=922
 diri_temp=922
+gamma_frac=.075
+R=70.1675
+H=162.56
 
 [GlobalParams]
-  num_groups = 2
+  num_groups = 4
   num_precursor_groups = 6
   use_exp_form = false
-  group_fluxes = 'group1 group2'
+  group_fluxes = 'group1 group2 group3 group4'
   temperature = temp
-  sss2_input = false
+  sss2_input = true
   pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6'
   account_delayed = true
-  gamma = .0144 # Cammi .0144
   nt_scale = ${nt_scale}
 []
 
@@ -25,18 +27,6 @@ diri_temp=922
 []
 
 [Variables]
-  [./group1]
-    order = FIRST
-    family = LAGRANGE
-    initial_condition = 1
-    scaling = 1e4
-  [../]
-  [./group2]
-    order = FIRST
-    family = LAGRANGE
-    initial_condition = 1
-    scaling = 1e4
-  [../]
   [./temp]
     initial_condition = ${ini_temp}
     scaling = 1e-4
@@ -65,63 +55,14 @@ diri_temp=922
   [../]
 []
 
-[Kernels]
-  # Neutronics
-  [./time_group1]
-    type = NtTimeDerivative
-    variable = group1
-    group_number = 1
-  [../]
-  [./diff_group1]
-    type = GroupDiffusion
-    variable = group1
-    group_number = 1
-  [../]
-  [./sigma_r_group1]
-    type = SigmaR
-    variable = group1
-    group_number = 1
-  [../]
-  [./fission_source_group1]
-    type = CoupledFissionKernel
-    variable = group1
-    group_number = 1
-  [../]
-  [./delayed_group1]
-    type = DelayedNeutronSource
-    variable = group1
-  [../]
-  [./inscatter_group1]
-    type = InScatter
-    variable = group1
-    group_number = 1
-  [../]
-  [./diff_group2]
-    type = GroupDiffusion
-    variable = group2
-    group_number = 2
-  [../]
-  [./sigma_r_group2]
-    type = SigmaR
-    variable = group2
-    group_number = 2
-  [../]
-  [./time_group2]
-    type = NtTimeDerivative
-    variable = group2
-    group_number = 2
-  [../]
-  [./fission_source_group2]
-    type = CoupledFissionKernel
-    variable = group2
-    group_number = 2
-  [../]
-  [./inscatter_group2]
-    type = InScatter
-    variable = group2
-    group_number = 2
-  [../]
+[Nt]
+  var_name_base = group
+  vacuum_boundaries = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
+  create_temperature_var = false
+  scaling = 1e-4
+[]
 
+[Kernels]
   # Temperature
   [./temp_time_derivative]
     type = MatINSTemperatureTimeDerivative
@@ -137,6 +78,7 @@ diri_temp=922
     variable = temp
     block = 'moder'
     average_fission_heat = 'average_fission_heat'
+    gamma = gamma_func
   [../]
   [./temp_diffusion]
     type = MatDiffusion
@@ -152,21 +94,11 @@ diri_temp=922
 []
 
 [BCs]
-  [./vacuum_group1]
-    type = VacuumConcBC
-    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
-    variable = group1
-  [../]
-  [./vacuum_group2]
-    type = VacuumConcBC
-    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
-    variable = group2
-  [../]
   [./temp_diri_cg]
-    boundary = 'moder_bottoms fuel_bottoms outer_wall'
+    boundary = 'fuel_bottoms outer_wall'
     type = FlexiblePostprocessorDirichletBC
     postprocessor = coreEndTemp
-    offset = -50
+    offset = -27.8
     variable = temp
   [../]
   # [./temp_diri_cg]
@@ -194,6 +126,7 @@ diri_temp=922
     type = ModeratorHeatSourceTransientAux
     average_fission_heat = 'average_fission_heat'
     variable = power_density
+    gamma = gamma_func
   [../]
 []
 
@@ -202,12 +135,16 @@ diri_temp=922
     type = ParsedFunction
     value = '${ini_temp} - (${ini_temp} - ${diri_temp}) * tanh(t/1e-2)'
   [../]
+  [./gamma_func]
+    type = ParsedFunction
+    value = '${gamma_frac} * pi^2 / 4 * cos(pi * x / (2. * ${R})) * sin(pi * y / ${H})'
+  [../]
 []
 
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
-    property_tables_root = '../../property_file_dir/newt_msre_fuel_'
+    property_tables_root = '../../tutorial/step01_groupConstants/MSREProperties/msre_gentry_4gfuel_'
     interp_type = 'spline'
     block = 'fuel'
     prop_names = 'k cp'
@@ -225,7 +162,7 @@ diri_temp=922
   [../]
   [./moder]
     type = GenericMoltresMaterial
-    property_tables_root = '../../property_file_dir/newt_msre_mod_'
+    property_tables_root = '../../tutorial/step01_groupConstants/MSREProperties/msre_gentry_4gmoder_'
     interp_type = 'spline'
     prop_names = 'k cp'
     prop_values = '.312 1760' # Cammi 2011 at 908 K
@@ -261,11 +198,9 @@ diri_temp=922
 
   dtmin = 1e-5
   [./TimeStepper]
-    type = IterationAdaptiveDT
+    type = PostprocessorDT
+    postprocessor = limit_k
     dt = 1e-3
-    cutback_factor = 0.4
-    growth_factor = 1.2
-    optimal_iterations = 20
   [../]
 []
 
@@ -318,6 +253,14 @@ diri_temp=922
     outputs = 'csv console'
     execute_on = 'linear nonlinear'
   [../]
+  [./limit_k]
+    type = LimitK
+    execute_on = 'timestep_end'
+    k_postprocessor = multiplication
+    growth_factor = 1.2
+    cutback_factor = .4
+    k_threshold = 1.5
+  [../]
 []
 
 [Outputs]
@@ -330,24 +273,3 @@ diri_temp=922
 [Debug]
   show_var_residual_norms = true
 []
-
-# [ICs]
-#   [./temp_ic]
-#     type = RandomIC
-#     variable = temp
-#     min = 922
-#     max = 1022
-#   [../]
-#   [./group1_ic]
-#     type = RandomIC
-#     variable = group1
-#     min = .5
-#     max = 1.5
-#   [../]
-#   [./group2_ic]
-#     type = RandomIC
-#     variable = group2
-#     min = .5
-#     max = 1.5
-#   [../]
-# []
