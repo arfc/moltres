@@ -14,7 +14,7 @@ diri_temp=922
 []
 
 [Mesh]
-  file = '../auto_diff_rho.e'
+  file = '2d_lattice_structured.msh'
 [../]
 
 [Problem]
@@ -25,21 +25,18 @@ diri_temp=922
   [./group1]
     order = FIRST
     family = LAGRANGE
-    initial_from_file_var = group1
-    initial_from_file_timestep = LATEST
     scaling = 1e4
+    initial_condition = 1
   [../]
   [./group2]
     order = FIRST
     family = LAGRANGE
     scaling = 1e4
-    initial_from_file_var = group2
-    initial_from_file_timestep = LATEST
+    initial_condition = 1
   [../]
   [./temp]
     scaling = 1e-4
-    initial_from_file_var = temp
-    initial_from_file_timestep = LATEST
+    initial_condition = 930
   [../]
 []
 
@@ -156,14 +153,8 @@ diri_temp=922
     boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
     variable = group2
   [../]
-  [./temp_neu_cg]
-    boundary = 'moder_bottoms outer_wall'
-    type = PostprocessorDirichletBC
-    postprocessor = inlet_mean_temp
-    variable = temp
-  [../]
   [./fuel_bottoms_looped]
-    boundary = 'fuel_bottoms'
+    boundary = 'fuel_bottoms outer_wall'
     type = PostprocessorDirichletBC
     postprocessor = inlet_mean_temp
     variable = temp
@@ -213,20 +204,16 @@ diri_temp=922
 
 [Executioner]
   type = Transient
-  end_time = 600
+  end_time = 10000
 
   nl_rel_tol = 1e-5
   nl_abs_tol = 1e-5
 
   solve_type = 'PJFNK'
-  line_search = 'none'
-   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  # petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
-  # petsc_options_value = 'asm      lu           1               preonly       1e-3'
+  petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   petsc_options_iname = '-pc_type'
   petsc_options_value = 'lu'
-  # petsc_options_iname = '-snes_type'
-  # petsc_options_value = 'test'
+  line_search = 'none'
 
   nl_max_its = 30
   l_max_its = 100
@@ -273,25 +260,12 @@ diri_temp=922
     block = 'fuel'
     outputs = 'exodus console'
   [../]
-  [./temp_moder]
-    type = ElementAverageValue
-    variable = temp
-    block = 'moder'
-    outputs = 'exodus console'
-  [../]
   [./coreEndTemp]
     type = SideAverageValue
     variable = temp
     boundary = 'fuel_tops'
     outputs = 'exodus console'
   [../]
-  # [./average_fission_heat]
-  #   type = AverageFissionHeat
-  #   nt_scale = ${nt_scale}
-  #   execute_on = 'linear nonlinear'
-  #   outputs = 'console'
-  #   block = 'fuel'
-  # [../]
   # MULTIAPP
   [./inlet_mean_temp]
     type = Receiver

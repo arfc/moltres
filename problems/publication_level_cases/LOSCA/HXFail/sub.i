@@ -38,7 +38,8 @@ diri_temp=922
   w_def = 0
   nt_exp_form = false
   family = MONOMIAL
-  order = FIRST
+  order = CONSTANT
+  init_from_file = true
  [../]
 []
 
@@ -86,7 +87,7 @@ diri_temp=922
     type = DiracHX
     variable = temp
     point = '250 0 0'
-    power = 8e3
+    power = 4e3
   [../]
 []
 
@@ -98,8 +99,6 @@ diri_temp=922
     postprocessor = coreEndTemp
     variable = temp
     uu = ${flow_velocity}
-    vv = 0
-    ww = 0
   [../]
   # [./diri]
   #   boundary = 'left'
@@ -134,7 +133,7 @@ diri_temp=922
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
-    property_tables_root = '../../../property_file_dir/newt_msre_fuel_'
+    property_tables_root = '../../../../property_file_dir/newt_msre_fuel_'
     interp_type = 'spline'
     prop_names = 'k cp'
     prop_values = '.0553 1967' # Robertson MSRE technical report @ 922 K
@@ -155,26 +154,25 @@ diri_temp=922
   nl_rel_tol = 1e-6
   nl_abs_tol = 1e-6
 
-  solve_type = 'NEWTON'
+  solve_type = 'PJFNK'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
-  petsc_options_value = 'asm      lu           1               preonly       1e-3'
-  # petsc_options_iname = '-snes_type'
-  # petsc_options_value = 'test'
+  petsc_options_iname = '-pc_type'
+  petsc_options_value = 'lu'
+  line_search = 'none'
 
   nl_max_its = 30
   l_max_its = 100
 
-  # dtmin = 1e-5
-  # # dtmax = 1
-  # # dt = 1e-3
-  # [./TimeStepper]
-  #   type = IterationAdaptiveDT
-  #   dt = 1e-3
-  #   cutback_factor = 0.4
-  #   growth_factor = 1.2
-  #   optimal_iterations = 20
-  # [../]
+  dtmin = 1e-5
+  # dtmax = 1
+  # dt = 1e-3
+  [./TimeStepper]
+    type = IterationAdaptiveDT
+    dt = 1e-3
+    cutback_factor = 0.4
+    growth_factor = 1.2
+    optimal_iterations = 20
+  [../]
 []
 
 [Preconditioning]
