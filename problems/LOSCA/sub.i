@@ -40,7 +40,7 @@ diri_temp=922
   w_def = 0
   nt_exp_form = false
   family = MONOMIAL
-  order = FIRST
+  order = CONSTANT
  [../]
 []
 
@@ -96,10 +96,10 @@ diri_temp=922
 [BCs]
   [./fuel_bottoms_looped]
     boundary = 'left'
-    type = PostprocessorTempInflowBC
+    type = PostprocessorTemperatureInflowBC
     postprocessor = coreEndTemp
     variable = temp
-    velocity = '${flow_velocity} 0 0'
+    uu = ${flow_velocity}
   [../]
   # [./diri]
   #   boundary = 'left'
@@ -112,21 +112,6 @@ diri_temp=922
     type = TemperatureOutflowBC
     variable = temp
     velocity = '${flow_velocity} 0 0'
-  [../]
-[]
-
-[Functions]
-  [./heatRemovalFcn]
-    type = ParsedFunction
-    value = '4e3 * ( 1 - tanh( (t-50) ) )' # start losing cooling at t=50s
-[]
-
-[Controls]
-  [./hxFuncCtrl]
-    type = RealFunctionControl
-    parameter = DiracKernels/heat_exchanger/power
-    function = heatRemovalFcn
-    execute_on = 'initial timestep_begin'
   [../]
 []
 
@@ -154,26 +139,25 @@ diri_temp=922
   nl_rel_tol = 1e-6
   nl_abs_tol = 1e-6
 
-  solve_type = 'NEWTON'
+  solve_type = 'PJFNK'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
-  petsc_options_value = 'asm      lu           1               preonly       1e-3'
-  # petsc_options_iname = '-snes_type'
-  # petsc_options_value = 'test'
+  petsc_options_iname = '-pc_type'
+  petsc_options_value = 'lu'
+  line_search = 'none'
 
   nl_max_its = 30
   l_max_its = 100
 
-  # dtmin = 1e-5
-  # # dtmax = 1
-  # # dt = 1e-3
-  # [./TimeStepper]
-  #   type = IterationAdaptiveDT
-  #   dt = 1e-3
-  #   cutback_factor = 0.4
-  #   growth_factor = 1.2
-  #   optimal_iterations = 20
-  # [../]
+  dtmin = 1e-5
+  # dtmax = 1
+  # dt = 1e-3
+  [./TimeStepper]
+    type = IterationAdaptiveDT
+    dt = 1e-3
+    cutback_factor = 0.4
+    growth_factor = 1.2
+    optimal_iterations = 20
+  [../]
 []
 
 [Preconditioning]

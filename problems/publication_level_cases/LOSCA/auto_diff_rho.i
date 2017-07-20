@@ -14,7 +14,7 @@ diri_temp=922
 []
 
 [Mesh]
-  file = '../auto_diff_rho.e'
+  file = '2d_lattice_structured.msh'
 [../]
 
 [Problem]
@@ -25,21 +25,18 @@ diri_temp=922
   [./group1]
     order = FIRST
     family = LAGRANGE
-    initial_from_file_var = group1
-    initial_from_file_timestep = LATEST
     scaling = 1e4
+    initial_condition = 1
   [../]
   [./group2]
     order = FIRST
     family = LAGRANGE
     scaling = 1e4
-    initial_from_file_var = group2
-    initial_from_file_timestep = LATEST
+    initial_condition = 1
   [../]
   [./temp]
     scaling = 1e-4
-    initial_from_file_var = temp
-    initial_from_file_timestep = LATEST
+    initial_condition = 930
   [../]
 []
 
@@ -54,7 +51,6 @@ diri_temp=922
   nt_exp_form = false
   family = MONOMIAL
   order = CONSTANT
-  init_from_file = true
  [../]
 []
 
@@ -210,11 +206,11 @@ diri_temp=922
   type = Transient
   end_time = 10000
 
-  nl_rel_tol = 1e-6
+  nl_rel_tol = 1e-5
   nl_abs_tol = 1e-5
 
   solve_type = 'PJFNK'
-  petsc_options = '-pc_type'
+  petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   petsc_options_iname = '-pc_type'
   petsc_options_value = 'lu'
   line_search = 'none'
@@ -264,25 +260,12 @@ diri_temp=922
     block = 'fuel'
     outputs = 'exodus console'
   [../]
-  [./temp_moder]
-    type = ElementAverageValue
-    variable = temp
-    block = 'moder'
-    outputs = 'exodus console'
-  [../]
   [./coreEndTemp]
     type = SideAverageValue
     variable = temp
     boundary = 'fuel_tops'
     outputs = 'exodus console'
   [../]
-  # [./average_fission_heat]
-  #   type = AverageFissionHeat
-  #   nt_scale = ${nt_scale}
-  #   execute_on = 'linear nonlinear'
-  #   outputs = 'console'
-  #   block = 'fuel'
-  # [../]
   # MULTIAPP
   [./inlet_mean_temp]
     type = Receiver
