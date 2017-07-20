@@ -97,7 +97,9 @@ diri_temp=922
     type = PostprocessorTempInflowBC
     postprocessor = coreEndTemp
     variable = temp
-    velocity = '${flow_velocity} 0 0'
+    uu = ${flow_velocity}
+    vv = 0
+    ww = 0
   [../]
   # [./diri]
   #   boundary = 'left'

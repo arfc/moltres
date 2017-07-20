@@ -102,7 +102,9 @@ diri_temp=922
     boundary = 'left'
     type = TemperatureInflowBC
     variable = temp
-    velocity = '${flow_velocity} 0 0'
+    uu = ${flow_velocity}
+    vv = 0
+    ww = 0
     inlet_conc = 930
   [../]
   [./temp_advection_outlet]
