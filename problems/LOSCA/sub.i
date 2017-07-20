@@ -96,7 +96,7 @@ diri_temp=922
 [BCs]
   [./fuel_bottoms_looped]
     boundary = 'left'
-    type = PostprocessorTempInflowBC
+    type = PostprocessorTemperatureInflowBC
     postprocessor = coreEndTemp
     variable = temp
     uu = ${flow_velocity}
