@@ -40,7 +40,7 @@ diri_temp=922
   w_def = 0
   nt_exp_form = false
   family = MONOMIAL
-  order = FIRST
+  order = CONSTANT
  [../]
 []
 
@@ -115,21 +115,6 @@ diri_temp=922
   [../]
 []
 
-[Functions]
-  [./heatRemovalFcn]
-    type = ParsedFunction
-    value = '4e3 * ( 1 - tanh( (t-50) ) )' # start losing cooling at t=50s
-[]
-
-[Controls]
-  [./hxFuncCtrl]
-    type = RealFunctionControl
-    parameter = DiracKernels/heat_exchanger/power
-    function = heatRemovalFcn
-    execute_on = 'initial timestep_begin'
-  [../]
-[]
-
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
@@ -158,22 +143,21 @@ diri_temp=922
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   petsc_options_iname = '-pc_type'
   petsc_options_value = 'lu'
-  # petsc_options_iname = '-snes_type'
-  # petsc_options_value = 'test'
+  line_search = 'none'
 
   nl_max_its = 30
   l_max_its = 100
 
-  # dtmin = 1e-5
-  # # dtmax = 1
-  # # dt = 1e-3
-  # [./TimeStepper]
-  #   type = IterationAdaptiveDT
-  #   dt = 1e-3
-  #   cutback_factor = 0.4
-  #   growth_factor = 1.2
-  #   optimal_iterations = 20
-  # [../]
+  dtmin = 1e-5
+  # dtmax = 1
+  # dt = 1e-3
+  [./TimeStepper]
+    type = IterationAdaptiveDT
+    dt = 1e-3
+    cutback_factor = 0.4
+    growth_factor = 1.2
+    optimal_iterations = 20
+  [../]
 []
 
 [Preconditioning]

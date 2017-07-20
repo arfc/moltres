@@ -54,6 +54,7 @@ diri_temp=922
   nt_exp_form = false
   family = MONOMIAL
   order = CONSTANT
+  init_from_file = true
  [../]
 []
 
@@ -156,14 +157,8 @@ diri_temp=922
     boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
     variable = group2
   [../]
-  [./temp_neu_cg]
-    boundary = 'moder_bottoms outer_wall'
-    type = DirichletBC
-    value = 900.0 # 900 kelvin
-    variable = temp
-  [../]
   [./fuel_bottoms_looped]
-    boundary = 'fuel_bottoms'
+    boundary = 'fuel_bottoms outer_wall'
     type = PostprocessorDirichletBC
     postprocessor = inlet_mean_temp
     variable = temp
@@ -215,15 +210,14 @@ diri_temp=922
   type = Transient
   end_time = 10000
 
-  nl_rel_tol = 1e-5
+  nl_rel_tol = 1e-6
   nl_abs_tol = 1e-5
 
-  solve_type = 'NEWTON'
-  petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
-  petsc_options_value = 'asm      lu           1               preonly       1e-3'
-  # petsc_options_iname = '-snes_type'
-  # petsc_options_value = 'test'
+  solve_type = 'PJFNK'
+  petsc_options = '-pc_type'
+  petsc_options_iname = '-pc_type'
+  petsc_options_value = 'lu'
+  line_search = 'none'
 
   nl_max_its = 30
   l_max_its = 100
