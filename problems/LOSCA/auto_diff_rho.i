@@ -14,7 +14,7 @@ diri_temp=922
 []
 
 [Mesh]
-  file = steady.e # '2d_lattice_structured.msh'
+  file = '2d_lattice_structured.msh'
 [../]
 
 [Problem]
@@ -218,10 +218,10 @@ diri_temp=922
   nl_rel_tol = 1e-5
   nl_abs_tol = 1e-5
 
-  solve_type = 'NEWTON'
+  solve_type = 'PJFNK'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
-  petsc_options_value = 'asm      lu           1               preonly       1e-3'
+  petsc_options_iname = '-pc_type'
+  petsc_options_value = 'lu'
   # petsc_options_iname = '-snes_type'
   # petsc_options_value = 'test'
 
