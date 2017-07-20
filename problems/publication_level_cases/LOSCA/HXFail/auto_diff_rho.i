@@ -174,7 +174,7 @@ diri_temp=922
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
-    property_tables_root = '../../../property_file_dir/newt_msre_fuel_'
+    property_tables_root = '../../../../property_file_dir/newt_msre_fuel_'
     interp_type = 'spline'
     block = 'fuel'
     prop_names = 'k cp'
@@ -190,7 +190,7 @@ diri_temp=922
   [../]
   [./moder]
     type = GenericMoltresMaterial
-    property_tables_root = '../../../property_file_dir/newt_msre_mod_'
+    property_tables_root = '../../../../property_file_dir/newt_msre_mod_'
     interp_type = 'spline'
     prop_names = 'k cp'
     prop_values = '.312 1760' # Cammi 2011 at 908 K

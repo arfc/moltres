@@ -1,8 +1,4 @@
-# test that diracHX, DG kernels for heat transport are working
-# test does a sinusoid heat removal in the loop
-# Courant # = 0.5
-
-flow_velocity=0.5 # cm/s. See MSRE-properties.ods
+flow_velocity=21.7 # cm/s. See MSRE-properties.ods
 nt_scale=1e13
 ini_temp=922
 diri_temp=922
@@ -21,8 +17,8 @@ diri_temp=922
 [Mesh]
   type = GeneratedMesh
   dim = 1
-  nx = 100
-  xmax = 100
+  nx = 600
+  xmax = 500
   elem_type = EDGE2
 [../]
 
@@ -44,7 +40,7 @@ diri_temp=922
   w_def = 0
   nt_exp_form = false
   family = MONOMIAL
-  order = FIRST
+  order = CONSTANT
  [../]
 []
 
@@ -91,8 +87,8 @@ diri_temp=922
   [./heat_exchanger]
     type = DiracHX
     variable = temp
-    power = 100 # see controls
-    point = '50 0 0'
+    power = 4e3 # see controls
+    point = '250 0 0'
   [../]
 []
 
@@ -100,13 +96,17 @@ diri_temp=922
 [BCs]
   [./fuel_bottoms_looped]
     boundary = 'left'
-    type = TemperatureInflowBC
+    type = PostprocessorTemperatureInflowBC
+    postprocessor = coreEndTemp
     variable = temp
     uu = ${flow_velocity}
-    vv = 0
-    ww = 0
-    inlet_conc = 930
   [../]
+  # [./diri]
+  #   boundary = 'left'
+  #   type = DirichletBC
+  #   variable = temp
+  #   value = 930
+  # [../]
   [./temp_advection_outlet]
     boundary = 'right'
     type = TemperatureOutflowBC
@@ -115,26 +115,10 @@ diri_temp=922
   [../]
 []
 
-[Functions]
-  [./heatRemovalFcn]
-    type = ParsedFunction
-    value = '1e2 + 1e2 * sin(t/5) ' # start losing cooling at t=50s
-  [../]
-[]
-
-[Controls]
-  [./hxFuncCtrl]
-    type = RealFunctionControl
-    parameter = DiracKernels/heat_exchanger/power
-    function = heatRemovalFcn
-    execute_on = 'initial timestep_begin'
-  [../]
-[]
-
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
-    property_tables_root = '../../property_file_dir/newt_msre_fuel_'
+    property_tables_root = '../../../property_file_dir/newt_msre_fuel_'
     interp_type = 'spline'
     prop_names = 'k cp'
     prop_values = '.0553 1967' # Robertson MSRE technical report @ 922 K
@@ -150,22 +134,29 @@ diri_temp=922
 
 [Executioner]
   type = Transient
-  end_time = 100
+  end_time = 10000
 
-  nl_rel_tol = 1e-8
-  nl_abs_tol = 1e-8
-  scheme = crank-nicolson
+  nl_rel_tol = 1e-6
+  nl_abs_tol = 1e-6
 
-  solve_type = 'NEWTON'
+  solve_type = 'PJFNK'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
-  petsc_options_value = 'asm      lu           1               preonly       1e-3'
-  # petsc_options_iname = '-snes_type'
-  # petsc_options_value = 'test'
+  petsc_options_iname = '-pc_type'
+  petsc_options_value = 'lu'
+  line_search = 'none'
 
+  nl_max_its = 30
+  l_max_its = 100
+
+  dtmin = 1e-5
+  # dtmax = 1
+  # dt = 1e-3
   [./TimeStepper]
-    type = ConstantDT
-    dt = 1
+    type = IterationAdaptiveDT
+    dt = 1e-3
+    cutback_factor = 0.4
+    growth_factor = 1.2
+    optimal_iterations = 20
   [../]
 []
 
@@ -187,6 +178,9 @@ diri_temp=922
     variable = temp
     boundary = 'right'
   [../]
+  [./coreEndTemp]
+    type = Receiver
+  [../]
 []
 
 [Outputs]
@@ -202,3 +196,21 @@ diri_temp=922
 [Debug]
   show_var_residual_norms = true
 []
+
+# connect inlet and outlet to multiapp
+# [Transfers]
+#   [./to_core]
+#     type = MultiAppPostprocessorTransfer
+#     multi_app = MoltresApp
+#     from_postprocessor = loopEndTemp
+#     to_postprocessor = inlet_mean_temp
+#     direction = to_multiapp
+#   [../]
+#   [./from_core]
+#     type = MultiAppPostprocessorTransfer
+#     multi_app = MoltresApp
+#     from_postprocessor = coreEndTemp
+#     to_postprocessor = coreEndTemp
+#     direction = to_multiapp
+#   [../]
+# []
