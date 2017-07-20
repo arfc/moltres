@@ -19,7 +19,7 @@ protected:
   virtual Real computeQpJacobian();
 
   const PostprocessorValue & _average_fission_heat;
-  Real _gamma;
+  Function & _gamma;
 };
 
 #endif // GAMMAEHEATSOURCE_H

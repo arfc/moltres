@@ -1,9 +1,9 @@
 Geometry.CopyMeshingMethod = 1;
-R = 72.5;
-H = 153;
+R = 73;
+H = 162.56;
 num_segments = 14;
 pitch = R / num_segments;
-x = .237952211;
+x = 0.2379522;
 fuel_rad = x * pitch;
 graph_rad = pitch;
 lc = 1;
