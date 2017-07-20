@@ -1,4 +1,5 @@
 #include "ModeratorHeatSourceTransientAux.h"
+#include "Function.h"
 
 template <>
 InputParameters
@@ -8,7 +9,7 @@ validParams<ModeratorHeatSourceTransientAux>()
   params.addRequiredParam<PostprocessorName>(
       "average_fission_heat",
       "The average fission heat being generated in the fuel portion of the reactor.");
-  params.addRequiredParam<Real>(
+  params.addRequiredParam<FunctionName>(
       "gamma", "The ratio of power density generated in the moderator vs. the fuel.");
   return params;
 }
@@ -16,12 +17,12 @@ validParams<ModeratorHeatSourceTransientAux>()
 ModeratorHeatSourceTransientAux::ModeratorHeatSourceTransientAux(const InputParameters & parameters)
   : AuxKernel(parameters),
     _average_fission_heat(getPostprocessorValue("average_fission_heat")),
-    _gamma(getParam<Real>("gamma"))
+    _gamma(getFunction("gamma"))
 {
 }
 
 Real
 ModeratorHeatSourceTransientAux::computeValue()
 {
-  return _average_fission_heat * _gamma;
+  return _average_fission_heat * _gamma.value(_t, _q_point[_qp]);
 }

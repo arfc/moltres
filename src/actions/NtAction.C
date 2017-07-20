@@ -16,14 +16,17 @@ validParams<NtAction>()
                                         "specifies the total number of precursors to create");
   params.addRequiredParam<std::string>("var_name_base", "specifies the base name of the variables");
   params.addRequiredCoupledVar("temperature", "Name of temperature variable");
-  params.addCoupledVar("pre_concs", "All the variables that hold the precursor concentrations. "
-                                    "These MUST be listed by increasing group number.");
+  params.addCoupledVar("pre_concs",
+                       "All the variables that hold the precursor concentrations. "
+                       "These MUST be listed by increasing group number.");
   params.addParam<Real>("temp_scaling", "The amount by which to scale the temperature variable.");
   params.addRequiredParam<unsigned int>("num_groups", "The total number of energy groups.");
   params.addRequiredParam<bool>(
       "use_exp_form", "Whether concentrations should be in an exponential/logarithmic format.");
-  params.addParam<bool>("jac_test", false, "Whether we're testing the Jacobian and should use some "
-                                           "random initial conditions for the precursors.");
+  params.addParam<bool>("jac_test",
+                        false,
+                        "Whether we're testing the Jacobian and should use some "
+                        "random initial conditions for the precursors.");
   params.addParam<FunctionName>("nt_ic_function",
                                 "An initial condition function for the neutrons.");
   params.addParam<std::vector<BoundaryName>>("vacuum_boundaries",
@@ -216,7 +219,7 @@ NtAction::act()
 
       // Set up DelayedNeutronSource
 
-      if (getParam<bool>("account_delayed"))
+      if (getParam<bool>("account_delayed") && op == 1)
       {
         InputParameters params = _factory.getValidParams("DelayedNeutronSource");
         params.set<NonlinearVariableName>("variable") = var_name;
