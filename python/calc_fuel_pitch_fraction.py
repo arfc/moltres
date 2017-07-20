@@ -3,6 +3,14 @@ import sys
 
 
 def calc_spacing(R, n):
+    '''
+    This function takes the total reactor radius, R, and
+    the number of channel-moderator segments, n, and outputs
+    the fraction of the pitch that should be fuel in order
+    to realize an overall fuel volume fraction of .225. The
+    resulting (positive) value corresponds to 'x' in, for example,
+    `tests/twod_axi_coupled/2d_lattice_structured.geo`
+    '''
     x = sp.symbols('x')
     Af = 0
     Am = 0
