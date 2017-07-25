@@ -94,7 +94,7 @@ tau = 5
   [./cp_fuel]
     type = DerivativeParsedMaterial
     f_name = cp
-    function = '1967'
+    function = '1967 + 1e-16 * temp'
     args = 'temp'
     derivative_order = 1
     block = '0 1'
@@ -103,7 +103,7 @@ tau = 5
   [./k_fuel]
     type = DerivativeParsedMaterial
     f_name = k
-    function = '0.0553'
+    function = '0.0553 + 1e-16 * temp'
     args = 'temp'
     derivative_order = 1
     block = '0 1'
@@ -116,7 +116,6 @@ tau = 5
     derivative_order = 1
     block = '0 1'
   [../]
-
 []
 
 [Postprocessors]
@@ -134,20 +133,9 @@ tau = 5
 
 [Executioner]
   type = Transient
-  # end_time = 10000
-  # dtmin = 1e-5
-  # [./TimeStepper]
-  #   type = IterationAdaptiveDT
-  #   dt = 1e-3
-  #   cutback_factor = 0.4
-  #   growth_factor = 1.2
-  #   optimal_iterations = 20
-  # [../]
-  # line_search = 'none'
-  # nl_abs_tol = 1e-7
-
+  dt = 1e-5
   nl_rel_tol = 1e-8
-
+  dtmax = 10
   solve_type = 'PJFNK'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   # petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount'
@@ -155,8 +143,15 @@ tau = 5
   petsc_options_iname = '-pc_type'
   petsc_options_value = 'lu'
 
-nl_max_its = 30
+  nl_max_its = 30
   l_max_its = 100
+  [./TimeStepper]
+    type = IterationAdaptiveDT
+    dt = 1e-3
+    cutback_factor = 0.4
+    growth_factor = 1.2
+    optimal_iterations = 20
+  [../]
 
 []
 

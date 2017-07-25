@@ -176,6 +176,12 @@ diri_temp=922
     variable = temp
     postprocessor = inlet_mean_temp
   [../]
+  #[./temp_postpr_inlet]
+  #  boundary = 'moder_bottoms fuel_bottoms outer_wall'
+  #  type = DirichletBC
+  #  variable = temp
+  #  value = 922
+  #[../]
   [./temp_advection_outlet]
     boundary = 'fuel_tops'
     type = VelocityFunctionTemperatureOutflowBC
@@ -220,7 +226,7 @@ diri_temp=922
   [./cp_fuel]
     type = DerivativeParsedMaterial
     f_name = cp
-    function = '1967'
+    function = '1967 + 1e-16 * temp'
     args = 'temp'
     derivative_order = 1
     block = 'fuel'
@@ -229,7 +235,7 @@ diri_temp=922
   [./k_fuel]
     type = DerivativeParsedMaterial
     f_name = k
-    function = '0.0553'
+    function = '0.0553 + 1e-16 * temp'
     args = 'temp'
     derivative_order = 1
     block = 'fuel'
@@ -252,7 +258,7 @@ diri_temp=922
   [./cp_moder]
     type = DerivativeParsedMaterial
     f_name = cp
-    function = '1760'
+    function = '1760 + 1e-16 * temp'
     args = 'temp'
     derivative_order = 1
     block = 'moder'
@@ -261,7 +267,7 @@ diri_temp=922
   [./k_moder]
     type = DerivativeParsedMaterial
     f_name = k
-    function = '.312'
+    function = '.312 + 1e-16 * temp'
     args = 'temp'
     derivative_order = 1
     block = 'moder'
@@ -272,8 +278,8 @@ diri_temp=922
   type = Transient
   end_time = 10000
 
-  nl_rel_tol = 1e-6
-  nl_abs_tol = 1e-6
+  nl_rel_tol = 3e-6
+  nl_abs_tol = 3e-6
 
   solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
@@ -287,7 +293,7 @@ diri_temp=922
   l_max_its = 100
 
   dtmin = 1e-5
-  # dtmax = 1
+  dtmax = 10
   # dt = 1e-3
   [./TimeStepper]
     type = IterationAdaptiveDT
@@ -345,8 +351,7 @@ diri_temp=922
   #multiapp
   [./inlet_mean_temp]
     type = Receiver
-    initialize_old = true
-    execute_on = 'timestep_begin'
+    execute_on = 'initial timestep_begin'
   [../]
   # [./average_fission_heat]
   #   type = AverageFissionHeat
@@ -372,7 +377,7 @@ diri_temp=922
     type = RealFunctionControl
     parameter = '*/*/v_val'
     function = coastDownFunc
-    execute_on = 'timestep_begin'
+    execute_on = 'initial timestep_begin'
   [../]
 []
 
@@ -380,7 +385,7 @@ diri_temp=922
   [./loopApp]
     type = TransientMultiApp
     app_type = MoltresApp
-    execute_on = timestep_begin
+    execute_on = 'initial timestep_begin'
     positions = '100.0 100.0 0.0'
     input_files = 'sub.i'
  [../]
@@ -402,5 +407,5 @@ diri_temp=922
     from_postprocessor = coreEndTemp
     to_postprocessor = coreEndTemp
     direction = to_multiapp
-  [../]
+ [../]
 []

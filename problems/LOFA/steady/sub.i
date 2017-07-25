@@ -84,7 +84,9 @@ flow_velocity=21.7 # cm/s. See MSRE-properties.ods
     variable = temp_right
     neighbor_var = temp
     boundary = master1_interface
-    velocity = '${flow_velocity} 0 0'
+    u_val=${flow_velocity}
+    v_val=0
+    w_val=0
     heat_source = -4e3
   [../]
 []
@@ -105,8 +107,39 @@ flow_velocity=21.7 # cm/s. See MSRE-properties.ods
   [../]
 []
 
+#[Materials]
+#  [./fuel]
+#    type = GenericConstantMaterial
+#    block = '0 1'
+#  [../]
+#  [./cp_fuel]
+#    type = DerivativeParsedMaterial
+#    f_name = cp
+#    function = '1967 + 1e-16 * temp'
+#    args = 'temp'
+#    derivative_order = 1
+#    block = '0 1'
+#  [../]
+#  # fuel k function
+#  [./k_fuel]
+#    type = DerivativeParsedMaterial
+#    f_name = k
+#    function = '0.0553 + 1e-16 * temp'
+#    args = 'temp'
+#    derivative_order = 1
+#    block = '0 1'
+#  [../]
+#  [./rho_fuel]
+#    type = DerivativeParsedMaterial
+#    f_name = rho
+#    function = '2.146e-3 * exp(-1.8 * 1.18e-4 * (temp - 922))'
+#    args = 'temp'
+#    derivative_order = 1
+#    block = '0 1'
+#  [../]
+#[]
 [Materials]
-  [./fuel]
+  [./notfuel]
     type = GenericConstantMaterial
     prop_names = 'cp rho'
     prop_values = '1967 2.146e-3' # Robertson MSRE technical report @ 922 K
@@ -138,7 +171,7 @@ flow_velocity=21.7 # cm/s. See MSRE-properties.ods
   #   growth_factor = 1.2
   #   optimal_iterations = 20
   # [../]
-  # line_search = 'none'
+  line_search = 'none'
   # nl_abs_tol = 1e-7
 
   nl_rel_tol = 1e-8
@@ -168,6 +201,12 @@ nl_max_its = 30
   [./exodus]
     type = Exodus
     file_base = 'sub'
+    execute_on = 'timestep_end'
+  [../]
+  [./xda]
+    type = XDA
+    file_base = 'subxda'
+    execute_on = 'INITIAL TIMESTEP_END'
   [../]
 []
 

@@ -181,6 +181,72 @@ diri_temp=922
   [../]
 []
 
+#[Materials]
+#  [./fuel]
+#    type = GenericMoltresMaterial
+#    property_tables_root = '/home/gav/projects/moltres/property_file_dir/newt_msre_fuel_'
+#    interp_type = 'spline'
+#    block = 'fuel'
+#  [../]
+#  [./rho_fuel]
+#    type = DerivativeParsedMaterial
+#    f_name = rho
+#    function = '2.146e-3 * exp(-1.8 * 1.18e-4 * (temp - 922))'
+#    args = 'temp'
+#    derivative_order = 1
+#    block = 'fuel'
+#  [../]
+#  # fuel cp function
+#  [./cp_fuel]
+#    type = DerivativeParsedMaterial
+#    f_name = cp
+#    function = '1967 + 1e-16 * temp'
+#    args = 'temp'
+#    derivative_order = 1
+#    block = 'fuel'
+#  [../]
+#  # fuel k function
+#  [./k_fuel]
+#    type = DerivativeParsedMaterial
+#    f_name = k
+#    function = '0.0553 + 1e-16 * temp'
+#    args = 'temp'
+#    derivative_order = 1
+#    block = 'fuel'
+#  [../]
+#  [./moder]
+#    type = GenericMoltresMaterial
+#    property_tables_root = '/home/gav/projects/moltres/property_file_dir/newt_msre_mod_'
+#    interp_type = 'spline'
+#    block = 'moder'
+#  [../]
+#  [./rho_moder]
+#    type = DerivativeParsedMaterial
+#    f_name = rho
+#    function = '1.86e-3 * exp(-1.8 * 1.0e-5 * (temp - 922))'
+#    args = 'temp'
+#    derivative_order = 1
+#    block = 'moder'
+#  [../]
+#  # moder cp fcn
+#  [./cp_moder]
+#    type = DerivativeParsedMaterial
+#    f_name = cp
+#    function = '1760 + 1e-16 * temp'
+#    args = 'temp'
+#    derivative_order = 1
+#    block = 'moder'
+#  [../]
+#  # moder k fcn
+#  [./k_moder]
+#    type = DerivativeParsedMaterial
+#    f_name = k
+#    function = '.312 + 1e-16 * temp'
+#    args = 'temp'
+#    derivative_order = 1
+#    block = 'moder'
+#  [../]
+#[]
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
@@ -218,7 +284,7 @@ diri_temp=922
 
 [Executioner]
   type = Transient
-  end_time = 10000
+  end_time = 100
 
   nl_rel_tol = 1e-6
   nl_abs_tol = 1e-6
@@ -235,7 +301,7 @@ diri_temp=922
   l_max_its = 100
 
   dtmin = 1e-5
-  # dtmax = 1
+  dtmax = 100
   # dt = 1e-3
   [./TimeStepper]
     type = IterationAdaptiveDT
@@ -292,7 +358,6 @@ diri_temp=922
   #multiapp
   [./inlet_mean_temp]
     type = Receiver
-    initialize_old = true
     execute_on = 'timestep_begin'
   [../]
   # [./average_fission_heat]
@@ -318,7 +383,7 @@ diri_temp=922
   [./loopApp]
     type = TransientMultiApp
     app_type = MoltresApp
-    execute_on = timestep_begin
+    execute_on = 'initial timestep_begin'
     positions = '100.0 100.0 0.0'
    input_files = 'sub.i'
  [../]
@@ -332,7 +397,7 @@ diri_temp=922
     from_postprocessor = loopEndTemp
     to_postprocessor = inlet_mean_temp
     direction = from_multiapp
-    reduction_type = maximum
+    reduction_type = average
   [../]
   [./to_loop]
     type = MultiAppPostprocessorTransfer
@@ -342,4 +407,3 @@ diri_temp=922
     direction = to_multiapp
   [../]
 []
-
