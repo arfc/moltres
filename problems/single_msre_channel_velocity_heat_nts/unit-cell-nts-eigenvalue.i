@@ -37,7 +37,7 @@ nt_scale=1e13
   [../]
 []
 
-# [PrecursorKernel]
+# [Precursors]
 #   var_name_base = pre
 #   block = 'fuel'
 #   outlet_boundaries = 'fuel_top'

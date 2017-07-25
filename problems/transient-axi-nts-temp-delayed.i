@@ -130,7 +130,7 @@ nt_scale=1e18
 
 # Delayed neutron precursors
 
-# [PrecursorKernel]
+# [Precursors]
 #   var_name_base = pre
 #   v_def = ${flow_velocity}
 #   block = 'fuel'

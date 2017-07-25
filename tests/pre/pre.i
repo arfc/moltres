@@ -19,7 +19,7 @@ global_temperature=922
   kernel_coverage_check = false
 []
 
-[PrecursorKernel]
+[Precursors]
   [./pres]
     var_name_base = pre
     outlet_boundaries = 'fuel_tops'

@@ -63,7 +63,7 @@
 #include "MatDiffusionAux.h"
 
 // Actions
-#include "PrecursorKernelAction.h"
+#include "PrecursorAction.h"
 #include "NtAction.h"
 
 // DiracKernels
@@ -177,16 +177,16 @@ MoltresApp__associateSyntax(Syntax & syntax, ActionFactory & action_factory)
 void
 MoltresApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
 {
-  syntax.registerActionSyntax("PrecursorKernelAction", "PrecursorKernel/*");
+  syntax.registerActionSyntax("PrecursorAction", "Precursors/*");
   syntax.registerActionSyntax("NtAction", "Nt");
 
-  registerAction(PrecursorKernelAction, "add_kernel");
-  registerAction(PrecursorKernelAction, "add_bc");
-  registerAction(PrecursorKernelAction, "add_variable");
-  registerAction(PrecursorKernelAction, "add_ic");
-  registerAction(PrecursorKernelAction, "add_dg_kernel");
-  registerAction(PrecursorKernelAction, "check_copy_nodal_vars");
-  registerAction(PrecursorKernelAction, "copy_nodal_vars");
+  registerAction(PrecursorAction, "add_kernel");
+  registerAction(PrecursorAction, "add_bc");
+  registerAction(PrecursorAction, "add_variable");
+  registerAction(PrecursorAction, "add_ic");
+  registerAction(PrecursorAction, "add_dg_kernel");
+  registerAction(PrecursorAction, "check_copy_nodal_vars");
+  registerAction(PrecursorAction, "copy_nodal_vars");
   registerAction(NtAction, "add_kernel");
   registerAction(NtAction, "add_bc");
   registerAction(NtAction, "add_variable");

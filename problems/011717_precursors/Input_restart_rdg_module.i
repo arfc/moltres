@@ -35,7 +35,7 @@ global_temperature=temp
   init_temperature_from_file = true
 []
 
-[PrecursorKernel]
+[Precursors]
   var_name_base = pre
   block = 'fuel'
   advection_boundaries = 'fuel_top fuel_bottom'
