@@ -1,12 +1,12 @@
-#ifndef PRECURSORKERNELACTION_H
-#define PRECURSORKERNELACTION_H
+#ifndef PRECURSORACTION_H
+#define PRECURSORACTION_H
 
 #include "AddVariableAction.h"
 
-class PrecursorKernelAction : public AddVariableAction
+class PrecursorAction : public AddVariableAction
 {
 public:
-  PrecursorKernelAction(const InputParameters & params);
+  PrecursorAction(const InputParameters & params);
 
   virtual void act();
 
@@ -25,6 +25,6 @@ protected:
 };
 
 template <>
-InputParameters validParams<PrecursorKernelAction>();
+InputParameters validParams<PrecursorAction>();
 
-#endif // PRECURSORKERNELACTION_H
+#endif // PRECURSORACTION_H
