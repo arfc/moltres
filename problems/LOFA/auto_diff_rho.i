@@ -25,7 +25,7 @@ diri_temp=922
   coord_type = RZ
 []
 
-[PrecursorKernel]
+[Precursors]
   [./pres]
     var_name_base = pre
     block = 'fuel'
@@ -47,8 +47,7 @@ diri_temp=922
     family = LAGRANGE
     scaling = 1e4
     initial_from_file_var = group1
-    initial_from_file_timestep = LATEST
-  [../]
+    initial_from_file_timestep = LATEST [../]
   [./group2]
     order = FIRST
     family = LAGRANGE
@@ -137,13 +136,13 @@ diri_temp=922
     nt_scale=${nt_scale}
     block = 'fuel'
   [../]
-  # [./temp_source_mod]
-  #   type = GammaHeatSource
-  #   variable = temp
-  #   gamma = .0144 # Cammi .0144
-  #   block = 'moder'
-  #   average_fission_heat = 'average_fission_heat'
-  # [../]
+  [./temp_source_mod]
+     type = GammaHeatSource
+     variable = temp
+     gamma = .0144 # Cammi .0144
+     block = 'moder'
+     average_fission_heat = 'average_fission_heat'
+  [../]
   [./temp_diffusion]
     type = MatDiffusion
     D_name = 'k'
@@ -277,14 +276,12 @@ diri_temp=922
 [Executioner]
   type = Transient
   end_time = 10000
-
-  nl_rel_tol = 3e-6
   nl_abs_tol = 3e-6
 
   solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type -snes_linesearch_minlambda'
-  petsc_options_value = 'lu       NONZERO               1e-10                   preonly   1e-3'
+  petsc_options_iname = '-pc_type' #  -pc_factor_shift_type -pc_factor_shift_amount -ksp_type -snes_linesearch_minlambda'
+  petsc_options_value = 'lu' #       NONZERO               1e-10                   preonly   1e-3'
   line_search = 'none'
    # petsc_options_iname = '-snes_type'
   # petsc_options_value = 'test'
@@ -293,14 +290,13 @@ diri_temp=922
   l_max_its = 100
 
   dtmin = 1e-5
-  dtmax = 10
   # dt = 1e-3
   [./TimeStepper]
     type = IterationAdaptiveDT
     dt = 1e-3
     cutback_factor = 0.4
-    growth_factor = 1.2
-    optimal_iterations = 20
+    growth_factor = 1.04
+    optimal_iterations = 5
   [../]
 []
 
@@ -308,7 +304,7 @@ diri_temp=922
   [./SMP]
     type = SMP
     full = true
-    ksp_norm = none
+    # ksp_norm = none
   [../]
 []
 
@@ -353,13 +349,13 @@ diri_temp=922
     type = Receiver
     execute_on = 'initial timestep_begin'
   [../]
-  # [./average_fission_heat]
-  #   type = AverageFissionHeat
-  #   nt_scale = ${nt_scale}
-  #   execute_on = 'linear nonlinear'
-  #   outputs = 'console'
-  #   block = 'fuel'
-  # [../]
+  [./average_fission_heat]
+    type = AverageFissionHeat
+    nt_scale = ${nt_scale}
+    execute_on = 'linear nonlinear'
+    outputs = 'console'
+    block = 'fuel'
+  [../]
 []
 
 [Outputs]

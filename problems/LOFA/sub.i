@@ -59,12 +59,14 @@ tau = 5
 
 [InterfaceKernels]
   [./interface]
-    type = InterTemperatureAdvection
+    type = EffectivenessHX
     variable = temp_right
     neighbor_var = temp
     boundary = master1_interface
-    heat_source = -4e3
-    # velocity will be set through controls interface
+    epsilon = 0.37
+    cstream    = 182.8
+    coldInletTemp  = 825.0
+    pipeArea = 0.89
   [../]
 []
 
@@ -134,12 +136,12 @@ tau = 5
 [Executioner]
   type = Transient
   dt = 1e-5
-  nl_rel_tol = 1e-8
-  dtmax = 10
-  solve_type = 'PJFNK'
+  nl_rel_tol = 1e-5
+  solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  # petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount'
-  # petsc_options_value = 'lu	  NONZERO		1e-10'
+  line_search = 'none'
+  petsc_options_iname = '-pc_type' # -pc_factor_shift_type -pc_factor_shift_amount'
+  petsc_options_value = 'lu' #	  NONZERO		1e-10'
   petsc_options_iname = '-pc_type'
   petsc_options_value = 'lu'
 
@@ -149,8 +151,8 @@ tau = 5
     type = IterationAdaptiveDT
     dt = 1e-3
     cutback_factor = 0.4
-    growth_factor = 1.2
-    optimal_iterations = 20
+    growth_factor = 1.04
+    optimal_iterations = 5
   [../]
 
 []
