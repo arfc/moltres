@@ -1,4 +1,4 @@
-#include "PrecursorKernelAction.h"
+#include "PrecursorAction.h"
 #include "Factory.h"
 #include "Parser.h"
 #include "Conversion.h"
@@ -7,7 +7,7 @@
 
 template <>
 InputParameters
-validParams<PrecursorKernelAction>()
+validParams<PrecursorAction>()
 {
   InputParameters params = validParams<AddVariableAction>();
   params.addRequiredParam<unsigned int>("num_precursor_groups",
@@ -60,7 +60,7 @@ validParams<PrecursorKernelAction>()
   return params;
 }
 
-PrecursorKernelAction::PrecursorKernelAction(const InputParameters & params)
+PrecursorAction::PrecursorAction(const InputParameters & params)
   : AddVariableAction(params),
     _num_precursor_groups(getParam<unsigned int>("num_precursor_groups")),
     _var_name_base(getParam<std::string>("var_name_base")),
@@ -70,7 +70,7 @@ PrecursorKernelAction::PrecursorKernelAction(const InputParameters & params)
 }
 
 void
-PrecursorKernelAction::act()
+PrecursorAction::act()
 {
   for (unsigned int op = 1; op <= _num_precursor_groups; ++op)
   {

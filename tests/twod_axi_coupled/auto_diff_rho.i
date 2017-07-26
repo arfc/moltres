@@ -42,7 +42,7 @@ diri_temp=922
   [../]
 []
 
-[PrecursorKernel]
+[Precursors]
   [./pres]
     var_name_base = pre
     block = 'fuel'

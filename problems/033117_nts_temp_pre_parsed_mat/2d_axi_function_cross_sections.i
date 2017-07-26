@@ -51,7 +51,7 @@ diri_temp=922
   [../]
 []
 
-[PrecursorKernel]
+[Precursors]
   var_name_base = pre
   block = 'fuel'
   outlet_boundaries = 'fuel_tops'

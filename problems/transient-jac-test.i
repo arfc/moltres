@@ -133,7 +133,7 @@ flow_velocity=147 # Cammi 147 cm/s
 
 # Delayed neutron precursors
 
-[PrecursorKernel]
+[Precursors]
   var_name_base = pre
   v_def = ${flow_velocity}
   # block = 'fuel'
