@@ -32,7 +32,7 @@ sigma_val=6
   dg_for_temperature = true
 []
 
-# [PrecursorKernel]
+# [Precursors]
 #   var_name_base = pre
 #   block = 'fuel'
 #   advection_boundaries = 'fuel_top fuel_bottom'

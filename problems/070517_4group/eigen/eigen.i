@@ -40,7 +40,7 @@ flow_velocity = 21.7
 #  #[../]
 #[]
 
-[PrecursorKernel]
+[Precursors]
   var_name_base = pre
   block = 'fuel'
   outlet_boundaries = 'fuel_tops'

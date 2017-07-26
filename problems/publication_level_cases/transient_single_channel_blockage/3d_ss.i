@@ -49,7 +49,7 @@ offset=2.5
   [../]
 []
 
-[PrecursorKernel]
+[Precursors]
   [./primary_fuel]
     var_name_base = pre
     block = 'fuel blocked_fuel'

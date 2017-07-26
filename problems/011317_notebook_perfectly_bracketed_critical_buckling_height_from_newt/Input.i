@@ -33,7 +33,7 @@ global_temperature=950
   temperature_value = ${global_temperature}
 []
 
-# [PrecursorKernel]
+# [Precursors]
 #   var_name_base = pre
 #   block = 'fuel'
 #   inlet_boundary = 'fuel_bottom'

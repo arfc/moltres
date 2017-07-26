@@ -30,7 +30,7 @@ global_temperature=temp
   dg_for_temperature = false
 []
 
-# [PrecursorKernel]
+# [Precursors]
 #   var_name_base = pre
 #   block = 'fuel'
 #   advection_boundaries = 'fuel_top fuel_bottom'

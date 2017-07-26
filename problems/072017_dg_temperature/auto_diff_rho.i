@@ -53,7 +53,7 @@ sigma_val=.6
   [../]
 []
 
-[PrecursorKernel]
+[Precursors]
   [./pres]
     var_name_base = pre
     block = 'fuel'

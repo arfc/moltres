@@ -29,7 +29,7 @@ diri_temp=922
   [../]
 []
 
-[PrecursorKernel]
+[Precursors]
  [./core]
   var_name_base = pre
   outlet_boundaries = 'right'
