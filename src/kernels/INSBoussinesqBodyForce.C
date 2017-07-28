@@ -48,7 +48,7 @@ INSBoussinesqBodyForce::INSBoussinesqBodyForce(const InputParameters & parameter
 Real
 INSBoussinesqBodyForce::computeQpResidual()
 {
-  return -_test[_i][_qp] * _alpha[_qp] * _gravity(_component) * _rho[_qp] * _dT[_qp];
+  return _test[_i][_qp] * _alpha[_qp] * _gravity(_component) * _rho[_qp] * _dT[_qp];
 }
 
 Real

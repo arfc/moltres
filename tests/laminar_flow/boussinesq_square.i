@@ -1,9 +1,9 @@
-xmax=1
-ymax=1
+xmax=.05
+ymax=.05
 library_path = '../../../moose/modules/navier_stokes/lib/'
 
 [GlobalParams]
-  integrate_p_by_parts = false
+  #integrate_p_by_parts = false
   gravity = '0 -9.81 0'
 []
 
@@ -29,22 +29,59 @@ library_path = '../../../moose/modules/navier_stokes/lib/'
 [Problem]
 []
 
+#[Adaptivity]
+#  marker = errorfrac
+#  steps = 2
+#  [./Indicators]
+#    [./error]
+#      type = GradientJumpIndicator
+#      variable = p
+#      outputs = none
+#    [../]
+#  [../]
+#  [./Markers]
+#    [./errorfrac]
+#      type = ErrorFractionMarker
+#      refine = 0.5
+#      coarsen = 0.5
+#      indicator = error
+#      outputs = none
+#    [../]
+#  [../]
+#[]
+
+
 [Preconditioning]
   [./Newton_SMP]
     type = SMP
     full = true
-    solve_type = 'PJFNK'
-    petsc_options_iname = '-pc_type'
-    petsc_options_value = 'lu'
+    solve_type = 'NEWTON'
   [../]
 []
 
 [Executioner]
   type = Transient
-  dt = 0.1
-  end_time = 100
-  petsc_options = '-snes_converged_reason -snes_linesearch_monitor -ksp_converged_reason'
-  nl_rel_tol = 1e-12
+  # Run for 100+ timesteps to reach steady state.
+  num_steps = 1000
+  dt = 0.01
+  petsc_options_iname = '-pc_type -pc_asm_overlap -sub_pc_type -sub_pc_factor_levels'
+  petsc_options_value = 'asm      2               ilu          4'
+  line_search = 'none'
+  nl_rel_tol = 1e-6
+  nl_abs_tol = 1e-6
+  nl_max_its = 20
+  l_tol = 1e-6
+  l_max_its = 500
+
+  dtmin = 1e-5
+  #[./TimeStepper]
+  #  type = IterationAdaptiveDT
+  #  dt = 1e-3
+  #  cutback_factor = 0.4
+  #  growth_factor = 1.2
+  #  optimal_iterations = 20
+  #[../]
+
 []
 
 [Debug]
@@ -74,7 +111,9 @@ library_path = '../../../moose/modules/navier_stokes/lib/'
     order = FIRST
   [../]
   [./temp]
-    initial_condition = 900
+    family = LAGRANGE
+    order = SECOND
+    initial_condition = 340
     scaling = 1e-4
   [../]
 []
@@ -110,7 +149,7 @@ library_path = '../../../moose/modules/navier_stokes/lib/'
   [../]
   [./p_zero]
     type = DirichletBC
-    boundary = 'left right bottom top'
+    boundary = corner
     variable = p
     value = 0
   [../]
@@ -118,19 +157,19 @@ library_path = '../../../moose/modules/navier_stokes/lib/'
     type = NeumannBC
     variable = temp
     value = 0 # no conduction through side walls
-    boundary = 'left right' # not top
+    boundary = 'top bottom' # not top
   [../]
   [./coldOnTop]
     type = DirichletBC
     variable = temp
-    boundary = top
-    value = 800
+    boundary = left
+    value = 300
   [../]
   [./hotOnBottom]
     type = DirichletBC
     variable = temp
-    boundary = bottom
-    value = 900
+    boundary = right
+    value = 400
   [../]
 []
 
@@ -198,6 +237,6 @@ library_path = '../../../moose/modules/navier_stokes/lib/'
     type = GenericConstantMaterial
     # alpha = coefficient of thermal expansion where rho  = rho0 -alpha * rho0 * delta T
     prop_names = 'mu rho alpha k cp'
-    prop_values = '7.0422e-5 .00214 1.32e-4 .0553 1967'
+    prop_values = '30.74e-6 .5757 2.9e-3 46.38e-3 1054'
   [../]
 []
