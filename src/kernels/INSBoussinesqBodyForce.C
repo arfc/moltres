@@ -63,7 +63,7 @@ INSBoussinesqBodyForce::computeQpOffDiagJacobian(unsigned jvar)
   if (jvar == _dT_id)
     // not a perfect one, this could include d alpha dT and d rho dT
     // but those oughta be small
-    return -_test[_i][_qp] * _alpha[_qp] * _gravity(_component) * _rho[_qp];
+    return _test[_i][_qp] * _alpha[_qp] * _gravity(_component) * _rho[_qp] * _phi[_j][_qp];
   else
     return 0;
 }

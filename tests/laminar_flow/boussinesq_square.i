@@ -29,28 +29,6 @@ library_path = '../../../moose/modules/navier_stokes/lib/'
 [Problem]
 []
 
-#[Adaptivity]
-#  marker = errorfrac
-#  steps = 2
-#  [./Indicators]
-#    [./error]
-#      type = GradientJumpIndicator
-#      variable = p
-#      outputs = none
-#    [../]
-#  [../]
-#  [./Markers]
-#    [./errorfrac]
-#      type = ErrorFractionMarker
-#      refine = 0.5
-#      coarsen = 0.5
-#      indicator = error
-#      outputs = none
-#    [../]
-#  [../]
-#[]
-
-
 [Preconditioning]
   [./Newton_SMP]
     type = SMP
@@ -62,7 +40,7 @@ library_path = '../../../moose/modules/navier_stokes/lib/'
 [Executioner]
   type = Transient
   # Run for 100+ timesteps to reach steady state.
-  num_steps = 1000
+  num_steps = 5
   dt = 0.01
   petsc_options_iname = '-pc_type -pc_asm_overlap -sub_pc_type -sub_pc_factor_levels'
   petsc_options_value = 'asm      2               ilu          4'
