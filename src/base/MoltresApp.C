@@ -15,6 +15,7 @@
 #include "FissionHeatSource.h"
 #include "TransientFissionHeatSource.h"
 #include "INSMomentumKEpsilon.h"
+#include "INSBoussinesqBodyForce.h"
 #include "SigmaR.h"
 #include "CoupledFissionEigenKernel.h"
 #include "CoupledFissionKernel.h"
@@ -61,6 +62,7 @@
 #include "FissionHeatSourceTransientAux.h"
 #include "ModeratorHeatSourceTransientAux.h"
 #include "MatDiffusionAux.h"
+#include "ConstantDifferenceAux.h"
 
 // Actions
 #include "PrecursorAction.h"
@@ -135,6 +137,7 @@ MoltresApp::registerObjects(Factory & factory)
   registerKernel(CoupledFissionKernel);
   registerKernel(SelfFissionEigenKernel);
   registerKernel(INSMomentumKEpsilon);
+  registerKernel(INSBoussinesqBodyForce);
   registerKernel(GroupDiffusion);
   registerBoundaryCondition(LinLogPenaltyDirichletBC);
   registerBoundaryCondition(ScalarAdvectionArtDiffNoBCBC);
@@ -165,6 +168,7 @@ MoltresApp::registerObjects(Factory & factory)
   registerAux(FissionHeatSourceTransientAux);
   registerAux(ModeratorHeatSourceTransientAux);
   registerAux(MatDiffusionAux);
+  registerAux(ConstantDifferenceAux);
   registerDiracKernel(DiracHX);
 }
 
