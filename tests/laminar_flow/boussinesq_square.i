@@ -1,6 +1,5 @@
 xmax=.05
 ymax=.05
-library_path = '../../../moose/modules/navier_stokes/lib/'
 
 [GlobalParams]
   #integrate_p_by_parts = false
@@ -42,11 +41,13 @@ library_path = '../../../moose/modules/navier_stokes/lib/'
   # Run for 100+ timesteps to reach steady state.
   num_steps = 5
   dt = 0.01
-  petsc_options_iname = '-pc_type -pc_asm_overlap -sub_pc_type -sub_pc_factor_levels'
-  petsc_options_value = 'asm      2               ilu          4'
-  line_search = 'none'
-  nl_rel_tol = 1e-6
-  nl_abs_tol = 1e-6
+  petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_test_display'
+  petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount'
+  petsc_options_value = 'lu	  NONZERO		1e-10'
+  # petsc_options_iname = '-snes_type'
+  # petsc_options_value = 'test'
+   line_search = 'none'
+  nl_rel_tol = 1e-12
   nl_max_its = 20
   l_tol = 1e-6
   l_max_its = 500
@@ -68,10 +69,10 @@ library_path = '../../../moose/modules/navier_stokes/lib/'
 
 [Outputs]
   print_perf_log = true
-  print_linear_residuals = false
+  print_linear_residuals = true
   [./out]
     type = Exodus
-    execute_on = 'timestep_end'
+    execute_on = 'final'
   []
 []
 
@@ -96,10 +97,31 @@ library_path = '../../../moose/modules/navier_stokes/lib/'
   [../]
 []
 
+# [ICs]
+#   [./ux]
+#     variable = ux
+#     type = RandomIC
+#   [../]
+#   [./uy]
+#     variable = uy
+#     type = RandomIC
+#   [../]
+#   [./p]
+#     variable = p
+#     type = RandomIC
+#   [../]
+#   [./temp]
+#     variable = temp
+#     type = RandomIC
+#     min = 330
+#     max = 350
+#   [../]
+# []
+
 [AuxVariables]
   [./deltaT]
     family = LAGRANGE
-    order = FIRST
+    order = SECOND
   [../]
 []
 
