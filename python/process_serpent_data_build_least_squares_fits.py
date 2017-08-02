@@ -10,7 +10,8 @@ num_precursor_groups = 8
 xsec_dict = {"FLUX": num_groups, "REMXS": num_groups, "FISSXS": num_groups,
              "NUBAR": num_groups, "NSF": num_groups, "FISSE": num_groups,
              "DIFFCOEF": num_groups, "RECIPVEL": num_groups, "CHI": num_groups,
-             "GTRANSFXS": num_groups * num_groups, "BETA_EFF": num_precursor_groups,
+             "GTRANSFXS": num_groups * num_groups,
+             "BETA_EFF": num_precursor_groups,
              "DECAY_CONSTANT": num_precursor_groups}
 materials = ["fuel", "mod"]
 
