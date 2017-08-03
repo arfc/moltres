@@ -40,7 +40,7 @@ H=162.56
   [../]
 []
 
-[PrecursorKernel]
+[Precursors]
   [./pres]
     var_name_base = pre
     block = 'fuel'
