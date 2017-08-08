@@ -17,6 +17,9 @@ InputParameters validParams<ModeratorHeatSourceTransientAux>();
  * a long mean free path. In addition, the gamma heating is proportional to the average fission
  * heat. This kernel computes local gamma heating as a function of average fission heat and a
  * user-defined proportionality factor (usually between 2 and 10 percent).
+ *
+ * Gamma can define a form factor for the gamma heating. That is, gamma heating can be set to be
+ * cosinusoidal or Bessel.
  */
 class ModeratorHeatSourceTransientAux : public AuxKernel
 {
