@@ -3,6 +3,19 @@
 
 #include "AddVariableAction.h"
 
+/**
+ * This Action adds all required delayed neutron precursor variables and
+ * kernels to the problem. Since the delayed neutron precursors transport
+ * problem is pure advection, the problem is solved using discontinous Galerkin
+ * as documented in:
+ * <a href="http://epubs.siam.org/doi/book/10.1137/1.9780898717440">
+ * Discontinuous Galerkin Methods for Solving Elliptic and Parabolic
+ * Equations: Theory and Implementation
+ * </a>
+ * Note that the flow velocity must be constant when using the DGAdvection
+ * or DGTemperatureAdvection. In order to vary to flow through a user-defined
+ * function, use DGFunctionAdvection or DGFunctionTemperatureAdvection.
+ */
 class PrecursorAction : public AddVariableAction
 {
 public:
