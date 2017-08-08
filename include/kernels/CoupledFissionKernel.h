@@ -10,6 +10,10 @@ class CoupledFissionKernel;
 template <>
 InputParameters validParams<CoupledFissionKernel>();
 
+/**
+ * Computes fission source of neutrons without normalizing by
+ * \f$ 1/k \f$.
+ */
 class CoupledFissionKernel : public Kernel, public ScalarTransportBase
 {
 public:

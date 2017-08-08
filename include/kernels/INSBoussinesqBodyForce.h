@@ -9,6 +9,11 @@ class INSBoussinesqBodyForce;
 template <>
 InputParameters validParams<INSBoussinesqBodyForce>();
 
+/**
+ * Computes a body force that approximates natural buoyancy in
+ * problems where there aren't very large variations in density.
+ * See <a href="https://en.wikipedia.org/wiki/Boussinesq_approximation_(buoyancy)"> wikipedia </a>.
+ */
 class INSBoussinesqBodyForce : public Kernel
 {
 public:

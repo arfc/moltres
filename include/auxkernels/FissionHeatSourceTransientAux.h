@@ -6,6 +6,13 @@
 // Forward Declarations
 class FissionHeatSourceTransientAux;
 
+/**
+ * Computes heat source due to fission during a transient.
+ * This is the same as FissionHeatSourceAux, but with the exception
+ * that the power is not normalized to some user-defined value. The reactor
+ * will produce heat freely. You'll probably see thermal feedback since MSRs are
+ * nice like that.
+ */
 template <>
 InputParameters validParams<FissionHeatSourceTransientAux>();
 
