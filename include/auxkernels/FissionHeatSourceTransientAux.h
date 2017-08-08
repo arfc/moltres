@@ -6,6 +6,9 @@
 // Forward Declarations
 class FissionHeatSourceTransientAux;
 
+template <>
+InputParameters validParams<FissionHeatSourceTransientAux>();
+
 /**
  * Computes heat source due to fission during a transient.
  * This is the same as FissionHeatSourceAux, but with the exception
@@ -13,9 +16,6 @@ class FissionHeatSourceTransientAux;
  * will produce heat freely. You'll probably see thermal feedback since MSRs are
  * nice like that.
  */
-template <>
-InputParameters validParams<FissionHeatSourceTransientAux>();
-
 class FissionHeatSourceTransientAux : public AuxKernel
 {
 public:
