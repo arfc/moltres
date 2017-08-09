@@ -10,7 +10,19 @@
 # as compared to the state with no control rods inserted.
 # All preceding columns are assumed to belong to control rods 1, 2, 3, all
 # the way up to n. This script will find the moltres absorbtion factor for
-# each rod that most closely matches reactivities
+# each rod that most closely matches reactivities.
+#
+# NOTE:
+# This script is unfinished. I'm putting it into the python directory so
+# that others have an idea of the methodology I had in mind to determine
+# the rod multiplicative factor for absorbtion for systems with many rods.
+#
+# The general idea would be to form a residual term that is squared reactivity
+# differences between detailed transport (e.g. Serpent) and Moltres' results.
+# A Jacobian is formed from perturbing each rod multiplicative factor. Then
+# a Newton iteration is done to drive the residual to zero. Repeat until results
+# are within uncertainty of the Monte Carlo neutronics. Note that forming the Jacobian
+# for this residual should probably happen in parallel on a computing cluster.
 #
 import numpy
 import subprocess
