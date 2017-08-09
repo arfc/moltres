@@ -29,7 +29,10 @@ get parsed by PyNE in the extractSerpent2GCs script.
 
 The command to run in order to generate the moltres-compatible group constants is:
 
-```./extractSerpent2GCs.py MSREProperties msre_gentry_4g tempMapping.txt universeMapping.txt fuel moder```
+```$MOLTRES/python/extractSerpent2GCs.py MSREProperties msre_gentry_4g tempMapping.txt universeMapping.txt fuel moder```
+
+Where $MOLTRES is an environment variable leading to the install location of Moltres. An alternative would be to just add
+the $MOLTRES/python directory to your path.
 
 The syntax requires the arbitrary directory name you'd like to create, then the arbitrary file base name that moltres will
 look at, then a file that maps branch names to temperatures, then a file that maps universe numbers from serpent to material names,
