@@ -68,8 +68,7 @@ PrecursorAction::PrecursorAction(const InputParameters & params)
     _num_precursor_groups(getParam<unsigned int>("num_precursor_groups")),
     _var_name_base(getParam<std::string>("var_name_base")),
     _num_groups(getParam<unsigned int>("num_groups")),
-    _object_suffix(getParam<std::string>("object_suffix")),
-    _multi_app(getParam<MultiAppName>("multi_app"))
+    _object_suffix(getParam<std::string>("object_suffix"))
 {
   if (getParam<bool>("loop_precs"))
   {
@@ -320,7 +319,7 @@ PrecursorAction::act()
         // loop must be connected to the core problem.
         std::string postproc_name = "Outlet_SideAverageValue_"+var_name+"_"+_object_suffix;
         InputParameters params = _factory.getValidParams("SideAverageValue");
-        params.set<NonlinearVariableName>("variable") = var_name;
+        params.set<VariableName>("variable") = var_name;
         params.set<std::vector<BoundaryName>>("boundary") =
             getParam<std::vector<BoundaryName>>("outlet_boundaries");
         
@@ -335,7 +334,7 @@ PrecursorAction::act()
         {
             std::string transfer_name = "toloop_Transfer_" + var_name + "_"+_object_suffix;
             InputParameters params = _factory.getValidParams("MultiAppPostprocessorTransfer");
-            params.set<MultiAppName>("multi_app") = _multi_app;
+            params.set<MultiAppName>("multi_app") = getParam<MultiAppName>("multi_app");
             params.set<PostprocessorName>("from_postprocessor") = "Outlet_SideAverageValue_"+var_name+"_"+_object_suffix;
             params.set<PostprocessorName>("to_postprocessor") = "Inlet_SideAverageValue_"+var_name+"_"+_object_suffix;
             params.set<MooseEnum>("direction") = "to_multiapp";
@@ -345,7 +344,7 @@ PrecursorAction::act()
         {
             std::string transfer_name = "fromloop_Transfer_" + var_name + "_" + _object_suffix;
             InputParameters params = _factory.getValidParams("MultiAppPostprocessorTransfer");
-            params.set<MultiAppName>("multi_app") = _multi_app;
+            params.set<MultiAppName>("multi_app") = getParam<MultiAppName>("multi_app");
             params.set<PostprocessorName>("from_postprocessor") = "Outlet_SideAverageValue_"+var_name+"_"+_object_suffix;
             params.set<PostprocessorName>("to_postprocessor") = "Inlet_SideAverageValue_"+var_name+"_"+_object_suffix;
             params.set<MooseEnum>("direction") = "from_multiapp";
