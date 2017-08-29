@@ -322,7 +322,7 @@ PrecursorAction::act()
         InputParameters params = _factory.getValidParams("SideAverageValue");
         params.set<NonlinearVariableName>("variable") = var_name;
         params.set<std::vector<BoundaryName>>("boundary") =
-            getParam<std::vector<BoundarName>>("outlet_boundaries");
+            getParam<std::vector<BoundaryName>>("outlet_boundaries");
         
         _problem->addPostprocessor("SideAverageValue", postproc_name, params);
         

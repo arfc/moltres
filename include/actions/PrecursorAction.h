@@ -35,6 +35,9 @@ protected:
 
   /// optional object name suffix
   std::string _object_suffix;
+
+  /// name of multi app for precursor circulation
+  MultiAppName _multi_app;
 };
 
 template <>
