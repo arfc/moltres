@@ -247,7 +247,7 @@ PrecursorAction::act()
       // INFLOW
       if (getParam<bool>("loop_precs"))
       {
-          // this SHOULD work for both constant and nonconstant flows as long as
+          // this will work for both constant and nonconstant flows as long as
           // nonconstant flows implemented in the Controls module by
           // setting values called uu, vv, ww.
           if (!getParam<bool>("constant_velocity_values"))
@@ -273,21 +273,6 @@ PrecursorAction::act()
           _problem->addBoundaryCondition("PostprocessorInflowBC", kernel_name, params);
       }
 
-      // fixed concentration input: no use at the moment so commented out
-      // {
-      //   // requires new BC: PostprocessorInflowBC
-      //   InputParameters params = _factory.getValidParams("InflowBC");
-      //   params.set<NonlinearVariableName>("variable") = var_name;
-      //   params.set<std::vector<BoundaryName> >("boundary") = getParam<std::vector<BoundaryName>
-      //   >("inlet_boundaries");
-      //   RealVectorValue vel = {getParam<Real>("u_def"), getParam<Real>("v_def"),
-      //   getParam<Real>("w_def")};
-      //   params.set<RealVectorValue>("velocity") = vel;
-      //   params.set<Real>("inlet_conc") = 1.;
-
-      //   std::string kernel_name = "InflowBC_" + var_name;
-      //   _problem->addBoundaryCondition("InflowBC", kernel_name, params);
-      // }
     }
 
     // Set up ICs

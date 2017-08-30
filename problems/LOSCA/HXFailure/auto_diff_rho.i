@@ -59,7 +59,6 @@ diri_temp=922
   multi_app = loopApp
   is_loopapp = false
   inlet_boundaries = 'fuel_bottoms'
-
  [../]
 []
 
