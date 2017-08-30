@@ -263,7 +263,7 @@ PrecursorAction::act()
           params.set<Real>("vv") = getParam<Real>("v_def");
           params.set<Real>("ww") = getParam<Real>("w_def");
           params.set<PostprocessorName>("postprocessor") = 
-              "Inlet_SideAverageValue"+
+              "Inlet_SideAverageValue_"+
               var_name + "_" + _object_suffix;
 
           // OK, Alex called it kernel_name despite it being a BC,
@@ -317,13 +317,24 @@ PrecursorAction::act()
         // looping precursors requires connecting outlet of core problem
         // to the inlet of the loop subproblem. In addition, the outlet of the
         // loop must be connected to the core problem.
-        std::string postproc_name = "Outlet_SideAverageValue_"+var_name+"_"+_object_suffix;
-        InputParameters params = _factory.getValidParams("SideAverageValue");
-        params.set<VariableName>("variable") = var_name;
-        params.set<std::vector<BoundaryName>>("boundary") =
-            getParam<std::vector<BoundaryName>>("outlet_boundaries");
-        
-        _problem->addPostprocessor("SideAverageValue", postproc_name, params);
+        {
+            std::string postproc_name = "Outlet_SideAverageValue_"+var_name+"_"+_object_suffix;
+            InputParameters params = _factory.getValidParams("SideAverageValue");
+            std::vector<VariableName> varvec(1);
+            varvec[0] = var_name;
+            params.set<std::vector<VariableName>>("variable") = varvec;
+            params.set<std::vector<BoundaryName>>("boundary") =
+                getParam<std::vector<BoundaryName>>("outlet_boundaries");
+            
+            _problem->addPostprocessor("SideAverageValue", postproc_name, params);
+        }
+        {
+            std::string postproc_name = "Inlet_SideAverageValue_"+var_name+"_"+_object_suffix;
+            InputParameters params = _factory.getValidParams("Receiver");
+            params.set<MultiMooseEnum>("execute_on")= "timestep_begin";
+            
+            _problem->addPostprocessor("Receiver", postproc_name, params);
+        }
         
     }
 
@@ -338,6 +349,8 @@ PrecursorAction::act()
             params.set<PostprocessorName>("from_postprocessor") = "Outlet_SideAverageValue_"+var_name+"_"+_object_suffix;
             params.set<PostprocessorName>("to_postprocessor") = "Inlet_SideAverageValue_"+var_name+"_"+_object_suffix;
             params.set<MooseEnum>("direction") = "to_multiapp";
+
+            _problem->addTransfer("MultiAppPostprocessorTransfer", transfer_name, params);
         }
 
         // from loop app to main app
@@ -348,6 +361,9 @@ PrecursorAction::act()
             params.set<PostprocessorName>("from_postprocessor") = "Outlet_SideAverageValue_"+var_name+"_"+_object_suffix;
             params.set<PostprocessorName>("to_postprocessor") = "Inlet_SideAverageValue_"+var_name+"_"+_object_suffix;
             params.set<MooseEnum>("direction") = "from_multiapp";
+            params.set<MooseEnum>("reduction_type") = "average";
+
+            _problem->addTransfer("MultiAppPostprocessorTransfer", transfer_name, params);
         }
     }
   }
