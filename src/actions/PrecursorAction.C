@@ -48,7 +48,7 @@ validParams<PrecursorAction>()
                         "random initial conditions for the precursors.");
   params.addParam<Real>("prec_scale", "The amount by which the neutron fluxes are scaled.");
   params.addParam<bool>("transient", true, "Whether to run a transient simulation.");
-    params.addParam<bool>(
+  params.addParam<bool>(
       "init_from_file", false, "Whether to initialize the precursors from a file.");
   params.addParam<bool>("create_vars", true, "Whether this action should create the variables.");
   params.addParam<bool>("loop_precs", false, "Whether precursors are circulated in salt loop.");
@@ -73,9 +73,9 @@ PrecursorAction::PrecursorAction(const InputParameters & params)
   if (getParam<bool>("loop_precs"))
   {
     if (!params.isParamSetByUser("inlet_boundaries"))
-        mooseError("Looping precursors requires specification of inlet_boundaries.");
+      mooseError("Looping precursors requires specification of inlet_boundaries.");
     if (!params.isParamValid("multi_app"))
-        mooseError("Looping precursors requires a multiapp that governs the loop.");
+      mooseError("Looping precursors requires a multiapp that governs the loop.");
   }
 }
 
@@ -228,8 +228,8 @@ PrecursorAction::act()
             getParam<Real>("u_def"), getParam<Real>("v_def"), getParam<Real>("w_def")};
         params.set<RealVectorValue>("velocity") = vel;
 
-        std::string kernel_name = "OutflowBC_" + var_name + "_" + _object_suffix;
-        _problem->addBoundaryCondition("OutflowBC", kernel_name, params);
+        std::string bc_name = "OutflowBC_" + var_name + "_" + _object_suffix;
+        _problem->addBoundaryCondition("OutflowBC", bc_name, params);
       }
       else
       {
@@ -241,38 +241,33 @@ PrecursorAction::act()
         params.set<FunctionName>("vel_y_func") = getParam<FunctionName>("v_func");
         params.set<FunctionName>("vel_z_func") = getParam<FunctionName>("w_func");
 
-        std::string kernel_name = "VelocityFunctionOutflowBC_" + var_name + "_" + _object_suffix;
-        _problem->addBoundaryCondition("VelocityFunctionOutflowBC", kernel_name, params);
+        std::string bc_name = "VelocityFunctionOutflowBC_" + var_name + "_" + _object_suffix;
+        _problem->addBoundaryCondition("VelocityFunctionOutflowBC", bc_name, params);
       }
       // INFLOW
       if (getParam<bool>("loop_precs"))
       {
-          // this will work for both constant and nonconstant flows as long as
-          // nonconstant flows implemented in the Controls module by
-          // setting values called uu, vv, ww.
-          if (!getParam<bool>("constant_velocity_values"))
-              mooseError("Variable, looped precursor advection requires that variable"
-                         "velocity has the values uu, vv, ww set through the controls"
-                         "module, NOT simply specifying functions through the"
-                         "precursors block.");
-          InputParameters params = _factory.getValidParams("PostprocessorInflowBC");
-          params.set<NonlinearVariableName>("variable") = var_name;
-          params.set<std::vector<BoundaryName>>("boundary") =
-              getParam<std::vector<BoundaryName>>("inlet_boundaries");
-          params.set<Real>("uu") = getParam<Real>("u_def");
-          params.set<Real>("vv") = getParam<Real>("v_def");
-          params.set<Real>("ww") = getParam<Real>("w_def");
-          params.set<PostprocessorName>("postprocessor") = 
-              "Inlet_SideAverageValue_"+
-              var_name + "_" + _object_suffix;
+        // this will work for both constant and nonconstant flows as long as
+        // nonconstant flows implemented in the Controls module by
+        // setting values called uu, vv, ww.
+        if (!getParam<bool>("constant_velocity_values"))
+          mooseError("Variable, looped precursor advection requires that variable"
+                     "velocity has the values uu, vv, ww set through the controls"
+                     "module, NOT simply specifying functions through the"
+                     "precursors block.");
+        InputParameters params = _factory.getValidParams("PostprocessorInflowBC");
+        params.set<NonlinearVariableName>("variable") = var_name;
+        params.set<std::vector<BoundaryName>>("boundary") =
+            getParam<std::vector<BoundaryName>>("inlet_boundaries");
+        params.set<Real>("uu") = getParam<Real>("u_def");
+        params.set<Real>("vv") = getParam<Real>("v_def");
+        params.set<Real>("ww") = getParam<Real>("w_def");
+        params.set<PostprocessorName>("postprocessor") =
+            "Inlet_SideAverageValue_" + var_name + "_" + _object_suffix;
 
-          // OK, Alex called it kernel_name despite it being a BC,
-          // and it doesn't matter, but let's follow suit.
-          std::string kernel_name = "PostprocessorInflowBC_" + var_name + 
-              "_" + _object_suffix;
-          _problem->addBoundaryCondition("PostprocessorInflowBC", kernel_name, params);
+        std::string bc_name = "PostprocessorInflowBC_" + var_name + "_" + _object_suffix;
+        _problem->addBoundaryCondition("PostprocessorInflowBC", bc_name, params);
       }
-
     }
 
     // Set up ICs
@@ -299,57 +294,60 @@ PrecursorAction::act()
 
     if (_current_task == "add_postprocessor" && getParam<bool>("loop_precs"))
     {
-        // looping precursors requires connecting outlet of core problem
-        // to the inlet of the loop subproblem. In addition, the outlet of the
-        // loop must be connected to the core problem.
-        {
-            std::string postproc_name = "Outlet_SideAverageValue_"+var_name+"_"+_object_suffix;
-            InputParameters params = _factory.getValidParams("SideAverageValue");
-            std::vector<VariableName> varvec(1);
-            varvec[0] = var_name;
-            params.set<std::vector<VariableName>>("variable") = varvec;
-            params.set<std::vector<BoundaryName>>("boundary") =
-                getParam<std::vector<BoundaryName>>("outlet_boundaries");
-            
-            _problem->addPostprocessor("SideAverageValue", postproc_name, params);
-        }
-        {
-            std::string postproc_name = "Inlet_SideAverageValue_"+var_name+"_"+_object_suffix;
-            InputParameters params = _factory.getValidParams("Receiver");
-            params.set<MultiMooseEnum>("execute_on")= "timestep_begin";
-            
-            _problem->addPostprocessor("Receiver", postproc_name, params);
-        }
-        
+      // looping precursors requires connecting outlet of core problem
+      // to the inlet of the loop subproblem. In addition, the outlet of the
+      // loop must be connected to the core problem.
+      {
+        std::string postproc_name = "Outlet_SideAverageValue_" + var_name + "_" + _object_suffix;
+        InputParameters params = _factory.getValidParams("SideAverageValue");
+        std::vector<VariableName> varvec(1);
+        varvec[0] = var_name;
+        params.set<std::vector<VariableName>>("variable") = varvec;
+        params.set<std::vector<BoundaryName>>("boundary") =
+            getParam<std::vector<BoundaryName>>("outlet_boundaries");
+
+        _problem->addPostprocessor("SideAverageValue", postproc_name, params);
+      }
+      {
+        std::string postproc_name = "Inlet_SideAverageValue_" + var_name + "_" + _object_suffix;
+        InputParameters params = _factory.getValidParams("Receiver");
+        params.set<MultiMooseEnum>("execute_on") = "timestep_begin";
+
+        _problem->addPostprocessor("Receiver", postproc_name, params);
+      }
     }
 
     if (_current_task == "add_transfer" && getParam<bool>("loop_precs") &&
-            !getParam<bool>("is_loopapp"))
+        !getParam<bool>("is_loopapp"))
     {
-        // from main app to loop app
-        {
-            std::string transfer_name = "toloop_Transfer_" + var_name + "_"+_object_suffix;
-            InputParameters params = _factory.getValidParams("MultiAppPostprocessorTransfer");
-            params.set<MultiAppName>("multi_app") = getParam<MultiAppName>("multi_app");
-            params.set<PostprocessorName>("from_postprocessor") = "Outlet_SideAverageValue_"+var_name+"_"+_object_suffix;
-            params.set<PostprocessorName>("to_postprocessor") = "Inlet_SideAverageValue_"+var_name+"_"+_object_suffix;
-            params.set<MooseEnum>("direction") = "to_multiapp";
+      // from main app to loop app
+      {
+        std::string transfer_name = "toloop_Transfer_" + var_name + "_" + _object_suffix;
+        InputParameters params = _factory.getValidParams("MultiAppPostprocessorTransfer");
+        params.set<MultiAppName>("multi_app") = getParam<MultiAppName>("multi_app");
+        params.set<PostprocessorName>("from_postprocessor") =
+            "Outlet_SideAverageValue_" + var_name + "_" + _object_suffix;
+        params.set<PostprocessorName>("to_postprocessor") =
+            "Inlet_SideAverageValue_" + var_name + "_" + _object_suffix;
+        params.set<MooseEnum>("direction") = "to_multiapp";
 
-            _problem->addTransfer("MultiAppPostprocessorTransfer", transfer_name, params);
-        }
+        _problem->addTransfer("MultiAppPostprocessorTransfer", transfer_name, params);
+      }
 
-        // from loop app to main app
-        {
-            std::string transfer_name = "fromloop_Transfer_" + var_name + "_" + _object_suffix;
-            InputParameters params = _factory.getValidParams("MultiAppPostprocessorTransfer");
-            params.set<MultiAppName>("multi_app") = getParam<MultiAppName>("multi_app");
-            params.set<PostprocessorName>("from_postprocessor") = "Outlet_SideAverageValue_"+var_name+"_"+_object_suffix;
-            params.set<PostprocessorName>("to_postprocessor") = "Inlet_SideAverageValue_"+var_name+"_"+_object_suffix;
-            params.set<MooseEnum>("direction") = "from_multiapp";
-            params.set<MooseEnum>("reduction_type") = "average";
+      // from loop app to main app
+      {
+        std::string transfer_name = "fromloop_Transfer_" + var_name + "_" + _object_suffix;
+        InputParameters params = _factory.getValidParams("MultiAppPostprocessorTransfer");
+        params.set<MultiAppName>("multi_app") = getParam<MultiAppName>("multi_app");
+        params.set<PostprocessorName>("from_postprocessor") =
+            "Outlet_SideAverageValue_" + var_name + "_" + _object_suffix;
+        params.set<PostprocessorName>("to_postprocessor") =
+            "Inlet_SideAverageValue_" + var_name + "_" + _object_suffix;
+        params.set<MooseEnum>("direction") = "from_multiapp";
+        params.set<MooseEnum>("reduction_type") = "average";
 
-            _problem->addTransfer("MultiAppPostprocessorTransfer", transfer_name, params);
-        }
+        _problem->addTransfer("MultiAppPostprocessorTransfer", transfer_name, params);
+      }
     }
   }
 }
