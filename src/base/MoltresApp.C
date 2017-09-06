@@ -185,10 +185,12 @@ MoltresApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
   syntax.registerActionSyntax("NtAction", "Nt");
 
   registerAction(PrecursorAction, "add_kernel");
+  registerAction(PrecursorAction, "add_postprocessor");
   registerAction(PrecursorAction, "add_bc");
   registerAction(PrecursorAction, "add_variable");
   registerAction(PrecursorAction, "add_ic");
   registerAction(PrecursorAction, "add_dg_kernel");
+  registerAction(PrecursorAction, "add_transfer");
   registerAction(PrecursorAction, "check_copy_nodal_vars");
   registerAction(PrecursorAction, "copy_nodal_vars");
   registerAction(NtAction, "add_kernel");

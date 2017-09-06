@@ -22,6 +22,12 @@ public:
   PrecursorAction(const InputParameters & params);
 
   virtual void act();
+  virtual void kernelAct(const unsigned & op, const std::string & var_name);
+  virtual void bcAct(const std::string & var_name);
+  virtual void dgKernelAct(const std::string & var_name);
+  virtual void icAct(const std::string & var_name);
+  virtual void postAct(const std::string & var_name);
+  virtual void transferAct(const std::string & var_name);
 
 protected:
   /// number of precursor groups

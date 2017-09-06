@@ -51,6 +51,10 @@ diri_temp=922
   nt_exp_form = false
   family = MONOMIAL
   order = CONSTANT
+  loop_precs = true
+  multi_app = loopApp
+  is_loopapp = false
+  inlet_boundaries = 'fuel_bottoms'
  [../]
 []
 
