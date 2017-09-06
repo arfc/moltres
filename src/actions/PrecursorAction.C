@@ -323,6 +323,7 @@ PrecursorAction::postAct(const std::string & var_name)
     params.set<std::vector<VariableName>>("variable") = varvec;
     params.set<std::vector<BoundaryName>>("boundary") =
         getParam<std::vector<BoundaryName>>("outlet_boundaries");
+    params.set<std::vector<OutputName>>("outputs") = {"none"};
 
     _problem->addPostprocessor("SideAverageValue", postproc_name, params);
   }
@@ -330,6 +331,7 @@ PrecursorAction::postAct(const std::string & var_name)
     std::string postproc_name = "Inlet_SideAverageValue_" + var_name + "_" + _object_suffix;
     InputParameters params = _factory.getValidParams("Receiver");
     params.set<MultiMooseEnum>("execute_on") = "timestep_begin";
+    params.set<std::vector<OutputName>>("outputs") = {"none"};
 
     _problem->addPostprocessor("Receiver", postproc_name, params);
   }
