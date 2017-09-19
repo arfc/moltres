@@ -3,9 +3,6 @@
 # Courant # = 0.5
 
 flow_velocity=0.5 # cm/s. See MSRE-properties.ods
-nt_scale=1e13
-ini_temp=922
-diri_temp=922
 
 [GlobalParams]
   num_groups = 0
@@ -54,28 +51,6 @@ diri_temp=922
     type = MatINSTemperatureTimeDerivative
     variable = temp
   [../]
-  # [./temp_source_fuel]
-  #   type = TransientFissionHeatSource
-  #   variable = temp
-  #   nt_scale=${nt_scale}
-  # [../]
-  # [./temp_source_mod]
-  #   type = GammaHeatSource
-  #   variable = temp
-  #   gamma = .0144 # Cammi .0144
-  #   block = 'moder'
-  #   average_fission_heat = 'average_fission_heat'
-  # [../]
-  # [./temp_diffusion]
-  #   type = MatDiffusion
-  #   D_name = 'k'
-  #   variable = temp
-  # [../]
-  # [./temp_advection_fuel]
-  #   type = ConservativeTemperatureAdvection
-  #   velocity = '${flow_velocity} 0 0'
-  #   variable = temp
-  # [../]
 []
 
 [DGKernels]
@@ -160,8 +135,6 @@ diri_temp=922
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
   petsc_options_value = 'asm      lu           1               preonly       1e-3'
-  # petsc_options_iname = '-snes_type'
-  # petsc_options_value = 'test'
 
   [./TimeStepper]
     type = ConstantDT
