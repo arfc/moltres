@@ -224,8 +224,8 @@ diri_temp=922
 
   solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type -snes_linesearch_minlambda'
-  petsc_options_value = 'lu       NONZERO               1e-10                   preonly   1e-3'
+  petsc_options_iname = '-pc_type -pc_factor_shift_type'
+  petsc_options_value = 'lu       NONZERO'
   line_search = 'none'
    # petsc_options_iname = '-snes_type'
   # petsc_options_value = 'test'
