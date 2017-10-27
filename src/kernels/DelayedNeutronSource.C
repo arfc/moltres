@@ -11,6 +11,7 @@ validParams<DelayedNeutronSource>()
   params.addRequiredCoupledVar("pre_concs", "All the variables that hold the precursor "
                                             "concentrations. These MUST be listed by increasing "
                                             "group number.");
+  params.addRequiredParam<unsigned int>("group_number","neutron energy group number for chi_d");
   return params;
 }
 
@@ -19,6 +20,8 @@ DelayedNeutronSource::DelayedNeutronSource(const InputParameters & parameters)
     ScalarTransportBase(parameters),
     _decay_constant(getMaterialProperty<std::vector<Real>>("decay_constant")),
     _d_decay_constant_d_temp(getMaterialProperty<std::vector<Real>>("d_decay_constant_d_temp")),
+    _group(getParam<unsigned int>("group_number")),
+    _chi_d(getMaterialProperty<std::vector<Real>>("chi_d")),
     _num_precursor_groups(getParam<unsigned int>("num_precursor_groups")),
     _temp_id(coupled("temperature")),
     _temp(coupledValue("temperature"))
@@ -44,7 +47,7 @@ DelayedNeutronSource::computeQpResidual()
   for (unsigned int i = 0; i < _num_precursor_groups; ++i)
     r += -_decay_constant[_qp][i] * computeConcentration((*_pre_concs[i]), _qp);
 
-  return _test[_i][_qp] * r;
+  return _chi_d[_qp][_group-1] * _test[_i][_qp] * r;
 }
 
 Real
@@ -72,5 +75,5 @@ DelayedNeutronSource::computeQpOffDiagJacobian(unsigned int jvar)
       jac += -_test[_i][_qp] * computeConcentration((*_pre_concs[i]), _qp) *
              _d_decay_constant_d_temp[_qp][i] * _phi[_j][_qp];
 
-  return jac;
+  return _chi_d[_qp][_group-1] * jac;
 }

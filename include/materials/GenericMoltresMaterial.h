@@ -70,6 +70,7 @@ protected:
   MaterialProperty<std::vector<Real>> & _diffcoef;
   MaterialProperty<std::vector<Real>> & _recipvel;
   MaterialProperty<std::vector<Real>> & _chi;
+  MaterialProperty<std::vector<Real>> & _chi_d;
   MaterialProperty<std::vector<Real>> & _gtransfxs;
   MaterialProperty<std::vector<Real>> & _beta_eff;
   MaterialProperty<Real> & _beta;
@@ -81,6 +82,7 @@ protected:
   MaterialProperty<std::vector<Real>> & _d_diffcoef_d_temp;
   MaterialProperty<std::vector<Real>> & _d_recipvel_d_temp;
   MaterialProperty<std::vector<Real>> & _d_chi_d_temp;
+  MaterialProperty<std::vector<Real>> & _d_chi_d_d_temp;
   MaterialProperty<std::vector<Real>> & _d_gtransfxs_d_temp;
   MaterialProperty<std::vector<Real>> & _d_beta_eff_d_temp;
   MaterialProperty<Real> & _d_beta_d_temp;
@@ -112,6 +114,7 @@ protected:
   std::vector<std::vector<Real>> _diffcoeff_consts = std::vector<std::vector<Real>>(2);
   std::vector<std::vector<Real>> _recipvel_consts = std::vector<std::vector<Real>>(2);
   std::vector<std::vector<Real>> _chi_consts = std::vector<std::vector<Real>>(2);
+  std::vector<std::vector<Real>> _chi_d_consts = std::vector<std::vector<Real>>(2);
   std::vector<std::vector<Real>> _gtransfxs_consts = std::vector<std::vector<Real>>(2);
   std::vector<std::vector<Real>> _beta_eff_consts = std::vector<std::vector<Real>>(2);
   std::vector<std::vector<Real>> _decay_constants_consts = std::vector<std::vector<Real>>(2);

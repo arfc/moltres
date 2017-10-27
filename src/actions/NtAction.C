@@ -219,7 +219,7 @@ NtAction::act()
 
       // Set up DelayedNeutronSource
 
-      if (getParam<bool>("account_delayed") && op == 1)
+      if ( getParam<bool>("account_delayed") )
       {
         InputParameters params = _factory.getValidParams("DelayedNeutronSource");
         params.set<NonlinearVariableName>("variable") = var_name;
