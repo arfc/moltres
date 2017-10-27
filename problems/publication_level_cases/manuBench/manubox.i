@@ -1,6 +1,3 @@
-mu=1.5
-rho=2.5
-
 [GlobalParams]
   # neutronics
   num_groups=6
@@ -21,7 +18,7 @@ rho=2.5
   u = vel_x
   v = vel_y
   p = p
-  alpha = 1e-6
+  alpha = 1e-6 # stabilisation parameter
   order = FIRST
   family = LAGRANGE
 []
@@ -118,16 +115,9 @@ rho=2.5
     u = ux
     v = uy
   [../]
-  [./buoyancy_x]
-    type = INSBoussinesqBodyForce
-    variable = ux
-    dT = deltaT
-    component = 1
-    temperature = temp
-  [../]
   [./buoyancy_y]
     type = INSBoussinesqBodyForce
-    variable = uy
+    variable = vel_y
     dT = deltaT
     component = 1
     temperature = temp
@@ -155,27 +145,25 @@ rho=2.5
 []
 
 [Materials]
+  # alpha = coefficient of thermal expansion where rho  = rho0 -alpha * rho0 * delta T
+  # Dr. Aufiero uses nu rather than mu, (kinematic rather than absolute viscosity)
+  # likewise, \rho c_p is given rather than separate \rho, c_p
+  # accordingly, we let \rho = 1 to obtain equivalent results
+  # also, Manu gives a length expansion coefficient. Boussinesq approximations
+  # typically use an expansion coefficient with units 1/K, but for mass instead.
+  # The relation between the two is alpha = -3 beta, if linearized.
+  # Also, had to use Pr = mu * cp / k
   [./const]
     type = GenericConstantMaterial
-    # alpha = coefficient of thermal expansion where rho  = rho0 -alpha * rho0 * delta T
-    # Dr. Aufiero uses nu rather than mu, (kinematic rather than absolute viscosity)
-    # likewise, \rho c_p is given rather than separate \rho, c_p
-    # accordingly, we let \rho = 1 to obtain equivalent results
-    # also, Manu gives a length expansion coefficient. Boussinesq approximations
-    # typically use an expansion coefficient with units 1/K, but for mass instead.
-    # The relation between the two is alpha = -3 beta, if linearized.
-    #
-    # Also, had to use Pr = mu * cp / k
     prop_names = 'mu     rho alpha   k         cp'
     prop_values = '0.025 1.0 6.0e-4  0.5  6.15e6'
   [../]
+
   [./fuelneutronicproperties]
     type = GenericMoltresMaterial
-    # means they're in this directory
-    # block = ?
     property_tables_root = './groupconstants/'
     interp_type = 'spline'
-  [..]
+  [../]
 []
 
 [Preconditioning]
@@ -232,5 +220,3 @@ rho=2.5
 [Debug]
   show_var_residual_norms = true
 []
-
-
