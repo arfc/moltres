@@ -1,9 +1,11 @@
+library_path=/home/gavin/projects/moose/modules/navier_stokes/lib/
+
 [GlobalParams]
   # neutronics
   num_groups=6
   num_precursor_groups=8
   use_exp_form = false
-  group_fluxes = 'gro1 gro2 gro3 gro4 gro5 gro6'
+  group_fluxes = 'group1 group2 group3 group4 group5 group6'
   temperature = temp
   sss2_input = false
   pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8'
@@ -47,13 +49,19 @@
 
   # velocities
   [./vel_x]
+    family = LAGRANGE
+    order = FIRST
   [../]
 
   [./vel_y]
+    family = LAGRANGE
+    order = FIRST
   [../]
 
   # pressure
   [./p]
+    family = LAGRANGE
+    order = FIRST
   [../]
 
   # temperature
@@ -70,7 +78,7 @@
   var_name_base = group
   vacuum_boundaries = 'top bottom left right'
   create_temperature_var = false
-  eigen = true
+  eigen = false
   power = 1e9
 []
 
@@ -78,13 +86,13 @@
   [./preblock]
     var_name_base = pre
     # block = 'fuel'
-    constant_velocity_values = true
-    u_def = vel_x
-    v_def = vel_y
-    w_def = 0
+    constant_velocity_values = false
     nt_exp_form = false
     family = MONOMIAL
     order = CONSTANT
+    outlet_boundaries = ''
+    uvel = vel_x
+    vvel = vel_y
   [../]
 []
 
@@ -112,8 +120,8 @@
   [./tempAdvectionDiffusion]
     type = INSTemperature
     variable = temp
-    u = ux
-    v = uy
+    u = vel_x
+    v = vel_y
   [../]
   [./buoyancy_y]
     type = INSBoussinesqBodyForce
@@ -139,6 +147,7 @@
   [../]
   [./p_pin]
     type=DirichletBC
+    boundary = 'pinned_node'
     variable = p
     value = 0
   [../]
@@ -162,7 +171,7 @@
   [./fuelneutronicproperties]
     type = GenericMoltresMaterial
     property_tables_root = './groupconstants/'
-    interp_type = 'spline'
+    interp_type = 'none' # 'spline'
   [../]
 []
 
@@ -170,7 +179,7 @@
   [./SMP]
     type = SMP
     full = true
-    solve_type = 'NEWTON'
+    solve_type = 'PJFNK'
   [../]
 []
 

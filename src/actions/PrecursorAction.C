@@ -14,9 +14,9 @@ validParams<PrecursorAction>()
                                         "specifies the total number of precursors to create");
   params.addRequiredParam<std::string>("var_name_base", "specifies the base name of the variables");
   params.addRequiredCoupledVar("temperature", "Name of temperature variable");
-  params.addParam<VariableName>("u", "Name of x-component of velocity");
-  params.addParam<VariableName>("v", "Name of y-component of velocity");
-  params.addParam<VariableName>("w", "Name of z-component of velocity");
+  params.addParam<NonlinearVariableName>("uvel", "Name of x-component of velocity");
+  params.addParam<NonlinearVariableName>("vvel", "Name of y-component of velocity");
+  params.addParam<NonlinearVariableName>("wvel", "Name of z-component of velocity");
   params.addParam<bool>("constant_velocity_values",
                         true,
                         "Whether the velocity components are constant with respect to space");
@@ -216,19 +216,43 @@ PrecursorAction::dgKernelAct(const std::string & var_name)
   }
   else
   {
-    InputParameters params = _factory.getValidParams("DGFunctionConvection");
-    params.set<NonlinearVariableName>("variable") = var_name;
-    if (isParamValid("kernel_block"))
-      params.set<std::vector<SubdomainName>>("block") =
-          getParam<std::vector<SubdomainName>>("kernel_block");
-    else if (isParamValid("block"))
-      params.set<std::vector<SubdomainName>>("block") =
-          getParam<std::vector<SubdomainName>>("block");
-    params.set<FunctionName>("vel_x_func") = getParam<FunctionName>("u_func");
-    params.set<FunctionName>("vel_y_func") = getParam<FunctionName>("v_func");
-    params.set<FunctionName>("vel_z_func") = getParam<FunctionName>("w_func");
-    std::string kernel_name = "DGFunctionConvection_" + var_name + "_" + _object_suffix;
-    _problem->addDGKernel("DGFunctionConvection", kernel_name, params);
+    if (isParamValid("uvel"))
+    {
+        // this stuff happens if you have navier stokes velocities to couple to, u,v,w.
+        InputParameters params = _factory.getValidParams("DGCoupledAdvection");
+        params.set<NonlinearVariableName>("variable") = var_name;
+        if (isParamValid("kernel_block"))
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("kernel_block");
+        else if (isParamValid("block"))
+          params.set<std::vector<SubdomainName>>("block") =
+              getParam<std::vector<SubdomainName>>("block");
+        params.set<std::vector<VariableName, std::allocator<VariableName> >>("uvel") = getParam<std::vector<VariableName, std::allocator<VariableName> >>("uvel");
+        if (isParamValid("vvel"))
+            params.set<NonlinearVariableName>("vvel") = getParam<NonlinearVariableName>("vvel");
+        if (isParamValid("wvel"))
+            params.set<NonlinearVariableName>("uvel") = getParam<NonlinearVariableName>("uvel");
+        std::string kernel_name = "DGCoupledAdvection_" + var_name + "_" + _object_suffix;
+        _problem->addDGKernel("DGCoupledAdvection", kernel_name, params);
+    }
+    else
+    {
+      // this stuff happens if no navier stokes velocities are available:
+      // use prespecified functions.
+      InputParameters params = _factory.getValidParams("DGFunctionConvection");
+      params.set<NonlinearVariableName>("variable") = var_name;
+      if (isParamValid("kernel_block"))
+        params.set<std::vector<SubdomainName>>("block") =
+            getParam<std::vector<SubdomainName>>("kernel_block");
+      else if (isParamValid("block"))
+        params.set<std::vector<SubdomainName>>("block") =
+            getParam<std::vector<SubdomainName>>("block");
+      params.set<FunctionName>("vel_x_func") = getParam<FunctionName>("u_func");
+      params.set<FunctionName>("vel_y_func") = getParam<FunctionName>("v_func");
+      params.set<FunctionName>("vel_z_func") = getParam<FunctionName>("w_func");
+      std::string kernel_name = "DGFunctionConvection_" + var_name + "_" + _object_suffix;
+      _problem->addDGKernel("DGFunctionConvection", kernel_name, params);
+    }
   }
 }
 
@@ -248,6 +272,11 @@ PrecursorAction::bcAct(const std::string & var_name)
 
     std::string bc_name = "OutflowBC_" + var_name + "_" + _object_suffix;
     _problem->addBoundaryCondition("OutflowBC", bc_name, params);
+  }
+  else if (isParamValid("uvel"))
+  {
+      mooseWarning("There's currently no DG transport OutflowBC using N-S velocities."
+                "Assuming reactor geometry like MSFR w/ no outflow.");
   }
   else
   {
