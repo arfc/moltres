@@ -218,22 +218,23 @@ PrecursorAction::dgKernelAct(const std::string & var_name)
   {
     if (isParamValid("uvel"))
     {
-        // this stuff happens if you have navier stokes velocities to couple to, u,v,w.
-        InputParameters params = _factory.getValidParams("DGCoupledAdvection");
-        params.set<NonlinearVariableName>("variable") = var_name;
-        if (isParamValid("kernel_block"))
-          params.set<std::vector<SubdomainName>>("block") =
-              getParam<std::vector<SubdomainName>>("kernel_block");
-        else if (isParamValid("block"))
-          params.set<std::vector<SubdomainName>>("block") =
-              getParam<std::vector<SubdomainName>>("block");
-        params.set<std::vector<VariableName, std::allocator<VariableName> >>("uvel") = getParam<std::vector<VariableName, std::allocator<VariableName> >>("uvel");
-        if (isParamValid("vvel"))
-            params.set<NonlinearVariableName>("vvel") = getParam<NonlinearVariableName>("vvel");
-        if (isParamValid("wvel"))
-            params.set<NonlinearVariableName>("uvel") = getParam<NonlinearVariableName>("uvel");
-        std::string kernel_name = "DGCoupledAdvection_" + var_name + "_" + _object_suffix;
-        _problem->addDGKernel("DGCoupledAdvection", kernel_name, params);
+      // this stuff happens if you have navier stokes velocities to couple to, u,v,w.
+      InputParameters params = _factory.getValidParams("DGCoupledAdvection");
+      params.set<NonlinearVariableName>("variable") = var_name;
+      if (isParamValid("kernel_block"))
+        params.set<std::vector<SubdomainName>>("block") =
+            getParam<std::vector<SubdomainName>>("kernel_block");
+      else if (isParamValid("block"))
+        params.set<std::vector<SubdomainName>>("block") =
+            getParam<std::vector<SubdomainName>>("block");
+      params.set<std::vector<VariableName>>("uvel") = {getParam<NonlinearVariableName>("uvel")};
+      if (isParamValid("vvel"))
+        params.set<std::vector<VariableName>>("vvel") = {getParam<NonlinearVariableName>("vvel")};
+      if (isParamValid("wvel"))
+        params.set<std::vector<NonlinearVariableName>>("wvel") = {
+            getParam<NonlinearVariableName>("wvel")};
+      std::string kernel_name = "DGCoupledAdvection_" + var_name + "_" + _object_suffix;
+      _problem->addDGKernel("DGCoupledAdvection", kernel_name, params);
     }
     else
     {
@@ -275,8 +276,8 @@ PrecursorAction::bcAct(const std::string & var_name)
   }
   else if (isParamValid("uvel"))
   {
-      mooseWarning("There's currently no DG transport OutflowBC using N-S velocities."
-                "Assuming reactor geometry like MSFR w/ no outflow.");
+    mooseWarning("There's currently no DG transport OutflowBC using N-S velocities."
+                 "Assuming reactor geometry like MSFR w/ no outflow.");
   }
   else
   {
