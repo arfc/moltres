@@ -231,8 +231,7 @@ PrecursorAction::dgKernelAct(const std::string & var_name)
       if (isParamValid("vvel"))
         params.set<std::vector<VariableName>>("vvel") = {getParam<NonlinearVariableName>("vvel")};
       if (isParamValid("wvel"))
-        params.set<std::vector<NonlinearVariableName>>("wvel") = {
-            getParam<NonlinearVariableName>("wvel")};
+        params.set<std::vector<VariableName>>("wvel") = {getParam<NonlinearVariableName>("wvel")};
       std::string kernel_name = "DGCoupledAdvection_" + var_name + "_" + _object_suffix;
       _problem->addDGKernel("DGCoupledAdvection", kernel_name, params);
     }
