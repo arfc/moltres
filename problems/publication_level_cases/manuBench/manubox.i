@@ -78,8 +78,7 @@ library_path=/home/gavin/projects/moose/modules/navier_stokes/lib/
   var_name_base = group
   vacuum_boundaries = 'top bottom left right'
   create_temperature_var = false
-  eigen = false
-  power = 1e9
+  eigen = true
 []
 
 [Precursors]
@@ -93,6 +92,7 @@ library_path=/home/gavin/projects/moose/modules/navier_stokes/lib/
     outlet_boundaries = ''
     uvel = vel_x
     vvel = vel_y
+    transient = false
   [../]
 []
 
@@ -129,6 +129,13 @@ library_path=/home/gavin/projects/moose/modules/navier_stokes/lib/
     dT = deltaT
     component = 1
     temperature = temp
+  [../]
+
+  [./heatRemoval]
+    type = ManuHX
+    variable = temp
+    tref = 900.0
+    htc  = 1.0
   [../]
 []
 
@@ -184,7 +191,19 @@ library_path=/home/gavin/projects/moose/modules/navier_stokes/lib/
 []
 
 [Executioner]
-  type = Steady
+  type = InversePowerMethod
+  max_power_iterations = 50
+
+  # fission power normalization:
+  normalization = powernorm
+  normal_factor = 1e9 # watts
+
+  # power iteration options
+  xdiff = 'group1diff'
+  bx_norm = 'bnorm'
+  k0 = 1.0
+  pfactor = 1e-2
+
   petsc_options = '-snes_converged_reason -ksp_converged_reason'
   petsc_options_iname = '-pc_type -pc_factor_shift_type'
   petsc_options_value = 'lu NONZERO'
@@ -206,6 +225,20 @@ library_path=/home/gavin/projects/moose/modules/navier_stokes/lib/
 []
 
 [Postprocessors]
+  [./bnorm]
+    type = ElmIntegTotFissNtsPostprocessor
+    execute_on = linear
+  [../]
+  [./group1diff]
+    type = ElementL2Diff
+    variable = group1
+    execute_on = 'linear timestep_end'
+    use_displaced_mesh = false
+  [../]
+  [./powernorm]
+    type = ElmIntegTotFissHeatPostprocessor
+    execute_on = linear
+  [../]
 []
 
 [AuxVariables]

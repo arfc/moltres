@@ -25,6 +25,7 @@
 #include "CoupledScalarAdvection.h"
 #include "DivFreeCoupledScalarAdvection.h"
 #include "GammaHeatSource.h"
+#include "ManuHX.h"
 
 // Boundary conditions
 #include "LinLogPenaltyDirichletBC.h"
@@ -139,6 +140,7 @@ MoltresApp::registerObjects(Factory & factory)
   registerKernel(INSMomentumKEpsilon);
   registerKernel(INSBoussinesqBodyForce);
   registerKernel(GroupDiffusion);
+  registerKernel(ManuHX);
   registerBoundaryCondition(LinLogPenaltyDirichletBC);
   registerBoundaryCondition(ScalarAdvectionArtDiffNoBCBC);
   registerBoundaryCondition(VacuumConcBC);
