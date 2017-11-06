@@ -60,6 +60,7 @@ validParams<PrecursorAction>()
                                               "Kernel bock can be different from block.");
   params.addParam<MultiAppName>("multi_app", "Multiapp name for looping precursors.");
   params.addParam<bool>("is_loopapp", "if circulating precursors, whether this is loop app");
+  params.addParam<bool>("eigen", false, "whether neutronics is in eigenvalue calculation mode");
   return params;
 }
 
@@ -151,6 +152,7 @@ PrecursorAction::kernelAct(const unsigned & op, const std::string & var_name)
       params.set<std::vector<SubdomainName>>("block") =
           getParam<std::vector<SubdomainName>>("block");
     params.set<bool>("use_exp_form") = getParam<bool>("nt_exp_form");
+    params.set<bool>("eigen") = getParam<bool>("eigen");
 
     std::string kernel_name = "PrecursorSource_" + var_name + "_" + _object_suffix;
     _problem->addKernel("PrecursorSource", kernel_name, params);

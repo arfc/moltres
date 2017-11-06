@@ -7,6 +7,7 @@
 
 // Kernels
 #include "DelayedNeutronSource.h"
+#include "DelayedNeutronEigenSource.h"
 #include "ScalarTransportTimeDerivative.h"
 #include "ScalarAdvectionArtDiff.h"
 #include "PrecursorDecay.h"
@@ -122,6 +123,7 @@ void
 MoltresApp::registerObjects(Factory & factory)
 {
   registerKernel(DelayedNeutronSource);
+  registerKernel(DelayedNeutronEigenSource);
   registerKernel(SigmaR);
   registerKernel(GammaHeatSource);
   registerKernel(ScalarTransportTimeDerivative);

@@ -201,7 +201,6 @@ library_path=/home/gavin/projects/moose/modules/navier_stokes/lib/
   # power iteration options
   xdiff = 'group1diff'
   bx_norm = 'bnorm'
-  k0 = 1.0
   pfactor = 1e-2
 
   petsc_options = '-snes_converged_reason -ksp_converged_reason'
