@@ -21,11 +21,10 @@ library_path=/home/gavin/projects/moose/modules/navier_stokes/lib/
   ymax = 1.0
   elem_type = QUAD9
   nx = 20
-  ny = 20
+  ny = 20 
 []
 
 [Variables]
-
   # temperature
   [./temp]
     family = LAGRANGE
@@ -41,6 +40,7 @@ library_path=/home/gavin/projects/moose/modules/navier_stokes/lib/
   vacuum_boundaries = 'top bottom left right'
   create_temperature_var = false
   eigen = true
+  scaling = 1e-10
 []
 
 [Precursors]
@@ -60,12 +60,18 @@ library_path=/home/gavin/projects/moose/modules/navier_stokes/lib/
 []
 
 [Kernels]
-  [./heatRemoval]
-    type = ManuHX
-    variable = temp
-    tref = 900.0
-    htc  = 1.0
-  [../]
+    [./heating]
+        type = TransientFissionHeatSource
+        variable = temp
+        group_fluxes = 'group1 group2 group3 group4 group5 group6'
+    [../]
+
+    [./heatRemoval]
+      type = ManuHX
+      variable = temp
+      tref = 900.0
+      htc  = 1.0
+    [../]
 []
 
 [BCs]
@@ -117,12 +123,11 @@ library_path=/home/gavin/projects/moose/modules/navier_stokes/lib/
   petsc_options = '-snes_converged_reason -ksp_converged_reason'
   petsc_options_iname = '-pc_type -pc_factor_shift_type'
   petsc_options_value = 'lu NONZERO'
-  line_search = 'none'
   nl_rel_tol = 1e-12
   nl_abs_tol = 1e-13
   nl_max_its = 6
   l_tol = 1e-6
-  l_max_its = 500
+  l_max_its = 100
 []
 
 [Outputs]
