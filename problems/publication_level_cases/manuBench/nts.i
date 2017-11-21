@@ -17,7 +17,7 @@
   ymax = 1.0
   elem_type = QUAD9
   nx = 20
-  ny = 20 
+  ny = 20
 []
 
 [Nt]
