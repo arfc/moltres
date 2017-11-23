@@ -836,23 +836,15 @@ GenericMoltresMaterial::computeQpProperties()
   _d_beta_eff_d_temp[_qp].resize(_vec_lengths["BETA_EFF"]);
   _d_decay_constant_d_temp[_qp].resize(_vec_lengths["DECAY_CONSTANT"]);
 
-  if (_interp_type == "spline")
-    splineComputeQpProperties();
-
-  else if (_interp_type == "monotone_cubic")
-    monotoneCubicComputeQpProperties();
-
-  else if (_interp_type == "linear")
-    linearComputeQpProperties();
-
-  else if (_interp_type == "bicubic_spline")
-    bicubicSplineComputeQpProperties();
-
-  else if (_interp_type == "least_squares")
-    leastSquaresComputeQpProperties();
-
-  else if (_interp_type == "none")
-    dummyComputeQpProperties();
+  switch(_interp_type)
+  {
+      case "spline" : splineComputeQpProperties();
+      case "monotone_cubic" : monotoneCubicComputeQpProperties();
+      case "linear" : linearComputeQpProperties();
+      case "bicubic_spline" : bicubicSplineComputeQpProperties();
+      case "least_squares" : leastSquaresComputeQpProperties();
+      case "none" : dummyComputeQpProperties();
+  }
 
   if (_perform_control && _peak_power_density > _peak_power_density_set_point)
     for (unsigned i = 0; i < _num_groups; ++i)
