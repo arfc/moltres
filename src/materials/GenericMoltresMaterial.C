@@ -16,7 +16,7 @@ validParams<GenericMoltresMaterial>()
                                     "The number of delayed neutron precursor groups.");
   params.addCoupledVar(
       "temperature", 937, "The temperature field for determining group constants.");
-  MooseEnum interp_type("bicubic_spline spline least_squares monotone_cubic linear none");
+  MooseEnum interp_type("bicubic_spline=0 spline=1 least_squares=2 monotone_cubic=3 linear=4 none=5");
   params.addRequiredParam<MooseEnum>(
       "interp_type", interp_type, "The type of interpolation to perform.");
   params.addParam<std::vector<Real>>("fuel_temp_points",
@@ -135,7 +135,6 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     _file_map["GTRANSFXS"] = "GTRANSFXS";
     _file_map["DECAY_CONSTANT"] = "DECAY_CONSTANT";
   }
-
   if (_interp_type == "least_squares")
     leastSquaresConstruct(property_tables_root, xsec_names);
 
@@ -167,13 +166,25 @@ GenericMoltresMaterial::dummyConstruct(std::string & property_tables_root,
   {
     std::vector<Real> temperature;
     std::string file_name = property_tables_root + _file_map[xsec_names[j]] + ".txt";
+    
     const std::string & file_name_ref = file_name;
     std::ifstream myfile(file_name_ref.c_str());
-
     auto o = _vec_lengths[xsec_names[j]];
 
     _xsec_map[xsec_names[j]].resize(o);
     _xsec_spline_interpolators[xsec_names[j]].resize(o);
+
+    //chi_d backwards compatibility on unit tests:
+    if (xsec_names[j]=="CHI_D" and not myfile.good())
+    {
+      for (decltype(o) k = 0; k < o; ++k)
+        _xsec_map["CHI_D"][k] = (Real)0.0L;
+
+      _xsec_map["CHI_D"][0] = (Real)1.0L;
+      mooseWarning("CHI_D data missing -> assume delayed neutrons born in top group for material" + _name);
+      continue;
+    }
+
     if (myfile.is_open())
     {
       myfile >> value;
@@ -194,18 +205,41 @@ GenericMoltresMaterial::splineConstruct(std::string & property_tables_root,
                                         std::vector<std::string> xsec_names)
 {
   Real value;
+  int tempLength;
+  bool onewarn = false;
+  std::vector<Real> oldtemperature;
   for (decltype(xsec_names.size()) j = 0; j < xsec_names.size(); ++j)
   {
     std::vector<Real> temperature;
     std::string file_name = property_tables_root + _file_map[xsec_names[j]] + ".txt";
     const std::string & file_name_ref = file_name;
     std::ifstream myfile(file_name_ref.c_str());
-
-    auto o = _vec_lengths[xsec_names[j]];
-
     std::map<std::string, std::vector<std::vector<Real>>> xsec_map;
+    auto o = _vec_lengths[xsec_names[j]];
     xsec_map[xsec_names[j]].resize(o);
     _xsec_spline_interpolators[xsec_names[j]].resize(o);
+
+    //chi_d backwards compatibility on unit tests:
+    if (xsec_names[j]=="CHI_D" and not myfile.good())
+    {
+      for (decltype(o) k = 0; k < o; ++k)
+        for (int i = 0; i < tempLength; ++i)
+          xsec_map["CHI_D"][k].push_back((Real)0.0L);
+
+      for (int i = 0; i < tempLength; ++i)
+        xsec_map["CHI_D"][0][i] = (Real)1.0L;
+      if (!onewarn)
+      {
+        mooseWarning("CHI_D data missing -> assume delayed neutrons born in top group for material" + _name);
+        onewarn = true;
+      }
+      for (decltype(o) k = 0; k < o; ++k)
+        _xsec_spline_interpolators[xsec_names[j]][k].setData(oldtemperature,
+                                                             xsec_map[xsec_names[j]][k]);
+      continue;
+    }
+
+
     if (myfile.is_open())
     {
       while (myfile >> value)
@@ -217,10 +251,14 @@ GenericMoltresMaterial::splineConstruct(std::string & property_tables_root,
           xsec_map[xsec_names[j]][k].push_back(value);
         }
       }
+      tempLength = temperature.size();
       myfile.close();
       for (decltype(o) k = 0; k < o; ++k)
+      {
+        oldtemperature = temperature;
         _xsec_spline_interpolators[xsec_names[j]][k].setData(temperature,
                                                              xsec_map[xsec_names[j]][k]);
+      }
     }
     else
       mooseError("Unable to open file " + file_name);
@@ -232,18 +270,36 @@ GenericMoltresMaterial::monotoneCubicConstruct(std::string & property_tables_roo
                                                std::vector<std::string> xsec_names)
 {
   Real value;
+  int tempLength;
+  bool onewarn = false;
   for (decltype(xsec_names.size()) j = 0; j < xsec_names.size(); ++j)
   {
     std::vector<Real> temperature;
     std::string file_name = property_tables_root + _file_map[xsec_names[j]] + ".txt";
     const std::string & file_name_ref = file_name;
     std::ifstream myfile(file_name_ref.c_str());
-
     auto o = _vec_lengths[xsec_names[j]];
-
     std::map<std::string, std::vector<std::vector<Real>>> xsec_map;
     xsec_map[xsec_names[j]].resize(o);
     _xsec_monotone_cubic_interpolators[xsec_names[j]].resize(o);
+
+    //chi_d backwards compatibility on unit tests:
+    if (xsec_names[j]=="CHI_D" and not myfile.good())
+    {
+      for (decltype(o) k = 0; k < o; ++k)
+        for (int i = 0; i < tempLength; ++i)
+          xsec_map["CHI_D"][k].push_back(0.0L);
+ 
+      for (int i = 0; i < tempLength; ++i)
+        xsec_map["CHI_D"][0][i] = 1.0L;
+      if (!onewarn)
+      {
+        mooseWarning("CHI_D data missing -> assume delayed neutrons born in top group for material" + _name);
+        onewarn = true;
+      }
+      continue;
+    }
+
     if (myfile.is_open())
     {
       while (myfile >> value)
@@ -270,18 +326,36 @@ GenericMoltresMaterial::linearConstruct(std::string & property_tables_root,
                                         std::vector<std::string> xsec_names)
 {
   Real value;
+  int tempLength;
+  bool onewarn = false;
   for (decltype(xsec_names.size()) j = 0; j < xsec_names.size(); ++j)
   {
     std::vector<Real> temperature;
     std::string file_name = property_tables_root + _file_map[xsec_names[j]] + ".txt";
     const std::string & file_name_ref = file_name;
     std::ifstream myfile(file_name_ref.c_str());
-
     auto o = _vec_lengths[xsec_names[j]];
-
     std::map<std::string, std::vector<std::vector<Real>>> xsec_map;
     xsec_map[xsec_names[j]].resize(o);
     _xsec_linear_interpolators[xsec_names[j]].resize(o);
+    
+    //chi_d backwards compatibility on unit tests:
+    if (xsec_names[j]=="CHI_D" and not myfile.good())
+    {
+      for (decltype(o) k = 0; k < o; ++k)
+        for (int i = 0; i < tempLength; ++i)
+          xsec_map["CHI_D"][k].push_back(0.0L);
+
+      for (int i = 0; i < tempLength; ++i)
+        xsec_map["CHI_D"][0][i] = 1.0L;
+      if (!onewarn)
+      {
+        mooseWarning("CHI_D data missing -> assume delayed neutrons born in top group for material" + _name);
+        onewarn = true;
+      }
+      continue;
+    }
+
     if (myfile.is_open())
     {
       while (myfile >> value)
@@ -836,17 +910,27 @@ GenericMoltresMaterial::computeQpProperties()
   _d_beta_eff_d_temp[_qp].resize(_vec_lengths["BETA_EFF"]);
   _d_decay_constant_d_temp[_qp].resize(_vec_lengths["DECAY_CONSTANT"]);
 
-  switch(_interp_type)
-  {
-      case "spline" : splineComputeQpProperties();
-      case "monotone_cubic" : monotoneCubicComputeQpProperties();
-      case "linear" : linearComputeQpProperties();
-      case "bicubic_spline" : bicubicSplineComputeQpProperties();
-      case "least_squares" : leastSquaresComputeQpProperties();
-      case "none" : dummyComputeQpProperties();
-  }
+  if (_interp_type == "spline")
+    splineComputeQpProperties();
+
+  else if (_interp_type == "monotone_cubic")
+    monotoneCubicComputeQpProperties();
+
+  else if (_interp_type == "linear")
+    linearComputeQpProperties();
+
+  else if (_interp_type == "bicubic_spline")
+    bicubicSplineComputeQpProperties();
+
+  else if (_interp_type == "least_squares")
+    leastSquaresComputeQpProperties();
+
+  else if (_interp_type == "none")
+    dummyComputeQpProperties();
+
 
   if (_perform_control && _peak_power_density > _peak_power_density_set_point)
     for (unsigned i = 0; i < _num_groups; ++i)
       _remxs[_qp][i] += _controller_gain * (_peak_power_density - _peak_power_density_set_point);
 }
+

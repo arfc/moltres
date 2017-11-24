@@ -84,6 +84,7 @@ diri_temp=922
     type = DelayedNeutronSource
     variable = group1
     block = 'fuel'
+    group_number=1
   [../]
   [./inscatter_group1]
     type = InScatter
