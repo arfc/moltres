@@ -166,7 +166,7 @@ GenericMoltresMaterial::dummyConstruct(std::string & property_tables_root,
   {
     std::vector<Real> temperature;
     std::string file_name = property_tables_root + _file_map[xsec_names[j]] + ".txt";
-    
+
     const std::string & file_name_ref = file_name;
     std::ifstream myfile(file_name_ref.c_str());
     auto o = _vec_lengths[xsec_names[j]];
@@ -289,7 +289,7 @@ GenericMoltresMaterial::monotoneCubicConstruct(std::string & property_tables_roo
       for (decltype(o) k = 0; k < o; ++k)
         for (int i = 0; i < tempLength; ++i)
           xsec_map["CHI_D"][k].push_back(0.0L);
- 
+
       for (int i = 0; i < tempLength; ++i)
         xsec_map["CHI_D"][0][i] = 1.0L;
       if (!onewarn)
@@ -338,7 +338,7 @@ GenericMoltresMaterial::linearConstruct(std::string & property_tables_root,
     std::map<std::string, std::vector<std::vector<Real>>> xsec_map;
     xsec_map[xsec_names[j]].resize(o);
     _xsec_linear_interpolators[xsec_names[j]].resize(o);
-    
+
     //chi_d backwards compatibility on unit tests:
     if (xsec_names[j]=="CHI_D" and not myfile.good())
     {
