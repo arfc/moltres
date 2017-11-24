@@ -40,6 +40,24 @@ class GenericMoltresMaterial : public GenericConstantMaterial
 public:
   GenericMoltresMaterial(const InputParameters & parameters);
 
+  // correspond to descriptions above
+  enum INTERPOLATOR
+  {
+    BICUBIC,
+    SPLINE,
+    MONOTONE_CUBIC,
+    LINEAR,
+    NONE,
+    LSQ
+  };
+
+  // returns a MooseEnum corresponding to the above enum
+  static MooseEnum interpTypes()
+  {
+    return MooseEnum("bicubic=0 spline=1"
+                     " monotone_cubic=2 linear=3 none=4 least_squares=5");
+  }
+
 protected:
   void dummyConstruct(std::string & property_tables_root, std::vector<std::string> xsec_names);
   void splineConstruct(std::string & property_tables_root, std::vector<std::string> xsec_names);

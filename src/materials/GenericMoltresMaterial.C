@@ -16,9 +16,9 @@ validParams<GenericMoltresMaterial>()
                                     "The number of delayed neutron precursor groups.");
   params.addCoupledVar(
       "temperature", 937, "The temperature field for determining group constants.");
-  MooseEnum interp_type("bicubic_spline=0 spline=1 least_squares=2 monotone_cubic=3 linear=4 none=5");
-  params.addRequiredParam<MooseEnum>(
-      "interp_type", interp_type, "The type of interpolation to perform.");
+  params.addRequiredParam<MooseEnum>("interp_type",
+                                     GenericMoltresMaterial::interpTypes(),
+                                     "The type of interpolation to perform.");
   params.addParam<std::vector<Real>>("fuel_temp_points",
                                      "The fuel temperature interpolation points.");
   params.addParam<std::vector<Real>>("mod_temp_points",
@@ -135,26 +135,23 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     _file_map["GTRANSFXS"] = "GTRANSFXS";
     _file_map["DECAY_CONSTANT"] = "DECAY_CONSTANT";
   }
-  if (_interp_type == "least_squares")
-    leastSquaresConstruct(property_tables_root, xsec_names);
-
-  else if (_interp_type == "spline")
-    splineConstruct(property_tables_root, xsec_names);
-
-  else if (_interp_type == "monotone_cubic")
-    monotoneCubicConstruct(property_tables_root, xsec_names);
-
-  else if (_interp_type == "bicubic_spline")
-    bicubicSplineConstruct(property_tables_root, xsec_names, parameters);
-
-  else if (_interp_type == "linear")
-    linearConstruct(property_tables_root, xsec_names);
-
-  else if (_interp_type == "none")
-    dummyConstruct(property_tables_root, xsec_names);
-
-  else
-    mooseError("Wrong enum type");
+  switch (_interp_type)
+  {
+    case LSQ:
+      leastSquaresConstruct(property_tables_root, xsec_names);
+    case SPLINE:
+      splineConstruct(property_tables_root, xsec_names);
+    case MONOTONE_CUBIC:
+      monotoneCubicConstruct(property_tables_root, xsec_names);
+    case BICUBIC:
+      bicubicSplineConstruct(property_tables_root, xsec_names, parameters);
+    case LINEAR:
+      linearConstruct(property_tables_root, xsec_names);
+    case NONE:
+      dummyConstruct(property_tables_root, xsec_names);
+    default:
+      mooseError("Wrong enum type");
+  }
 }
 
 void
@@ -178,9 +175,10 @@ GenericMoltresMaterial::dummyConstruct(std::string & property_tables_root,
     if (xsec_names[j]=="CHI_D" and not myfile.good())
     {
       for (decltype(o) k = 0; k < o; ++k)
-        _xsec_map["CHI_D"][k] = (Real)0.0L;
+        if (o != 0)
+          _xsec_map["CHI_D"][k] = 0.0;
 
-      _xsec_map["CHI_D"][0] = (Real)1.0L;
+      _xsec_map["CHI_D"][0] = 1.0;
       mooseWarning("CHI_D data missing -> assume delayed neutrons born in top group for material" + _name);
       continue;
     }
@@ -224,10 +222,13 @@ GenericMoltresMaterial::splineConstruct(std::string & property_tables_root,
     {
       for (decltype(o) k = 0; k < o; ++k)
         for (int i = 0; i < tempLength; ++i)
-          xsec_map["CHI_D"][k].push_back((Real)0.0L);
+          xsec_map["CHI_D"][k].push_back(0.0);
 
       for (int i = 0; i < tempLength; ++i)
-        xsec_map["CHI_D"][0][i] = (Real)1.0L;
+        // o!=0 avoids segfault for prec-only problems (diracHX test)
+        if (o != 0)
+          xsec_map["CHI_D"][0][i] = 1.0;
+
       if (!onewarn)
       {
         mooseWarning("CHI_D data missing -> assume delayed neutrons born in top group for material" + _name);
@@ -288,10 +289,11 @@ GenericMoltresMaterial::monotoneCubicConstruct(std::string & property_tables_roo
     {
       for (decltype(o) k = 0; k < o; ++k)
         for (int i = 0; i < tempLength; ++i)
-          xsec_map["CHI_D"][k].push_back(0.0L);
+          xsec_map["CHI_D"][k].push_back(0.0);
 
       for (int i = 0; i < tempLength; ++i)
-        xsec_map["CHI_D"][0][i] = 1.0L;
+        if (o != 0)
+          xsec_map["CHI_D"][0][i] = 1.0;
       if (!onewarn)
       {
         mooseWarning("CHI_D data missing -> assume delayed neutrons born in top group for material" + _name);
@@ -344,10 +346,12 @@ GenericMoltresMaterial::linearConstruct(std::string & property_tables_root,
     {
       for (decltype(o) k = 0; k < o; ++k)
         for (int i = 0; i < tempLength; ++i)
-          xsec_map["CHI_D"][k].push_back(0.0L);
+          xsec_map["CHI_D"][k].push_back(0.0);
 
       for (int i = 0; i < tempLength; ++i)
-        xsec_map["CHI_D"][0][i] = 1.0L;
+        if (o != 0)
+          xsec_map["CHI_D"][0][i] = 1.0;
+
       if (!onewarn)
       {
         mooseWarning("CHI_D data missing -> assume delayed neutrons born in top group for material" + _name);
@@ -910,24 +914,21 @@ GenericMoltresMaterial::computeQpProperties()
   _d_beta_eff_d_temp[_qp].resize(_vec_lengths["BETA_EFF"]);
   _d_decay_constant_d_temp[_qp].resize(_vec_lengths["DECAY_CONSTANT"]);
 
-  if (_interp_type == "spline")
-    splineComputeQpProperties();
-
-  else if (_interp_type == "monotone_cubic")
-    monotoneCubicComputeQpProperties();
-
-  else if (_interp_type == "linear")
-    linearComputeQpProperties();
-
-  else if (_interp_type == "bicubic_spline")
-    bicubicSplineComputeQpProperties();
-
-  else if (_interp_type == "least_squares")
-    leastSquaresComputeQpProperties();
-
-  else if (_interp_type == "none")
-    dummyComputeQpProperties();
-
+  switch (_interp_type)
+  {
+    case LSQ:
+      leastSquaresComputeQpProperties();
+    case SPLINE:
+      splineComputeQpProperties();
+    case MONOTONE_CUBIC:
+      monotoneCubicComputeQpProperties();
+    case BICUBIC:
+      bicubicSplineComputeQpProperties();
+    case LINEAR:
+      linearComputeQpProperties();
+    case NONE:
+      dummyComputeQpProperties();
+  }
 
   if (_perform_control && _peak_power_density > _peak_power_density_set_point)
     for (unsigned i = 0; i < _num_groups; ++i)
