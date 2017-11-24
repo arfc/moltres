@@ -139,18 +139,25 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
   {
     case LSQ:
       leastSquaresConstruct(property_tables_root, xsec_names);
+      break;
     case SPLINE:
       splineConstruct(property_tables_root, xsec_names);
+      break;
     case MONOTONE_CUBIC:
       monotoneCubicConstruct(property_tables_root, xsec_names);
+      break;
     case BICUBIC:
       bicubicSplineConstruct(property_tables_root, xsec_names, parameters);
+      break;
     case LINEAR:
       linearConstruct(property_tables_root, xsec_names);
+      break;
     case NONE:
       dummyConstruct(property_tables_root, xsec_names);
+      break;
     default:
       mooseError("Wrong enum type");
+      break;
   }
 }
 
@@ -918,16 +925,22 @@ GenericMoltresMaterial::computeQpProperties()
   {
     case LSQ:
       leastSquaresComputeQpProperties();
+      break;
     case SPLINE:
       splineComputeQpProperties();
+      break;
     case MONOTONE_CUBIC:
       monotoneCubicComputeQpProperties();
+      break;
     case BICUBIC:
       bicubicSplineComputeQpProperties();
+      break;
     case LINEAR:
       linearComputeQpProperties();
+      break;
     case NONE:
       dummyComputeQpProperties();
+      break;
   }
 
   if (_perform_control && _peak_power_density > _peak_power_density_set_point)
