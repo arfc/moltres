@@ -7,6 +7,7 @@
 
 // Kernels
 #include "DelayedNeutronSource.h"
+#include "DelayedNeutronEigenSource.h"
 #include "ScalarTransportTimeDerivative.h"
 #include "ScalarAdvectionArtDiff.h"
 #include "PrecursorDecay.h"
@@ -25,6 +26,7 @@
 #include "CoupledScalarAdvection.h"
 #include "DivFreeCoupledScalarAdvection.h"
 #include "GammaHeatSource.h"
+#include "ManuHX.h"
 
 // Boundary conditions
 #include "LinLogPenaltyDirichletBC.h"
@@ -121,6 +123,7 @@ void
 MoltresApp::registerObjects(Factory & factory)
 {
   registerKernel(DelayedNeutronSource);
+  registerKernel(DelayedNeutronEigenSource);
   registerKernel(SigmaR);
   registerKernel(GammaHeatSource);
   registerKernel(ScalarTransportTimeDerivative);
@@ -139,6 +142,7 @@ MoltresApp::registerObjects(Factory & factory)
   registerKernel(INSMomentumKEpsilon);
   registerKernel(INSBoussinesqBodyForce);
   registerKernel(GroupDiffusion);
+  registerKernel(ManuHX);
   registerBoundaryCondition(LinLogPenaltyDirichletBC);
   registerBoundaryCondition(ScalarAdvectionArtDiffNoBCBC);
   registerBoundaryCondition(VacuumConcBC);
