@@ -219,22 +219,44 @@ NtAction::act()
 
       // Set up DelayedNeutronSource
 
-      if (getParam<bool>("account_delayed") && op == 1)
+      if ( getParam<bool>("account_delayed") )
       {
-        InputParameters params = _factory.getValidParams("DelayedNeutronSource");
-        params.set<NonlinearVariableName>("variable") = var_name;
-        params.set<unsigned int>("group_number") = op;
-        if (isParamValid("block"))
-          params.set<std::vector<SubdomainName>>("block") =
-              getParam<std::vector<SubdomainName>>("block");
-        if (isParamValid("use_exp_form"))
-          params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
-        std::vector<std::string> include = {"temperature", "pre_concs"};
-        params.applySpecificParameters(parameters(), include);
-        params.set<unsigned int>("num_precursor_groups") = _num_precursor_groups;
+        if (!getParam<bool>("eigen"))
+        {
+            // not the eigenkernel:
+            InputParameters params = _factory.getValidParams("DelayedNeutronSource");
+            params.set<NonlinearVariableName>("variable") = var_name;
+            params.set<unsigned int>("group_number") = op;
+            if (isParamValid("block"))
+              params.set<std::vector<SubdomainName>>("block") =
+                  getParam<std::vector<SubdomainName>>("block");
+            if (isParamValid("use_exp_form"))
+              params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
+            std::vector<std::string> include = {"temperature", "pre_concs"};
+            params.applySpecificParameters(parameters(), include);
+            params.set<unsigned int>("num_precursor_groups") = _num_precursor_groups;
 
-        std::string kernel_name = "DelayedNeutronSource_" + var_name;
-        _problem->addKernel("DelayedNeutronSource", kernel_name, params);
+            std::string kernel_name = "DelayedNeutronSource_" + var_name;
+            _problem->addKernel("DelayedNeutronSource", kernel_name, params);
+        }
+        else
+        {
+            // must also scale precursor source term by 1/k:
+            InputParameters params = _factory.getValidParams("DelayedNeutronEigenSource");
+            params.set<NonlinearVariableName>("variable") = var_name;
+            params.set<unsigned int>("group_number") = op;
+            if (isParamValid("block"))
+              params.set<std::vector<SubdomainName>>("block") =
+                  getParam<std::vector<SubdomainName>>("block");
+            if (isParamValid("use_exp_form"))
+              params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
+            std::vector<std::string> include = {"temperature", "pre_concs"};
+            params.applySpecificParameters(parameters(), include);
+            params.set<unsigned int>("num_precursor_groups") = _num_precursor_groups;
+
+            std::string kernel_name = "DelayedNeutronEigenSource_" + var_name;
+            _problem->addKernel("DelayedNeutronEigenSource", kernel_name, params);
+        }
       }
     }
 

@@ -16,9 +16,9 @@ validParams<GenericMoltresMaterial>()
                                     "The number of delayed neutron precursor groups.");
   params.addCoupledVar(
       "temperature", 937, "The temperature field for determining group constants.");
-  MooseEnum interp_type("bicubic_spline spline least_squares monotone_cubic linear none");
-  params.addRequiredParam<MooseEnum>(
-      "interp_type", interp_type, "The type of interpolation to perform.");
+  params.addRequiredParam<MooseEnum>("interp_type",
+                                     GenericMoltresMaterial::interpTypes(),
+                                     "The type of interpolation to perform.");
   params.addParam<std::vector<Real>>("fuel_temp_points",
                                      "The fuel temperature interpolation points.");
   params.addParam<std::vector<Real>>("mod_temp_points",
@@ -54,6 +54,7 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     _diffcoef(declareProperty<std::vector<Real>>("diffcoef")),
     _recipvel(declareProperty<std::vector<Real>>("recipvel")),
     _chi(declareProperty<std::vector<Real>>("chi")),
+    _chi_d(declareProperty<std::vector<Real>>("chi_d")),
     _gtransfxs(declareProperty<std::vector<Real>>("gtransfxs")),
     _beta_eff(declareProperty<std::vector<Real>>("beta_eff")),
     _beta(declareProperty<Real>("beta")),
@@ -66,6 +67,7 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     _d_diffcoef_d_temp(declareProperty<std::vector<Real>>("d_diffcoef_d_temp")),
     _d_recipvel_d_temp(declareProperty<std::vector<Real>>("d_recipvel_d_temp")),
     _d_chi_d_temp(declareProperty<std::vector<Real>>("d_chi_d_temp")),
+    _d_chi_d_d_temp(declareProperty<std::vector<Real>>("d_chi_d_temp")),
     _d_gtransfxs_d_temp(declareProperty<std::vector<Real>>("d_gtransfxs_d_temp")),
     _d_beta_eff_d_temp(declareProperty<std::vector<Real>>("d_beta_eff_d_temp")),
     _d_beta_d_temp(declareProperty<Real>("d_beta_d_temp")),
@@ -91,6 +93,7 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
                                       "DIFFCOEF",
                                       "RECIPVEL",
                                       "CHI",
+                                      "CHI_D",
                                       "GTRANSFXS",
                                       "BETA_EFF",
                                       "DECAY_CONSTANT"};
@@ -117,6 +120,7 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     _file_map["FISSE"] = "KAPPA";
     _file_map["RECIPVEL"] = "INVV";
     _file_map["CHI"] = "CHIT";
+    _file_map["CHI_D"] = "CHID";
     _file_map["GTRANSFXS"] = "SP0";
     _file_map["DECAY_CONSTANT"] = "LAMBDA";
   }
@@ -127,30 +131,34 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     _file_map["FISSE"] = "FISSE";
     _file_map["RECIPVEL"] = "RECIPVEL";
     _file_map["CHI"] = "CHI";
+    _file_map["CHI_D"] = "CHI_D";
     _file_map["GTRANSFXS"] = "GTRANSFXS";
     _file_map["DECAY_CONSTANT"] = "DECAY_CONSTANT";
   }
-
-  if (_interp_type == "least_squares")
-    leastSquaresConstruct(property_tables_root, xsec_names);
-
-  else if (_interp_type == "spline")
-    splineConstruct(property_tables_root, xsec_names);
-
-  else if (_interp_type == "monotone_cubic")
-    monotoneCubicConstruct(property_tables_root, xsec_names);
-
-  else if (_interp_type == "bicubic_spline")
-    bicubicSplineConstruct(property_tables_root, xsec_names, parameters);
-
-  else if (_interp_type == "linear")
-    linearConstruct(property_tables_root, xsec_names);
-
-  else if (_interp_type == "none")
-    dummyConstruct(property_tables_root, xsec_names);
-
-  else
-    mooseError("Wrong enum type");
+  switch (_interp_type)
+  {
+    case LSQ:
+      leastSquaresConstruct(property_tables_root, xsec_names);
+      break;
+    case SPLINE:
+      splineConstruct(property_tables_root, xsec_names);
+      break;
+    case MONOTONE_CUBIC:
+      monotoneCubicConstruct(property_tables_root, xsec_names);
+      break;
+    case BICUBIC:
+      bicubicSplineConstruct(property_tables_root, xsec_names, parameters);
+      break;
+    case LINEAR:
+      linearConstruct(property_tables_root, xsec_names);
+      break;
+    case NONE:
+      dummyConstruct(property_tables_root, xsec_names);
+      break;
+    default:
+      mooseError("Wrong enum type");
+      break;
+  }
 }
 
 void
@@ -162,13 +170,26 @@ GenericMoltresMaterial::dummyConstruct(std::string & property_tables_root,
   {
     std::vector<Real> temperature;
     std::string file_name = property_tables_root + _file_map[xsec_names[j]] + ".txt";
+
     const std::string & file_name_ref = file_name;
     std::ifstream myfile(file_name_ref.c_str());
-
     auto o = _vec_lengths[xsec_names[j]];
 
     _xsec_map[xsec_names[j]].resize(o);
     _xsec_spline_interpolators[xsec_names[j]].resize(o);
+
+    //chi_d backwards compatibility on unit tests:
+    if (xsec_names[j]=="CHI_D" and not myfile.good())
+    {
+      for (decltype(o) k = 0; k < o; ++k)
+        if (o != 0)
+          _xsec_map["CHI_D"][k] = 0.0;
+
+      _xsec_map["CHI_D"][0] = 1.0;
+      mooseWarning("CHI_D data missing -> assume delayed neutrons born in top group for material" + _name);
+      continue;
+    }
+
     if (myfile.is_open())
     {
       myfile >> value;
@@ -189,18 +210,44 @@ GenericMoltresMaterial::splineConstruct(std::string & property_tables_root,
                                         std::vector<std::string> xsec_names)
 {
   Real value;
+  int tempLength;
+  bool onewarn = false;
+  std::vector<Real> oldtemperature;
   for (decltype(xsec_names.size()) j = 0; j < xsec_names.size(); ++j)
   {
     std::vector<Real> temperature;
     std::string file_name = property_tables_root + _file_map[xsec_names[j]] + ".txt";
     const std::string & file_name_ref = file_name;
     std::ifstream myfile(file_name_ref.c_str());
-
-    auto o = _vec_lengths[xsec_names[j]];
-
     std::map<std::string, std::vector<std::vector<Real>>> xsec_map;
+    auto o = _vec_lengths[xsec_names[j]];
     xsec_map[xsec_names[j]].resize(o);
     _xsec_spline_interpolators[xsec_names[j]].resize(o);
+
+    //chi_d backwards compatibility on unit tests:
+    if (xsec_names[j]=="CHI_D" and not myfile.good())
+    {
+      for (decltype(o) k = 0; k < o; ++k)
+        for (int i = 0; i < tempLength; ++i)
+          xsec_map["CHI_D"][k].push_back(0.0);
+
+      for (int i = 0; i < tempLength; ++i)
+        // o!=0 avoids segfault for prec-only problems (diracHX test)
+        if (o != 0)
+          xsec_map["CHI_D"][0][i] = 1.0;
+
+      if (!onewarn)
+      {
+        mooseWarning("CHI_D data missing -> assume delayed neutrons born in top group for material" + _name);
+        onewarn = true;
+      }
+      for (decltype(o) k = 0; k < o; ++k)
+        _xsec_spline_interpolators[xsec_names[j]][k].setData(oldtemperature,
+                                                             xsec_map[xsec_names[j]][k]);
+      continue;
+    }
+
+
     if (myfile.is_open())
     {
       while (myfile >> value)
@@ -212,10 +259,14 @@ GenericMoltresMaterial::splineConstruct(std::string & property_tables_root,
           xsec_map[xsec_names[j]][k].push_back(value);
         }
       }
+      tempLength = temperature.size();
       myfile.close();
       for (decltype(o) k = 0; k < o; ++k)
+      {
+        oldtemperature = temperature;
         _xsec_spline_interpolators[xsec_names[j]][k].setData(temperature,
                                                              xsec_map[xsec_names[j]][k]);
+      }
     }
     else
       mooseError("Unable to open file " + file_name);
@@ -227,18 +278,37 @@ GenericMoltresMaterial::monotoneCubicConstruct(std::string & property_tables_roo
                                                std::vector<std::string> xsec_names)
 {
   Real value;
+  int tempLength;
+  bool onewarn = false;
   for (decltype(xsec_names.size()) j = 0; j < xsec_names.size(); ++j)
   {
     std::vector<Real> temperature;
     std::string file_name = property_tables_root + _file_map[xsec_names[j]] + ".txt";
     const std::string & file_name_ref = file_name;
     std::ifstream myfile(file_name_ref.c_str());
-
     auto o = _vec_lengths[xsec_names[j]];
-
     std::map<std::string, std::vector<std::vector<Real>>> xsec_map;
     xsec_map[xsec_names[j]].resize(o);
     _xsec_monotone_cubic_interpolators[xsec_names[j]].resize(o);
+
+    //chi_d backwards compatibility on unit tests:
+    if (xsec_names[j]=="CHI_D" and not myfile.good())
+    {
+      for (decltype(o) k = 0; k < o; ++k)
+        for (int i = 0; i < tempLength; ++i)
+          xsec_map["CHI_D"][k].push_back(0.0);
+
+      for (int i = 0; i < tempLength; ++i)
+        if (o != 0)
+          xsec_map["CHI_D"][0][i] = 1.0;
+      if (!onewarn)
+      {
+        mooseWarning("CHI_D data missing -> assume delayed neutrons born in top group for material" + _name);
+        onewarn = true;
+      }
+      continue;
+    }
+
     if (myfile.is_open())
     {
       while (myfile >> value)
@@ -265,18 +335,38 @@ GenericMoltresMaterial::linearConstruct(std::string & property_tables_root,
                                         std::vector<std::string> xsec_names)
 {
   Real value;
+  int tempLength;
+  bool onewarn = false;
   for (decltype(xsec_names.size()) j = 0; j < xsec_names.size(); ++j)
   {
     std::vector<Real> temperature;
     std::string file_name = property_tables_root + _file_map[xsec_names[j]] + ".txt";
     const std::string & file_name_ref = file_name;
     std::ifstream myfile(file_name_ref.c_str());
-
     auto o = _vec_lengths[xsec_names[j]];
-
     std::map<std::string, std::vector<std::vector<Real>>> xsec_map;
     xsec_map[xsec_names[j]].resize(o);
     _xsec_linear_interpolators[xsec_names[j]].resize(o);
+
+    //chi_d backwards compatibility on unit tests:
+    if (xsec_names[j]=="CHI_D" and not myfile.good())
+    {
+      for (decltype(o) k = 0; k < o; ++k)
+        for (int i = 0; i < tempLength; ++i)
+          xsec_map["CHI_D"][k].push_back(0.0);
+
+      for (int i = 0; i < tempLength; ++i)
+        if (o != 0)
+          xsec_map["CHI_D"][0][i] = 1.0;
+
+      if (!onewarn)
+      {
+        mooseWarning("CHI_D data missing -> assume delayed neutrons born in top group for material" + _name);
+        onewarn = true;
+      }
+      continue;
+    }
+
     if (myfile.is_open())
     {
       while (myfile >> value)
@@ -418,6 +508,7 @@ GenericMoltresMaterial::leastSquaresConstruct(std::string & property_tables_root
   _diffcoeff_consts = xsec_map["DIFFCOEF"];
   _recipvel_consts = xsec_map["RECIPVEL"];
   _chi_consts = xsec_map["CHI"];
+  _chi_d_consts = xsec_map["CHI_D"];
   _gtransfxs_consts = xsec_map["GTRANSFXS"];
   _beta_eff_consts = xsec_map["BETA_EFF"];
   _decay_constants_consts = xsec_map["DECAY_CONSTANT"];
@@ -435,6 +526,7 @@ GenericMoltresMaterial::dummyComputeQpProperties()
     _diffcoef[_qp][i] = _xsec_map["DIFFCOEF"][i];
     _recipvel[_qp][i] = _xsec_map["RECIPVEL"][i];
     _chi[_qp][i] = _xsec_map["CHI"][i];
+    _chi_d[_qp][i] = _xsec_map["CHI_D"][i];
     _d_remxs_d_temp[_qp][i] = _xsec_map["REMXS"][i];
     _d_fissxs_d_temp[_qp][i] = _xsec_map["FISSXS"][i];
     _d_nsf_d_temp[_qp][i] = _xsec_map["NSF"][i];
@@ -442,6 +534,7 @@ GenericMoltresMaterial::dummyComputeQpProperties()
     _d_diffcoef_d_temp[_qp][i] = _xsec_map["DIFFCOEF"][i];
     _d_recipvel_d_temp[_qp][i] = _xsec_map["RECIPVEL"][i];
     _d_chi_d_temp[_qp][i] = _xsec_map["CHI"][i];
+    _d_chi_d_d_temp[_qp][i] = _xsec_map["CHI_D"][i];
   }
   for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
   {
@@ -474,6 +567,7 @@ GenericMoltresMaterial::splineComputeQpProperties()
     _diffcoef[_qp][i] = _xsec_spline_interpolators["DIFFCOEF"][i].sample(_temperature[_qp]);
     _recipvel[_qp][i] = _xsec_spline_interpolators["RECIPVEL"][i].sample(_temperature[_qp]);
     _chi[_qp][i] = _xsec_spline_interpolators["CHI"][i].sample(_temperature[_qp]);
+    _chi_d[_qp][i] = _xsec_spline_interpolators["CHI_D"][i].sample(_temperature[_qp]);
     _d_remxs_d_temp[_qp][i] =
         _xsec_spline_interpolators["REMXS"][i].sampleDerivative(_temperature[_qp]);
     _d_fissxs_d_temp[_qp][i] =
@@ -489,6 +583,8 @@ GenericMoltresMaterial::splineComputeQpProperties()
         _xsec_spline_interpolators["RECIPVEL"][i].sampleDerivative(_temperature[_qp]);
     _d_chi_d_temp[_qp][i] =
         _xsec_spline_interpolators["CHI"][i].sampleDerivative(_temperature[_qp]);
+    _d_chi_d_d_temp[_qp][i] =
+        _xsec_spline_interpolators["CHI_D"][i].sampleDerivative(_temperature[_qp]);
   }
   for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
   {
@@ -525,6 +621,7 @@ GenericMoltresMaterial::monotoneCubicComputeQpProperties()
     _diffcoef[_qp][i] = _xsec_monotone_cubic_interpolators["DIFFCOEF"][i].sample(_temperature[_qp]);
     _recipvel[_qp][i] = _xsec_monotone_cubic_interpolators["RECIPVEL"][i].sample(_temperature[_qp]);
     _chi[_qp][i] = _xsec_monotone_cubic_interpolators["CHI"][i].sample(_temperature[_qp]);
+    _chi_d[_qp][i] = _xsec_monotone_cubic_interpolators["CHI_D"][i].sample(_temperature[_qp]);
     _d_remxs_d_temp[_qp][i] =
         _xsec_monotone_cubic_interpolators["REMXS"][i].sampleDerivative(_temperature[_qp]);
     _d_fissxs_d_temp[_qp][i] =
@@ -540,6 +637,8 @@ GenericMoltresMaterial::monotoneCubicComputeQpProperties()
         _xsec_monotone_cubic_interpolators["RECIPVEL"][i].sampleDerivative(_temperature[_qp]);
     _d_chi_d_temp[_qp][i] =
         _xsec_monotone_cubic_interpolators["CHI"][i].sampleDerivative(_temperature[_qp]);
+    _d_chi_d_d_temp[_qp][i] =
+        _xsec_monotone_cubic_interpolators["CHI_D"][i].sampleDerivative(_temperature[_qp]);
   }
   for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
   {
@@ -577,6 +676,7 @@ GenericMoltresMaterial::linearComputeQpProperties()
     _diffcoef[_qp][i] = _xsec_linear_interpolators["DIFFCOEF"][i].sample(_temperature[_qp]);
     _recipvel[_qp][i] = _xsec_linear_interpolators["RECIPVEL"][i].sample(_temperature[_qp]);
     _chi[_qp][i] = _xsec_linear_interpolators["CHI"][i].sample(_temperature[_qp]);
+    _chi_d[_qp][i] = _xsec_linear_interpolators["CHI_D"][i].sample(_temperature[_qp]);
     _d_remxs_d_temp[_qp][i] =
         _xsec_linear_interpolators["REMXS"][i].sampleDerivative(_temperature[_qp]);
     _d_fissxs_d_temp[_qp][i] =
@@ -592,6 +692,8 @@ GenericMoltresMaterial::linearComputeQpProperties()
         _xsec_linear_interpolators["RECIPVEL"][i].sampleDerivative(_temperature[_qp]);
     _d_chi_d_temp[_qp][i] =
         _xsec_linear_interpolators["CHI"][i].sampleDerivative(_temperature[_qp]);
+    _d_chi_d_d_temp[_qp][i] =
+        _xsec_linear_interpolators["CHI_D"][i].sampleDerivative(_temperature[_qp]);
   }
   for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
   {
@@ -635,6 +737,8 @@ GenericMoltresMaterial::fuelBicubic()
         _xsec_bicubic_spline_interpolators["RECIPVEL"][i].sample(_temperature[_qp], _other_temp);
     _chi[_qp][i] =
         _xsec_bicubic_spline_interpolators["CHI"][i].sample(_temperature[_qp], _other_temp);
+    _chi_d[_qp][i] =
+        _xsec_bicubic_spline_interpolators["CHI_D"][i].sample(_temperature[_qp], _other_temp);
     _d_remxs_d_temp[_qp][i] = _xsec_bicubic_spline_interpolators["REMXS"][i].sampleDerivative(
         _temperature[_qp], _other_temp, 1);
     _d_fissxs_d_temp[_qp][i] = _xsec_bicubic_spline_interpolators["FISSXS"][i].sampleDerivative(
@@ -649,6 +753,8 @@ GenericMoltresMaterial::fuelBicubic()
     _d_recipvel_d_temp[_qp][i] = _xsec_bicubic_spline_interpolators["RECIPVEL"][i].sampleDerivative(
         _temperature[_qp], _other_temp, 1);
     _d_chi_d_temp[_qp][i] = _xsec_bicubic_spline_interpolators["CHI"][i].sampleDerivative(
+        _temperature[_qp], _other_temp, 1);
+    _d_chi_d_d_temp[_qp][i] = _xsec_bicubic_spline_interpolators["CHI_D"][i].sampleDerivative(
         _temperature[_qp], _other_temp, 1);
   }
   for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
@@ -693,6 +799,8 @@ GenericMoltresMaterial::moderatorBicubic()
         _xsec_bicubic_spline_interpolators["RECIPVEL"][i].sample(_other_temp, _temperature[_qp]);
     _chi[_qp][i] =
         _xsec_bicubic_spline_interpolators["CHI"][i].sample(_other_temp, _temperature[_qp]);
+    _chi_d[_qp][i] =
+        _xsec_bicubic_spline_interpolators["CHI_D"][i].sample(_other_temp, _temperature[_qp]);
     _d_remxs_d_temp[_qp][i] = _xsec_bicubic_spline_interpolators["REMXS"][i].sampleDerivative(
         _other_temp, _temperature[_qp], 2);
     _d_fissxs_d_temp[_qp][i] = _xsec_bicubic_spline_interpolators["FISSXS"][i].sampleDerivative(
@@ -707,6 +815,8 @@ GenericMoltresMaterial::moderatorBicubic()
     _d_recipvel_d_temp[_qp][i] = _xsec_bicubic_spline_interpolators["RECIPVEL"][i].sampleDerivative(
         _other_temp, _temperature[_qp], 2);
     _d_chi_d_temp[_qp][i] = _xsec_bicubic_spline_interpolators["CHI"][i].sampleDerivative(
+        _other_temp, _temperature[_qp], 2);
+    _d_chi_d_d_temp[_qp][i] = _xsec_bicubic_spline_interpolators["CHI_D"][i].sampleDerivative(
         _other_temp, _temperature[_qp], 2);
   }
   for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
@@ -757,6 +867,7 @@ GenericMoltresMaterial::leastSquaresComputeQpProperties()
     _diffcoef[_qp][i] = _diffcoeff_consts[0][i] * _temperature[_qp] + _diffcoeff_consts[1][i];
     _recipvel[_qp][i] = _recipvel_consts[0][i] * _temperature[_qp] + _recipvel_consts[1][i];
     _chi[_qp][i] = _chi_consts[0][i] * _temperature[_qp] + _chi_consts[1][i];
+    _chi_d[_qp][i] = _chi_d_consts[0][i] * _temperature[_qp] + _chi_d_consts[1][i];
     _d_remxs_d_temp[_qp][i] = _remxs_consts[0][i];
     _d_fissxs_d_temp[_qp][i] = _fissxs_consts[0][i];
     _d_nsf_d_temp[_qp][i] = _nsf_consts[0][i];
@@ -764,6 +875,7 @@ GenericMoltresMaterial::leastSquaresComputeQpProperties()
     _d_diffcoef_d_temp[_qp][i] = _diffcoeff_consts[0][i];
     _d_recipvel_d_temp[_qp][i] = _recipvel_consts[0][i];
     _d_chi_d_temp[_qp][i] = _chi_consts[0][i];
+    _d_chi_d_d_temp[_qp][i] = _chi_d_consts[0][i];
   }
   for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
   {
@@ -793,6 +905,7 @@ GenericMoltresMaterial::computeQpProperties()
   _diffcoef[_qp].resize(_vec_lengths["DIFFCOEF"]);
   _recipvel[_qp].resize(_vec_lengths["RECIPVEL"]);
   _chi[_qp].resize(_vec_lengths["CHI"]);
+  _chi_d[_qp].resize(_vec_lengths["CHI_D"]);
   _gtransfxs[_qp].resize(_vec_lengths["GTRANSFXS"]);
   _beta_eff[_qp].resize(_vec_lengths["BETA_EFF"]);
   _decay_constant[_qp].resize(_vec_lengths["DECAY_CONSTANT"]);
@@ -803,29 +916,35 @@ GenericMoltresMaterial::computeQpProperties()
   _d_diffcoef_d_temp[_qp].resize(_vec_lengths["DIFFCOEF"]);
   _d_recipvel_d_temp[_qp].resize(_vec_lengths["RECIPVEL"]);
   _d_chi_d_temp[_qp].resize(_vec_lengths["CHI"]);
+  _d_chi_d_d_temp[_qp].resize(_vec_lengths["CHI_D"]);
   _d_gtransfxs_d_temp[_qp].resize(_vec_lengths["GTRANSFXS"]);
   _d_beta_eff_d_temp[_qp].resize(_vec_lengths["BETA_EFF"]);
   _d_decay_constant_d_temp[_qp].resize(_vec_lengths["DECAY_CONSTANT"]);
 
-  if (_interp_type == "spline")
-    splineComputeQpProperties();
-
-  else if (_interp_type == "monotone_cubic")
-    monotoneCubicComputeQpProperties();
-
-  else if (_interp_type == "linear")
-    linearComputeQpProperties();
-
-  else if (_interp_type == "bicubic_spline")
-    bicubicSplineComputeQpProperties();
-
-  else if (_interp_type == "least_squares")
-    leastSquaresComputeQpProperties();
-
-  else if (_interp_type == "none")
-    dummyComputeQpProperties();
+  switch (_interp_type)
+  {
+    case LSQ:
+      leastSquaresComputeQpProperties();
+      break;
+    case SPLINE:
+      splineComputeQpProperties();
+      break;
+    case MONOTONE_CUBIC:
+      monotoneCubicComputeQpProperties();
+      break;
+    case BICUBIC:
+      bicubicSplineComputeQpProperties();
+      break;
+    case LINEAR:
+      linearComputeQpProperties();
+      break;
+    case NONE:
+      dummyComputeQpProperties();
+      break;
+  }
 
   if (_perform_control && _peak_power_density > _peak_power_density_set_point)
     for (unsigned i = 0; i < _num_groups; ++i)
       _remxs[_qp][i] += _controller_gain * (_peak_power_density - _peak_power_density_set_point);
 }
+

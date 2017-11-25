@@ -107,6 +107,7 @@ flow_velocity=0.5 # cm/s. See MSRE-properties.ods
 []
 
 [Materials]
+  # need GenericMoltresMaterial so that DECAY_CONSTANT can be obtained
   [./fuel]
     type = GenericMoltresMaterial
     property_tables_root = '../../property_file_dir/newt_msre_fuel_'
