@@ -1,6 +1,8 @@
 import yt
 from moltres_functions import actual_center_and_widths
 
+home_root = '/Users/lindad/'
+
 field_label = {
     'group1': r'$\phi_1\cdot$10$^{13}$ cm$^{-2}$ s$^{-1}$',
     'group2': r'$\phi_2\cdot$10$^{13}$ cm$^{-2}$ s$^{-1}$',
@@ -24,8 +26,9 @@ def _scale(field, data):
 
 
 ds = yt.load(
-    '/home/lindsayad/projects/moltres/tests/'
-    'twod_axi_coupled/auto_diff_rho.e', step=-1)
+    home_root +
+    'projects/moltres/tests/'
+    'twod_axi_coupled/2x_refined_from_base_with_gammas.e', step=-1)
 for i in range(1, 7):
     fname = 'pre%d_scaled' % i
     ds.add_field(('all', fname), function=_scale, take_log=False)
@@ -35,7 +38,7 @@ for field in ds.field_info.keys():
     field_type, field_name = field
     if field_type != 'all':
         continue
-    if 'scaled' not in field_name:
+    if 'scaled' not in field_name and 'temp' not in field_name and 'group' not in field_name:
         continue
     slc = yt.SlicePlot(ds, 'z', field, origin='native', center=actual_center)
     slc.set_log(field, False)
@@ -46,5 +49,5 @@ for field in ds.field_info.keys():
         slc.set_zlim(field, 922, ds.all_data()[('all', 'temp')].max())
     slc.set_colorbar_label(field, field_label[field_name])
     slc.set_figure_size(3)
-    slc.save('/home/lindsayad/publications/figures/2d_gamma_heating_' +
+    slc.save(home_root + 'publications/figures/2d_gamma_heating_' +
              field_name + '.eps')
