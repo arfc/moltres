@@ -7,8 +7,8 @@ x = 0.2379522;
 fuel_rad = x * pitch;
 graph_rad = pitch;
 lc = 1;
-lx = .4;
-ly = 10;
+lx = .1;
+ly = 2.5;
 
 Point(1) = {0, 0, 0, lc};
 Point(2) = {fuel_rad, 0, 0, lc};
