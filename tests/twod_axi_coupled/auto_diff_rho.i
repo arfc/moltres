@@ -250,7 +250,6 @@ diri_temp=922
   [./SMP]
     type = SMP
     full = true
-    ksp_norm = none
   [../]
 []
 
