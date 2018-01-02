@@ -10,8 +10,7 @@ diri_temp=922
   group_fluxes = 'group1 group2'
   temperature = temp
   sss2_input = false
-  pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6'
-  account_delayed = true
+  account_delayed = false
 []
 
 [Mesh]
@@ -42,21 +41,6 @@ diri_temp=922
   [../]
 []
 
-[Precursors]
-  [./pres]
-    var_name_base = pre
-    block = 'fuel'
-    outlet_boundaries = 'fuel_tops'
-    u_def = 0
-    v_def = ${flow_velocity}
-    w_def = 0
-    nt_exp_form = false
-    family = MONOMIAL
-    order = CONSTANT
-    # jac_test = true
-  [../]
-[]
-
 [Kernels]
   # Neutronics
   [./time_group1]
@@ -79,12 +63,6 @@ diri_temp=922
     variable = group1
     group_number = 1
     block = 'fuel'
-  [../]
-  [./delayed_group1]
-    type = DelayedNeutronSource
-    variable = group1
-    block = 'fuel'
-    group_number=1
   [../]
   [./inscatter_group1]
     type = InScatter
@@ -221,7 +199,7 @@ diri_temp=922
   end_time = 10000
 
   nl_rel_tol = 1e-6
-  nl_abs_tol = 1e-6
+  nl_abs_tol = 3e-6
 
   solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
@@ -238,11 +216,9 @@ diri_temp=922
   # dtmax = 1
   # dt = 1e-3
   [./TimeStepper]
-    type = IterationAdaptiveDT
+    type = PostprocessorDT
+    postprocessor = 'limit_k'
     dt = 1e-3
-    cutback_factor = 0.4
-    growth_factor = 1.2
-    optimal_iterations = 20
   [../]
 []
 
@@ -254,6 +230,13 @@ diri_temp=922
 []
 
 [Postprocessors]
+  [./limit_k]
+    type = LimitK
+    growth_factor = 1.1
+    cutback_factor = 0.4
+    k_threshold = 1.25
+    k_postprocessor = 'multiplication'
+  [../]
   [./group1_current]
     type = IntegralNewVariablePostprocessor
     variable = group1

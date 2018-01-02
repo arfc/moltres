@@ -36,24 +36,40 @@ diri_temp=922
     initial_condition = 1
     scaling = 1e4
   [../]
-  [./temp]
-    initial_condition = ${ini_temp}
-    scaling = 1e-4
-  [../]
 []
 
-[Precursors]
-  [./pres]
-    var_name_base = pre
-    block = 'fuel'
-    outlet_boundaries = 'fuel_tops'
-    u_def = 0
-    v_def = ${flow_velocity}
-    w_def = 0
-    nt_exp_form = false
+[AuxVariables]
+  [./temp]
+  [../]
+  [./pre1]
     family = MONOMIAL
     order = CONSTANT
-    # jac_test = true
+    block = 'fuel'
+  [../]
+  [./pre2]
+    family = MONOMIAL
+    order = CONSTANT
+    block = 'fuel'
+  [../]
+  [./pre3]
+    family = MONOMIAL
+    order = CONSTANT
+    block = 'fuel'
+  [../]
+  [./pre4]
+    family = MONOMIAL
+    order = CONSTANT
+    block = 'fuel'
+  [../]
+  [./pre5]
+    family = MONOMIAL
+    order = CONSTANT
+    block = 'fuel'
+  [../]
+  [./pre6]
+    family = MONOMIAL
+    order = CONSTANT
+    block = 'fuel'
   [../]
 []
 
@@ -84,7 +100,6 @@ diri_temp=922
     type = DelayedNeutronSource
     variable = group1
     block = 'fuel'
-    group_number=1
   [../]
   [./inscatter_group1]
     type = InScatter
@@ -117,36 +132,6 @@ diri_temp=922
     variable = group2
     group_number = 2
   [../]
-
-  # Temperature
-  [./temp_time_derivative]
-    type = MatINSTemperatureTimeDerivative
-    variable = temp
-  [../]
-  [./temp_source_fuel]
-    type = TransientFissionHeatSource
-    variable = temp
-    nt_scale=${nt_scale}
-    block = 'fuel'
-  [../]
-  # [./temp_source_mod]
-  #   type = GammaHeatSource
-  #   variable = temp
-  #   gamma = .0144 # Cammi .0144
-  #   block = 'moder'
-  #   average_fission_heat = 'average_fission_heat'
-  # [../]
-  [./temp_diffusion]
-    type = MatDiffusion
-    D_name = 'k'
-    variable = temp
-  [../]
-  [./temp_advection_fuel]
-    type = ConservativeTemperatureAdvection
-    velocity = '0 ${flow_velocity} 0'
-    variable = temp
-    block = 'fuel'
-  [../]
 []
 
 [BCs]
@@ -160,25 +145,6 @@ diri_temp=922
     boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
     variable = group2
   [../]
-  [./temp_diri_cg]
-    boundary = 'moder_bottoms fuel_bottoms outer_wall'
-    type = FunctionDirichletBC
-    function = 'temp_bc_func'
-    variable = temp
-  [../]
-  [./temp_advection_outlet]
-    boundary = 'fuel_tops'
-    type = TemperatureOutflowBC
-    variable = temp
-    velocity = '0 ${flow_velocity} 0'
-  [../]
-[]
-
-[Functions]
-  [./temp_bc_func]
-    type = ParsedFunction
-    value = '${ini_temp} - (${ini_temp} - ${diri_temp}) * tanh(t/1e-2)'
-  [../]
 []
 
 [Materials]
@@ -190,14 +156,6 @@ diri_temp=922
     prop_names = 'k cp'
     prop_values = '.0553 1967' # Robertson MSRE technical report @ 922 K
   [../]
-  [./rho_fuel]
-    type = DerivativeParsedMaterial
-    f_name = rho
-    function = '2.146e-3 * exp(-1.8 * 1.18e-4 * (temp - 922))'
-    args = 'temp'
-    derivative_order = 1
-    block = 'fuel'
-  [../]
   [./moder]
     type = GenericMoltresMaterial
     property_tables_root = '../../property_file_dir/newt_msre_mod_'
@@ -206,19 +164,15 @@ diri_temp=922
     prop_values = '.312 1760' # Cammi 2011 at 908 K
     block = 'moder'
   [../]
-  [./rho_moder]
-    type = DerivativeParsedMaterial
-    f_name = rho
-    function = '1.86e-3 * exp(-1.8 * 1.0e-5 * (temp - 922))'
-    args = 'temp'
-    derivative_order = 1
-    block = 'moder'
-  [../]
 []
 
 [Executioner]
   type = Transient
   end_time = 10000
+
+  picard_max_its = 10
+  picard_rel_tol = 1e-7
+  picard_abs_tol = 1e-10
 
   nl_rel_tol = 1e-6
   nl_abs_tol = 1e-6
@@ -234,15 +188,12 @@ diri_temp=922
   nl_max_its = 30
   l_max_its = 100
 
-  dtmin = 1e-5
-  # dtmax = 1
-  # dt = 1e-3
   [./TimeStepper]
     type = IterationAdaptiveDT
-    dt = 1e-3
     cutback_factor = 0.4
     growth_factor = 1.2
     optimal_iterations = 20
+    dt = 1e-3
   [../]
 []
 
@@ -270,58 +221,89 @@ diri_temp=922
     value2 = group1_old
     outputs = 'console exodus'
   [../]
-  [./temp_fuel]
-    type = ElementAverageValue
-    variable = temp
-    block = 'fuel'
-    outputs = 'exodus console'
-  [../]
-  [./temp_moder]
-    type = ElementAverageValue
-    variable = temp
-    block = 'moder'
-    outputs = 'exodus console'
-  [../]
-  # [./average_fission_heat]
-  #   type = AverageFissionHeat
-  #   nt_scale = ${nt_scale}
-  #   execute_on = 'linear nonlinear'
-  #   outputs = 'console'
-  #   block = 'fuel'
-  # [../]
 []
 
 [Outputs]
   print_perf_log = true
   print_linear_residuals = true
-  [./exodus]
-    type = Exodus
-    file_base = 'auto_diff_rho'
-    execute_on = 'final'
-  [../]
+  exodus = true
 []
 
 [Debug]
   show_var_residual_norms = true
 []
 
-# [ICs]
-#   [./temp_ic]
-#     type = RandomIC
-#     variable = temp
-#     min = 922
-#     max = 1022
-#   [../]
-#   [./group1_ic]
-#     type = RandomIC
-#     variable = group1
-#     min = .5
-#     max = 1.5
-#   [../]
-#   [./group2_ic]
-#     type = RandomIC
-#     variable = group2
-#     min = .5
-#     max = 1.5
-#   [../]
-# []
+[MultiApps]
+  [./temp_pres]
+    type = TransientMultiApp
+    app_type = MoltresApp
+    positions = '0 0 0'
+    input_files = 'temp.i'
+  [../]
+[]
+
+[Transfers]
+  [./temp_from_sub]
+    type = MultiAppCopyTransfer
+    direction = from_multiapp
+    multi_app = 'temp_pres'
+    source_variable = temp
+    variable = temp
+  [../]
+  [./pre1_from_sub]
+    type = MultiAppCopyTransfer
+    direction = from_multiapp
+    multi_app = 'temp_pres'
+    source_variable = pre1
+    variable = pre1
+  [../]
+  [./pre2_from_sub]
+    type = MultiAppCopyTransfer
+    direction = from_multiapp
+    multi_app = 'temp_pres'
+    source_variable = pre2
+    variable = pre2
+  [../]
+  [./pre3_from_sub]
+    type = MultiAppCopyTransfer
+    direction = from_multiapp
+    multi_app = 'temp_pres'
+    source_variable = pre3
+    variable = pre3
+  [../]
+  [./pre4_from_sub]
+    type = MultiAppCopyTransfer
+    direction = from_multiapp
+    multi_app = 'temp_pres'
+    source_variable = pre4
+    variable = pre4
+  [../]
+  [./pre5_from_sub]
+    type = MultiAppCopyTransfer
+    direction = from_multiapp
+    multi_app = 'temp_pres'
+    source_variable = pre5
+    variable = pre5
+  [../]
+  [./pre6_from_sub]
+    type = MultiAppCopyTransfer
+    direction = from_multiapp
+    multi_app = 'temp_pres'
+    source_variable = pre6
+    variable = pre6
+  [../]
+  [./group1_to_sub]
+    type = MultiAppCopyTransfer
+    direction = to_multiapp
+    multi_app = 'temp_pres'
+    source_variable = group1
+    variable = group1
+  [../]
+  [./group2_to_sub]
+    type = MultiAppCopyTransfer
+    direction = to_multiapp
+    multi_app = 'temp_pres'
+    source_variable = group2
+    variable = group2
+  [../]
+[]

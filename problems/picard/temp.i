@@ -24,100 +24,49 @@ diri_temp=922
 []
 
 [Variables]
-  [./group1]
-    order = FIRST
-    family = LAGRANGE
-    initial_condition = 1
-    scaling = 1e4
-  [../]
-  [./group2]
-    order = FIRST
-    family = LAGRANGE
-    initial_condition = 1
-    scaling = 1e4
-  [../]
   [./temp]
     initial_condition = ${ini_temp}
-    scaling = 1e-4
   [../]
 []
 
-[Precursors]
-  [./pres]
-    var_name_base = pre
-    block = 'fuel'
-    outlet_boundaries = 'fuel_tops'
-    u_def = 0
-    v_def = ${flow_velocity}
-    w_def = 0
-    nt_exp_form = false
+[AuxVariables]
+  [./group1]
+  [../]
+  [./group2]
+  [../]
+  [./pre1]
     family = MONOMIAL
     order = CONSTANT
-    # jac_test = true
+    block = 'fuel'
+  [../]
+  [./pre2]
+    family = MONOMIAL
+    order = CONSTANT
+    block = 'fuel'
+  [../]
+  [./pre3]
+    family = MONOMIAL
+    order = CONSTANT
+    block = 'fuel'
+  [../]
+  [./pre4]
+    family = MONOMIAL
+    order = CONSTANT
+    block = 'fuel'
+  [../]
+  [./pre5]
+    family = MONOMIAL
+    order = CONSTANT
+    block = 'fuel'
+  [../]
+  [./pre6]
+    family = MONOMIAL
+    order = CONSTANT
+    block = 'fuel'
   [../]
 []
 
 [Kernels]
-  # Neutronics
-  [./time_group1]
-    type = NtTimeDerivative
-    variable = group1
-    group_number = 1
-  [../]
-  [./diff_group1]
-    type = GroupDiffusion
-    variable = group1
-    group_number = 1
-  [../]
-  [./sigma_r_group1]
-    type = SigmaR
-    variable = group1
-    group_number = 1
-  [../]
-  [./fission_source_group1]
-    type = CoupledFissionKernel
-    variable = group1
-    group_number = 1
-    block = 'fuel'
-  [../]
-  [./delayed_group1]
-    type = DelayedNeutronSource
-    variable = group1
-    block = 'fuel'
-    group_number=1
-  [../]
-  [./inscatter_group1]
-    type = InScatter
-    variable = group1
-    group_number = 1
-  [../]
-  [./diff_group2]
-    type = GroupDiffusion
-    variable = group2
-    group_number = 2
-  [../]
-  [./sigma_r_group2]
-    type = SigmaR
-    variable = group2
-    group_number = 2
-  [../]
-  [./time_group2]
-    type = NtTimeDerivative
-    variable = group2
-    group_number = 2
-  [../]
-  [./fission_source_group2]
-    type = CoupledFissionKernel
-    variable = group2
-    group_number = 2
-    block = 'fuel'
-  [../]
-  [./inscatter_group2]
-    type = InScatter
-    variable = group2
-    group_number = 2
-  [../]
-
   # Temperature
   [./temp_time_derivative]
     type = MatINSTemperatureTimeDerivative
@@ -150,16 +99,6 @@ diri_temp=922
 []
 
 [BCs]
-  [./vacuum_group1]
-    type = VacuumConcBC
-    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
-    variable = group1
-  [../]
-  [./vacuum_group2]
-    type = VacuumConcBC
-    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
-    variable = group2
-  [../]
   [./temp_diri_cg]
     boundary = 'moder_bottoms fuel_bottoms outer_wall'
     type = FunctionDirichletBC
@@ -221,7 +160,7 @@ diri_temp=922
   end_time = 10000
 
   nl_rel_tol = 1e-6
-  nl_abs_tol = 1e-6
+  nl_abs_tol = 1e-5
 
   solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
@@ -234,15 +173,12 @@ diri_temp=922
   nl_max_its = 30
   l_max_its = 100
 
-  dtmin = 1e-5
-  # dtmax = 1
-  # dt = 1e-3
   [./TimeStepper]
     type = IterationAdaptiveDT
-    dt = 1e-3
     cutback_factor = 0.4
     growth_factor = 1.2
     optimal_iterations = 20
+    dt = 1e-3
   [../]
 []
 
@@ -254,22 +190,6 @@ diri_temp=922
 []
 
 [Postprocessors]
-  [./group1_current]
-    type = IntegralNewVariablePostprocessor
-    variable = group1
-    outputs = 'console exodus'
-  [../]
-  [./group1_old]
-    type = IntegralOldVariablePostprocessor
-    variable = group1
-    outputs = 'console exodus'
-  [../]
-  [./multiplication]
-    type = DivisionPostprocessor
-    value1 = group1_current
-    value2 = group1_old
-    outputs = 'console exodus'
-  [../]
   [./temp_fuel]
     type = ElementAverageValue
     variable = temp
@@ -282,46 +202,89 @@ diri_temp=922
     block = 'moder'
     outputs = 'exodus console'
   [../]
-  # [./average_fission_heat]
-  #   type = AverageFissionHeat
-  #   nt_scale = ${nt_scale}
-  #   execute_on = 'linear nonlinear'
-  #   outputs = 'console'
-  #   block = 'fuel'
-  # [../]
 []
 
 [Outputs]
   print_perf_log = true
   print_linear_residuals = true
-  [./exodus]
-    type = Exodus
-    file_base = 'auto_diff_rho'
-    execute_on = 'final'
-  [../]
+  exodus = true
 []
 
 [Debug]
   show_var_residual_norms = true
 []
 
-# [ICs]
-#   [./temp_ic]
-#     type = RandomIC
-#     variable = temp
-#     min = 922
-#     max = 1022
-#   [../]
-#   [./group1_ic]
-#     type = RandomIC
-#     variable = group1
-#     min = .5
-#     max = 1.5
-#   [../]
-#   [./group2_ic]
-#     type = RandomIC
-#     variable = group2
-#     min = .5
-#     max = 1.5
-#   [../]
-# []
+[MultiApps]
+  [./pres]
+    type = TransientMultiApp
+    app_type = MoltresApp
+    positions = '0 0 0'
+    input_files = 'pres.i'
+  [../]
+[]
+
+[Transfers]
+  [./temp_to_sub]
+    type = MultiAppCopyTransfer
+    direction = to_multiapp
+    multi_app = 'pres'
+    source_variable = temp
+    variable = temp
+  [../]
+  [./pre1_from_sub]
+    type = MultiAppCopyTransfer
+    direction = from_multiapp
+    multi_app = 'pres'
+    source_variable = pre1
+    variable = pre1
+  [../]
+  [./pre2_from_sub]
+    type = MultiAppCopyTransfer
+    direction = from_multiapp
+    multi_app = 'pres'
+    source_variable = pre2
+    variable = pre2
+  [../]
+  [./pre3_from_sub]
+    type = MultiAppCopyTransfer
+    direction = from_multiapp
+    multi_app = 'pres'
+    source_variable = pre3
+    variable = pre3
+  [../]
+  [./pre4_from_sub]
+    type = MultiAppCopyTransfer
+    direction = from_multiapp
+    multi_app = 'pres'
+    source_variable = pre4
+    variable = pre4
+  [../]
+  [./pre5_from_sub]
+    type = MultiAppCopyTransfer
+    direction = from_multiapp
+    multi_app = 'pres'
+    source_variable = pre5
+    variable = pre5
+  [../]
+  [./pre6_from_sub]
+    type = MultiAppCopyTransfer
+    direction = from_multiapp
+    multi_app = 'pres'
+    source_variable = pre6
+    variable = pre6
+  [../]
+  [./group1_to_sub]
+    type = MultiAppCopyTransfer
+    direction = to_multiapp
+    multi_app = 'pres'
+    source_variable = group1
+    variable = group1
+  [../]
+  [./group2_to_sub]
+    type = MultiAppCopyTransfer
+    direction = to_multiapp
+    multi_app = 'pres'
+    source_variable = group2
+    variable = group2
+  [../]
+[]
