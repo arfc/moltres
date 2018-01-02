@@ -18,7 +18,7 @@ main(int argc, char * argv[])
   MoltresApp::registerApps();
 
   // This creates dynamic memory that we're responsible for deleting
-  std::shared_ptr<MooseApp> app = AppFactory::createApp("MoltresApp", argc, argv);
+  std::shared_ptr<MooseApp> app = AppFactory::createAppShared("MoltresApp", argc, argv);
 
   // Execute the application
   app->run();
