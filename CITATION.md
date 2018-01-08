@@ -5,7 +5,7 @@ Up-to-date citations will be added as they are produced.
 
 ### Software Citation
 
-If you use the Moltres application, we ask that you indicate the version of Moltres that you used with a git hash and cite the closest version as below::
+If you use the Moltres application, we ask that you indicate the version of Moltres that you used with a git hash and cite the closest version as below:
 
 
 #### Version 0.3.0
