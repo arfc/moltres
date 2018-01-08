@@ -11,7 +11,7 @@ If you use the Moltres application, we ask that you indicate the version of Molt
 #### Version 0.3.0
 
 ```tex
-@article{lindsay_moltres:_2018,
+@article{lindsay_moltres_2018,
     title = {Moltres: finite element based simulation of molten salt reactors},
     volume = {3},
     shorttitle = {Moltres},
