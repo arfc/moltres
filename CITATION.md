@@ -29,13 +29,13 @@ If you use the Moltres application, we ask that you indicate the version of Molt
 ```
 
 
-If you use any of our published results or methods, please cite the
-relevant paper(s) below.  
-
 
 ### Method and Results Citations
 
-The fundamental methods can be cited via the Introduction to Moltres paper::
+If you reference any of our published results or methods, please also cite the
+relevant paper(s) below.  
+
+The fundamental methods can be cited via the Introduction to Moltres paper:
 
 ```tex
 @article{lindsay_introduction_2018,
@@ -56,7 +56,7 @@ The fundamental methods can be cited via the Introduction to Moltres paper::
 }
 ```
 
-To cite Gavin Ridley's presentation on MSR Transients with Moltres, cite the following report::
+To cite Gavin Ridley's presentation on MSR Transients with Moltres, cite the following report:
 
 ```tex
 @techreport{ridley_multiphysics_2017,
