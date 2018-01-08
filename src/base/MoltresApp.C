@@ -7,6 +7,7 @@
 
 // Kernels
 #include "DelayedNeutronSource.h"
+#include "DelayedNeutronEigenSource.h"
 #include "ScalarTransportTimeDerivative.h"
 #include "ScalarAdvectionArtDiff.h"
 #include "PrecursorDecay.h"
@@ -15,6 +16,7 @@
 #include "FissionHeatSource.h"
 #include "TransientFissionHeatSource.h"
 #include "INSMomentumKEpsilon.h"
+#include "INSBoussinesqBodyForce.h"
 #include "SigmaR.h"
 #include "CoupledFissionEigenKernel.h"
 #include "CoupledFissionKernel.h"
@@ -24,6 +26,7 @@
 #include "CoupledScalarAdvection.h"
 #include "DivFreeCoupledScalarAdvection.h"
 #include "GammaHeatSource.h"
+#include "ManuHX.h"
 
 // Boundary conditions
 #include "LinLogPenaltyDirichletBC.h"
@@ -40,8 +43,13 @@
 #include "GenericMoltresMaterial.h"
 #include "CammiFuel.h"
 #include "CammiModerator.h"
+#include "Nusselt.h"
+#include "GraphiteTwoGrpXSFunctionMaterial.h"
+#include "MsreFuelTwoGrpXSFunctionMaterial.h"
+#include "RoddedMaterial.h"
 
 // Postprocessors
+#include "LimitK.h"
 #include "AverageFissionHeat.h"
 #include "ElementL2Diff.h"
 #include "DivisionPostprocessor.h"
@@ -53,12 +61,17 @@
 
 // AuxKernels
 #include "FissionHeatSourceAux.h"
+#include "FissionHeatSourceTransientAux.h"
+#include "ModeratorHeatSourceTransientAux.h"
 #include "MatDiffusionAux.h"
+#include "ConstantDifferenceAux.h"
 
 // Actions
-
-#include "PrecursorKernelAction.h"
+#include "PrecursorAction.h"
 #include "NtAction.h"
+
+// DiracKernels
+#include "DiracHX.h"
 
 template <>
 InputParameters
@@ -110,6 +123,7 @@ void
 MoltresApp::registerObjects(Factory & factory)
 {
   registerKernel(DelayedNeutronSource);
+  registerKernel(DelayedNeutronEigenSource);
   registerKernel(SigmaR);
   registerKernel(GammaHeatSource);
   registerKernel(ScalarTransportTimeDerivative);
@@ -126,7 +140,9 @@ MoltresApp::registerObjects(Factory & factory)
   registerKernel(CoupledFissionKernel);
   registerKernel(SelfFissionEigenKernel);
   registerKernel(INSMomentumKEpsilon);
+  registerKernel(INSBoussinesqBodyForce);
   registerKernel(GroupDiffusion);
+  registerKernel(ManuHX);
   registerBoundaryCondition(LinLogPenaltyDirichletBC);
   registerBoundaryCondition(ScalarAdvectionArtDiffNoBCBC);
   registerBoundaryCondition(VacuumConcBC);
@@ -139,6 +155,11 @@ MoltresApp::registerObjects(Factory & factory)
   registerMaterial(GenericMoltresMaterial);
   registerMaterial(CammiFuel);
   registerMaterial(CammiModerator);
+  registerMaterial(Nusselt);
+  registerMaterial(GraphiteTwoGrpXSFunctionMaterial);
+  registerMaterial(MsreFuelTwoGrpXSFunctionMaterial);
+  registerMaterial(RoddedMaterial);
+  registerPostprocessor(LimitK);
   registerPostprocessor(IntegralOldVariablePostprocessor);
   registerPostprocessor(ElementL2Diff);
   registerPostprocessor(IntegralNewVariablePostprocessor);
@@ -148,7 +169,11 @@ MoltresApp::registerObjects(Factory & factory)
   registerPostprocessor(ElmIntegTotFissNtsPostprocessor);
   registerPostprocessor(AverageFissionHeat);
   registerAux(FissionHeatSourceAux);
+  registerAux(FissionHeatSourceTransientAux);
+  registerAux(ModeratorHeatSourceTransientAux);
   registerAux(MatDiffusionAux);
+  registerAux(ConstantDifferenceAux);
+  registerDiracKernel(DiracHX);
 }
 
 // External entry point for dynamic syntax association
@@ -160,14 +185,18 @@ MoltresApp__associateSyntax(Syntax & syntax, ActionFactory & action_factory)
 void
 MoltresApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
 {
-  syntax.registerActionSyntax("PrecursorKernelAction", "PrecursorKernel");
+  syntax.registerActionSyntax("PrecursorAction", "Precursors/*");
   syntax.registerActionSyntax("NtAction", "Nt");
 
-  registerAction(PrecursorKernelAction, "add_kernel");
-  registerAction(PrecursorKernelAction, "add_bc");
-  registerAction(PrecursorKernelAction, "add_variable");
-  registerAction(PrecursorKernelAction, "add_ic");
-  registerAction(PrecursorKernelAction, "add_dg_kernel");
+  registerAction(PrecursorAction, "add_kernel");
+  registerAction(PrecursorAction, "add_postprocessor");
+  registerAction(PrecursorAction, "add_bc");
+  registerAction(PrecursorAction, "add_variable");
+  registerAction(PrecursorAction, "add_ic");
+  registerAction(PrecursorAction, "add_dg_kernel");
+  registerAction(PrecursorAction, "add_transfer");
+  registerAction(PrecursorAction, "check_copy_nodal_vars");
+  registerAction(PrecursorAction, "copy_nodal_vars");
   registerAction(NtAction, "add_kernel");
   registerAction(NtAction, "add_bc");
   registerAction(NtAction, "add_variable");

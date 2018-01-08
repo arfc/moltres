@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.801822.svg)](https://doi.org/10.5281/zenodo.801822)
+
 Moltres
 =====
 
@@ -54,6 +56,5 @@ it breaks any of the core Moltres physics capabilities.
 
 ## Contact
 
-Contact Alex Lindsay at al007@illinois.edu for more information or
-even better, please post to our discussion list at
+Please post to our discussion list at
 moltres-users@googlegroups.com.

@@ -19,22 +19,24 @@ global_temperature=922
   kernel_coverage_check = false
 []
 
-[PrecursorKernel]
-  var_name_base = pre
-  outlet_boundaries = 'fuel_tops'
-  u_def = 0
-  v_def = ${flow_velocity}
-  w_def = 0
-  nt_exp_form = false
-  family = MONOMIAL
-  order = CONSTANT
-  block = 'fuel'
+[Precursors]
+  [./pres]
+    var_name_base = pre
+    outlet_boundaries = 'fuel_tops'
+    u_def = 0
+    v_def = ${flow_velocity}
+    w_def = 0
+    nt_exp_form = false
+    family = MONOMIAL
+    order = CONSTANT
+    block = 'fuel'
+  [../]
 []
 
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
-    property_tables_root = '../../problems/MooseGold/property_file_dir/newt_msre_fuel_'
+    property_tables_root = '../../property_file_dir/newt_msre_fuel_'
     interp_type = 'spline'
   [../]
 []

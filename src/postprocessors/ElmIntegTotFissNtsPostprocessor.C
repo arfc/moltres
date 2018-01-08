@@ -25,7 +25,7 @@ ElmIntegTotFissNtsPostprocessor::ElmIntegTotFissNtsPostprocessor(const InputPara
     mooseError("The number of coupled variables doesn't match the number of groups.");
 
   _group_fluxes.resize(n);
-  for (int i = 0; i < _group_fluxes.size(); ++i)
+  for (unsigned int i = 0; i < _group_fluxes.size(); ++i)
   {
     _group_fluxes[i] = &coupledValue("group_fluxes", i);
   }

@@ -1,0 +1,81 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM Extend Project: Open Source CFD        |
+|  \\    /   O peration     | Version:  1.6-ext                               |
+|   \\  /    A nd           | Web:      www.extend-project.de                 |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      fvSchemes;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+ddtSchemes
+{
+    default         steadyState;
+}
+
+gradSchemes
+{
+    default         Gauss linear;
+}
+
+divSchemes
+{
+    //default         Gauss upwind;    
+    div(phi,prec1)      Gauss upwind;
+    div(phi,prec2)      Gauss upwind;
+    div(phi,prec3)      Gauss upwind;
+    div(phi,prec4)      Gauss upwind;
+    div(phi,prec5)      Gauss upwind;
+    div(phi,prec6)      Gauss upwind;
+    div(phi,prec7)      Gauss upwind;
+    div(phi,prec8)      Gauss upwind;
+    div(-phi,prec1_adj)      Gauss upwind;
+    div(-phi,prec2_adj)      Gauss upwind;
+    div(-phi,prec3_adj)      Gauss upwind;
+    div(-phi,prec4_adj)      Gauss upwind;
+    div(-phi,prec5_adj)      Gauss upwind;
+    div(-phi,prec6_adj)      Gauss upwind;
+    div(-phi,prec7_adj)      Gauss upwind;
+    div(-phi,prec8_adj)      Gauss upwind;
+    div((nuEff*dev(grad(U).T()))) Gauss linear;
+    div(phi,U)      Gauss upwind;
+    div(phi,T)      Gauss upwind;
+    div(phi,k)      Gauss upwind;
+    div(phi,epsilon) Gauss upwind;
+    div(phi,R)      Gauss upwind;
+    div(R)          Gauss linear;
+    div(phi,dec1)      Gauss upwind;
+    div(phi,dec2)      Gauss upwind;
+    div(phi,dec3)      Gauss upwind;
+}
+
+laplacianSchemes
+{
+    laplacian(D,phi) Gauss linear corrected;
+    laplacian(D,phi_adj) Gauss linear corrected;
+    default         Gauss linear corrected;
+}
+
+interpolationSchemes
+{
+    default         linear;
+}
+
+snGradSchemes
+{
+    default         corrected;
+}
+
+fluxRequired
+{
+    default         no;
+    p               ;
+}
+
+// ************************************************************************* //

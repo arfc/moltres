@@ -10,6 +10,12 @@ class CoupledFissionEigenKernel;
 template <>
 InputParameters validParams<CoupledFissionEigenKernel>();
 
+/**
+ * Computes the fission source normalized by eigenvalue. In other words:
+ * \f[
+ *   \frac{1}{k} \sum_g \nu \Sigma_{g,f} \phi_g
+ * \f]
+ */
 class CoupledFissionEigenKernel : public EigenKernel, public ScalarTransportBase
 {
 public:

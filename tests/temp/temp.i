@@ -69,7 +69,7 @@ ini_temp=922
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
-    property_tables_root = '../../problems/MooseGold/property_file_dir/newt_msre_fuel_'
+    property_tables_root = '../../property_file_dir/newt_msre_fuel_'
     interp_type = 'spline'
     temperature = temp
     block = 'fuel'
@@ -86,7 +86,7 @@ ini_temp=922
   [../]
   [./moder]
     type = GenericMoltresMaterial
-    property_tables_root = '../../problems/MooseGold/property_file_dir/newt_msre_mod_'
+    property_tables_root = '../../property_file_dir/newt_msre_mod_'
     interp_type = 'spline'
     temperature = temp
     prop_names = 'k cp'

@@ -2,8 +2,6 @@ xmax=0.4
 ymax=1.2
 
 [GlobalParams]
-  rho = 1
-  mu = 1
   integrate_p_by_parts = false
   gravity = '0 0 0'
   coord_type = XYZ
