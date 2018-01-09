@@ -1,4 +1,5 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.801822.svg)](https://doi.org/10.5281/zenodo.801822)
+[![DOI](http://joss.theoj.org/papers/10.21105/joss.00298/status.svg)](https://doi.org/10.21105/joss.00298)
 
 Moltres
 =====
