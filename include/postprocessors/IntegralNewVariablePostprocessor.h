@@ -19,7 +19,7 @@ InputParameters validParams<IntegralNewVariablePostprocessor>();
  */
 class IntegralNewVariablePostprocessor : public ElementIntegralPostprocessor,
                                          public ScalarTransportBase,
-                                         public MooseVariableInterface
+                                         public MooseVariableInterface<Real>
 {
 public:
   IntegralNewVariablePostprocessor(const InputParameters & parameters);

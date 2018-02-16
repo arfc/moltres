@@ -22,7 +22,7 @@ protected:
 
   int _num_groups;
   const MaterialProperty<std::vector<Real>> & _fissxs;
-  std::vector<MooseVariable *> _vars;
+  std::vector<MooseVariableFE *> _vars;
   Real _nt_scale;
   std::vector<const VariableValue *> _group_fluxes;
 };
