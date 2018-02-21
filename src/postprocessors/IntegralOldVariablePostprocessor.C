@@ -14,7 +14,7 @@ IntegralOldVariablePostprocessor::IntegralOldVariablePostprocessor(
     const InputParameters & parameters)
   : ElementIntegralPostprocessor(parameters),
     ScalarTransportBase(parameters),
-    MooseVariableInterface(this, false),
+    MooseVariableInterface<Real>(this, false),
     _u_old(coupledValueOld("variable")),
     _grad_u_old(coupledGradientOld("variable"))
 {
