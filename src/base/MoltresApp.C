@@ -18,6 +18,10 @@ validParams<MoltresApp>()
   return params;
 }
 
+// When using the new Registry system, this line is required so that
+// dependent apps know about the MoltresApp label.
+registerKnownLabel("MoltresApp");
+
 MoltresApp::MoltresApp(InputParameters parameters) : MooseApp(parameters)
 {
   Moose::registerObjects(_factory);
