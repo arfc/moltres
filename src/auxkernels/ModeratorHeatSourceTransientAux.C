@@ -1,6 +1,8 @@
 #include "ModeratorHeatSourceTransientAux.h"
 #include "Function.h"
 
+registerMooseObject("MoltresApp", ModeratorHeatSourceTransientAux);
+
 template <>
 InputParameters
 validParams<ModeratorHeatSourceTransientAux>()

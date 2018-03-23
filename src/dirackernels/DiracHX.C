@@ -1,5 +1,7 @@
 #include "DiracHX.h"
 
+registerMooseObject("MoltresApp", DiracHX);
+
 template <>
 InputParameters
 validParams<DiracHX>()

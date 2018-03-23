@@ -4,6 +4,8 @@
 // libmesh includes
 #include "libmesh/quadrature.h"
 
+registerMooseObject("MoltresApp", NtTimeDerivative);
+
 template <>
 InputParameters
 validParams<NtTimeDerivative>()

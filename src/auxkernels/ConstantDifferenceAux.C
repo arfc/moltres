@@ -1,5 +1,7 @@
 #include "ConstantDifferenceAux.h"
 
+registerMooseObject("MoltresApp", ConstantDifferenceAux);
+
 template <>
 InputParameters
 validParams<ConstantDifferenceAux>()

@@ -1,6 +1,8 @@
 #include "DivFreeCoupledScalarAdvection.h"
 #include "MooseMesh.h"
 
+registerMooseObject("MoltresApp", DivFreeCoupledScalarAdvection);
+
 template <>
 InputParameters
 validParams<DivFreeCoupledScalarAdvection>()

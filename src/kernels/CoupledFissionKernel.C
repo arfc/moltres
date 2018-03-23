@@ -1,5 +1,7 @@
 #include "CoupledFissionKernel.h"
 
+registerMooseObject("MoltresApp", CoupledFissionKernel);
+
 template <>
 InputParameters
 validParams<CoupledFissionKernel>()

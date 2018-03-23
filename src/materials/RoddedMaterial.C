@@ -1,6 +1,8 @@
 #include "RoddedMaterial.h"
 #include "MooseUtils.h"
 
+registerMooseObject("MoltresApp", RoddedMaterial);
+
 template <>
 InputParameters
 validParams<RoddedMaterial>()

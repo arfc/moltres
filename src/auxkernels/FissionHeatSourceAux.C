@@ -1,5 +1,7 @@
 #include "FissionHeatSourceAux.h"
 
+registerMooseObject("MoltresApp", FissionHeatSourceAux);
+
 template <>
 InputParameters
 validParams<FissionHeatSourceAux>()

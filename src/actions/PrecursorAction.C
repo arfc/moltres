@@ -5,6 +5,24 @@
 #include "FEProblem.h"
 #include "NonlinearSystemBase.h"
 
+registerMooseAction("MoltresApp", PrecursorAction, "add_kernel");
+
+registerMooseAction("MoltresApp", PrecursorAction, "add_postprocessor");
+
+registerMooseAction("MoltresApp", PrecursorAction, "add_bc");
+
+registerMooseAction("MoltresApp", PrecursorAction, "add_variable");
+
+registerMooseAction("MoltresApp", PrecursorAction, "add_ic");
+
+registerMooseAction("MoltresApp", PrecursorAction, "add_dg_kernel");
+
+registerMooseAction("MoltresApp", PrecursorAction, "add_transfer");
+
+registerMooseAction("MoltresApp", PrecursorAction, "check_copy_nodal_vars");
+
+registerMooseAction("MoltresApp", PrecursorAction, "copy_nodal_vars");
+
 template <>
 InputParameters
 validParams<PrecursorAction>()

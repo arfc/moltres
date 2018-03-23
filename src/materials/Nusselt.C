@@ -1,5 +1,7 @@
 #include "Nusselt.h"
 
+registerMooseObject("MoltresApp", Nusselt);
+
 template <>
 InputParameters
 validParams<Nusselt>()

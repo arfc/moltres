@@ -1,5 +1,7 @@
 #include "INSMomentumKEpsilon.h"
 
+registerMooseObject("MoltresApp", INSMomentumKEpsilon);
+
 template <>
 InputParameters
 validParams<INSMomentumKEpsilon>()

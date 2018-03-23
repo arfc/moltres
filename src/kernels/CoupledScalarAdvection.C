@@ -1,6 +1,8 @@
 #include "CoupledScalarAdvection.h"
 #include "MooseMesh.h"
 
+registerMooseObject("MoltresApp", CoupledScalarAdvection);
+
 template <>
 InputParameters
 validParams<CoupledScalarAdvection>()
