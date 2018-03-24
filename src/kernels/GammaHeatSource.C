@@ -1,6 +1,8 @@
 #include "GammaHeatSource.h"
 #include "Function.h"
 
+registerMooseObject("MoltresApp", GammaHeatSource);
+
 template <>
 InputParameters
 validParams<GammaHeatSource>()

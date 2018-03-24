@@ -1,5 +1,7 @@
 #include "GroupDiffusion.h"
 
+registerMooseObject("MoltresApp", GroupDiffusion);
+
 template <>
 InputParameters
 validParams<GroupDiffusion>()

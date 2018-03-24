@@ -7,6 +7,22 @@
 #include "FEProblem.h"
 #include "NonlinearSystemBase.h"
 
+registerMooseAction("MoltresApp", NtAction, "add_kernel");
+
+registerMooseAction("MoltresApp", NtAction, "add_bc");
+
+registerMooseAction("MoltresApp", NtAction, "add_variable");
+
+registerMooseAction("MoltresApp", NtAction, "add_ic");
+
+registerMooseAction("MoltresApp", NtAction, "add_aux_variable");
+
+registerMooseAction("MoltresApp", NtAction, "add_aux_kernel");
+
+registerMooseAction("MoltresApp", NtAction, "check_copy_nodal_vars");
+
+registerMooseAction("MoltresApp", NtAction, "copy_nodal_vars");
+
 template <>
 InputParameters
 validParams<NtAction>()

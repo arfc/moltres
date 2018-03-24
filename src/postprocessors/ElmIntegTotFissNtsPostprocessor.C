@@ -1,5 +1,7 @@
 #include "ElmIntegTotFissNtsPostprocessor.h"
 
+registerMooseObject("MoltresApp", ElmIntegTotFissNtsPostprocessor);
+
 template <>
 InputParameters
 validParams<ElmIntegTotFissNtsPostprocessor>()

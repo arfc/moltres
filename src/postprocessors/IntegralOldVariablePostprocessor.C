@@ -1,5 +1,7 @@
 #include "IntegralOldVariablePostprocessor.h"
 
+registerMooseObject("MoltresApp", IntegralOldVariablePostprocessor);
+
 template <>
 InputParameters
 validParams<IntegralOldVariablePostprocessor>()

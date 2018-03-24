@@ -2,6 +2,8 @@
 #include "MooseUtils.h"
 // #define PRINT(var) #var
 
+registerMooseObject("MoltresApp", CammiFuel);
+
 template <>
 InputParameters
 validParams<CammiFuel>()

@@ -1,5 +1,7 @@
 #include "ScalarAdvectionArtDiffNoBCBC.h"
 
+registerMooseObject("MoltresApp", ScalarAdvectionArtDiffNoBCBC);
+
 template <>
 InputParameters
 validParams<ScalarAdvectionArtDiffNoBCBC>()

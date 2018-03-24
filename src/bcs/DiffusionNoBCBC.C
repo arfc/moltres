@@ -1,5 +1,7 @@
 #include "DiffusionNoBCBC.h"
 
+registerMooseObject("MoltresApp", DiffusionNoBCBC);
+
 template <>
 InputParameters
 validParams<DiffusionNoBCBC>()

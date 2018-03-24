@@ -1,5 +1,7 @@
 #include "PrecursorDecay.h"
 
+registerMooseObject("MoltresApp", PrecursorDecay);
+
 template <>
 InputParameters
 validParams<PrecursorDecay>()

@@ -1,5 +1,7 @@
 #include "AverageFissionHeat.h"
 
+registerMooseObject("MoltresApp", AverageFissionHeat);
+
 template <>
 InputParameters
 validParams<AverageFissionHeat>()

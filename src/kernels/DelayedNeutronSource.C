@@ -1,5 +1,7 @@
 #include "DelayedNeutronSource.h"
 
+registerMooseObject("MoltresApp", DelayedNeutronSource);
+
 template <>
 InputParameters
 validParams<DelayedNeutronSource>()

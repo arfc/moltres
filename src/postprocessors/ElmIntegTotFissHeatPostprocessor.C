@@ -1,5 +1,7 @@
 #include "ElmIntegTotFissHeatPostprocessor.h"
 
+registerMooseObject("MoltresApp", ElmIntegTotFissHeatPostprocessor);
+
 template <>
 InputParameters
 validParams<ElmIntegTotFissHeatPostprocessor>()

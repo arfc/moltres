@@ -1,5 +1,7 @@
 #include "VacuumConcBC.h"
 
+registerMooseObject("MoltresApp", VacuumConcBC);
+
 template <>
 InputParameters
 validParams<VacuumConcBC>()

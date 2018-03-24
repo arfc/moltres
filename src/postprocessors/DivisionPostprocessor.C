@@ -1,5 +1,7 @@
 #include "DivisionPostprocessor.h"
 
+registerMooseObject("MoltresApp", DivisionPostprocessor);
+
 template <>
 InputParameters
 validParams<DivisionPostprocessor>()

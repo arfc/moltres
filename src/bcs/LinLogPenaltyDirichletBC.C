@@ -1,6 +1,8 @@
 #include "LinLogPenaltyDirichletBC.h"
 #include "Function.h"
 
+registerMooseObject("MoltresApp", LinLogPenaltyDirichletBC);
+
 template <>
 InputParameters
 validParams<LinLogPenaltyDirichletBC>()
