@@ -2,6 +2,8 @@
 #include "MooseUtils.h"
 // #define PRINT(var) #var
 
+registerMooseObject("MoltresApp", CammiModerator);
+
 template <>
 InputParameters
 validParams<CammiModerator>()

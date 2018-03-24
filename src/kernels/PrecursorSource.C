@@ -1,5 +1,7 @@
 #include "PrecursorSource.h"
 
+registerMooseObject("MoltresApp", PrecursorSource);
+
 template <>
 InputParameters
 validParams<PrecursorSource>()

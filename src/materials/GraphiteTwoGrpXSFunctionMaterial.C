@@ -2,6 +2,8 @@
 #include "MooseUtils.h"
 // #define PRINT(var) #var
 
+registerMooseObject("MoltresApp", GraphiteTwoGrpXSFunctionMaterial);
+
 template <>
 InputParameters
 validParams<GraphiteTwoGrpXSFunctionMaterial>()

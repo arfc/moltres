@@ -1,5 +1,7 @@
 #include "INSBoussinesqBodyForce.h"
 
+registerMooseObject("MoltresApp", INSBoussinesqBodyForce);
+
 template <>
 InputParameters
 validParams<INSBoussinesqBodyForce>()

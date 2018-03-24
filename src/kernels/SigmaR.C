@@ -1,5 +1,7 @@
 #include "SigmaR.h"
 
+registerMooseObject("MoltresApp", SigmaR);
+
 template <>
 InputParameters
 validParams<SigmaR>()

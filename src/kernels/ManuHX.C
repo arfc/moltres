@@ -1,5 +1,7 @@
 #include "ManuHX.h"
 
+registerMooseObject("MoltresApp", ManuHX);
+
 template <>
 InputParameters
 validParams<ManuHX>()

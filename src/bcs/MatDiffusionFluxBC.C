@@ -1,5 +1,7 @@
 #include "MatDiffusionFluxBC.h"
 
+registerMooseObject("MoltresApp", MatDiffusionFluxBC);
+
 template <>
 InputParameters
 validParams<MatDiffusionFluxBC>()

@@ -1,5 +1,7 @@
 #include "InScatter.h"
 
+registerMooseObject("MoltresApp", InScatter);
+
 template <>
 InputParameters
 validParams<InScatter>()

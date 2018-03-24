@@ -15,6 +15,8 @@
 #include "LimitK.h"
 #include "FEProblem.h"
 
+registerMooseObject("MoltresApp", LimitK);
+
 template <>
 InputParameters
 validParams<LimitK>()

@@ -1,6 +1,8 @@
 
 #include "ElementL2Diff.h"
 
+registerMooseObject("MoltresApp", ElementL2Diff);
+
 template <>
 InputParameters
 validParams<ElementL2Diff>()

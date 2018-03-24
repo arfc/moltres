@@ -1,5 +1,7 @@
 #include "ScalarTransportTimeDerivative.h"
 
+registerMooseObject("MoltresApp", ScalarTransportTimeDerivative);
+
 template <>
 InputParameters
 validParams<ScalarTransportTimeDerivative>()

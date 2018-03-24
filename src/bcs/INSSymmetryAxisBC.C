@@ -1,5 +1,7 @@
 #include "INSSymmetryAxisBC.h"
 
+registerMooseObject("MoltresApp", INSSymmetryAxisBC);
+
 template <>
 InputParameters
 validParams<INSSymmetryAxisBC>()

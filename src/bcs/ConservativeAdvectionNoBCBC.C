@@ -1,5 +1,7 @@
 #include "ConservativeAdvectionNoBCBC.h"
 
+registerMooseObject("MoltresApp", ConservativeAdvectionNoBCBC);
+
 template <>
 InputParameters
 validParams<ConservativeAdvectionNoBCBC>()

@@ -1,5 +1,7 @@
 #include "SelfFissionEigenKernel.h"
 
+registerMooseObject("MoltresApp", SelfFissionEigenKernel);
+
 template <>
 InputParameters
 validParams<SelfFissionEigenKernel>()

@@ -1,5 +1,7 @@
 #include "INSOutflowBC.h"
 
+registerMooseObject("MoltresApp", INSOutflowBC);
+
 template <>
 InputParameters
 validParams<INSOutflowBC>()
