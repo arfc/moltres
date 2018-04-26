@@ -170,7 +170,6 @@ PrecursorAction::kernelAct(const unsigned & op, const std::string & var_name)
       params.set<std::vector<SubdomainName>>("block") =
           getParam<std::vector<SubdomainName>>("block");
     params.set<bool>("use_exp_form") = getParam<bool>("nt_exp_form");
-    params.set<bool>("eigen") = getParam<bool>("eigen");
 
     std::string kernel_name = "PrecursorSource_" + var_name + "_" + _object_suffix;
     _problem->addKernel("PrecursorSource", kernel_name, params);
