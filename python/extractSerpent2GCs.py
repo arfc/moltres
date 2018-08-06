@@ -235,7 +235,6 @@ if __name__ == '__main__':
     parser.add_argument('mapFile' , metavar='b', type=str, nargs=1, help='File that maps branches to temperatures')
     parser.add_argument('secbranchFile', metavar='s', type=str, nargs=1, help='File that lists secondary Serpent branch names')
     parser.add_argument('universeMap', metavar='u', type=str, nargs=1, help='File that maps material names to serpent universe')
-    #parser.add_argument('materials', metavar='m', type=str, nargs='+', help='list of moltres material names')
     parser.add_argument('--serp1', dest='serp1', action='store_true', help='use this flag for serpent 1 group transfer matrices')
     parser.set_defaults(serp1=False)
 
