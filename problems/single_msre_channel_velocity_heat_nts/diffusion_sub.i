@@ -61,7 +61,7 @@
 []
 
 [Outputs]
-  print_perf_log = true
+  perf_graph = true
   exodus = true
   csv = true
 []

@@ -235,7 +235,7 @@ diri_temp=922
 []
 
 [Outputs]
-  print_perf_log = true
+  perf_graph = true
   csv = true
   [./out]
     type = Exodus
