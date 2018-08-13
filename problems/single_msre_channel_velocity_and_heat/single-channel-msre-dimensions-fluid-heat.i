@@ -206,7 +206,7 @@ length = 162.56
 []
 
 [Outputs]
-  print_perf_log = true
+  perf_graph = true
   [./out]
     type = Exodus
   [../]

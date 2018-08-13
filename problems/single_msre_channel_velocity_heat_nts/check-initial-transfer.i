@@ -75,7 +75,7 @@ cell_width=5.08
 []
 
 [Outputs]
-  print_perf_log = true
+  perf_graph = true
   exodus = true
   csv = true
 []

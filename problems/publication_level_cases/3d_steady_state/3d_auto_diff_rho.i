@@ -304,7 +304,7 @@ offset=2.5
 []
 
 [Outputs]
-  print_perf_log = true
+  perf_graph = true
   print_linear_residuals = true
   csv = true
   [./out]

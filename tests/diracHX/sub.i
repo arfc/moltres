@@ -164,7 +164,7 @@ flow_velocity=0.5 # cm/s. See MSRE-properties.ods
 []
 
 [Outputs]
-  print_perf_log = true
+  perf_graph = true
   print_linear_residuals = true
   [./exodus]
     type = Exodus
