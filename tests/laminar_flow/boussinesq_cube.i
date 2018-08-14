@@ -56,7 +56,7 @@ library_path = '../../../moose/modules/navier_stokes/lib/'
 []
 
 [Outputs]
-  print_perf_log = true
+  perf_graph = true
   print_linear_residuals = false
   [./out]
     type = Exodus
