@@ -378,7 +378,7 @@ PrecursorAction::postAct(const std::string & var_name)
   {
     std::string postproc_name = "Inlet_SideAverageValue_" + var_name + "_" + _object_suffix;
     InputParameters params = _factory.getValidParams("Receiver");
-    params.set<ExecFlagEnum>("execute_on") = "timestep_begin";
+    params.set<ExecFlagEnum>("execute_on") = "nonlinear";
     params.set<std::vector<OutputName>>("outputs") = {"none"};
 
     _problem->addPostprocessor("Receiver", postproc_name, params);
