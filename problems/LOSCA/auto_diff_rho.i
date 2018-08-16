@@ -21,18 +21,24 @@ diri_temp=922
   coord_type = RZ
 []
 
+[Nt]
+  var_name_base = group
+  vacuum_boundaries = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
+  create_temperature_var = false
+  scaling = 1e-4
+  pre_blocks = 'fuel'
+[]
+
 [Variables]
   [./group1]
     order = FIRST
     family = LAGRANGE
     scaling = 1e4
-    initial_condition = 1
   [../]
   [./group2]
     order = FIRST
     family = LAGRANGE
     scaling = 1e4
-    initial_condition = 1
   [../]
   [./temp]
     scaling = 1e-4
@@ -59,62 +65,6 @@ diri_temp=922
 []
 
 [Kernels]
-  # Neutronics
-  [./time_group1]
-    type = NtTimeDerivative
-    variable = group1
-    group_number = 1
-  [../]
-  [./diff_group1]
-    type = GroupDiffusion
-    variable = group1
-    group_number = 1
-  [../]
-  [./sigma_r_group1]
-    type = SigmaR
-    variable = group1
-    group_number = 1
-  [../]
-  [./fission_source_group1]
-    type = CoupledFissionKernel
-    variable = group1
-    group_number = 1
-  [../]
-  [./delayed_group1]
-    type = DelayedNeutronSource
-    variable = group1
-  [../]
-  [./inscatter_group1]
-    type = InScatter
-    variable = group1
-    group_number = 1
-  [../]
-  [./diff_group2]
-    type = GroupDiffusion
-    variable = group2
-    group_number = 2
-  [../]
-  [./sigma_r_group2]
-    type = SigmaR
-    variable = group2
-    group_number = 2
-  [../]
-  [./time_group2]
-    type = NtTimeDerivative
-    variable = group2
-    group_number = 2
-  [../]
-  [./fission_source_group2]
-    type = CoupledFissionKernel
-    variable = group2
-    group_number = 2
-  [../]
-  [./inscatter_group2]
-    type = InScatter
-    variable = group2
-    group_number = 2
-  [../]
-
   # Temperature
   [./temp_time_derivative]
     type = MatINSTemperatureTimeDerivative
