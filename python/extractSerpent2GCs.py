@@ -9,7 +9,14 @@ import subprocess
 import serpentTools as sT
 
 
-def makePropertiesDir(outdir, filebase, mapFile, secbranchFile, unimapFile, serp1=False, fromMain=False):
+def makePropertiesDir(
+        outdir,
+        filebase,
+        mapFile,
+        secbranchFile,
+        unimapFile,
+        serp1=False,
+        fromMain=False):
     """ Takes in a mapping from branch names to material temperatures,
     then makes a properties directory.
     Serp1 means that the group transfer matrix is transposed."""
@@ -21,9 +28,9 @@ def makePropertiesDir(outdir, filebase, mapFile, secbranchFile, unimapFile, serp
         os.mkdir(outdir)
 
     # the constants moltres looks for:
-    goodStuff = ['betaEff', 'Chit', 'lambda', 'Diffcoef', 'Kappa',
+    goodStuff = ['betaEff', 'Chit', 'Chid', 'lambda', 'Diffcoef', 'Kappa',
                  'Sp0', 'Nsf', 'Invv', 'Remxs', 'Fiss', 'Nubar', 'Flx']
-    goodMap = dict([(thing, 'inf'+thing) for thing in goodStuff])
+    goodMap = dict([(thing, 'inf' + thing) for thing in goodStuff])
     goodMap['betaEff'] = 'betaEff'
     goodMap['lambda'] = 'lambda'
 
@@ -40,7 +47,7 @@ def makePropertiesDir(outdir, filebase, mapFile, secbranchFile, unimapFile, serp
 
     print("Making properties for materials:")
     print(inmats)
-    coeList = dict([(mat, sT.read(mat+'.coe')) for mat in inmats])
+    coeList = dict([(mat, sT.read(mat + '.coe')) for mat in inmats])
 
     # secondary branch burnup steps
     secBranch = []
@@ -65,7 +72,7 @@ def makePropertiesDir(outdir, filebase, mapFile, secbranchFile, unimapFile, serp
         try:
             if not secBranch:
                 for coefficient in goodStuff:
-                    with open(outdir+'/'+filebase+'_'+currentMat+'_'+coefficient+'.txt', 'a') as fh:
+                    with open(outdir + '/' + filebase + '_' + currentMat + '_' + coefficient.upper() + '.txt', 'a') as fh:
                         if coefficient == 'lambda' or coefficient == 'betaEff':
                             strData = coeList[currentMat].branches[item].universes[int(
                                 uniMap[currentMat]), 0, 0].gc[goodMap[coefficient]]
@@ -76,13 +83,30 @@ def makePropertiesDir(outdir, filebase, mapFile, secbranchFile, unimapFile, serp
                                 uniMap[currentMat]), 0, 0].infExp[goodMap[coefficient]]
                         strData = ' '.join([str(dat) for dat in strData]) if isinstance(
                             strData, np.ndarray) else strData
-                        fh.write(str(temp)+' '+strData)
+                        fh.write(str(temp) + ' ' + strData)
                         fh.write('\n')
+                os.rename(
+                    outdir +
+                    '/' +
+                    filebase +
+                    '_' +
+                    currentMat +
+                    '_' +
+                    'BETAEFF' +
+                    '.txt',
+                    outdir +
+                    '/' +
+                    filebase +
+                    '_' +
+                    currentMat +
+                    '_' +
+                    'BETA_EFF' +
+                    '.txt')
 
             else:
                 for branch in secBranch:
                     for coefficient in goodStuff:
-                        with open(outdir+'/'+filebase+'_'+currentMat+'_'+branch+'_'+coefficient+'.txt', 'a') as fh:
+                        with open(outdir + '/' + filebase + '_' + currentMat + '_' + branch + '_' + coefficient.upper() + '.txt', 'a') as fh:
                             if coefficient == 'lambda' or coefficient == 'betaEff':
                                 strData = coeList[currentMat].branches[item, branch].universes[int(
                                     uniMap[currentMat]), 0, 0].gc[goodMap[coefficient]]
@@ -93,8 +117,30 @@ def makePropertiesDir(outdir, filebase, mapFile, secbranchFile, unimapFile, serp
                                     uniMap[currentMat]), 0, 0].infExp[goodMap[coefficient]]
                             strData = ' '.join([str(dat) for dat in strData]) if isinstance(
                                 strData, np.ndarray) else strData
-                            fh.write(str(temp)+' '+strData)
+                            fh.write(str(temp) + ' ' + strData)
                             fh.write('\n')
+                os.rename(
+                    outdir +
+                    '/' +
+                    filebase +
+                    '_' +
+                    currentMat +
+                    '_' +
+                    branch +
+                    '_' +
+                    'BETAEFF' +
+                    '.txt',
+                    outdir +
+                    '/' +
+                    filebase +
+                    '_' +
+                    currentMat +
+                    '_' +
+                    branch +
+                    '_' +
+                    'BETA_EFF' +
+                    '.txt')
+
         except KeyError:
             print(secBranch)
             raise Exception('Check your mapping and secondary branch files.')
@@ -111,14 +157,29 @@ if __name__ == '__main__':
                         help='name of directory to write properties to.')
     parser.add_argument('fileBase', metavar='f', type=str,
                         nargs=1, help='File base name to give moltres')
-    parser.add_argument('mapFile', metavar='b', type=str,
-                        nargs=1, help='File that maps branches to temperatures')
-    parser.add_argument('secbranchFile', metavar='s', type=str,
-                        nargs=1, help='File that lists secondary Serpent branch names')
-    parser.add_argument('universeMap', metavar='u', type=str, nargs=1,
-                        help='File that maps material names to serpent universe')
-    parser.add_argument('--serp1', dest='serp1', action='store_true',
-                        help='use this flag for serpent 1 group transfer matrices')
+    parser.add_argument(
+        'mapFile',
+        metavar='b',
+        type=str,
+        nargs=1,
+        help='File that maps branches to temperatures')
+    parser.add_argument(
+        'secbranchFile',
+        metavar='s',
+        type=str,
+        nargs=1,
+        help='File that lists secondary Serpent branch names')
+    parser.add_argument(
+        'universeMap',
+        metavar='u',
+        type=str,
+        nargs=1,
+        help='File that maps material names to serpent universe')
+    parser.add_argument(
+        '--serp1',
+        dest='serp1',
+        action='store_true',
+        help='use this flag for serpent 1 group transfer matrices')
     parser.set_defaults(serp1=False)
 
     args = parser.parse_args()
