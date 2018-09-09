@@ -28,10 +28,10 @@ def makePropertiesDir(
         os.mkdir(outdir)
 
     # the constants moltres looks for:
-    goodStuff = ['betaEff', 'Chit', 'Chid', 'lambda', 'Diffcoef', 'Kappa',
+    goodStuff = ['BETA_EFF', 'Chit', 'Chid', 'lambda', 'Diffcoef', 'Kappa',
                  'Sp0', 'Nsf', 'Invv', 'Remxs', 'Fiss', 'Nubar', 'Flx']
     goodMap = dict([(thing, 'inf' + thing) for thing in goodStuff])
-    goodMap['betaEff'] = 'betaEff'
+    goodMap['BETA_EFF'] = 'betaEff'
     goodMap['lambda'] = 'lambda'
 
     # map material names to universe names from serpent
@@ -73,7 +73,7 @@ def makePropertiesDir(
             if not secBranch:
                 for coefficient in goodStuff:
                     with open(outdir + '/' + filebase + '_' + currentMat + '_' + coefficient.upper() + '.txt', 'a') as fh:
-                        if coefficient == 'lambda' or coefficient == 'betaEff':
+                        if coefficient == 'lambda' or coefficient == 'BETA_EFF':
                             strData = coeList[currentMat].branches[item].universes[int(
                                 uniMap[currentMat]), 0, 0].gc[goodMap[coefficient]]
                             # some additional formatting is needed here
@@ -85,29 +85,12 @@ def makePropertiesDir(
                             strData, np.ndarray) else strData
                         fh.write(str(temp) + ' ' + strData)
                         fh.write('\n')
-                os.rename(
-                    outdir +
-                    '/' +
-                    filebase +
-                    '_' +
-                    currentMat +
-                    '_' +
-                    'BETAEFF' +
-                    '.txt',
-                    outdir +
-                    '/' +
-                    filebase +
-                    '_' +
-                    currentMat +
-                    '_' +
-                    'BETA_EFF' +
-                    '.txt')
 
             else:
                 for branch in secBranch:
                     for coefficient in goodStuff:
                         with open(outdir + '/' + filebase + '_' + currentMat + '_' + branch + '_' + coefficient.upper() + '.txt', 'a') as fh:
-                            if coefficient == 'lambda' or coefficient == 'betaEff':
+                            if coefficient == 'lambda' or coefficient == 'BETA_EFF':
                                 strData = coeList[currentMat].branches[item, branch].universes[int(
                                     uniMap[currentMat]), 0, 0].gc[goodMap[coefficient]]
                                 # some additional formatting is needed here
@@ -119,34 +102,10 @@ def makePropertiesDir(
                                 strData, np.ndarray) else strData
                             fh.write(str(temp) + ' ' + strData)
                             fh.write('\n')
-                os.rename(
-                    outdir +
-                    '/' +
-                    filebase +
-                    '_' +
-                    currentMat +
-                    '_' +
-                    branch +
-                    '_' +
-                    'BETAEFF' +
-                    '.txt',
-                    outdir +
-                    '/' +
-                    filebase +
-                    '_' +
-                    currentMat +
-                    '_' +
-                    branch +
-                    '_' +
-                    'BETA_EFF' +
-                    '.txt')
 
         except KeyError:
             print(secBranch)
             raise Exception('Check your mapping and secondary branch files.')
-
-    return None
-
 
 if __name__ == '__main__':
 
