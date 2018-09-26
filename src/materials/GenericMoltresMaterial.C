@@ -212,7 +212,7 @@ GenericMoltresMaterial::splineConstruct(std::string & property_tables_root,
                                         std::vector<std::string> xsec_names)
 {
   Real value;
-  int tempLength;
+  int tempLength = 0;
   bool onewarn = false;
   std::vector<Real> oldtemperature;
   for (decltype(xsec_names.size()) j = 0; j < xsec_names.size(); ++j)
@@ -280,7 +280,7 @@ GenericMoltresMaterial::monotoneCubicConstruct(std::string & property_tables_roo
                                                std::vector<std::string> xsec_names)
 {
   Real value;
-  int tempLength;
+  int tempLength = 0;
   bool onewarn = false;
   for (decltype(xsec_names.size()) j = 0; j < xsec_names.size(); ++j)
   {
@@ -322,6 +322,7 @@ GenericMoltresMaterial::monotoneCubicConstruct(std::string & property_tables_roo
           xsec_map[xsec_names[j]][k].push_back(value);
         }
       }
+      tempLength = temperature.size();
       myfile.close();
       for (decltype(o) k = 0; k < o; ++k)
         _xsec_monotone_cubic_interpolators[xsec_names[j]][k].setData(temperature,
@@ -337,7 +338,7 @@ GenericMoltresMaterial::linearConstruct(std::string & property_tables_root,
                                         std::vector<std::string> xsec_names)
 {
   Real value;
-  int tempLength;
+  int tempLength = 0;
   bool onewarn = false;
   for (decltype(xsec_names.size()) j = 0; j < xsec_names.size(); ++j)
   {
@@ -380,6 +381,7 @@ GenericMoltresMaterial::linearConstruct(std::string & property_tables_root,
           xsec_map[xsec_names[j]][k].push_back(value);
         }
       }
+      tempLength = temperature.size();
       myfile.close();
       for (decltype(o) k = 0; k < o; ++k)
         _xsec_linear_interpolators[xsec_names[j]][k].setData(temperature,
