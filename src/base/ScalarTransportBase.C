@@ -1,5 +1,7 @@
 #include "ScalarTransportBase.h"
 
+#include "libmesh/vector_value.h"
+
 template <>
 InputParameters
 validParams<ScalarTransportBase>()
