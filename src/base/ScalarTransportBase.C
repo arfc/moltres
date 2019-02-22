@@ -67,7 +67,7 @@ ScalarTransportBase::computeConcentrationGradientDerivative(const VariableValue 
 
 Real
 ScalarTransportBase::computeConcentrationDot(const VariableValue & u,
-                                             const VariableValue u_dot,
+                                             const VariableValue & u_dot,
                                              unsigned int qp)
 {
   if (_use_exp_form)
