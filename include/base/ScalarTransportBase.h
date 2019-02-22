@@ -45,7 +45,7 @@ public:
 
   /// Computes \f$\frac{\partial c}{\partial t}\f$
   virtual Real
-  computeConcentrationDot(const VariableValue & u, const VariableValue u_dot, unsigned int qp);
+  computeConcentrationDot(const VariableValue & u, const VariableValue & u_dot, unsigned int qp);
 
   /// Computes \f$\frac{\partial}{\partial t} \frac{\partial c}{\partial u_j}\f$
   virtual Real computeConcentrationDotDerivative(const VariableValue & u,
