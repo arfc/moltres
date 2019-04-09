@@ -27,14 +27,15 @@ protected:
   virtual Real computeQpOffDiagJacobian(unsigned jvar);
 
   // Parameters
-  const VariableValue & _dT;
-  unsigned int _dT_id;
+  const VariableValue & _T;
+  unsigned int _T_id;
   RealVectorValue _gravity;
   unsigned _component;
 
   // Material properties
   const MaterialProperty<Real> & _alpha;
   const MaterialProperty<Real> & _rho;
+  const MaterialProperty<Real> & _T_ref;
 };
 
 #endif
