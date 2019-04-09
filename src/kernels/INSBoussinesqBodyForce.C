@@ -21,7 +21,7 @@ validParams<INSBoussinesqBodyForce>()
   params.addParam<MaterialPropertyName>("alpha_name",
                                         "alpha",
                                         "The name of the thermal expansion coefficient"
-                                        "this is of the form rho = rho*(1-alpha dT)");
+                                        "this is of the form rho = rho*(1-alpha (T-T_ref))");
   params.addParam<MaterialPropertyName>("rho_name", "rho", "The name of the density");
   params.addParam<MaterialPropertyName>(
       "ref_temp", "temp_ref", "The name of the reference temperature");
