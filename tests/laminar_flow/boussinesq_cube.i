@@ -86,21 +86,6 @@ library_path = '../../../moose/modules/navier_stokes/lib/'
   [../]
 []
 
-[AuxVariables]
-  [./deltaT]
-    family = LAGRANGE
-    order = FIRST
-  [../]
-[]
-
-[AuxKernels]
-  [./deltaTCalc]
-    type =  ConstantDifferenceAux
-    variable = deltaT
-    compareVar = temp
-    constant = 900
-  [../]
-[]
 
 [BCs]
   [./ux_dirichlet]
@@ -235,8 +220,8 @@ library_path = '../../../moose/modules/navier_stokes/lib/'
   [./const]
     type = GenericConstantMaterial
     # alpha = coefficient of thermal expansion where rho  = rho0 -alpha * rho0 * delta T
-    prop_names = 'mu rho alpha k cp'
-    prop_values = '7.0422e-5 .00214 1.32e-4 .0553 1967'
+    prop_names =  'mu        rho    temp_ref alpha   k     cp'
+    prop_values = '7.0422e-5 .00214 900      1.32e-4 .0553 1967'
 
   [../]
 []
