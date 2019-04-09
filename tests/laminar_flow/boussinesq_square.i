@@ -97,42 +97,6 @@ ymax=.05
   [../]
 []
 
-# [ICs]
-#   [./ux]
-#     variable = ux
-#     type = RandomIC
-#   [../]
-#   [./uy]
-#     variable = uy
-#     type = RandomIC
-#   [../]
-#   [./p]
-#     variable = p
-#     type = RandomIC
-#   [../]
-#   [./temp]
-#     variable = temp
-#     type = RandomIC
-#     min = 330
-#     max = 350
-#   [../]
-# []
-
-[AuxVariables]
-  [./deltaT]
-    family = LAGRANGE
-    order = SECOND
-  [../]
-[]
-
-[AuxKernels]
-  [./deltaTCalc]
-    type =  ConstantDifferenceAux
-    variable = deltaT
-    compareVar = temp
-    constant = 900
-  [../]
-[]
 
 [BCs]
   [./ux_dirichlet]
@@ -236,7 +200,7 @@ ymax=.05
   [./const]
     type = GenericConstantMaterial
     # alpha = coefficient of thermal expansion where rho  = rho0 -alpha * rho0 * delta T
-    prop_names = 'mu rho alpha k cp'
-    prop_values = '30.74e-6 .5757 2.9e-3 46.38e-3 1054'
+    prop_names =  'mu        rho    temp_ref alpha   k        cp'
+    prop_values = '30.74e-6  .5757  900      2.9e-3  46.38e-3 1054'
   [../]
 []
