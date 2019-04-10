@@ -44,6 +44,8 @@ APPLICATION_DIR    := $(CURDIR)
 APPLICATION_NAME   := moltres
 BUILD_EXEC         := yes
 DEP_APPS           := $(shell $(FRAMEWORK_DIR)/scripts/find_dep_apps.py $(APPLICATION_NAME))
+ADDITIONAL_INCLUDES = -I/opt/moose/miniconda/include
+EXTERNAL_FLAGS = -I/opt/moose/miniconda/include -D_FORTIFY_SOURCE=2 -O2 -fvisibility-inlines-hidden -std=c++17 -fmessage-length=0 -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -pipe -I/opt/moose/miniconda/include   -L/opt/moose/miniconda/lib /opt/moose/miniconda/lib/libhdf5_hl_cpp.so /opt/moose/miniconda/lib/libhdf5_cpp.so /opt/moose/miniconda/lib/libhdf5_hl.so /opt/moose/miniconda/lib/libhdf5.so -L/opt/moose/miniconda/lib -Wl,-O2 -Wl,--sort-common -Wl,--as-needed -Wl,-z,relro -Wl,-z,now -Wl,-rpath,/opt/moose/miniconda/lib -L/opt/moose/miniconda/lib -lrt -lpthread -lz -ldl -lm -Wl,-rpath -Wl,/opt/moose/miniconda/lib
 include            $(FRAMEWORK_DIR)/app.mk
 
 ###############################################################################

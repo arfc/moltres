@@ -46,9 +46,8 @@ public:
   // returns a MooseEnum corresponding to the above enum
   static MooseEnum interpTypes()
   {
-    return MooseEnum(
-    "spline=0"
-    " monotone_cubic=1 linear=2 none=3");
+    return MooseEnum("spline=0"
+                     " monotone_cubic=1 linear=2 none=3");
   }
 
 protected:
@@ -91,7 +90,7 @@ protected:
 
   unsigned _num_groups;
   unsigned _num_precursor_groups;
-  
+
   std::map<std::string, std::vector<SplineInterpolation>> _xsec_spline_interpolators;
   std::map<std::string, std::vector<MonotoneCubicInterpolation>> _xsec_monotone_cubic_interpolators;
   std::map<std::string, std::vector<LinearInterpolation>> _xsec_linear_interpolators;
