@@ -130,6 +130,11 @@ H5MoltresMaterial::Construct(std::string & base_file, std::vector<std::string> x
   {
     auto o = _vec_lengths[xsec_names[j]];
     auto L = _XsTemperature.size();
+
+    _xsec_linear_interpolators[xsec_names[j]].resize(o);
+    _xsec_spline_interpolators[xsec_names[j]].resize(o);
+    _xsec_monotone_cubic_interpolators[xsec_names[j]].resize(o);
+
     std::map<std::string, std::vector<std::vector<Real>>> xsec_map;
     xsec_map[xsec_names[j]].resize(o);
 
@@ -144,12 +149,12 @@ H5MoltresMaterial::Construct(std::string & base_file, std::vector<std::string> x
                          "/" + _file_map[xsec_names[j]]);
       if (xsec_names[j] == "CHI_D" && !flag)
       {
-        for (decltype(_num_groups) k = 0; k < _num_groups; ++k)
-          if (_num_groups != 0)
-            xsec_map["CHI_D"][k].push_back(0.0);
-        xsec_map["CHI_D"][0][-1] = 1.0;
+        for (decltype(_num_groups) k = 1; k < _num_groups; ++k)
+          xsec_map["CHI_D"][k].push_back(0.0);
+        xsec_map["CHI_D"][0].push_back(1.0);
         mooseWarning(
-            "CHI_D data missing -> assume delayed neutrons born in top group for material" + _name);
+            "CHI_D data missing -> assume delayed neutrons born in top group for material " +
+            _name);
         continue;
       }
       if (!flag)
