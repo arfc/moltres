@@ -71,7 +71,7 @@ H5MoltresMaterial::H5MoltresMaterial(const InputParameters & parameters)
                                       "DECAY_CONSTANT"};
 
   H5std_string FILE_NAME(base_file);
-  H5::H5File file_open(FILE_NAME, H5F_ACC_RDWR);
+  H5::H5File file_open(FILE_NAME, H5F_ACC_RDONLY);
   if (!pathExists(file_open.getId(), _material_key + "/temp"))
     mooseError("Unable to open database " + _material_key + "/temp");
   H5std_string DATASET_NAME(_material_key + "/temp");
@@ -139,7 +139,7 @@ H5MoltresMaterial::Construct(std::string & base_file, std::vector<std::string> x
     xsec_map[xsec_names[j]].resize(o);
 
     H5std_string FILE_NAME(base_file);
-    H5::H5File file_open(FILE_NAME, H5F_ACC_RDWR);
+    H5::H5File file_open(FILE_NAME, H5F_ACC_RDONLY);
     for (decltype(_XsTemperature.size()) l = 0; l < L; ++l)
     {
       H5::DataSet dataset;
