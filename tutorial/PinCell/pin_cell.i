@@ -1,16 +1,16 @@
 global_temperature=600
 
 [GlobalParams]
-  num_groups =2 
+  num_groups =2
   base_file = 'PinXS.h5'
-  group_fluxes = ' group1  group2' 
+  group_fluxes = ' group1  group2'
   num_precursor_groups = 6
   use_exp_form = false
   temperature = ${global_temperature}
 [../]
 
 [Mesh]
-  file = pin_cell.e 
+  file = pin_cell.e
 [../]
 
 [Problem]

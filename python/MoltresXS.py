@@ -26,7 +26,7 @@ class scale_xs:
         xs_lib: dict
             A hierarchical dictionary, organized by burnup, id, and temperature.
             Currently stores REMXS, FISSXS, NSF, FISSE, DIFFCOEF, RECIPVEL, CHI, BETA_EFF, DECAY_CONSTANT and
-            GTRANSFXS.     
+            GTRANSFXS.
     """
 
     def __init__(self, FileIn):
@@ -177,7 +177,7 @@ class serpent_xs:
         xs_lib: dict
             A hierarchical dictionary, organized by burnup, id, and temperature.
             Currently stores REMXS, FISSXS, NSF, FISSE, DIFFCOEF, RECIPVEL, CHI, BETA_EFF, DECAY_CONSTANT and
-            GTRANSFXS.     
+            GTRANSFXS.
     """
 
     def __init__(self, FileIn):
