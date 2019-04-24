@@ -1,7 +1,7 @@
 ## Pin Cell
 
 Here, group constants are taken from an example SCALE output using MoltresXS. 
-These will be used to generate an HDF5 file, which can be used by moltres. 
+These will be used to generate an HDF5 file, which can be used by MOLTRES. 
 
 
 ### SCALE Input file
@@ -10,11 +10,19 @@ Here, the scale input file for a pin cell based on the (BEAVRS benchmark)
 [https://crpg.mit.edu/research/beavrs] can be found.
 
 For group constant generation, the standard 2 group LWR structure is used.
+The 'pin\_cell.scale' file contains branches and burnup that will generate group constants at different temperatures and burnup levels.
+Like a cooking show, the important results have already been prepared for you in the "pin.t16" file, which
+gets parsed by ``` MoltresXS.py``` using the 'pin_cell_XS.inp' file.
 
-The "fuel" file contains "cards" 
-that will generate group constants at a few temperatures, and likewise for the "moder" file.
-Like a cooking show, the important results have already been prepared for you in the "fuel.coe" and "moder.coe" files, which
-get parsed by ```serpentTools``` in the extractSerpent2GCs script. ```serpentTools``` is a suite of parsers designed by GATech for parsing ```SERPENT``` output files. More information can be found at http://serpent-tools.readthedocs.io/en/latest/
+### MoltresXS Input file
+
+The 'pin_cell_XS.inp' file provides ``` MoltresXS.py``` with the indices of the cross sections that should be converted to a moltres format.
+The branch section is the least intuitive and requires improvement. The inputs to this section are
+
+```
+[BRANCH]
+number\_of_branches
+Material\_key temperature\_key file\_index burnup\_index universe\_index branch\_index```
 
 ### Command to run:
 
@@ -32,4 +40,3 @@ The syntax requires the arbitrary directory name you'd like to create, then the 
 look at, then a file that maps primary branch names to temperatures, then a file that lists the secondary branch names, and lastly a file that maps universe numbers from serpent to material names. 
 Group constants will be extracted for all materials listed in the last file.
 
-The secBranch.txt file should be blank if no secondary branches were used, i.e. there is only one branch variation per burnup step.

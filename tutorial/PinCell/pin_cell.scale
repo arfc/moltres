@@ -35,10 +35,8 @@ Sn-120 12  0  1.5697e-04  600  end
 Sn-122 12  0  2.2308e-05  600  end
 Sn-124 12  0  2.7897e-05  600  end
 
-' generic water with 975 boron
 h2o    13  den=0.72976   1.0    600 end
 boron  13  den=0.72976   975E-6 600 end
-
 end comp
 
 read celldata
@@ -47,9 +45,18 @@ end celldata
 read depletion
   1
 end depletion
+
 read burndata
   power=41.699 burn=0.1 end
 end burndata
+
+read branch
+  define fuel 1  end
+'reference(definition/low) state
+  tf=600  end
+  tf=900 end
+end branch
+
 
 read model
 
@@ -76,10 +83,6 @@ read homo
   501 homo_500 12  end
   502 homo_500 13 end
 end homo
-
-read adf
-  1 500 e=10.70864
-end adf
 
 read geometry
 global unit 1

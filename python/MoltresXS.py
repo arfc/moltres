@@ -31,10 +31,9 @@ class scale_xs:
             lines=f.readlines()
         struct = (lines[3].split()[:4])
          
-        num_burn,num_temps,num_uni,num_groups = int(struct[0]),int(struct[1]),int(struct[2]),int(struct[3])
-        
+        num_burn,num_uni,num_groups = int(struct[0]),int(struct[2]),int(struct[3])
         ids = np.zeros(num_uni)
-        temps = np.zeros([])
+        temps = np.array([])
         burn = np.zeros([])
         remxs   = np.array([])
         fissxs  = np.array([])
@@ -66,6 +65,10 @@ class scale_xs:
                     if "'" in lines[k+1]:
                         break
 
+            if 'Nominal' in line:
+                val = lines[k+2].split()
+                k+=2
+                temps=np.append(temps,float(val[0])) 
             if 'Burnups' in line:
                 while 1:
                     val = lines[k+1].split()
@@ -117,6 +120,7 @@ class scale_xs:
                     if "'" in lines[k+1]:
                         break
             k+=1
+        num_temps = len(temps)
         if num_temps ==0:
             num_temps =1
             temps = 600*np.ones(1)
@@ -127,7 +131,7 @@ class scale_xs:
                 self.xs_lib[i][j] = {}
                 for k in range(num_temps):
                     self.xs_lib[i][j][k] = {}
-                    index = i*(num_temps*num_uni*num_groups)+k*num_groups+j*(num_temps*num_groups)
+                    index = i*(num_temps*num_uni*num_groups)+k*(num_groups*num_uni)+j*num_groups
                     self.xs_lib[i][j][k]["REMXS"]   = remxs[index:index+num_groups]
                     self.xs_lib[i][j][k]["FISSXS"]  = fissxs[index:index+num_groups]
                     self.xs_lib[i][j][k]["NSF"]     = nsf[index:index+num_groups]
@@ -137,10 +141,10 @@ class scale_xs:
                     self.xs_lib[i][j][k]["CHI"]     = chi[index:index+num_groups]
                     self.xs_lib[i][j][k]["CHI_D"]   = chi[index:index+num_groups]*0
                     self.xs_lib[i][j][k]["CHI_D"][0] = 1
-                    index = i*(num_temps*num_uni*num_delay_groups)+k*num_delay_groups+j*(num_temps*num_delay_groups)
+                    index = i*(num_temps*num_uni*num_delay_groups)+k*(num_uni*num_delay_groups)+j*num_delay_groups
                     self.xs_lib[i][j][k]["BETA_EFF"]= beta[index:index+num_delay_groups]
                     self.xs_lib[i][j][k]["DECAY_CONSTANT"]     = decay[index:index+num_delay_groups]
-                    index = i*(num_temps*num_uni*num_groups*num_groups)+k*num_groups*num_groups+j*(num_temps*num_groups*num_groups)
+                    index = i*(num_temps*num_uni*num_groups*num_groups)+k*(num_groups*num_groups*num_uni)+j*num_groups*num_groups
                     self.xs_lib[i][j][k]["GTRANSFXS"]     = transxs[index:index+num_groups*num_groups]
                     for ii in range(num_groups):
                         self.xs_lib[i][j][k]["REMXS"][ii] +=np.sum(self.xs_lib[i][j][k]["GTRANSFXS"][ii*num_groups:ii*num_groups+num_groups])-self.xs_lib[i][j][k]["GTRANSFXS"][ii*num_groups+ii] 
@@ -247,7 +251,7 @@ def READ_INPUT(fin):
     for entry in mat_dict:
         TEMP_OUT(f,entry,mat_dict[entry]['temps'])
         for i in range(len(mat_dict[entry]['temps'])):
-            XS_OUT(f,files[mat_dict[entry]['file'][i]-1].xs_lib[mat_dict[entry]['burn'][i]-1][mat_dict[entry]['uni'][i]-1][mat_dict[entry]['bran'][i]-1],entry,mat_dict[entry]['temps'][i])
+            XS_OUT(f,files[mat_dict[entry]['file'][i]-1].xs_lib[mat_dict[entry]['burn'][i]-1][mat_dict[entry]['uni'][i]-1][int(mat_dict[entry]['bran'][i]-1)],entry,mat_dict[entry]['temps'][i])
         
             
             
