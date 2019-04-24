@@ -20,7 +20,9 @@ The 'pin_cell_XS.inp' file provides ``` MoltresXS.py``` with the indices of the 
 The branch section is the least intuitive and requires improvement. The inputs to this section are
 
 ```[BRANCH]```
+
 ```number_of_branches```
+
 ```Material_key temperature_key file_index burnup_index universe_index branch_index```
 
 ### Command to run:
