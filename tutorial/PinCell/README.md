@@ -19,10 +19,9 @@ gets parsed by ``` MoltresXS.py``` using the 'pin_cell_XS.inp' file.
 The 'pin_cell_XS.inp' file provides ``` MoltresXS.py``` with the indices of the cross sections that should be converted to a moltres format.
 The branch section is the least intuitive and requires improvement. The inputs to this section are
 
-```
-[BRANCH]
-number\_of_branches
-Material\_key temperature\_key file\_index burnup\_index universe\_index branch\_index```
+```[BRANCH]```
+```number_of_branches```
+```Material_key temperature_key file_index burnup_index universe_index branch_index```
 
 ### Command to run:
 
