@@ -57,6 +57,36 @@ def makePropertiesDir(
 
     # primary branch to temp mapping
     branch2TempMapping = open(mapFile)
+
+    # Check if calculation uses 6 neutron precursor groups.
+    # This prevents writing of excess zeros. Check if any
+    # entries in the 7th and 8th group precursor positions
+    # are nonzero, if so, use 8 groups.
+    use8Groups = False
+    for line in branch2TempMapping:
+        item, temp = tuple(line.split())
+        for mat in inmats:
+            if mat in item:
+                currentMat = mat
+                break
+        if secBranch:
+            for branch in secBranch:
+                strData = coeList[currentMat].branches[item, branch].universes[int(
+                    uniMap[currentMat]), 0, 0].gc[goodMap['BETA_EFF']]
+                strData = strData[1:9]
+                if np.any(strData[-2:] != 0.0):
+                    use8Groups = True
+        else:
+            strData = coeList[currentMat].branches[item, branch].universes[int(
+                uniMap[currentMat]), 0, 0].gc[goodMap['BETA_EFF']]
+            strData = strData[1:9]
+            if np.any(strData[-2:] != 0.0):
+                use8Groups = True
+
+    # Now loop through a second time
+    branch2TempMapping.close()
+    branch2TempMapping = open(mapFile)
+
     for line in branch2TempMapping:
 
         item, temp = tuple(line.split())
@@ -78,6 +108,11 @@ def makePropertiesDir(
                                 uniMap[currentMat]), 0, 0].gc[goodMap[coefficient]]
                             # some additional formatting is needed here
                             strData = strData[1:9]
+
+                            # Cut off group 7 and 8 precursor params in 6
+                            # group calcs
+                            if not use8Groups:
+                                strData = strData[0:6]
                         else:
                             strData = coeList[currentMat].branches[item].universes[int(
                                 uniMap[currentMat]), 0, 0].infExp[goodMap[coefficient]]
@@ -95,6 +130,11 @@ def makePropertiesDir(
                                     uniMap[currentMat]), 0, 0].gc[goodMap[coefficient]]
                                 # some additional formatting is needed here
                                 strData = strData[1:9]
+
+                                # Cut off group 7 and 8 precursor params in 6
+                                # group calcs
+                                if not use8Groups:
+                                    strData = strData[0:6]
                             else:
                                 strData = coeList[currentMat].branches[item, branch].universes[int(
                                     uniMap[currentMat]), 0, 0].infExp[goodMap[coefficient]]

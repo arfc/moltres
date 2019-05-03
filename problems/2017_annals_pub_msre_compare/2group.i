@@ -8,7 +8,7 @@ H=162.56
 
 [GlobalParams]
   num_groups = 2
-  num_precursor_groups = 6
+  num_precursor_groups = 8
   use_exp_form = false
   group_fluxes = 'group1 group2'
   temperature = temp
