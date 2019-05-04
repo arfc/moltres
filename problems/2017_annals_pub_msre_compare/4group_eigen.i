@@ -38,13 +38,13 @@ H=162.56
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
-    property_tables_root = '../../tutorial/step01_groupConstants/MSREProperties/msre_gentry_4gfuel_'
+    property_tables_root = '../../tutorial/step01_groupConstants/MSREProperties/msre_gentry_4g_fuel_rod0_'
     interp_type = 'spline'
     block = 'fuel'
   [../]
   [./moder]
     type = GenericMoltresMaterial
-    property_tables_root = '../../tutorial/step01_groupConstants/MSREProperties/msre_gentry_4gmoder_'
+    property_tables_root = '../../tutorial/step01_groupConstants/MSREProperties/msre_gentry_4g_moder_rod0_'
     interp_type = 'spline'
     block = 'moder'
   [../]
