@@ -4,7 +4,7 @@ ini_temp=922
 diri_temp=922
 base_height=136
 scale=.99
-height=${* ${base_height} ${scale}}
+height=${fparse base_height * scale}
 width=145
 offset=2.5
 
@@ -55,16 +55,18 @@ offset=2.5
 []
 
 [Precursors]
-  var_name_base = pre
-  block = 'fuel'
-  outlet_boundaries = 'fuel_tops'
-  u_def = 0
-  v_def = 0
-  w_def = ${flow_velocity}
-  nt_exp_form = false
-  family = MONOMIAL
-  order = CONSTANT
-  jac_test = true
+  [./pres]
+    var_name_base = pre
+    block = 'fuel'
+    outlet_boundaries = 'fuel_tops'
+    u_def = 0
+    v_def = 0
+    w_def = ${flow_velocity}
+    nt_exp_form = false
+    family = MONOMIAL
+    order = CONSTANT
+    jac_test = true
+  []
 []
 
 [Kernels]
@@ -92,6 +94,8 @@ offset=2.5
   [./delayed_group1]
     type = DelayedNeutronSource
     variable = group1
+    block = 'fuel'
+    group_number = 1
   [../]
   [./inscatter_group1]
     type = InScatter

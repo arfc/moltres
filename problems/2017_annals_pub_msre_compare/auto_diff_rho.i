@@ -60,6 +60,7 @@ H=162.56
   vacuum_boundaries = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
   create_temperature_var = false
   scaling = 1e-4
+  pre_blocks = 'fuel'
 []
 
 [Kernels]
@@ -144,7 +145,7 @@ H=162.56
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
-    property_tables_root = '../../tutorial/step01_groupConstants/MSREProperties/msre_gentry_4gfuel_'
+    property_tables_root = '../../tutorial/step01_groupConstants/MSREProperties/msre_gentry_4g_fuel_rod0_'
     interp_type = 'spline'
     block = 'fuel'
     prop_names = 'k cp'
@@ -162,7 +163,7 @@ H=162.56
   [../]
   [./moder]
     type = GenericMoltresMaterial
-    property_tables_root = '../../tutorial/step01_groupConstants/MSREProperties/msre_gentry_4gmoder_'
+    property_tables_root = '../../tutorial/step01_groupConstants/MSREProperties/msre_gentry_4g_moder_rod0_'
     interp_type = 'spline'
     prop_names = 'k cp'
     prop_values = '.312 1760' # Cammi 2011 at 908 K
