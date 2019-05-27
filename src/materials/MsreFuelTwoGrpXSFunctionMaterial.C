@@ -30,6 +30,7 @@ MsreFuelTwoGrpXSFunctionMaterial::MsreFuelTwoGrpXSFunctionMaterial(
     _beta_eff(declareProperty<std::vector<Real>>("beta_eff")),
     _beta(declareProperty<Real>("beta")),
     _decay_constant(declareProperty<std::vector<Real>>("decay_constant")),
+    _chi_d(declareProperty<std::vector<Real>>("chi_d")),
 
     _d_remxs_d_temp(declareProperty<std::vector<Real>>("d_remxs_d_temp")),
     _d_fissxs_d_temp(declareProperty<std::vector<Real>>("d_fissxs_d_temp")),
@@ -58,6 +59,7 @@ MsreFuelTwoGrpXSFunctionMaterial::computeQpProperties()
   _diffcoef[_qp].resize(2, 0);
   _recipvel[_qp].resize(2, 0);
   _chi[_qp].resize(2, 0);
+  _chi_d[_qp].resize(2, 0);
   _gtransfxs[_qp].resize(4, 0);
   _beta_eff[_qp].resize(6, 0);
   _decay_constant[_qp].resize(6, 0);
@@ -136,8 +138,15 @@ MsreFuelTwoGrpXSFunctionMaterial::computeQpProperties()
 
   _fisse[_qp][0] = 194. * 1e6 * 1.6e-19; // convert MeV to Joules
   _fisse[_qp][1] = 194. * 1e6 * 1.6e-19; // convert MeV to Joules
+
+  // Assume that all prompt fission neutrons are born into the fast group
   _chi[_qp][0] = 1;
   _chi[_qp][1] = 0;
+
+  // Assume that all delayed neutrons are born into the fast group
+  _chi_d[_qp][0] = 1;
+  _chi_d[_qp][1] = 0;
+
   _beta_eff[_qp][0] = 2.37e-4;
   _beta_eff[_qp][1] = 1.54e-3;
   _beta_eff[_qp][2] = 1.38e-3;

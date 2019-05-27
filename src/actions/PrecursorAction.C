@@ -4,6 +4,7 @@
 #include "Conversion.h"
 #include "FEProblem.h"
 #include "NonlinearSystemBase.h"
+#include "DGKernelBase.h"
 
 registerMooseAction("MoltresApp", PrecursorAction, "add_kernel");
 
@@ -96,6 +97,13 @@ PrecursorAction::PrecursorAction(const InputParameters & params)
     if (!params.isParamValid("multi_app"))
       mooseError("Looping precursors requires a multiapp that governs the loop.");
   }
+}
+
+void
+PrecursorAction::addRelationshipManagers(Moose::RelationshipManagerType input_rm_type)
+{
+  auto dg_kernel_params = validParams<DGKernelBase>();
+  addRelationshipManagers(input_rm_type, dg_kernel_params);
 }
 
 void
