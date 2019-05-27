@@ -24,15 +24,7 @@ registerKnownLabel("MoltresApp");
 
 MoltresApp::MoltresApp(InputParameters parameters) : MooseApp(parameters)
 {
-  Moose::registerObjects(_factory);
-  ModulesApp::registerObjects(_factory);
-  SquirrelApp::registerObjects(_factory);
-  MoltresApp::registerObjects(_factory);
-
-  Moose::associateSyntax(_syntax, _action_factory);
-  ModulesApp::associateSyntax(_syntax, _action_factory);
-  SquirrelApp::associateSyntax(_syntax, _action_factory);
-  MoltresApp::associateSyntax(_syntax, _action_factory);
+  MoltresApp::registerAll(_factory, _action_factory, _syntax);
 }
 
 MoltresApp::~MoltresApp() {}
@@ -49,16 +41,21 @@ MoltresApp::registerApps()
   registerApp(MoltresApp);
 }
 
-// External entry point for dynamic object registration
+// External entry point for object registration
 extern "C" void
-MoltresApp__registerObjects(Factory & factory)
+MoltresApp__registerAll(Factory & factory, ActionFactory & action_factory, Syntax & syntax)
 {
-  MoltresApp::registerObjects(factory);
+  MoltresApp::registerAll(factory, action_factory, syntax);
 }
 void
-MoltresApp::registerObjects(Factory & factory)
+MoltresApp::registerAll(Factory & factory, ActionFactory & action_factory, Syntax & syntax)
 {
   Registry::registerObjectsTo(factory, {"MoltresApp"});
+  Registry::registerActionsTo(action_factory, {"MoltresApp"});
+  MoltresApp::associateSyntax(syntax, action_factory);
+
+  ModulesApp::registerAll(factory, action_factory, syntax);
+  SquirrelApp::registerAll(factory, action_factory, syntax);
 }
 
 // External entry point for dynamic syntax association

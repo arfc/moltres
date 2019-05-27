@@ -60,6 +60,7 @@ H=162.56
   vacuum_boundaries = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
   create_temperature_var = false
   scaling = 1e-4
+  pre_blocks = 'fuel'
 []
 
 [Kernels]

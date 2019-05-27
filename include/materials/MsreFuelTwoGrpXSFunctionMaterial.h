@@ -34,6 +34,7 @@ protected:
   MaterialProperty<std::vector<Real>> & _beta_eff;
   MaterialProperty<Real> & _beta;
   MaterialProperty<std::vector<Real>> & _decay_constant;
+  MaterialProperty<std::vector<Real>> & _chi_d;
   MaterialProperty<std::vector<Real>> & _d_remxs_d_temp;
   MaterialProperty<std::vector<Real>> & _d_fissxs_d_temp;
   MaterialProperty<std::vector<Real>> & _d_nsf_d_temp;
