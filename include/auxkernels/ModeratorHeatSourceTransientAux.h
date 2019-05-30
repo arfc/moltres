@@ -30,7 +30,7 @@ protected:
   virtual Real computeValue();
 
   const PostprocessorValue & _average_fission_heat;
-  Function & _gamma;
+  const Function & _gamma;
 };
 
 #endif // MODERATORHEATSOURCETRANSIENTAUX_H
