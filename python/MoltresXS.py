@@ -2,11 +2,10 @@
      Python Function that takes homoginezed cross sections and prepares them for MOLTRES
 
 """
-
+import json
 import io
 import sys
 import numpy as np
-import h5py
 from pyne import serpent
 
 
@@ -19,7 +18,7 @@ class scale_xs:
 
         Parameters
         ----------
-        FileIn: str
+        xs_filename: str
             Name of file containing collapsed cross section data
         Returns
         ----------
@@ -29,136 +28,86 @@ class scale_xs:
             GTRANSFXS.
     """
 
-    def __init__(self, FileIn):
-        with io.open(FileIn) as f:
-            lines = f.readlines()
-        struct = (lines[3].split()[:4])
-
-        num_burn, num_uni, num_groups = int(
-            struct[0]), int(struct[2]), int(struct[3])
-        ids = np.zeros(num_uni)
-        temps = np.array([])
-        burn = np.zeros([])
-        remxs = np.array([])
-        fissxs = np.array([])
-        nsf = np.array([])
-        fissE = np.array([])
-        difcoef = np.array([])
-        invV = np.array([])
-        chi = np.array([])
-        transxs = np.array([])
-        beta = np.array([])
-        decay = np.array([])
-
-        i = 0
-        k = 0
-        while k < len(lines):
-            line = lines[k]
-            if 'Identifier' in line:
-                val = int(lines[k+1].split()[0])
-                k += 1
-                if not any(val == ids):
-                    ids[i] = val
-                    i += 1
-            if 'Fuel temperatures' in line:
-                while 1:
-                    val = lines[k+1].split()
-                    k += 1
-                    for j in range(len(val)):
-                        temps = np.append(temps, float(val[j]))
-                    if "'" in lines[k+1]:
-                        break
-
-            if 'Nominal' in line:
-                val = lines[k+2].split()
-                k += 2
-                temps = np.append(temps, float(val[0]))
-            if 'Burnups' in line:
-                while 1:
-                    val = lines[k+1].split()
-                    k += 1
-                    for j in range(len(val)):
-                        burn = np.append(burn, float(val[j]))
-                    if "'" in lines[k+1]:
-                        break
-            if 'Betas' in line:
-                while 1:
-                    val = lines[k+1].split()
-                    k += 1
-                    for j in range(len(val)):
-                        beta = np.append(beta, float(val[j]))
-                    if "'" in lines[k+1]:
-                        break
-                if not 'num_delay_groups' in locals():
-                    num_delay_groups = len(beta)
-            if 'Lambdas' in line:
-                while 1:
-                    val = lines[k+1].split()
-                    k += 1
-                    for j in range(len(val)):
-                        decay = np.append(decay, float(val[j]))
-                    if "'" in lines[k+1]:
-                        break
-            if 'total-transfer' in line:
-                val = lines[k+1].split()
-                remxs = np.append(remxs, float(val[1]))
-
-                val = lines[k+3].split()
-                fissxs = np.append(fissxs, float(val[0]))
-                nsf = np.append(nsf, float(val[3]))
-                fissE = np.append(nsf, float(val[4]))
-
-                val = lines[k+5].split()
-                difcoef = np.append(difcoef, float(val[2]))
-                chi = np.append(chi, float(val[1]))
-
-                val = lines[k+7].split()
-                invV = np.append(invV, float(val[4]))
-                k += 7
-            if 'Scattering cross' in line:
-                while 1:
-                    val = lines[k+1].split()
-                    k += 1
-                    for j in range(len(val)):
-                        transxs = np.append(transxs, float(val[j]))
-                    if "'" in lines[k+1]:
-                        break
-            k += 1
-        num_temps = len(temps)
-        if num_temps == 0:
-            num_temps = 1
-            temps = 600*np.ones(1)
+    def __init__(self, xs_filename):
+        with io.open(xs_filename) as f:
+            self.lines = f.readlines()
+        self.value_flags = {#'Identifier':  {'index': [0],     'multi_line_flag' : False , 'xs_entry': ['null']},
+                    'Fuel temperatures':   {'index': [],      'multi_line_flag' : True , 'xs_entry': ['temp']},
+                    'Nominal':             {'index': [2],     'multi_line_flag' : False , 'xs_entry': ['temp']},
+                    'Betas':               {'index': [],      'multi_line_flag' : True , 'xs_entry': ['BETA_EFF']},
+                    'Lambdas':             {'index': [],      'multi_line_flag' : True , 'xs_entry': ['DECAY_CONSTANT']},
+                    'total-transfer':      {'index': [1],     'multi_line_flag' : False , 'xs_entry': ['REMXS']},
+                    'fission' :            {'index': [0,3,4], 'multi_line_flag' : False , 'xs_entry': ['FISXS','NSF','FISSE']},
+                    'chi':                 {'index': [1,2],   'multi_line_flag' : False , 'xs_entry': ['CHI','DIFFCOEF']},
+                    'detector':            {'index': [4],     'multi_line_flag' : False , 'xs_entry': ['RECIPVEL']},
+                    'Scattering cross':    {'index': [],      'multi_line_flag' : True , 'xs_entry': ['GTRANSFXS']}
+                    }
+        XS_entries = ['remxs', 'fisxs', 'nsf', 'fisse', 'diffcoef', 'recipvel', 'chi', 'beta_eff', 'decay_constant','chi_d','gtransfxs']
+        struct = (self.lines[3].split()[:4])
+        self.num_burn, self.num_temps,self.num_uni, self.num_groups = int(
+            struct[0]), int(struct[1]), int(struct[2]), int(struct[3])
+        if self.num_temps == 0:
+            self.num_temps = 1
         self.xs_lib = {}
-        for i in range(num_burn):
+        for i in range(self.num_burn):
             self.xs_lib[i] = {}
-            for j in range(num_uni):
+            for j in range(self.num_uni):
                 self.xs_lib[i][j] = {}
-                for k in range(num_temps):
+                for k in range(self.num_temps):
                     self.xs_lib[i][j][k] = {}
-                    index = i*(num_temps*num_uni*num_groups)+k * \
-                        (num_groups*num_uni)+j*num_groups
-                    self.xs_lib[i][j][k]["REMXS"] = remxs[index:index+num_groups]
-                    self.xs_lib[i][j][k]["FISSXS"] = fissxs[index:index+num_groups]
-                    self.xs_lib[i][j][k]["NSF"] = nsf[index:index+num_groups]
-                    self.xs_lib[i][j][k]["FISSE"] = np.divide(fissE[index:index+num_groups], fissxs[index:index+num_groups], out=np.zeros_like(
-                        fissE[index:index+num_groups]), where=fissxs[index:index+num_groups] != 0)
-                    self.xs_lib[i][j][k]["DIFFCOEF"] = difcoef[index:index+num_groups]
-                    self.xs_lib[i][j][k]["RECIPVEL"] = invV[index:index+num_groups]
-                    self.xs_lib[i][j][k]["CHI"] = chi[index:index+num_groups]
-                    self.xs_lib[i][j][k]["CHI_D"] = chi[index:index+num_groups]*0
-                    self.xs_lib[i][j][k]["CHI_D"][0] = 1
-                    index = i*(num_temps*num_uni*num_delay_groups) + \
-                        k*(num_uni*num_delay_groups)+j*num_delay_groups
-                    self.xs_lib[i][j][k]["BETA_EFF"] = beta[index:index +
-                                                            num_delay_groups]
-                    self.xs_lib[i][j][k]["DECAY_CONSTANT"] = decay[index:index+num_delay_groups]
-                    index = i*(num_temps*num_uni*num_groups*num_groups)+k * \
-                        (num_groups*num_groups*num_uni)+j*num_groups*num_groups
-                    self.xs_lib[i][j][k]["GTRANSFXS"] = transxs[index:index +
-                                                                num_groups*num_groups]
-                    for ii in range(num_groups):
+                    for entry in XS_entries:
+                        self.xs_lib[i][j][k][entry.upper()] = []
+        self.get_xs()
+        self.fix_xs()
+    def fix_xs(self):
+        for i in range(self.num_burn):
+            for j in range(self.num_uni):
+                for k in range(self.num_temps):
+                    for ii in range(self.num_groups):
                         self.xs_lib[i][j][k]["REMXS"][ii] += np.sum(
-                            self.xs_lib[i][j][k]["GTRANSFXS"][ii*num_groups:ii*num_groups+num_groups])-self.xs_lib[i][j][k]["GTRANSFXS"][ii*num_groups+ii]
+                            self.xs_lib[i][j][k]["GTRANSFXS"][ii*self.num_groups:ii*self.num_groups+self.num_groups])-self.xs_lib[i][j][k]["GTRANSFXS"][ii*self.num_groups+ii]
+                        if self.xs_lib[i][j][k]["FISSE"][ii] != 0:
+                            self.xs_lib[i][j][k]["FISSE"][ii] = self.xs_lib[i][j][k]["FISSE"][ii]/self.xs_lib[i][j][k]["FISXS"][ii] 
+        
+
+    def get_xs(self):
+        r_l,m_l,m = 0,0,0
+        uni = []
+        for k,line in enumerate(self.lines):
+            if 'Identifier' in line:
+                val = int(self.lines[k+1].split()[0])
+                if val not in uni:
+                    uni.extend([val])
+                m = uni.index(val)
+            if 'branch no.' in line:
+                r_l += 1
+                l = r_l // self.num_burn
+                n=int(line.split()[-1])
+            if "'" in line:
+                for key in self.value_flags.keys():
+                    if key in line:
+                        if self.value_flags[key]['multi_line_flag']:
+                            self.xs_lib[l][m][n][self.value_flags[key]['xs_entry'][0]].extend(self.get_multi_line_values(k))
+                        else:
+                            for index,xs_key in enumerate(self.value_flags[key]['xs_entry']):
+                                index=self.value_flags[key]['index'][index]
+                                self.xs_lib[l][m][n][xs_key].extend([self.get_values(k,index)])
+            
+    def get_values(self,k,index):
+        val = list(np.array(self.lines[k+1].split()).astype(float))
+        return val[index]
+
+    def get_multi_line_values(self,k):
+        values = []
+        while True:
+            val = self.lines[k+1].split()
+            k += 1
+            for ent in val:
+                try:
+                    values.extend([float(ent)])
+                except(ValueError):
+                    return values
+        
 
 
 class serpent_xs:
@@ -170,7 +119,7 @@ class serpent_xs:
 
         Parameters
         ----------
-        FileIn: str
+        xs_filename: str
             Name of file containing collapsed cross section data
         Returns
         ----------
@@ -180,8 +129,8 @@ class serpent_xs:
             GTRANSFXS.
     """
 
-    def __init__(self, FileIn):
-        data = serpent.parse_res(FileIn)
+    def __init__(self, xs_filename):
+        data = serpent.parse_res(xs_filename)
         try:
             num_burn = len(np.unique(data['BURNUP'][:][0]))
         except(KeyError):
@@ -196,26 +145,17 @@ class serpent_xs:
                 for k in range(num_temps):
                     self.xs_lib[i][j][k] = {}
                     index = i*(num_uni)+k*(num_burn*num_uni)+j
-                    self.xs_lib[i][j][k]["REMXS"] = data['INF_REMXS'][index][::2]
-                    self.xs_lib[i][j][k]["FISSXS"] = data['INF_FISS'][index][::2]
-                    self.xs_lib[i][j][k]["NSF"] = data['INF_NSF'][index][::2]
-                    self.xs_lib[i][j][k]["FISSE"] = data['INF_KAPPA'][index][::2]
-                    self.xs_lib[i][j][k]["DIFFCOEF"] = data['INF_DIFFCOEF'][index][::2]
-                    self.xs_lib[i][j][k]["RECIPVEL"] = data['INF_INVV'][index][::2]
-                    self.xs_lib[i][j][k]["CHI"] = data['INF_CHIT'][index][::2]
-                    self.xs_lib[i][j][k]["CHI_D"] = data['INF_CHID'][index][::2]
-                    self.xs_lib[i][j][k]["BETA_EFF"] = data['BETA_EFF'][index][::2]
-                    self.xs_lib[i][j][k]["DECAY_CONSTANT"] = data['LAMBDA'][index][::2]
-                    self.xs_lib[i][j][k]["GTRANSFXS"] = data['INF_SP0'][index][::2]
-
-
-def XS_OUT(fout, xs_dir, mat, temp):
-    for k, v in xs_dir.items():
-        fout.create_dataset(mat+"/"+str(int(temp))+"/"+k, data=v)
-
-
-def TEMP_OUT(fout, mat, temps):
-    fout.create_dataset(mat+"/temp/", data=temps)
+                    self.xs_lib[i][j][k]["REMXS"] = list(data['INF_REMXS'][index][::2])
+                    self.xs_lib[i][j][k]["FISSXS"] = list(data['INF_FISS'][index][::2])
+                    self.xs_lib[i][j][k]["NSF"] = list(data['INF_NSF'][index][::2])
+                    self.xs_lib[i][j][k]["FISSE"] = list(data['INF_KAPPA'][index][::2])
+                    self.xs_lib[i][j][k]["DIFFCOEF"] = list(data['INF_DIFFCOEF'][index][::2])
+                    self.xs_lib[i][j][k]["RECIPVEL"] = list(data['INF_INVV'][index][::2])
+                    self.xs_lib[i][j][k]["CHI"] = list(data['INF_CHIT'][index][::2])
+                    self.xs_lib[i][j][k]["CHI_D"] = list(data['INF_CHID'][index][::2])
+                    self.xs_lib[i][j][k]["BETA_EFF"] = list(data['BETA_EFF'][index][::2])
+                    self.xs_lib[i][j][k]["DECAY_CONSTANT"] = list(data['LAMBDA'][index][::2])
+                    self.xs_lib[i][j][k]["GTRANSFXS"] = list(data['INF_SP0'][index][::2])
 
 
 def READ_INPUT(fin):
@@ -225,7 +165,7 @@ def READ_INPUT(fin):
     while k < len(lines):
         line = lines[k]
         if '[TITLE]' in line:
-            f = h5py.File(lines[k+1].split()[0], 'w')
+            f = open(lines[k+1].split()[0], 'w')
             k += 1
 
         if '[MAT]' in line:
@@ -268,13 +208,15 @@ def READ_INPUT(fin):
                     raise("XS data not understood\n 1=scale \n 2=serpent")
             k += 1+num_files
         k += 1
+    out_dict = {}
     for entry in mat_dict:
-        TEMP_OUT(f, entry, mat_dict[entry]['temps'])
+        print(entry)
+        out_dict[entry]={ 'temp' : list(mat_dict[entry]['temps'])}
         for i in range(len(mat_dict[entry]['temps'])):
-            XS_OUT(f, files[mat_dict[entry]['file'][i]-1].xs_lib[mat_dict[entry]['burn'][i]-1][mat_dict[entry]
-                                                                                               ['uni'][i]-1][int(mat_dict[entry]['bran'][i]-1)], entry, mat_dict[entry]['temps'][i])
-
-
+            out_dict[entry][str(mat_dict[entry]['temps'][i])] = files[mat_dict[entry]['file'][i]-1].xs_lib[mat_dict[entry]['burn'][i]-1][mat_dict[entry]
+                                                                                                ['uni'][i]-1][int(mat_dict[entry]['bran'][i]-1)]
+    f.write(json.dumps(out_dict, sort_keys=True, indent=4))
+    quit()
 if len(sys.argv) < 2:
     raise("Input file not provided")
 READ_INPUT(sys.argv[1])
