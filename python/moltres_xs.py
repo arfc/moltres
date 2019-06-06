@@ -34,28 +34,27 @@ class scale_xs:
         with io.open(xs_filename) as f:
             self.lines = f.readlines()
         self.catch = {
-            'Fuel temperatures': self.t16_line([], True, ['temp']),
-            'Nominal': self.t16_line([2], False, ['temp']),
             'Betas': self.t16_line([], True, ['BETA_EFF']),
             'Lambdas': self.t16_line([], True, ['DECAY_CONSTANT']),
             'total-transfer': self.t16_line([1], False, ['REMXS']),
             'fission': self.t16_line([0, 3, 4], False,
-                                     ['FISXS', 'NSF', 'FISSE']
+                                     ['FISSXS', 'NSF', 'FISSE']
                                      ),
-            'chi': self.t16_line([1, 2], False, ['CHI', 'DIFFCOEF']),
+            'chi': self.t16_line([1, 1, 2], False,
+                                 ['CHI', 'CHI_D', 'DIFFCOEF']
+                                 ),
             'detector': self.t16_line([4], False, ['RECIPVEL']),
             'Scattering cross': self.t16_line([], True, ['GTRANSFXS'])
             }
-        XS_entries = ['REMXS', 'FISXS', 'NSF', 'FISSE', 'DIFFCOEF', 'RECIPVEL',
-                      'CHI', 'BETA_EFF', 'DECAY_CONSTANT', 'CHI_D', 'GTRANSFXS'
+        XS_entries = ['REMXS', 'FISSXS', 'NSF', 'FISSE', 'DIFFCOEF',
+                      'RECIPVEL', 'CHI', 'BETA_EFF', 'DECAY_CONSTANT',
+                      'CHI_D', 'GTRANSFXS'
                       ]
         struct = (self.lines[3].split()[:4])
         self.num_burn = int(struct[0])
-        self.num_temps = int(struct[1])
+        self.num_temps = int(struct[1]) + 1
         self.num_uni = int(struct[2])
         self.num_groups = int(struct[3])
-        if (self.num_temps == 0):
-            self.num_temps = 1
         self.xs_lib = {}
         for i in range(self.num_burn):
             self.xs_lib[i] = {}
@@ -87,36 +86,47 @@ class scale_xs:
                         if self.xs_lib[i][j][k]["FISSE"][ii] != 0:
                             self.xs_lib[i][j][k]["FISSE"][ii] = (
                                 self.xs_lib[i][j][k]["FISSE"][ii] /
-                                self.xs_lib[i][j][k]["FISXS"][ii]
+                                self.xs_lib[i][j][k]["FISSXS"][ii]
                                 )
 
     def get_xs(self):
-        r_l = 0
-        m = 0
         uni = []
+        L = 0
+        m = 0
+        n = 0
+        lam_temp = 0
+        beta_temp = 0
         for k, line in enumerate(self.lines):
             if 'Identifier' in line:
                 val = int(self.lines[k+1].split()[0])
                 if val not in uni:
                     uni.extend([val])
                 m = uni.index(val)
+                self.xs_lib[L][m][n]['BETA_EFF']\
+                    .extend(beta_temp)
+                self.xs_lib[L][m][n]['DECAY_CONSTANT']\
+                    .extend(lam_temp)
             if 'branch no.' in line:
-                r_l += 1
-                L = r_l // self.num_burn
+                index = line.find(',')
+                L = int(line[index-4:index])
                 n = int(line.split()[-1])
-            if "'" in line:
-                for key in self.catch.keys():
-                    if key in line:
-                        if self.catch[key].multi_line_flag:
+            for key in self.catch.keys():
+                if key in line:
+                    if self.catch[key].multi_line_flag:
+                        if (key == 'Betas'):
+                            beta_temp = self.get_multi_line_values(k)
+                        elif(key == 'Lambdas'):
+                            lam_temp = self.get_multi_line_values(k)
+                        else:
                             self.xs_lib[L][m][n][self.catch[key].xs_entry[0]]\
                                 .extend(
                                     self.get_multi_line_values(k)
                                     )
-                        else:
-                            for dex, xs in enumerate(self.catch[key].xs_entry):
-                                dex = self.catch[key].index[dex]
-                                self.xs_lib[L][m][n][xs]\
-                                    .extend([self.get_values(k, dex)])
+                    else:
+                        for dex, xs in enumerate(self.catch[key].xs_entry):
+                            dex = self.catch[key].index[dex]
+                            self.xs_lib[L][m][n][xs]\
+                                .extend([self.get_values(k, dex)])
 
     def get_values(self, k, index):
         val = list(np.array(self.lines[k+1].split()).astype(float))
@@ -208,28 +218,29 @@ def read_input(fin):
             num_mats = int(lines[k+1].split()[0])
             val = lines[k+2].split()
             for i in range(num_mats):
-                mat_dict[val[i]] = {'temps': np.array([]),
-                                    'file': np.array([]),
-                                    'uni': np.array([]),
-                                    'burn': np.array([]),
-                                    'bran': np.array([])
+                mat_dict[val[i]] = {'temps': [],
+                                    'file': [],
+                                    'uni': [],
+                                    'burn': [],
+                                    'bran': []
                                     }
             k += 2
         if '[BRANCH]' in line:
             tot_branch = int(lines[k+1].split()[0])
             for i in range(tot_branch):
                 val = lines[k+2+i].split()
-                mat_dict[val[0]]['temps'] = np.append(
-                    int(val[1]), mat_dict[val[0]]['temps'])
-                mat_dict[val[0]]['file'] = np.append(
-                    int(val[2]), mat_dict[val[0]]['file'])
-                mat_dict[val[0]]['burn'] = np.append(
-                    int(val[3]), mat_dict[val[0]]['burn'])
-                mat_dict[val[0]]['uni'] = np.append(
-                    int(val[4]), mat_dict[val[0]]['uni'])
-                mat_dict[val[0]]['bran'] = np.append(
-                    int(val[5]), mat_dict[val[0]]['bran'])
+                mat_dict[val[0]]['temps'].extend(
+                    [int(val[1])])
+                mat_dict[val[0]]['file'].extend(
+                    [int(val[2])])
+                mat_dict[val[0]]['burn'].extend(
+                    [int(val[3])])
+                mat_dict[val[0]]['uni'].extend(
+                    [int(val[4])])
+                mat_dict[val[0]]['bran'].extend(
+                    [int(val[5])])
             k += 1+tot_branch
+
         if 'FILES' in line:
             num_files = int(lines[k+1].split()[0])
             files = {}
@@ -245,8 +256,7 @@ def read_input(fin):
         k += 1
     out_dict = {}
     for entry in mat_dict:
-        print(entry)
-        out_dict[entry] = {'temp': list(mat_dict[entry]['temps'])}
+        out_dict[entry] = {'temp': mat_dict[entry]['temps']}
         for i, t in enumerate(mat_dict[entry]['temps']):
             out_dict[entry][str(t)] = files[mat_dict[entry]['file'][i]-1]\
                 .xs_lib[mat_dict[entry]['burn'][i]-1][mat_dict[entry]
