@@ -3,7 +3,6 @@
 
 """
 import json
-import io
 import sys
 import numpy as np
 from pyne import serpent
@@ -31,7 +30,7 @@ class scale_xs:
     """
 
     def __init__(self, xs_filename):
-        with io.open(xs_filename) as f:
+        with open(xs_filename) as f:
             self.lines = f.readlines()
         self.catch = {
             'Betas': self.t16_line([], True, ['BETA_EFF']),
@@ -126,7 +125,7 @@ class scale_xs:
                         for dex, xs in enumerate(self.catch[key].xs_entry):
                             dex = self.catch[key].index[dex]
                             self.xs_lib[L][m][n][xs]\
-                                .extend([self.get_values(k, dex)])
+                                .append(self.get_values(k, dex))
 
     def get_values(self, k, index):
         val = list(np.array(self.lines[k+1].split()).astype(float))
@@ -139,7 +138,7 @@ class scale_xs:
             k += 1
             for ent in val:
                 try:
-                    values.extend([float(ent)])
+                    values.append(float(ent))
                 except(ValueError):
                     return values
 
@@ -204,15 +203,12 @@ class serpent_xs:
 
 
 def read_input(fin):
-    with io.open(fin) as f:
+    with open(fin) as f:
         lines = f.readlines()
     k = 0
-    while k < len(lines):
-        line = lines[k]
+    for k, line in enumerate(lines):
         if '[TITLE]' in line:
             f = open(lines[k+1].split()[0], 'w')
-            k += 1
-
         if '[MAT]' in line:
             mat_dict = {}
             num_mats = int(lines[k+1].split()[0])
@@ -224,7 +220,6 @@ def read_input(fin):
                                     'burn': [],
                                     'bran': []
                                     }
-            k += 2
         if '[BRANCH]' in line:
             tot_branch = int(lines[k+1].split()[0])
             for i in range(tot_branch):
@@ -239,28 +234,28 @@ def read_input(fin):
                     [int(val[4])])
                 mat_dict[val[0]]['bran'].extend(
                     [int(val[5])])
-            k += 1+tot_branch
 
         if 'FILES' in line:
             num_files = int(lines[k+1].split()[0])
             files = {}
             for i in range(num_files):
                 XS_in, XS_t = lines[k+2+i].split()
-                if int(XS_t) == 1:
+                if 'scale' in XS_t:
                     files[i] = scale_xs(XS_in)
-                elif int(XS_t) == 2:
+                elif 'serpent'in XS_t:
                     files[i] = serpent_xs(XS_in)
                 else:
-                    raise("XS data not understood\n 1=scale \n 2=serpent")
-            k += 1+num_files
-        k += 1
+                    raise("XS data not understood\n \
+                          Please use: scale or serpent")
     out_dict = {}
     for entry in mat_dict:
         out_dict[entry] = {'temp': mat_dict[entry]['temps']}
         for i, t in enumerate(mat_dict[entry]['temps']):
-            out_dict[entry][str(t)] = files[mat_dict[entry]['file'][i]-1]\
-                .xs_lib[mat_dict[entry]['burn'][i]-1][mat_dict[entry]
-                ['uni'][i]-1][int(mat_dict[entry]['bran'][i]-1)]
+            L = mat_dict[entry]['file'][i] - 1
+            m = mat_dict[entry]['burn'][i] - 1
+            n = mat_dict[entry]['uni'][i] - 1
+            p = mat_dict[entry]['bran'][i] - 1
+            out_dict[entry][str(t)] = files[L].xs_lib[m][n][p]
     f.write(json.dumps(out_dict, sort_keys=True, indent=4))
 
 
