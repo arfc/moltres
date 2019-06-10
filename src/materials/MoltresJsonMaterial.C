@@ -187,16 +187,16 @@ MoltresJsonMaterial::computeQpProperties()
       mooseError("BICUBIC not supported, please select \
                   NONE, LINEAR, SPLICE, or MONOTONE_CUBIC ");
     case NONE:
-      NuclearMaterial::dummyComputeQpProperties();
+      dummyComputeQpProperties();
       break;
     case LINEAR:
-      NuclearMaterial::linearComputeQpProperties();
+      linearComputeQpProperties();
       break;
     case SPLINE:
-      NuclearMaterial::linearComputeQpProperties();
+      linearComputeQpProperties();
       break;
     case MONOTONE_CUBIC:
-      NuclearMaterial::monotoneCubicComputeQpProperties();
+      monotoneCubicComputeQpProperties();
       break;
     default:
       mooseError("Wrong enum type");

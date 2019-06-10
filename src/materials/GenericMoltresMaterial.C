@@ -70,7 +70,6 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
   _file_map["BETA_EFF"] = "BETA_EFF";
   if (getParam<bool>("sss2_input"))
   {
-    _file_map["FLUX"] = "FLX";
     _file_map["FISSXS"] = "FISS";
     _file_map["FISSE"] = "KAPPA";
     _file_map["RECIPVEL"] = "INVV";
@@ -81,7 +80,6 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
   }
   else
   {
-    _file_map["FLUX"] = "FLUX";
     _file_map["FISSXS"] = "FISSXS";
     _file_map["FISSE"] = "FISSE";
     _file_map["RECIPVEL"] = "RECIPVEL";
@@ -457,7 +455,6 @@ GenericMoltresMaterial::leastSquaresConstruct(std::string & property_tables_root
     }
   }
 
-  _flux_consts = xsec_map["FLUX"];
   _remxs_consts = xsec_map["REMXS"];
   _fissxs_consts = xsec_map["FISSXS"];
   _nsf_consts = xsec_map["NSF"];
@@ -721,16 +718,16 @@ GenericMoltresMaterial::computeQpProperties()
       leastSquaresComputeQpProperties();
       break;
     case SPLINE:
-      NuclearMaterial::splineComputeQpProperties();
+      splineComputeQpProperties();
       break;
     case MONOTONE_CUBIC:
-      NuclearMaterial::monotoneCubicComputeQpProperties();
+      monotoneCubicComputeQpProperties();
       break;
     case BICUBIC:
       bicubicSplineComputeQpProperties();
       break;
     case LINEAR:
-      NuclearMaterial::linearComputeQpProperties();
+      linearComputeQpProperties();
       break;
     case NONE:
       dummyComputeQpProperties();

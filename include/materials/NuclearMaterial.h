@@ -105,7 +105,6 @@ protected:
   std::map<std::string, std::string> _file_map;
   std::vector<double> _XsTemperature;
 
-  std::vector<std::vector<Real>> _flux_consts = std::vector<std::vector<Real>>(2);
   std::vector<std::vector<Real>> _remxs_consts = std::vector<std::vector<Real>>(2);
   std::vector<std::vector<Real>> _fissxs_consts = std::vector<std::vector<Real>>(2);
   std::vector<std::vector<Real>> _nubar_consts = std::vector<std::vector<Real>>(2);
