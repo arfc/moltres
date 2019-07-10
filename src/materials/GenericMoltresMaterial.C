@@ -43,6 +43,10 @@ validParams<GenericMoltresMaterial>()
                         "greater than the peak power density set point, "
                         "the absorption cross section gets incremented by "
                         "this amount");
+
+  // the following two lines esentially make the two parameters optional
+  params.set<std::vector<std::string>>("prop_names") = std::vector<std::string>();
+  params.set<std::vector<Real>>("prop_values") = std::vector<Real>();
   return params;
 }
 
@@ -951,4 +955,3 @@ GenericMoltresMaterial::computeQpProperties()
     for (unsigned i = 0; i < _num_groups; ++i)
       _remxs[_qp][i] += _controller_gain * (_peak_power_density - _peak_power_density_set_point);
 }
-
