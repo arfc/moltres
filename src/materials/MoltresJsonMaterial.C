@@ -61,7 +61,7 @@ MoltresJsonMaterial::Construct(moosecontrib::Json::Value xs_root,
                                std::vector<std::string> xsec_names)
 {
   auto xsec_interpolators = _xsec_linear_interpolators;
-  for (decltype(xsec_names.size()) j = 0; j < xsec_names.size(); ++j)
+  for (unsigned int j = 0; j < xsec_names.size(); ++j)
   {
 
     auto o = _vec_lengths[xsec_names[j]];
@@ -97,7 +97,7 @@ MoltresJsonMaterial::Construct(moosecontrib::Json::Value xs_root,
         mooseError("Dimensions of " + _material_key + "/" + temp_key + "/" +
                    _file_map[xsec_names[j]] + " and num_groups do not match\n" +
                    std::to_string(dims) + "!=" + std::to_string(o));
-      for (decltype(_num_groups) k = 0; k < o; ++k)
+      for (auto k = 0; k < o; ++k)
       {
         xsec_map[xsec_names[j]][k].push_back(dataset[k].asDouble());
       }
@@ -111,28 +111,28 @@ MoltresJsonMaterial::Construct(moosecontrib::Json::Value xs_root,
         mooseError("BICUBIC not supported, please select \
           NONE, LINEAR, SPLICE, or MONOTONE_CUBIC ");
       case NONE:
-        for (decltype(_num_groups) k = 0; k < o; ++k)
+        for (auto k = 0; k < o; ++k)
         {
           _xsec_linear_interpolators[xsec_names[j]][k].setData(_XsTemperature,
                                                                xsec_map[xsec_names[j]][k]);
         }
         break;
       case LINEAR:
-        for (decltype(_num_groups) k = 0; k < o; ++k)
+        for (auto k = 0; k < o; ++k)
         {
           _xsec_linear_interpolators[xsec_names[j]][k].setData(_XsTemperature,
                                                                xsec_map[xsec_names[j]][k]);
         }
         break;
       case SPLINE:
-        for (decltype(_num_groups) k = 0; k < o; ++k)
+        for (auto k = 0; k < o; ++k)
         {
           _xsec_spline_interpolators[xsec_names[j]][k].setData(_XsTemperature,
                                                                xsec_map[xsec_names[j]][k]);
         }
         break;
       case MONOTONE_CUBIC:
-        for (decltype(_num_groups) k = 0; k < o; ++k)
+        for (auto k = 0; k < o; ++k)
         {
           _xsec_monotone_cubic_interpolators[xsec_names[j]][k].setData(_XsTemperature,
                                                                        xsec_map[xsec_names[j]][k]);
