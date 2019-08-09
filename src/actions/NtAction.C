@@ -27,7 +27,8 @@ template <>
 InputParameters
 validParams<NtAction>()
 {
-  InputParameters params = validParams<AddVariableAction>();
+  InputParameters params = validParams<VariableNotAMooseObjectAction>();
+
   params.addRequiredParam<unsigned int>("num_precursor_groups",
                                         "specifies the total number of precursors to create");
   params.addRequiredParam<std::string>("var_name_base", "specifies the base name of the variables");
@@ -71,7 +72,7 @@ validParams<NtAction>()
 }
 
 NtAction::NtAction(const InputParameters & params)
-  : AddVariableAction(params),
+  : VariableNotAMooseObjectAction(params),
     _num_precursor_groups(getParam<unsigned int>("num_precursor_groups")),
     _var_name_base(getParam<std::string>("var_name_base")),
     _num_groups(getParam<unsigned int>("num_groups"))
@@ -111,7 +112,9 @@ NtAction::act()
     //
 
     if (_current_task == "add_variable")
+    {
       addVariable(var_name);
+    }
 
     if (_current_task == "add_kernel")
     {
