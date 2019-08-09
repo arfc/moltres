@@ -1,7 +1,7 @@
 #ifndef PRECURSORACTION_H
 #define PRECURSORACTION_H
 
-#include "AddVariableAction.h"
+#include "VariableNotAMooseObjectAction.h"
 
 /**
  * This Action adds all required delayed neutron precursor variables and
@@ -16,7 +16,7 @@
  * or DGTemperatureAdvection. In order to vary to flow through a user-defined
  * function, use DGFunctionAdvection or DGFunctionTemperatureAdvection.
  */
-class PrecursorAction : public AddVariableAction
+class PrecursorAction : public VariableNotAMooseObjectAction
 {
 public:
   PrecursorAction(const InputParameters & params);
