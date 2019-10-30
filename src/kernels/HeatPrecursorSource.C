@@ -16,8 +16,8 @@ validParams<HeatPrecursorSource>()
                                                "energy/increasing group number.");
   params.addCoupledVar(
       "temperature", 800, "The temperature used to interpolate material properties.");
-  params.addRequiredParam<RealVectorValue>("decay_heat_fractions", "Decay Heat Fractions");
-  params.addRequiredParam<RealVectorValue>("decay_heat_constants", "Decay Heat Constants");
+  params.addRequiredParam<std::vector<Real>>("decay_heat_fractions", "Decay Heat Fractions");
+  params.addRequiredParam<std::vector<Real>>("decay_heat_constants", "Decay Heat Constants");
   return params;
 }
 
@@ -30,8 +30,8 @@ HeatPrecursorSource::HeatPrecursorSource(const InputParameters & parameters)
     _d_fissxs_d_temp(getMaterialProperty<std::vector<Real>>("d_fissxs_d_temp")),
     _num_groups(getParam<unsigned int>("num_groups")),
     _heat_group(getParam<unsigned int>("decay_heat_group_number") - 1),
-    _decay_heat_frac(getParam<RealVectorValue>("decay_heat_fractions")),
-    _decay_heat_const(getParam<RealVectorValue>("decay_heat_constants")),
+    _decay_heat_frac(getParam<std::vector<Real>>("decay_heat_fractions")),
+    _decay_heat_const(getParam<std::vector<Real>>("decay_heat_constants")),
     _temp(coupledValue("temperature")),
     _temp_id(coupled("temperature"))
 {
@@ -50,7 +50,7 @@ HeatPrecursorSource::computeQpResidual()
   Real r = 0;
   for (unsigned int i = 0; i < _num_groups; ++i)
   {
-    r += -_test[_i][_qp] * _decay_heat_frac(_heat_group) * _decay_heat_const(_heat_group) *
+    r += -_test[_i][_qp] * _decay_heat_frac[_heat_group] * _decay_heat_const[_heat_group] *
          _fisse[_qp][i] * _fissxs[_qp][i] * 
          computeConcentration((*_group_fluxes[i]), _qp);
   }
@@ -71,7 +71,7 @@ HeatPrecursorSource::computeQpOffDiagJacobian(unsigned int jvar)
   for (unsigned int i = 0; i < _num_groups; ++i)
     if (jvar == _flux_ids[i])
     {
-      jac = -_test[_i][_qp] * _decay_heat_frac(_heat_group) * _decay_heat_const(_heat_group) *
+      jac = -_test[_i][_qp] * _decay_heat_frac[_heat_group] * _decay_heat_const[_heat_group] *
             _fisse[_qp][i] * _fissxs[_qp][i] * 
             computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp);
       return jac;
@@ -80,7 +80,7 @@ HeatPrecursorSource::computeQpOffDiagJacobian(unsigned int jvar)
   if (jvar == _temp_id)
   {
     for (unsigned int i = 0; i < _num_groups; ++i)
-      jac += -_test[_i][_qp] * _decay_heat_frac(_heat_group) * _decay_heat_const(_heat_group) *
+      jac += -_test[_i][_qp] * _decay_heat_frac[_heat_group] * _decay_heat_const[_heat_group] *
              (_fisse[_qp][i] * _d_fissxs_d_temp[_qp][i] * _phi[_j][_qp] *
                     computeConcentration((*_group_fluxes[i]), _qp) +
               _d_fisse_d_temp[_qp][i] * _fissxs[_qp][i] * _phi[_j][_qp] *

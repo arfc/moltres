@@ -21,7 +21,7 @@ protected:
   virtual Real computeQpOffDiagJacobian(unsigned int jvar);
 
   unsigned int _heat_group;
-  RealVectorValue _decay_heat_const;
+  std::vector<Real> _decay_heat_const;
 };
 
 #endif // HEATPRECURSORDECAY_H
