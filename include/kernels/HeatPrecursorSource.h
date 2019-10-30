@@ -22,16 +22,16 @@ protected:
 
   const MaterialProperty<std::vector<Real>> & _fisse;
   const MaterialProperty<std::vector<Real>> & _d_fisse_d_temp;
-  unsigned int _num_groups;
-  unsigned int _heat_group;
   const MaterialProperty<std::vector<Real>> & _fissxs;
   const MaterialProperty<std::vector<Real>> & _d_fissxs_d_temp;
+  unsigned int _num_groups;
+  unsigned int _heat_group;
+  RealVectorValue _decay_heat_frac;
+  RealVectorValue _decay_heat_const;
   const VariableValue & _temp;
   unsigned int _temp_id;
   std::vector<const VariableValue *> _group_fluxes;
   std::vector<unsigned int> _flux_ids;
-  RealVectorValue _decay_heat_frac;
-  RealVectorValue _decay_heat_const;
 };
 
 #endif // HEATPRECURSORSOURCE_H
