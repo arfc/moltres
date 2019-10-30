@@ -1,4 +1,4 @@
-#ifndefHEATPRECURSORDECAY_H
+#ifndef HEATPRECURSORDECAY_H
 #define HEATPRECURSORDECAY_H
 
 #include "Kernel.h"

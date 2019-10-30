@@ -31,7 +31,7 @@ HeatPrecursorDecay::computeQpResidual()
 Real
 HeatPrecursorDecay::computeQpJacobian()
 {
-  return _test[_i][_qp] * _decay_heat_const(_heat_group) * computeConcentrationDerivative(_u, -phi, _j, _qp);
+  return _test[_i][_qp] * _decay_heat_const(_heat_group) * computeConcentrationDerivative(_u, _phi, _j, _qp);
 }
 
 Real

@@ -7,7 +7,7 @@ InputParameters
 validParams<HeatPrecursorSource>()
 {
   InputParameters params = validParams<Kernel>();
-  params += validParams<ScalarTransportBase;
+  params += validParams<ScalarTransportBase>;
   params.addRequiredParam<unsigned int>("num_groups", "The total number of energy groups");
   params.addRequiredParam<unsigned int>("decay_heat_group_number",
                                         "What decay heat group this kernel is acting on.");
