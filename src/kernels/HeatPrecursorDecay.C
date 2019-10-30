@@ -25,13 +25,13 @@ HeatPrecursorDecay::HeatPrecursorDecay(const InputParameters & parameters)
 Real
 HeatPrecursorDecay::computeQpResidual()
 {
-  return _test[_i][_qp] * _decay_heat_const[_heat_group] * computeConcentration(_u, _qp);
+  return _test[_i][_qp] * _decay_heat_const(_heat_group) * computeConcentration(_u, _qp);
 }
 
 Real
 HeatPrecursorDecay::computeQpJacobian()
 {
-  return _test[_i][_qp] * _decay_heat_const[_heat_group] * computeConcentrationDerivative(_u, phi, _j, _qp);
+  return _test[_i][_qp] * _decay_heat_const(_heat_group) * computeConcentrationDerivative(_u, -phi, _j, _qp);
 }
 
 Real
