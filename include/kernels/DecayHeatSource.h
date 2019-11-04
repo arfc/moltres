@@ -2,7 +2,7 @@
 #define DECAYHEATSOURCE_H
 
 #include "Kernel.h"
-#include "ScalarTranportBase.h"
+#include "ScalarTransportBase.h"
 
 // Forward Declarations
 class DecayHeatSource;
