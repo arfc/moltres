@@ -10,7 +10,7 @@ validParams<DecayHeatSource>()
   params += validParams<ScalarTransportBase>();
   params.addRequiredParam<unsigned int>("num_decay_heat_groups", "The number of decay heat groups.");
   params.addRequiredCoupledVar("heat_concs", "All the variables that hold the decay heat "
-                                      "precursor concentrations.");
+                                             "precursor concentrations.");
   params.addRequiredParam<std::vector<Real>>("decay_heat_constants", "Decay Heat Constants");
   return params;
 }

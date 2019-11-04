@@ -22,8 +22,8 @@ protected:
 
   unsigned int _num_heat_groups;
   std::vector<Real> _decay_heat_const;
-  std::vector<const VariableValue *> _pre_concs;
-  std::vector<unsigned int> _pre_ids;
+  std::vector<const VariableValue *> _heat_concs;
+  std::vector<unsigned int> _heat_ids;
 };
 
 #endif // DECAYHEATSOURCE_H
