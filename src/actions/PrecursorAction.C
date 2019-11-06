@@ -28,7 +28,7 @@ template <>
 InputParameters
 validParams<PrecursorAction>()
 {
-  InputParameters params = validParams<VariableNotAMooseObjectAction>();
+  InputParameters params = ::validParams<VariableNotAMooseObjectAction>();
   params.addRequiredParam<unsigned int>("num_precursor_groups",
                                         "specifies the total number of precursors to create");
   params.addRequiredParam<std::string>("var_name_base", "specifies the base name of the variables");
@@ -102,7 +102,7 @@ PrecursorAction::PrecursorAction(const InputParameters & params)
 void
 PrecursorAction::addRelationshipManagers(Moose::RelationshipManagerType input_rm_type)
 {
-  auto dg_kernel_params = validParams<DGKernelBase>();
+  auto dg_kernel_params = ::validParams<DGKernelBase>();
   addRelationshipManagers(input_rm_type, dg_kernel_params);
 }
 
