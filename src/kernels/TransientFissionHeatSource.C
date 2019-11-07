@@ -16,8 +16,8 @@ validParams<TransientFissionHeatSource>()
   params.addParam<unsigned int>("num_decay_heat_groups", 0, "The number of decay heat groups.");
   params.addCoupledVar("heat_concs", "All the variables that hold the decay heat "
                                      "precursor concentrations.");
-  params.addParam<std::vector<Real>>("decay_heat_fractions", {}, "Decay Heat Fractions");
-  params.addParam<std::vector<Real>>("decay_heat_constants", {}, "Decay Heat Constants");
+  params.addParam<std::vector<Real>>("decay_heat_fractions", "Decay Heat Fractions");
+  params.addParam<std::vector<Real>>("decay_heat_constants", "Decay Heat Constants");
   params.addParam<bool>("account_decay_heat", false, "Whether to account for decay heat.");
   return params;
 }
@@ -48,7 +48,7 @@ TransientFissionHeatSource::TransientFissionHeatSource(const InputParameters & p
     unsigned int n = coupledComponents("heat_concs");
     if (!(n == _num_heat_groups))
     {
-      mooseError("The number of coupled variables doesn't match the number of decay heat groups.")
+      mooseError("The number of coupled variables doesn't match the number of decay heat groups.");
     }
     _heat_concs.resize(n);
     _heat_ids.resize(n);
@@ -56,12 +56,6 @@ TransientFissionHeatSource::TransientFissionHeatSource(const InputParameters & p
     {
       _heat_concs[i] = &coupledValue("heat_concs", i);
       _heat_ids[i] = coupled("heat_concs", i);
-    }
-
-    Real frac = 0
-    for (unsigned int i=0; i < _num_heat_groups; ++i)
-    {
-      frac += _decay_heat_frac[i] * _decay_heat_const[i];
     }
   }
 }
@@ -74,6 +68,12 @@ TransientFissionHeatSource::computeQpResidual()
   {
     r += -_test[_i][_qp] * _fisse[_qp][i] * _fissxs[_qp][i] *
          computeConcentration((*_group_fluxes[i]), _qp) * _nt_scale;
+  }
+
+  Real frac = 0;
+  for (unsigned int i = 0; i < _num_heat_groups; ++i)
+  {
+    frac += _decay_heat_frac[i];
   }
 
   if (_account_decay_heat)
@@ -95,6 +95,12 @@ TransientFissionHeatSource::computeQpJacobian()
            computeConcentration((*_group_fluxes[i]), _qp) * _nt_scale;
   }
 
+  Real frac = 0;
+  for (unsigned int i = 0; i < _num_heat_groups; ++i)
+  {
+    frac += _decay_heat_frac[i];
+  }
+
   if (_account_decay_heat)
   {
     jac *= (1. - frac);
@@ -113,6 +119,13 @@ TransientFissionHeatSource::computeQpOffDiagJacobian(unsigned int jvar)
     {
       jac += -_test[_i][_qp] * _fisse[_qp][i] * _fissxs[_qp][i] *
              computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp) * _nt_scale;
+      
+      Real frac = 0;
+      for (unsigned int i = 0; i < _num_heat_groups; ++i)
+      {
+        frac += _decay_heat_frac[i];
+      }
+
       if (_account_decay_heat)
         jac *= (1. - frac);
       break;

@@ -24,7 +24,7 @@ DecayHeatSource::DecayHeatSource(const InputParameters & parameters)
   unsigned int n = coupledComponents("heat_concs");
   if (!(n == _num_heat_groups))
   {
-    mooseError("The number of coupled variables doesn't match the number of decay heat groups.")
+    mooseError("The number of coupled variables doesn't match the number of decay heat groups.");
   }
   _heat_concs.resize(n);
   _heat_ids.resize(n);
@@ -63,4 +63,5 @@ DecayHeatSource::computeQpOffDiagJacobian(unsigned int jvar)
              computeConcentrationDerivative((*_heat_concs[i]), _phi, _j, _qp);
     }
   }
+  return jac;
 }
