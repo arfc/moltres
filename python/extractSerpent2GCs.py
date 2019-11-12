@@ -69,19 +69,19 @@ def makePropertiesDir(
             if mat in item:
                 currentMat = mat
                 break
-        if not secBranch:
-            strData = coeList[currentMat].branches[item].universes[int(
-                uniMap[currentMat]), 0, 0].gc[goodMap['BETA_EFF']]
-            strData = strData[1:9]
-            if np.any(strData[-2:] != 0.0):
-                use8Groups = True
-        else:
+        if secBranch:
             for branch in secBranch:
                 strData = coeList[currentMat].branches[item, branch].universes[int(
                     uniMap[currentMat]), 0, 0].gc[goodMap['BETA_EFF']]
                 strData = strData[1:9]
                 if np.any(strData[-2:] != 0.0):
                     use8Groups = True
+        else:
+            strData = coeList[currentMat].branches[item].universes[int(
+                uniMap[currentMat]), 0, 0].gc[goodMap['BETA_EFF']]
+            strData = strData[1:9]
+            if np.any(strData[-2:] != 0.0):
+                use8Groups = True
 
     # Now loop through a second time
     branch2TempMapping.close()
@@ -100,28 +100,7 @@ def makePropertiesDir(
                 'Couldnt find a material corresponding to branch {}'.format(item))
 
         try:
-            if not secBranch:
-                for coefficient in goodStuff:
-                    with open(outdir + '/' + filebase + '_' + currentMat + '_' + coefficient.upper() + '.txt', 'a') as fh:
-                        if coefficient == 'lambda' or coefficient == 'BETA_EFF':
-                            strData = coeList[currentMat].branches[item].universes[int(
-                                uniMap[currentMat]), 0, 0].gc[goodMap[coefficient]]
-                            # some additional formatting is needed here
-                            strData = strData[1:9]
-
-                            # Cut off group 7 and 8 precursor params in 6
-                            # group calcs
-                            if not use8Groups:
-                                strData = strData[0:6]
-                        else:
-                            strData = coeList[currentMat].branches[item].universes[int(
-                                uniMap[currentMat]), 0, 0].infExp[goodMap[coefficient]]
-                        strData = ' '.join([str(dat) for dat in strData]) if isinstance(
-                            strData, np.ndarray) else strData
-                        fh.write(str(temp) + ' ' + strData)
-                        fh.write('\n')
-
-            else:
+            if secBranch:
                 for branch in secBranch:
                     for coefficient in goodStuff:
                         with open(outdir + '/' + filebase + '_' + currentMat + '_' + branch + '_' + coefficient.upper() + '.txt', 'a') as fh:
@@ -142,6 +121,27 @@ def makePropertiesDir(
                                 strData, np.ndarray) else strData
                             fh.write(str(temp) + ' ' + strData)
                             fh.write('\n')
+
+            else:
+                for coefficient in goodStuff:
+                    with open(outdir + '/' + filebase + '_' + currentMat + '_' + coefficient.upper() + '.txt', 'a') as fh:
+                        if coefficient == 'lambda' or coefficient == 'BETA_EFF':
+                            strData = coeList[currentMat].branches[item].universes[int(
+                                uniMap[currentMat]), 0, 0].gc[goodMap[coefficient]]
+                            # some additional formatting is needed here
+                            strData = strData[1:9]
+
+                            # Cut off group 7 and 8 precursor params in 6
+                            # group calcs
+                            if not use8Groups:
+                                strData = strData[0:6]
+                        else:
+                            strData = coeList[currentMat].branches[item].universes[int(
+                                uniMap[currentMat]), 0, 0].infExp[goodMap[coefficient]]
+                        strData = ' '.join([str(dat) for dat in strData]) if isinstance(
+                            strData, np.ndarray) else strData
+                        fh.write(str(temp) + ' ' + strData)
+                        fh.write('\n')
 
         except KeyError:
             print(secBranch)
