@@ -69,19 +69,19 @@ def makePropertiesDir(
             if mat in item:
                 currentMat = mat
                 break
-        if secBranch:
+        if not secBranch:
+            strData = coeList[currentMat].branches[item].universes[int(
+                uniMap[currentMat]), 0, 0].gc[goodMap['BETA_EFF']]
+            strData = strData[1:9]
+            if np.any(strData[-2:] != 0.0):
+                use8Groups = True
+        else:
             for branch in secBranch:
                 strData = coeList[currentMat].branches[item, branch].universes[int(
                     uniMap[currentMat]), 0, 0].gc[goodMap['BETA_EFF']]
                 strData = strData[1:9]
                 if np.any(strData[-2:] != 0.0):
                     use8Groups = True
-        else:
-            strData = coeList[currentMat].branches[item, branch].universes[int(
-                uniMap[currentMat]), 0, 0].gc[goodMap['BETA_EFF']]
-            strData = strData[1:9]
-            if np.any(strData[-2:] != 0.0):
-                use8Groups = True
 
     # Now loop through a second time
     branch2TempMapping.close()
