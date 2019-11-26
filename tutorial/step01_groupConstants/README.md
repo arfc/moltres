@@ -1,6 +1,6 @@
 ## Group Constants
 
-Here, group constants are taken from example Serpent output using PyNE. These will be used to generate a properties directory, which
+Here, group constants are taken from example Serpent output using ```serpentTools```. These will be used to generate a properties directory, which
 can be used by moltres. See extractSerpent2GCs.py for more.
 
 Moltres is *not* a spatially homogenized diffusion code. MOOSE is made for running, **big**, **intense** problems, using modern HPC.
@@ -37,5 +37,6 @@ the $MOLTRES/python directory to your path.
 The syntax requires the arbitrary directory name you'd like to create, then the arbitrary file base name that moltres will
 look at, then a file that maps primary branch names to temperatures, then a file that lists the secondary branch names, and lastly a file that maps universe numbers from serpent to material names. 
 Group constants will be extracted for all materials listed in the last file.
+In order this method to work, there has to be a .coe for each material.
 
 The secBranch.txt file should be blank if no secondary branches were used, i.e. there is only one branch variation per burnup step.
