@@ -73,14 +73,14 @@ def makePropertiesDir(
         if secBranch:
             for branch in secBranch:
                 strData = coeList[currentMat].branches[
-                    item, branch].universes[int(
-                        uniMap[currentMat]), 0, 0].gc[goodMap['BETA_EFF']]
+                    item, branch].universes[
+                        uniMap[currentMat], 0, 0, None].gc[goodMap['BETA_EFF']]
                 strData = strData[1:9]
                 if np.any(strData[-2:] != 0.0):
                     use8Groups = True
         else:
-            strData = coeList[currentMat].branches[item].universes[int(
-                uniMap[currentMat]), 0, 0].gc[goodMap['BETA_EFF']]
+            strData = coeList[currentMat].branches[item].universes[
+                uniMap[currentMat], 0, 0, None].gc[goodMap['BETA_EFF']]
             strData = strData[1:9]
             if np.any(strData[-2:] != 0.0):
                 use8Groups = True
@@ -112,8 +112,8 @@ def makePropertiesDir(
                             if coefficient == 'lambda' or \
                                     coefficient == 'BETA_EFF':
                                 strData = coeList[currentMat].branches[
-                                    item, branch].universes[int(
-                                        uniMap[currentMat]), 0, 0].gc[
+                                    item, branch].universes[
+                                        uniMap[currentMat], 0, 0, None].gc[
                                             goodMap[coefficient]]
                                 # some additional formatting is needed here
                                 strData = strData[1:9]
@@ -124,8 +124,8 @@ def makePropertiesDir(
                                     strData = strData[0:6]
                             else:
                                 strData = coeList[currentMat].branches[
-                                    item, branch].universes[int(
-                                        uniMap[currentMat]), 0, 0].infExp[
+                                    item, branch].universes[
+                                        uniMap[currentMat], 0, 0, None].infExp[
                                             goodMap[coefficient]]
                             strData = ' '.join(
                                 [str(dat) for dat in strData]) if isinstance(
@@ -140,8 +140,8 @@ def makePropertiesDir(
                         if coefficient == 'lambda' or \
                                 coefficient == 'BETA_EFF':
                             strData = coeList[currentMat].branches[
-                                item].universes[int(
-                                    uniMap[currentMat]), 0, 0].gc[
+                                item].universes[
+                                    uniMap[currentMat], 0, 0, None].gc[
                                         goodMap[coefficient]]
                             # some additional formatting is needed here
                             strData = strData[1:9]
@@ -152,8 +152,8 @@ def makePropertiesDir(
                                 strData = strData[0:6]
                         else:
                             strData = coeList[currentMat].branches[
-                                item].universes[int(
-                                    uniMap[currentMat]), 0, 0].infExp[
+                                item].universes[
+                                    uniMap[currentMat], 0, 0, None].infExp[
                                         goodMap[coefficient]]
                         strData = ' '.join(
                             [str(dat) for dat in strData]) if isinstance(
