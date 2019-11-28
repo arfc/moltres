@@ -14,6 +14,7 @@ validParams<HeatPrecursorSource>()
   params.addRequiredCoupledVar("group_fluxes", "All the variables that hold the group fluxes. "
                                                "These MUST be listed by decreasing "
                                                "energy/increasing group number.");
+  params.addParam<Real>("nt_scale", 1, "Scaling of the neutron fluxes to aid convergence.");
   params.addCoupledVar(
       "temperature", 800, "The temperature used to interpolate material properties.");
   params.addRequiredParam<std::vector<Real>>("decay_heat_fractions", "Decay Heat Fractions");
@@ -30,6 +31,7 @@ HeatPrecursorSource::HeatPrecursorSource(const InputParameters & parameters)
     _d_fissxs_d_temp(getMaterialProperty<std::vector<Real>>("d_fissxs_d_temp")),
     _num_groups(getParam<unsigned int>("num_groups")),
     _heat_group(getParam<unsigned int>("decay_heat_group_number") - 1),
+    _nt_scale(getParam<Real>("nt_scale")),
     _decay_heat_frac(getParam<std::vector<Real>>("decay_heat_fractions")),
     _decay_heat_const(getParam<std::vector<Real>>("decay_heat_constants")),
     _temp(coupledValue("temperature")),
@@ -52,7 +54,7 @@ HeatPrecursorSource::computeQpResidual()
   {
     r += -_test[_i][_qp] * _decay_heat_frac[_heat_group] *
          _fisse[_qp][i] * _fissxs[_qp][i] * 
-         computeConcentration((*_group_fluxes[i]), _qp);
+         computeConcentration((*_group_fluxes[i]), _qp) * _nt_scale;
   }
 
   return r;
@@ -73,7 +75,7 @@ HeatPrecursorSource::computeQpOffDiagJacobian(unsigned int jvar)
     {
       jac = -_test[_i][_qp] * _decay_heat_frac[_heat_group] *
             _fisse[_qp][i] * _fissxs[_qp][i] * 
-            computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp);
+            computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp) * _nt_scale;
       return jac;
     }
 
@@ -84,7 +86,7 @@ HeatPrecursorSource::computeQpOffDiagJacobian(unsigned int jvar)
              (_fisse[_qp][i] * _d_fissxs_d_temp[_qp][i] * _phi[_j][_qp] *
                     computeConcentration((*_group_fluxes[i]), _qp) +
               _d_fisse_d_temp[_qp][i] * _fissxs[_qp][i] * _phi[_j][_qp] *
-                    computeConcentration((*_group_fluxes[i]), _qp));
+                    computeConcentration((*_group_fluxes[i]), _qp)) * _nt_scale;
     return jac;
   }
 

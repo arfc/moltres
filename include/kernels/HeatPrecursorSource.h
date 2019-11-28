@@ -26,6 +26,7 @@ protected:
   const MaterialProperty<std::vector<Real>> & _d_fissxs_d_temp;
   unsigned int _num_groups;
   unsigned int _heat_group;
+  Real _nt_scale;
   std::vector<Real> _decay_heat_frac;
   std::vector<Real> _decay_heat_const;
   const VariableValue & _temp;
