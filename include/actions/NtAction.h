@@ -1,7 +1,7 @@
 #ifndef NTACTION_H
 #define NTACTION_H
 
-#include "AddVariableAction.h"
+#include "VariableNotAMooseObjectAction.h"
 
 /**
  * Add neutronics kernels and variables to MSR simulations automatically.
@@ -19,12 +19,12 @@
  * simulation. In addition, when using many flux variables, it adds the required variables to the
  * problem as well.
  */
-class NtAction : public AddVariableAction
+class NtAction : public VariableNotAMooseObjectAction
 {
 public:
   NtAction(const InputParameters & params);
 
-  virtual void act();
+  virtual void act() override;
 
 protected:
   /// number of precursor groups
