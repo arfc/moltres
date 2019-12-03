@@ -1,7 +1,7 @@
-flow_velocity=21.7 # cm/s. See MSRE-properties.ods
-nt_scale=1e13
+flow_velocity=21.7      # cm/s. See MSRE-properties.ods
 ini_temp=922
 diri_temp=922
+nt_scale=1e13
 
 [GlobalParams]
   num_groups = 2
@@ -12,15 +12,6 @@ diri_temp=922
   sss2_input = false
   pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6'
   account_delayed = true
-[]
-
-[Mesh]
-  file = '2d_lattice_structured.msh'
-  # file = '2d_lattice_structured_jac.msh'
-[../]
-
-[Problem]
-  coord_type = RZ
 []
 
 [Variables]
@@ -42,6 +33,14 @@ diri_temp=922
   [../]
 []
 
+[Mesh]
+  file = '2d_lattice_structured.msh'
+[../]
+
+[Problem]
+  coord_type = RZ
+[]
+
 [Precursors]
   [./pres]
     var_name_base = pre
@@ -58,9 +57,16 @@ diri_temp=922
 []
 
 [Kernels]
-  # Neutronics
+  #---------------------------------------------------------------------
+  # Group 1 Neutronics
+  #---------------------------------------------------------------------
   [./time_group1]
     type = NtTimeDerivative
+    variable = group1
+    group_number = 1
+  [../]
+  [./sigma_r_group1]
+    type = SigmaR
     variable = group1
     group_number = 1
   [../]
@@ -69,8 +75,8 @@ diri_temp=922
     variable = group1
     group_number = 1
   [../]
-  [./sigma_r_group1]
-    type = SigmaR
+  [./inscatter_group1]
+    type = InScatter
     variable = group1
     group_number = 1
   [../]
@@ -86,13 +92,12 @@ diri_temp=922
     block = 'fuel'
     group_number=1
   [../]
-  [./inscatter_group1]
-    type = InScatter
-    variable = group1
-    group_number = 1
-  [../]
-  [./diff_group2]
-    type = GroupDiffusion
+
+  #---------------------------------------------------------------------
+  # Group 2 Neutronics
+  #---------------------------------------------------------------------
+  [./time_group2]
+    type = NtTimeDerivative
     variable = group2
     group_number = 2
   [../]
@@ -101,8 +106,8 @@ diri_temp=922
     variable = group2
     group_number = 2
   [../]
-  [./time_group2]
-    type = NtTimeDerivative
+  [./diff_group2]
+    type = GroupDiffusion
     variable = group2
     group_number = 2
   [../]
@@ -118,9 +123,22 @@ diri_temp=922
     group_number = 2
   [../]
 
+  #---------------------------------------------------------------------
   # Temperature
+  #---------------------------------------------------------------------
   [./temp_time_derivative]
     type = MatINSTemperatureTimeDerivative
+    variable = temp
+  [../]
+  [./temp_advection_fuel]
+    type = ConservativeTemperatureAdvection
+    velocity = '0 ${flow_velocity} 0'
+    variable = temp
+    block = 'fuel'
+  [../]
+  [./temp_diffusion]
+    type = MatDiffusion
+    D_name = 'k'
     variable = temp
   [../]
   [./temp_source_fuel]
@@ -136,17 +154,6 @@ diri_temp=922
   #   block = 'moder'
   #   average_fission_heat = 'average_fission_heat'
   # [../]
-  [./temp_diffusion]
-    type = MatDiffusion
-    D_name = 'k'
-    variable = temp
-  [../]
-  [./temp_advection_fuel]
-    type = ConservativeTemperatureAdvection
-    velocity = '0 ${flow_velocity} 0'
-    variable = temp
-    block = 'fuel'
-  [../]
 []
 
 [BCs]
@@ -160,17 +167,17 @@ diri_temp=922
     boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
     variable = group2
   [../]
-  [./temp_diri_cg]
-    boundary = 'moder_bottoms fuel_bottoms outer_wall'
-    type = FunctionDirichletBC
-    function = 'temp_bc_func'
-    variable = temp
-  [../]
   [./temp_advection_outlet]
     boundary = 'fuel_tops'
     type = TemperatureOutflowBC
     variable = temp
     velocity = '0 ${flow_velocity} 0'
+  [../]
+  [./temp_diri_cg]
+    boundary = 'moder_bottoms fuel_bottoms outer_wall'
+    type = FunctionDirichletBC
+    function = 'temp_bc_func'
+    variable = temp
   [../]
 []
 
