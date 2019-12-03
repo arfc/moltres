@@ -324,23 +324,38 @@ PrecursorAction::bcAct(const std::string & var_name)
     // this will work for both constant and nonconstant flows as long as
     // nonconstant flows implemented in the Controls module by
     // setting values called uu, vv, ww.
-    if (!getParam<bool>("constant_velocity_values"))
-      mooseError("Variable, looped precursor advection requires that variable"
-                 "velocity has the values uu, vv, ww set through the controls"
-                 "module, NOT simply specifying functions through the"
-                 "precursors block.");
-    InputParameters params = _factory.getValidParams("PostprocessorInflowBC");
-    params.set<NonlinearVariableName>("variable") = var_name;
-    params.set<std::vector<BoundaryName>>("boundary") =
-        getParam<std::vector<BoundaryName>>("inlet_boundaries");
-    params.set<Real>("uu") = getParam<Real>("u_def");
-    params.set<Real>("vv") = getParam<Real>("v_def");
-    params.set<Real>("ww") = getParam<Real>("w_def");
-    params.set<PostprocessorName>("postprocessor") =
-        "Inlet_SideAverageValue_" + var_name + "_" + _object_suffix;
+    if (getParam<bool>("constant_velocity_values"))
+    {
+      InputParameters params = _factory.getValidParams("PostprocessorInflowBC");
+      params.set<NonlinearVariableName>("variable") = var_name;
+      params.set<std::vector<BoundaryName>>("boundary") =
+          getParam<std::vector<BoundaryName>>("inlet_boundaries");
+      params.set<Real>("uu") = getParam<Real>("u_def");
+      params.set<Real>("vv") = getParam<Real>("v_def");
+      params.set<Real>("ww") = getParam<Real>("w_def");
+      params.set<PostprocessorName>("postprocessor") =
+          "Inlet_SideAverageValue_" + var_name + "_" + _object_suffix;
 
-    std::string bc_name = "PostprocessorInflowBC_" + var_name + "_" + _object_suffix;
-    _problem->addBoundaryCondition("PostprocessorInflowBC", bc_name, params);
+      std::string bc_name = "PostprocessorInflowBC_" + var_name + "_" + _object_suffix;
+      _problem->addBoundaryCondition("PostprocessorInflowBC", bc_name, params);
+    }
+    else
+    {
+      InputParameters params = _factory.getValidParams("PostprocessorCoupledInflowBC");
+      params.set<NonlinearVariableName>("variable") = var_name;
+      params.set<std::vector<BoundaryName>>("boundary") =
+          getParam<std::vector<BoundaryName>>("inlet_boundaries");
+      params.set<std::vector<VariableName>>("uvel") = {getParam<NonlinearVariableName>("uvel")};
+      if (isParamValid("vvel"))
+        params.set<std::vector<VariableName>>("vvel") = {getParam<NonlinearVariableName>("vvel")};
+      if (isParamValid("wvel"))
+        params.set<std::vector<VariableName>>("wvel") = {getParam<NonlinearVariableName>("wvel")};
+      params.set<PostprocessorName>("postprocessor") =
+          "Inlet_SideAverageValue_" + var_name + "_" + _object_suffix;
+
+      std::string bc_name = "PostprocessorCoupledInflowBC_" + var_name + "_" + _object_suffix;
+      _problem->addBoundaryCondition("PostprocessorCoupledInflowBC", bc_name, params);
+    }
   }
 }
 
