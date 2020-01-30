@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-# This script extracts group constants from Serpent 2. It should be able to do all of the work, no
-# need to specify how many energy groups, or anything like that. Also, this could be imported into
+# This script extracts group constants from Serpent 2. It should be
+# able to do all of the work, no need to specify how many energy
+# groups, or anything like that. Also, this could be imported into
 # other python scripts if needed, maybe for parametric studies.
 import os
 import numpy as np
@@ -71,14 +72,15 @@ def makePropertiesDir(
                 break
         if secBranch:
             for branch in secBranch:
-                strData = coeList[currentMat].branches[item, branch].universes[int(
-                    uniMap[currentMat]), 0, 0].gc[goodMap['BETA_EFF']]
+                strData = coeList[currentMat].branches[
+                    item, branch].universes[
+                        uniMap[currentMat], 0, 0, None].gc[goodMap['BETA_EFF']]
                 strData = strData[1:9]
                 if np.any(strData[-2:] != 0.0):
                     use8Groups = True
         else:
-            strData = coeList[currentMat].branches[item, branch].universes[int(
-                uniMap[currentMat]), 0, 0].gc[goodMap['BETA_EFF']]
+            strData = coeList[currentMat].branches[item].universes[
+                uniMap[currentMat], 0, 0, None].gc[goodMap['BETA_EFF']]
             strData = strData[1:9]
             if np.any(strData[-2:] != 0.0):
                 use8Groups = True
@@ -97,37 +99,22 @@ def makePropertiesDir(
         else:
             print('Considered materials: {}'.format(inmats))
             raise Exception(
-                'Couldnt find a material corresponding to branch {}'.format(item))
+                'Couldnt find a material corresponding to branch {}'.format(
+                    item))
 
         try:
-            if not secBranch:
-                for coefficient in goodStuff:
-                    with open(outdir + '/' + filebase + '_' + currentMat + '_' + coefficient.upper() + '.txt', 'a') as fh:
-                        if coefficient == 'lambda' or coefficient == 'BETA_EFF':
-                            strData = coeList[currentMat].branches[item].universes[int(
-                                uniMap[currentMat]), 0, 0].gc[goodMap[coefficient]]
-                            # some additional formatting is needed here
-                            strData = strData[1:9]
-
-                            # Cut off group 7 and 8 precursor params in 6
-                            # group calcs
-                            if not use8Groups:
-                                strData = strData[0:6]
-                        else:
-                            strData = coeList[currentMat].branches[item].universes[int(
-                                uniMap[currentMat]), 0, 0].infExp[goodMap[coefficient]]
-                        strData = ' '.join([str(dat) for dat in strData]) if isinstance(
-                            strData, np.ndarray) else strData
-                        fh.write(str(temp) + ' ' + strData)
-                        fh.write('\n')
-
-            else:
+            if secBranch:
                 for branch in secBranch:
                     for coefficient in goodStuff:
-                        with open(outdir + '/' + filebase + '_' + currentMat + '_' + branch + '_' + coefficient.upper() + '.txt', 'a') as fh:
-                            if coefficient == 'lambda' or coefficient == 'BETA_EFF':
-                                strData = coeList[currentMat].branches[item, branch].universes[int(
-                                    uniMap[currentMat]), 0, 0].gc[goodMap[coefficient]]
+                        with open(outdir + '/' + filebase + '_' + currentMat +
+                                  '_' + branch + '_' + coefficient.upper() +
+                                  '.txt', 'a') as fh:
+                            if coefficient == 'lambda' or \
+                                    coefficient == 'BETA_EFF':
+                                strData = coeList[currentMat].branches[
+                                    item, branch].universes[
+                                        uniMap[currentMat], 0, 0, None].gc[
+                                            goodMap[coefficient]]
                                 # some additional formatting is needed here
                                 strData = strData[1:9]
 
@@ -136,12 +123,43 @@ def makePropertiesDir(
                                 if not use8Groups:
                                     strData = strData[0:6]
                             else:
-                                strData = coeList[currentMat].branches[item, branch].universes[int(
-                                    uniMap[currentMat]), 0, 0].infExp[goodMap[coefficient]]
-                            strData = ' '.join([str(dat) for dat in strData]) if isinstance(
-                                strData, np.ndarray) else strData
+                                strData = coeList[currentMat].branches[
+                                    item, branch].universes[
+                                        uniMap[currentMat], 0, 0, None].infExp[
+                                            goodMap[coefficient]]
+                            strData = ' '.join(
+                                [str(dat) for dat in strData]) if isinstance(
+                                    strData, np.ndarray) else strData
                             fh.write(str(temp) + ' ' + strData)
                             fh.write('\n')
+
+            else:
+                for coefficient in goodStuff:
+                    with open(outdir + '/' + filebase + '_' + currentMat +
+                              '_' + coefficient.upper() + '.txt', 'a') as fh:
+                        if coefficient == 'lambda' or \
+                                coefficient == 'BETA_EFF':
+                            strData = coeList[currentMat].branches[
+                                item].universes[
+                                    uniMap[currentMat], 0, 0, None].gc[
+                                        goodMap[coefficient]]
+                            # some additional formatting is needed here
+                            strData = strData[1:9]
+
+                            # Cut off group 7 and 8 precursor params in 6
+                            # group calcs
+                            if not use8Groups:
+                                strData = strData[0:6]
+                        else:
+                            strData = coeList[currentMat].branches[
+                                item].universes[
+                                    uniMap[currentMat], 0, 0, None].infExp[
+                                        goodMap[coefficient]]
+                        strData = ' '.join(
+                            [str(dat) for dat in strData]) if isinstance(
+                                strData, np.ndarray) else strData
+                        fh.write(str(temp) + ' ' + strData)
+                        fh.write('\n')
 
         except KeyError:
             print(secBranch)
@@ -151,7 +169,8 @@ if __name__ == '__main__':
 
     # make it act like a nice little terminal program
     parser = argparse.ArgumentParser(
-        description='Extracts Serpent 2 group constants, and puts them in a directory suitable for moltres.')
+        description='Extracts Serpent 2 group constants, \
+            and puts them in a directory suitable for moltres.')
     parser.add_argument('outDir', metavar='o', type=str, nargs=1,
                         help='name of directory to write properties to.')
     parser.add_argument('fileBase', metavar='f', type=str,
