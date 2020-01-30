@@ -21,12 +21,12 @@ validParams<PostprocessorCoupledInflowBC>()
 PostprocessorCoupledInflowBC::PostprocessorCoupledInflowBC(const InputParameters & parameters)
   : IntegratedBC(parameters),
     // velocity variables
-    _vel_x(coupledValue("uvel")),
-    _vel_y(coupledValue("vvel")),
-    _vel_z(coupledValue("wvel")),
     _pp_value(getPostprocessorValue("postprocessor")),
     _scale(getParam<Real>("scale")),
-    _offset(getParam<Real>("offset"))
+    _offset(getParam<Real>("offset")),
+    _vel_x(coupledValue("uvel")),
+    _vel_y(coupledValue("vvel")),
+    _vel_z(coupledValue("wvel"))
 {
 }
 
