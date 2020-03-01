@@ -80,6 +80,9 @@ validParams<PrecursorAction>()
   params.addParam<MultiAppName>("multi_app", "Multiapp name for looping precursors.");
   params.addParam<bool>("is_loopapp", "if circulating precursors, whether this is loop app");
   params.addParam<bool>("eigen", false, "whether neutronics is in eigenvalue calculation mode");
+  params.addParam<NonlinearVariableName>("weight",
+                                         "The name of the variable that the SideCoupledIntegralVariablePostprocessor is integrated with");
+  params.addParam<Real>("divisor", 1, "The value of the divisor to normalize SideCoupledIntegralVariablePostprocessor by");
   return params;
 }
 
@@ -388,15 +391,30 @@ PrecursorAction::postAct(const std::string & var_name)
   // loop must be connected to the core problem.
   {
     std::string postproc_name = "Outlet_SideAverageValue_" + var_name + "_" + _object_suffix;
-    InputParameters params = _factory.getValidParams("SideAverageValue");
-    std::vector<VariableName> varvec(1);
-    varvec[0] = var_name;
-    params.set<std::vector<VariableName>>("variable") = varvec;
-    params.set<std::vector<BoundaryName>>("boundary") =
-        getParam<std::vector<BoundaryName>>("outlet_boundaries");
-    params.set<std::vector<OutputName>>("outputs") = {"none"};
-
-    _problem->addPostprocessor("SideAverageValue", postproc_name, params);
+    if (isParamValid("uvel"))
+    {
+      InputParameters params = _factory.getValidParams("SideCoupledIntegralVariablePostprocessor");
+      std::vector<VariableName> varvec(1);
+      varvec[0] = var_name;
+      params.set<std::vector<VariableName>>("variable") = varvec;
+      params.set<std::vector<BoundaryName>>("boundary") =
+          getParam<std::vector<BoundaryName>>("outlet_boundaries");
+      params.set<std::vector<OutputName>>("outputs") = {"none"};
+      params.set<VariableName>("weight") = getParam<NonlinearVariableName>("weight");
+      params.set<Real>("divisor") = getParam<Real>("divisor");
+      _problem->addPostprocessor("SideCoupledIntegralVariablePostprocessor", postproc_name, params);
+    }
+    else
+    {
+      InputParameters params = _factory.getValidParams("SideAverageValue");
+      std::vector<VariableName> varvec(1);
+      varvec[0] = var_name;
+      params.set<std::vector<VariableName>>("variable") = varvec;
+      params.set<std::vector<BoundaryName>>("boundary") =
+          getParam<std::vector<BoundaryName>>("outlet_boundaries");
+      params.set<std::vector<OutputName>>("outputs") = {"none"};
+      _problem->addPostprocessor("SideAverageValue", postproc_name, params);
+    }
   }
   {
     std::string postproc_name = "Inlet_SideAverageValue_" + var_name + "_" + _object_suffix;
