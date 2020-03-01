@@ -400,7 +400,7 @@ PrecursorAction::postAct(const std::string & var_name)
       params.set<std::vector<BoundaryName>>("boundary") =
           getParam<std::vector<BoundaryName>>("outlet_boundaries");
       params.set<std::vector<OutputName>>("outputs") = {"none"};
-      params.set<VariableName>("weight") = getParam<NonlinearVariableName>("weight");
+      params.set<std::vector<VariableName>>("weight") = {getParam<NonlinearVariableName>("weight")};
       params.set<Real>("divisor") = getParam<Real>("divisor");
       _problem->addPostprocessor("SideCoupledIntegralVariablePostprocessor", postproc_name, params);
     }
