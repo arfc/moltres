@@ -53,7 +53,7 @@ HeatPrecursorSource::computeQpResidual()
   for (unsigned int i = 0; i < _num_groups; ++i)
   {
     r += -_test[_i][_qp] * _decay_heat_frac[_heat_group] *
-         _fisse[_qp][i] * _fissxs[_qp][i] * 
+         _decay_heat_const[_heat_group] * _fisse[_qp][i] * _fissxs[_qp][i] * 
          computeConcentration((*_group_fluxes[i]), _qp) * _nt_scale;
   }
 
@@ -74,7 +74,7 @@ HeatPrecursorSource::computeQpOffDiagJacobian(unsigned int jvar)
     if (jvar == _flux_ids[i])
     {
       jac = -_test[_i][_qp] * _decay_heat_frac[_heat_group] *
-            _fisse[_qp][i] * _fissxs[_qp][i] * 
+            _decay_heat_const[_heat_group] * _fisse[_qp][i] * _fissxs[_qp][i] * 
             computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp) * _nt_scale;
       return jac;
     }
@@ -83,6 +83,7 @@ HeatPrecursorSource::computeQpOffDiagJacobian(unsigned int jvar)
   {
     for (unsigned int i = 0; i < _num_groups; ++i)
       jac += -_test[_i][_qp] * _decay_heat_frac[_heat_group] *
+             _decay_heat_const[_heat_group] *
              (_fisse[_qp][i] * _d_fissxs_d_temp[_qp][i] * _phi[_j][_qp] *
                     computeConcentration((*_group_fluxes[i]), _qp) +
               _d_fisse_d_temp[_qp][i] * _fissxs[_qp][i] * _phi[_j][_qp] *

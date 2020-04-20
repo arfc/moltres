@@ -40,7 +40,7 @@ DecayHeatSource::computeQpResidual()
 {
   Real r = 0;
   for (unsigned int i=0; i < _num_heat_groups; ++i)
-    r += -_test[_i][_qp] * _decay_heat_const[i] * computeConcentration((*_heat_concs[i]), _qp);
+    r += -_test[_i][_qp] * computeConcentration((*_heat_concs[i]), _qp);
   
   return r;
 }
@@ -59,8 +59,7 @@ DecayHeatSource::computeQpOffDiagJacobian(unsigned int jvar)
   {
     if (jvar == _heat_ids[i])
     {
-      jac += -_test[_i][_qp] * _decay_heat_const[i] *
-             computeConcentrationDerivative((*_heat_concs[i]), _phi, _j, _qp);
+      jac += -_test[_i][_qp] * computeConcentrationDerivative((*_heat_concs[i]), _phi, _j, _qp);
     }
   }
   return jac;
