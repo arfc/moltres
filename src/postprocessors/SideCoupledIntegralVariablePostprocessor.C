@@ -9,8 +9,8 @@ validParams<SideCoupledIntegralVariablePostprocessor>()
   InputParameters params = validParams<SideIntegralVariablePostprocessor>();
   params.addRequiredCoupledVar("weight",
                                "The name of the variable that this postprocessor is integrated with");
-  params.addParam<Real>("divisor", 1,
-                                "The value of the divisor to normalize by");
+  params.addRequiredParam<PostprocessorName>("divisor",
+                                	     "The postprocessor value of the divisor to normalize by");
   return params;
 }
 
@@ -18,7 +18,7 @@ SideCoupledIntegralVariablePostprocessor::SideCoupledIntegralVariablePostprocess
     const InputParameters & parameters)
   : SideIntegralVariablePostprocessor(parameters),
     _weight(coupledValue("weight")),
-    _divisor(getParam<Real>("divisor"))
+    _divisor(getPostprocessorValue("divisor"))
 {
   addMooseVariableDependency(mooseVariable());
 }

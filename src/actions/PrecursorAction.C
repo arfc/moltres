@@ -82,7 +82,7 @@ validParams<PrecursorAction>()
   params.addParam<bool>("eigen", false, "whether neutronics is in eigenvalue calculation mode");
   params.addParam<NonlinearVariableName>("weight",
                                          "The name of the variable that the SideCoupledIntegralVariablePostprocessor is integrated with");
-  params.addParam<Real>("divisor", 1, "The value of the divisor to normalize SideCoupledIntegralVariablePostprocessor by");
+  params.addParam<PostprocessorName>("divisor", 1, "The postprocessor value of the divisor to normalize SideCoupledIntegralVariablePostprocessor by");
   return params;
 }
 
@@ -401,7 +401,7 @@ PrecursorAction::postAct(const std::string & var_name)
           getParam<std::vector<BoundaryName>>("outlet_boundaries");
       params.set<std::vector<OutputName>>("outputs") = {"none"};
       params.set<std::vector<VariableName>>("weight") = {getParam<NonlinearVariableName>("weight")};
-      params.set<Real>("divisor") = getParam<Real>("divisor");
+      params.set<PostprocessorName>("divisor") = getParam<PostprocessorName>("divisor");
       _problem->addPostprocessor("SideCoupledIntegralVariablePostprocessor", postproc_name, params);
     }
     else

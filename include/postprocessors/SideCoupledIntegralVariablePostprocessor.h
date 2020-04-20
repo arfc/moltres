@@ -21,7 +21,7 @@ protected:
   virtual Real computeIntegral() override;
 
   const VariableValue & _weight;
-  Real _divisor;
+  const PostprocessorValue & _divisor;
 };
 
 #endif // SIDECOUPLEDINTEGRALVARIABLEPOSTPROCESSOR_H
