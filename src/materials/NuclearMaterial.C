@@ -20,6 +20,7 @@ validParams<NuclearMaterial>()
                                      "The type of interpolation to perform.");
   params.addParam<bool>(
       "sss2_input", true, "Whether serpent 2 was used to generate the input files.");
+  params.set<MooseEnum>("constant_on") = "NONE";
   return params;
 }
 
