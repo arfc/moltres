@@ -98,7 +98,7 @@ NtAction::act()
     if (getParam<bool>("init_nts_from_file"))
     {
       if (_current_task == "check_copy_nodal_vars")
-        _app.setFileRestart() = true;
+        _app.setExodusFileRestart(true);
 
       if (_current_task == "copy_nodal_vars")
       {
@@ -389,7 +389,7 @@ NtAction::act()
     if (getParam<bool>("init_temperature_from_file"))
     {
       if (_current_task == "check_copy_nodal_vars")
-        _app.setFileRestart() = true;
+        _app.setExodusFileRestart(true);
 
       if (_current_task == "copy_nodal_vars")
       {

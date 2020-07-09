@@ -119,7 +119,7 @@ PrecursorAction::act()
       if (getParam<bool>("init_from_file"))
       {
         if (_current_task == "check_copy_nodal_vars")
-          _app.setFileRestart() = true;
+          _app.setExodusFileRestart(true);
 
         if (_current_task == "copy_nodal_vars")
         {
