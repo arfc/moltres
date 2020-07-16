@@ -342,7 +342,7 @@ PrecursorAction::bcAct(const std::string & var_name)
       std::string bc_name = "PostprocessorInflowBC_" + var_name + "_" + _object_suffix;
       _problem->addBoundaryCondition("PostprocessorInflowBC", bc_name, params);
     }
-    else
+    else if (isParamValid("uvel"))
     {
       InputParameters params = _factory.getValidParams("PostprocessorCoupledInflowBC");
       params.set<NonlinearVariableName>("variable") = var_name;
@@ -358,6 +358,18 @@ PrecursorAction::bcAct(const std::string & var_name)
 
       std::string bc_name = "PostprocessorCoupledInflowBC_" + var_name + "_" + _object_suffix;
       _problem->addBoundaryCondition("PostprocessorCoupledInflowBC", bc_name, params);
+    }
+    else
+    {
+      InputParameters params = _factory.getValidParams("PostprocessorInflowBC");
+      params.set<NonlinearVariableName>("variable") = var_name;
+      params.set<std::vector<BoundaryName>>("boundary") =
+          getParam<std::vector<BoundaryName>>("inlet_boundaries");
+      params.set<PostprocessorName>("postprocessor") =
+          "Inlet_SideAverageValue_" + var_name + "_" + _object_suffix;
+
+      std::string bc_name = "PostprocessorInflowBC_" + var_name + "_" + _object_suffix;
+      _problem->addBoundaryCondition("PostprocessorInflowBC", bc_name, params);
     }
   }
 }
@@ -438,7 +450,7 @@ PrecursorAction::transferAct(const std::string & var_name)
         "Outlet_SideAverageValue_" + var_name + "_" + _object_suffix;
     params.set<PostprocessorName>("to_postprocessor") =
         "Inlet_SideAverageValue_" + var_name + "_" + _object_suffix;
-    params.set<MooseEnum>("direction") = "to_multiapp";
+    params.set<MultiMooseEnum>("direction") = "to_multiapp";
 
     _problem->addTransfer("MultiAppPostprocessorTransfer", transfer_name, params);
   }
@@ -452,7 +464,7 @@ PrecursorAction::transferAct(const std::string & var_name)
         "Outlet_SideAverageValue_" + var_name + "_" + _object_suffix;
     params.set<PostprocessorName>("to_postprocessor") =
         "Inlet_SideAverageValue_" + var_name + "_" + _object_suffix;
-    params.set<MooseEnum>("direction") = "from_multiapp";
+    params.set<MultiMooseEnum>("direction") = "from_multiapp";
     params.set<MooseEnum>("reduction_type") = "average";
 
     _problem->addTransfer("MultiAppPostprocessorTransfer", transfer_name, params);
