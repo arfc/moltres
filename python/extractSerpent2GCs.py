@@ -29,7 +29,7 @@ def makePropertiesDir(
         os.mkdir(outdir)
 
     # the constants moltres looks for:
-    goodStuff = ['BETA_EFF', 'Chit', 'Chid', 'lambda', 'Diffcoef', 'Kappa',
+    goodStuff = ['BETA_EFF', 'Chip', 'Chid', 'lambda', 'Diffcoef', 'Kappa',
                  'Sp0', 'Nsf', 'Invv', 'Remxs', 'Fiss', 'Nubar', 'Flx']
     goodMap = dict([(thing, 'inf' + thing) for thing in goodStuff])
     goodMap['BETA_EFF'] = 'betaEff'

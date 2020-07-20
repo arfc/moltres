@@ -77,7 +77,21 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     _file_map["FISSXS"] = "FISS";
     _file_map["FISSE"] = "KAPPA";
     _file_map["RECIPVEL"] = "INVV";
-    _file_map["CHI"] = "CHIT";
+
+    //chi_t backwards compatibility on older input files:
+    std::string file_name = property_tables_root + "CHIP" + ".txt";
+    const std::string & file_name_ref = file_name;
+    std::ifstream myfile(file_name_ref.c_str());
+    if (myfile.good())
+    {
+      _file_map["CHI"] = "CHIP";
+    }
+    else
+    {
+      _file_map["CHI"] = "CHIT";
+      mooseWarning("CHI_P data missing -> using CHI_T data instead for material" + _name + ". Extract XS data using latest script for CHI_P.");
+    }
+
     _file_map["CHI_D"] = "CHID";
     _file_map["GTRANSFXS"] = "SP0";
     _file_map["DECAY_CONSTANT"] = "LAMBDA";
