@@ -191,7 +191,7 @@ class serpent_xs:
                     self.xs_lib[i][j][k]["RECIPVEL"] = list(
                         data['INF_INVV'][index][::2])
                     self.xs_lib[i][j][k]["CHI"] = list(
-                        data['INF_CHIT'][index][::2])
+                        data['INF_CHIP'][index][::2])
                     self.xs_lib[i][j][k]["CHI_D"] = list(
                         data['INF_CHID'][index][::2])
                     self.xs_lib[i][j][k]["BETA_EFF"] = list(
