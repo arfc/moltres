@@ -57,8 +57,6 @@ global_temperature=922
   petsc_options_iname = '-pc_type -pc_factor_shift_type'
   petsc_options_value = 'lu       NONZERO'
   line_search = 'none'
-   # petsc_options_iname = '-snes_type'
-  # petsc_options_value = 'test'
 
   nl_max_its = 30
   l_max_its = 100
@@ -68,8 +66,6 @@ global_temperature=922
   picard_abs_tol = 1e-5
 
   dtmin = 1e-2
-  # dtmax = 1
-  # dt = 1e-3
   [./TimeStepper]
     type = IterationAdaptiveDT
     dt = 1e-2
