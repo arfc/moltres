@@ -1,9 +1,9 @@
-"""
-     Python module that takes homogenized XS and prepares them for Moltres
-
-"""
+#!/usr/bin/env python3
+# This script extracts homogenized group constants from Serpent 2 or SCALE into
+# a JSON data file to be used with MoltresJsonMaterial.
 import json
 import sys
+import argparse
 import numpy as np
 from pyne import serpent
 
@@ -195,9 +195,9 @@ class serpent_xs:
                     self.xs_lib[i][j][k]["CHI_D"] = list(
                         data['INF_CHID'][index][::2])
                     self.xs_lib[i][j][k]["BETA_EFF"] = list(
-                        data['BETA_EFF'][index][::2])
+                        data['BETA_EFF'][index][2::2])
                     self.xs_lib[i][j][k]["DECAY_CONSTANT"] = list(
-                        data['LAMBDA'][index][::2])
+                        data['LAMBDA'][index][2::2])
                     self.xs_lib[i][j][k]["GTRANSFXS"] = list(
                         data['INF_SP0'][index][::2])
 
@@ -259,6 +259,18 @@ def read_input(fin):
     f.write(json.dumps(out_dict, sort_keys=True, indent=4))
 
 
-if len(sys.argv) < 2:
-    raise("Input file not provided")
-read_input(sys.argv[1])
+if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser(
+        description='Extracts Serpent 2 or SCALE group \
+            constants and puts them in a JSON file suitable \
+                for Moltres.')
+    parser.add_argument('input_file', type=str,
+                        nargs=1, help='*_res.m or *.t16 XS \
+                            file from Serpent 2 or SCALE, \
+                            respectively')
+    args = parser.parse_args()
+
+    read_input(sys.argv[1])
+
+    print("Successfully made JSON property file.")

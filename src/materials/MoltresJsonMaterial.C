@@ -61,6 +61,7 @@ MoltresJsonMaterial::Construct(moosecontrib::Json::Value xs_root,
                                std::vector<std::string> xsec_names)
 {
   auto xsec_interpolators = _xsec_linear_interpolators;
+  bool oneInfo = false;
   for (unsigned int j = 0; j < xsec_names.size(); ++j)
   {
 
@@ -93,7 +94,12 @@ MoltresJsonMaterial::Construct(moosecontrib::Json::Value xs_root,
                    _file_map[xsec_names[j]]);
 
       int dims = dataset.size();
-      if (o != dims)
+      if (o == 0 and !oneInfo)
+      {
+        mooseInfo("Only precursor material data initialized (num_groups = 0) for material " + _name);
+	oneInfo = true;
+      }
+      if (o != dims && o != 0)
         mooseError("Dimensions of " + _material_key + "/" + temp_key + "/" +
                    _file_map[xsec_names[j]] + " and num_groups do not match\n" +
                    std::to_string(dims) + "!=" + std::to_string(o));
@@ -139,7 +145,7 @@ MoltresJsonMaterial::Construct(moosecontrib::Json::Value xs_root,
         }
         break;
       default:
-        mooseError("Wrong enum type");
+        mooseError("Invalid enum type for interp_type");
         break;
     }
   }
@@ -193,13 +199,13 @@ MoltresJsonMaterial::computeQpProperties()
       linearComputeQpProperties();
       break;
     case SPLINE:
-      linearComputeQpProperties();
+      splineComputeQpProperties();
       break;
     case MONOTONE_CUBIC:
       monotoneCubicComputeQpProperties();
       break;
     default:
-      mooseError("Wrong enum type");
+      mooseError("Invalid enum type for interp_type");
       break;
   }
 }
