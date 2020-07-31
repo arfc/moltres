@@ -47,19 +47,15 @@ global_temperature=922
 [Executioner]
   type = Transient
   end_time = 500
-
   nl_rel_tol = 1e-6
   nl_abs_tol = 1e-5
-
   solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   petsc_options_iname = '-pc_type -pc_factor_shift_type'
   petsc_options_value = 'lu       NONZERO'
   line_search = 'none'
-
   nl_max_its = 20
   l_max_its = 50
-
   dtmin = 1e-2
   [./TimeStepper]
     type = IterationAdaptiveDT
