@@ -127,7 +127,7 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
       dummyConstruct(property_tables_root, xsec_names);
       break;
     default:
-      mooseError("Wrong enum type");
+      mooseError("Invalid enum type for interp_type");
       break;
   }
 }
