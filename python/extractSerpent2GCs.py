@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-# This script extracts group constants from Serpent 2. It should be
+# This script extracts group constants from Serpent 2 into txt data files
+# to be used with GenericMoltresMaterial. It should be
 # able to do all of the work, no need to specify how many energy
 # groups, or anything like that. Also, this could be imported into
 # other python scripts if needed, maybe for parametric studies.
+# We may phase out this script in favor of the cleaner JSON format from
+# moltres_xs.py.
 import os
 import numpy as np
 import argparse
