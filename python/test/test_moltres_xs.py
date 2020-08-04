@@ -3,7 +3,8 @@ import argparse
 import numpy as np
 from mock import patch, mock_open
 from pyne import serpent
-import sys, os
+import sys
+import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from moltres_xs import *
 
