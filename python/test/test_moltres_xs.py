@@ -17,7 +17,7 @@ def test_serpent_xs():
     read_input('msfr_xs.inp')
 
     # Load the output json xs file
-    with open('msfrXS.json') as f: 
+    with open('msfrXS.json') as f:
         data = json.load(f)
 
     # Load gold copy of json xs file
