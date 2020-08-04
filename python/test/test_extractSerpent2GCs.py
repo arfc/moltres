@@ -6,6 +6,7 @@ import serpentTools as sT
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from extractSerpent2GCs import *
 
+
 def test_makePropertiesDir():
     """Testing extractSerpent2GCs.py with Serpent 2 XS data, compared
     with the expected JSON file in the gold directory
