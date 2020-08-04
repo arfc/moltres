@@ -25,10 +25,10 @@ def test_makePropertiesDir():
     file1 = open(mapFile, 'w')
     file1.writelines(temp_map)
     file1.close()
-    
+
     file2 = open(secbranchFile, 'w')
     file2.close()
-    
+
     file3 = open(unimapFile, 'w')
     file3.writelines(uni_map)
     file3.close()
@@ -62,4 +62,3 @@ def test_makePropertiesDir():
             assert data == expected
             os.remove(path)     # Delete xs file after check
     os.rmdir(outdir)        # Delete empty xs directory
-

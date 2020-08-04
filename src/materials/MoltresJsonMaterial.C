@@ -97,7 +97,7 @@ MoltresJsonMaterial::Construct(moosecontrib::Json::Value xs_root,
       if (o == 0 and !oneInfo)
       {
         mooseInfo("Only precursor material data initialized (num_groups = 0) for material " + _name);
-	oneInfo = true;
+        oneInfo = true;
       }
       if (o != dims && o != 0)
         mooseError("Dimensions of " + _material_key + "/" + temp_key + "/" +
