@@ -1,7 +1,6 @@
 import json
 import argparse
 import numpy as np
-from mock import patch, mock_open
 from pyne import serpent
 import sys
 import os
