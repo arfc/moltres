@@ -405,7 +405,7 @@ PrecursorAction::transferAct(const std::string & var_name)
         "Outlet_SideAverageValue_" + var_name + "_" + _object_suffix;
     params.set<PostprocessorName>("to_postprocessor") =
         "Inlet_SideAverageValue_" + var_name + "_" + _object_suffix;
-    params.set<MooseEnum>("direction") = "to_multiapp";
+    params.set<MultiMooseEnum>("direction") = "to_multiapp";
 
     _problem->addTransfer("MultiAppPostprocessorTransfer", transfer_name, params);
   }
@@ -419,7 +419,7 @@ PrecursorAction::transferAct(const std::string & var_name)
         "Outlet_SideAverageValue_" + var_name + "_" + _object_suffix;
     params.set<PostprocessorName>("to_postprocessor") =
         "Inlet_SideAverageValue_" + var_name + "_" + _object_suffix;
-    params.set<MooseEnum>("direction") = "from_multiapp";
+    params.set<MultiMooseEnum>("direction") = "from_multiapp";
     params.set<MooseEnum>("reduction_type") = "average";
 
     _problem->addTransfer("MultiAppPostprocessorTransfer", transfer_name, params);
