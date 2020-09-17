@@ -19,6 +19,7 @@ def makePropertiesDir(
         mapFile,
         secbranchFile,
         unimapFile,
+        use_chit=False,
         serp1=False,
         fromMain=False):
     """ Takes in a mapping from branch names to material temperatures,
@@ -32,8 +33,13 @@ def makePropertiesDir(
         os.mkdir(outdir)
 
     # the constants moltres looks for:
-    goodStuff = ['BETA_EFF', 'Chip', 'Chid', 'lambda', 'Diffcoef', 'Kappa',
+    goodStuff = ['BETA_EFF', 'lambda', 'Diffcoef', 'Kappa',
                  'Sp0', 'Nsf', 'Invv', 'Remxs', 'Fiss', 'Nubar', 'Flx']
+    if use_chit:
+        goodStuff.append('Chit')
+    else:
+        goodStuff.append('Chip')
+        goodStuff.append('Chid')
     goodMap = dict([(thing, 'inf' + thing) for thing in goodStuff])
     goodMap['BETA_EFF'] = 'betaEff'
     goodMap['lambda'] = 'lambda'
@@ -197,6 +203,14 @@ if __name__ == '__main__':
         nargs=1,
         help='File that maps material names to serpent universe')
     parser.add_argument(
+        '--use_chit',
+        dest='use_chit',
+        action='store_true',
+        help='use this flag to extract chit \
+                instead of chip and chid, \
+                for Serpent 2 cross sections')
+    parser.set_defaults(use_chit=False)
+    parser.add_argument(
         '--serp1',
         dest='serp1',
         action='store_true',
@@ -213,6 +227,7 @@ if __name__ == '__main__':
     unimapFile = args.universeMap[0]
 
     makePropertiesDir(outdir, fileBase, mapFile, secbranchFile,
-                      unimapFile, serp1=args.serp1, fromMain=True)
+                      unimapFile, use_chit=args.use_chit, serp1=args.serp1,
+                      fromMain=True)
 
     print("Successfully made property files in directory {}.".format(outdir))
