@@ -89,7 +89,9 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
     else
     {
       _file_map["CHI"] = "CHIT";
-      mooseWarning("CHI_P data missing -> using CHI_T data instead for material" + _name + ". Extract XS data using latest script for CHI_P.");
+      mooseWarning("CHI_P data missing -> using CHI_T data instead for material"
+		      + _name
+		      + ". Extract XS data using latest script for CHI_P.");
     }
 
     _file_map["CHI_D"] = "CHID";
