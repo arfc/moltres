@@ -34,10 +34,11 @@ git clone https://github.com/arfc/moltres
 cd moltres
 git submodule init
 git submodule update
-make -j8
+./build_libmesh_and_moltres.sh
 ```
 
-You may also compile a debug version of Moltres by running `METHOD=dbg make
+You may also compile a debug version of Moltres by replacing the last line in 
+build_libmesh_and_moltres.sh with `METHOD=dbg make
 -j8`. Note that you should replace `8` with the number of processors available
 on your machine.
 
