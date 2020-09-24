@@ -39,15 +39,15 @@ class scale_xs:
             'fission': self.t16_line([0, 3, 4], False,
                                      ['FISSXS', 'NSF', 'FISSE']
                                      ),
-            'chi': self.t16_line([1, 1, 2], False,
-                                 ['CHI', 'CHI_D', 'DIFFCOEF']
+            'chi': self.t16_line([1, 1, 1, 2], False,
+                                 ['CHI_T', 'CHI_P', 'CHI_D', 'DIFFCOEF']
                                  ),
             'detector': self.t16_line([4], False, ['RECIPVEL']),
             'Scattering cross': self.t16_line([], True, ['GTRANSFXS'])
             }
         XS_entries = ['REMXS', 'FISSXS', 'NSF', 'FISSE', 'DIFFCOEF',
-                      'RECIPVEL', 'CHI', 'BETA_EFF', 'DECAY_CONSTANT',
-                      'CHI_D', 'GTRANSFXS'
+                      'RECIPVEL', 'CHI_T', 'BETA_EFF', 'DECAY_CONSTANT',
+                      'CHI_P', 'CHI_D', 'GTRANSFXS'
                       ]
         struct = (self.lines[3].split()[:4])
         self.num_burn = int(struct[0])
@@ -162,7 +162,7 @@ class serpent_xs:
             BETA_EFF, DECAY_CONSTANT and GTRANSFXS.
     """
 
-    def __init__(self, xs_filename, use_chit):
+    def __init__(self, xs_filename):
         data = serpent.parse_res(xs_filename)
         try:
             num_burn = len(np.unique(data['BURNUP'][:][0]))
@@ -190,14 +190,12 @@ class serpent_xs:
                         data['INF_DIFFCOEF'][index][::2])
                     self.xs_lib[i][j][k]["RECIPVEL"] = list(
                         data['INF_INVV'][index][::2])
-                    if use_chit:
-                        self.xs_lib[i][j][k]["CHI"] = list(
-                            data['INF_CHIT'][index][::2])
-                    else:
-                        self.xs_lib[i][j][k]["CHI"] = list(
-                            data['INF_CHIP'][index][::2])
-                        self.xs_lib[i][j][k]["CHI_D"] = list(
-                            data['INF_CHID'][index][::2])
+                    self.xs_lib[i][j][k]["CHI_T"] = list(
+                        data['INF_CHIT'][index][::2])
+                    self.xs_lib[i][j][k]["CHI_P"] = list(
+                        data['INF_CHIP'][index][::2])
+                    self.xs_lib[i][j][k]["CHI_D"] = list(
+                        data['INF_CHID'][index][::2])
                     self.xs_lib[i][j][k]["BETA_EFF"] = list(
                         data['BETA_EFF'][index][2::2])
                     self.xs_lib[i][j][k]["DECAY_CONSTANT"] = list(
@@ -206,7 +204,7 @@ class serpent_xs:
                         data['INF_SP0'][index][::2])
 
 
-def read_input(fin, use_chit=False):
+def read_input(fin):
     with open(fin) as f:
         lines = f.readlines()
     k = 0
@@ -247,7 +245,7 @@ def read_input(fin, use_chit=False):
                 if 'scale' in XS_t:
                     files[i] = scale_xs(XS_in)
                 elif 'serpent'in XS_t:
-                    files[i] = serpent_xs(XS_in, use_chit)
+                    files[i] = serpent_xs(XS_in)
                 else:
                     raise("XS data not understood\n \
                           Please use: scale or serpent")
@@ -273,14 +271,8 @@ if __name__ == '__main__':
                         nargs=1, help='*_res.m or *.t16 XS \
                             file from Serpent 2 or SCALE, \
                             respectively')
-    parser.add_argument('--use_chit', dest='use_chit',
-                        action='store_true',
-                        help='use this flag to extract chit \
-                                instead of chip and chid, \
-                                for Serpent 2 cross sections')
-    parser.set_defaults(use_chit=False)
     args = parser.parse_args()
 
-    read_input(sys.argv[1], use_chit=args.use_chit)
+    read_input(sys.argv[1])
 
     print("Successfully made JSON property file.")

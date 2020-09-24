@@ -8,54 +8,28 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from moltres_xs import *
 
 
-def test_serpent_xs_chip():
+def test_serpent_xs():
     """Testing moltres_xs.py with Serpent 2 XS data, compared
     with the expected JSON file in the gold directory
     """
 
     # Run moltres_xs with Serpent 2 data
-    read_input('msfr_xs_chip.inp')
+    read_input('msfr_xs.inp')
 
     # Load the output json xs file
-    with open('msfrXS_chip.json') as f:
+    with open('msfrXS.json') as f:
         data = json.load(f)
 
     # Load gold copy of json xs file
-    with open('gold/msfrXS_chip.json') as h:
+    with open('gold/msfrXS.json') as h:
         expected = json.load(h)
 
     # Check if they match
     assert data == expected
 
     # Delete output json xs file after check
-    if os.path.exists('msfrXS_chip.json'):
-        os.remove('msfrXS_chip.json')
-    else:
-        print('Attempted to delete JSON output file but it does not exist')
-
-
-def test_serpent_xs_chit():
-    """Testing moltres_xs.py with Serpent 2 XS data, compared
-    with the expected JSON file in the gold directory
-    """
-
-    # Run moltres_xs with Serpent 2 data
-    read_input('msfr_xs_chit.inp', use_chit=True)
-
-    # Load the output json xs file
-    with open('msfrXS_chit.json') as f:
-        data = json.load(f)
-
-    # Load gold copy of json xs file
-    with open('gold/msfrXS_chit.json') as h:
-        expected = json.load(h)
-
-    # Check if they match
-    assert data == expected
-
-    # Delete output json xs file after check
-    if os.path.exists('msfrXS_chit.json'):
-        os.remove('msfrXS_chit.json')
+    if os.path.exists('msfrXS.json'):
+        os.remove('msfrXS.json')
     else:
         print('Attempted to delete JSON output file but it does not exist')
 

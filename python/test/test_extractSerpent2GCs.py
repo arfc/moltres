@@ -9,7 +9,7 @@ from extractSerpent2GCs import *
 
 
 def extract_properties(outdir, fileBase, mapFile,
-                       secbranchFile, unimapFile, use_chit=False):
+                       secbranchFile, unimapFile):
     """Runs extractSerpent2GCs.py to generate the XS txt files for testing
     """
     temp_map = ['fuel0 900 \n', 'fuel1 1200 \n',
@@ -34,7 +34,7 @@ def extract_properties(outdir, fileBase, mapFile,
 
     # Run makePropertiesDir
     makePropertiesDir(outdir, fileBase, mapFile, secbranchFile,
-                      unimapFile, use_chit)
+                      unimapFile)
 
     # Delete input files
     os.remove(mapFile)
@@ -44,7 +44,7 @@ def extract_properties(outdir, fileBase, mapFile,
     os.remove('blanket.coe')
 
 
-def test_makePropertiesDir_chip():
+def test_makePropertiesDir():
     """Tests extractSerpent2GCs.py with Serpent 2 XS data, compared
     with the expected JSON file in the gold directory.
     Extracts Chi_P and Chi_D.
@@ -59,37 +59,7 @@ def test_makePropertiesDir_chip():
 
     # Material and xs names
     materials = ['fuel', 'blanket']
-    xs_list = ['BETA_EFF', 'CHID', 'CHIP', 'DIFFCOEF', 'FISS', 'FLX',
-               'INVV', 'KAPPA', 'LAMBDA', 'NSF', 'NUBAR', 'REMXS', 'SP0']
-
-    # Check every xs file against the expected files in ./gold/xs/
-    for mat in materials:
-        for xs in xs_list:
-            path = outdir + '/' + fileBase + '_' + mat + '_' + xs + '.txt'
-            data = list(open(path, 'r'))
-            expected = list(open('gold/' + path, 'r'))
-            assert data == expected
-            os.remove(path)     # Delete xs file after check
-    os.rmdir(outdir)        # Delete empty xs directory
-
-
-def test_makePropertiesDir_chit():
-    """Tests extractSerpent2GCs.py with Serpent 2 XS data, compared
-    with the expected JSON file in the gold directory.
-    Extracts Chi_T.
-    """
-    outdir = 'xs'                   # Name of directory to hold xs data
-    fileBase = 'msfr'               # Prefix for xs data filenames
-    mapFile = 'tempMapping.txt'     # Map of branches to temperatures
-    secbranchFile = 'sec.txt'       # Secondary branches, if any
-    unimapFile = 'unimapFile.txt'   # Map of materials to universes
-
-    extract_properties(outdir, fileBase, mapFile,
-                       secbranchFile, unimapFile, use_chit=True)
-
-    # Material and xs names
-    materials = ['fuel', 'blanket']
-    xs_list = ['BETA_EFF', 'CHIT', 'DIFFCOEF', 'FISS', 'FLX',
+    xs_list = ['BETA_EFF', 'CHID', 'CHIP', 'CHIT', 'DIFFCOEF', 'FISS', 'FLX',
                'INVV', 'KAPPA', 'LAMBDA', 'NSF', 'NUBAR', 'REMXS', 'SP0']
 
     # Check every xs file against the expected files in ./gold/xs/
