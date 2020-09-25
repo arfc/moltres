@@ -52,7 +52,7 @@ def makePropertiesDir(
     secBranch = []
     with open(secbranchFile) as bf:
         for line in bf:
-            secBranch.append(line)
+            secBranch.append(line.rstrip('\n'))
 
     # primary branch to temp mapping
     branch2TempMapping = open(mapFile)
