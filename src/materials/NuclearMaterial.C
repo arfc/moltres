@@ -33,7 +33,8 @@ NuclearMaterial::NuclearMaterial(const InputParameters & parameters)
     _fisse(declareProperty<std::vector<Real>>("fisse")),
     _diffcoef(declareProperty<std::vector<Real>>("diffcoef")),
     _recipvel(declareProperty<std::vector<Real>>("recipvel")),
-    _chi(declareProperty<std::vector<Real>>("chi")),
+    _chi_t(declareProperty<std::vector<Real>>("chi_t")),
+    _chi_p(declareProperty<std::vector<Real>>("chi_p")),
     _chi_d(declareProperty<std::vector<Real>>("chi_d")),
     _gtransfxs(declareProperty<std::vector<Real>>("gtransfxs")),
     _beta_eff(declareProperty<std::vector<Real>>("beta_eff")),
@@ -46,8 +47,9 @@ NuclearMaterial::NuclearMaterial(const InputParameters & parameters)
     _d_fisse_d_temp(declareProperty<std::vector<Real>>("d_fisse_d_temp")),
     _d_diffcoef_d_temp(declareProperty<std::vector<Real>>("d_diffcoef_d_temp")),
     _d_recipvel_d_temp(declareProperty<std::vector<Real>>("d_recipvel_d_temp")),
-    _d_chi_d_temp(declareProperty<std::vector<Real>>("d_chi_d_temp")),
-    _d_chi_d_d_temp(declareProperty<std::vector<Real>>("d_chi_d_temp")),
+    _d_chi_t_d_temp(declareProperty<std::vector<Real>>("d_chi_t_d_temp")),
+    _d_chi_p_d_temp(declareProperty<std::vector<Real>>("d_chi_p_d_temp")),
+    _d_chi_d_d_temp(declareProperty<std::vector<Real>>("d_chi_d_d_temp")),
     _d_gtransfxs_d_temp(declareProperty<std::vector<Real>>("d_gtransfxs_d_temp")),
     _d_beta_eff_d_temp(declareProperty<std::vector<Real>>("d_beta_eff_d_temp")),
     _d_beta_d_temp(declareProperty<Real>("d_beta_d_temp")),
@@ -61,7 +63,8 @@ NuclearMaterial::NuclearMaterial(const InputParameters & parameters)
                                       "FISSE",
                                       "DIFFCOEF",
                                       "RECIPVEL",
-                                      "CHI",
+                                      "CHI_T",
+                                      "CHI_P",
                                       "CHI_D",
                                       "GTRANSFXS",
                                       "BETA_EFF",
@@ -88,7 +91,8 @@ NuclearMaterial::NuclearMaterial(const InputParameters & parameters)
   _file_map["FISSXS"] = "FISSXS";
   _file_map["FISSE"] = "FISSE";
   _file_map["RECIPVEL"] = "RECIPVEL";
-  _file_map["CHI"] = "CHI";
+  _file_map["CHI_T"] = "CHI_T";
+  _file_map["CHI_P"] = "CHI_P";
   _file_map["CHI_D"] = "CHI_D";
   _file_map["GTRANSFXS"] = "GTRANSFXS";
   _file_map["DECAY_CONSTANT"] = "DECAY_CONSTANT";
@@ -107,7 +111,8 @@ NuclearMaterial::dummyComputeQpProperties()
                      1.6e-19; // convert from MeV to Joules
     _diffcoef[_qp][i] = _xsec_linear_interpolators["DIFFCOEF"][i].sample(dummy_temp);
     _recipvel[_qp][i] = _xsec_linear_interpolators["RECIPVEL"][i].sample(dummy_temp);
-    _chi[_qp][i] = _xsec_linear_interpolators["CHI"][i].sample(dummy_temp);
+    _chi_t[_qp][i] = _xsec_linear_interpolators["CHI_T"][i].sample(dummy_temp);
+    _chi_p[_qp][i] = _xsec_linear_interpolators["CHI_P"][i].sample(dummy_temp);
     _chi_d[_qp][i] = _xsec_linear_interpolators["CHI_D"][i].sample(dummy_temp);
     _d_remxs_d_temp[_qp][i] = _xsec_linear_interpolators["REMXS"][i].sampleDerivative(dummy_temp);
     _d_fissxs_d_temp[_qp][i] = _xsec_linear_interpolators["FISSXS"][i].sampleDerivative(dummy_temp);
@@ -118,7 +123,8 @@ NuclearMaterial::dummyComputeQpProperties()
         _xsec_linear_interpolators["DIFFCOEF"][i].sampleDerivative(dummy_temp);
     _d_recipvel_d_temp[_qp][i] =
         _xsec_linear_interpolators["RECIPVEL"][i].sampleDerivative(dummy_temp);
-    _d_chi_d_temp[_qp][i] = _xsec_linear_interpolators["CHI"][i].sampleDerivative(dummy_temp);
+    _d_chi_t_d_temp[_qp][i] = _xsec_linear_interpolators["CHI_T"][i].sampleDerivative(dummy_temp);
+    _d_chi_p_d_temp[_qp][i] = _xsec_linear_interpolators["CHI_P"][i].sampleDerivative(dummy_temp);
     _d_chi_d_d_temp[_qp][i] = _xsec_linear_interpolators["CHI_D"][i].sampleDerivative(dummy_temp);
   }
   for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
@@ -154,7 +160,8 @@ NuclearMaterial::splineComputeQpProperties()
                      1.6e-19; // convert from MeV to Joules
     _diffcoef[_qp][i] = _xsec_spline_interpolators["DIFFCOEF"][i].sample(_temperature[_qp]);
     _recipvel[_qp][i] = _xsec_spline_interpolators["RECIPVEL"][i].sample(_temperature[_qp]);
-    _chi[_qp][i] = _xsec_spline_interpolators["CHI"][i].sample(_temperature[_qp]);
+    _chi_t[_qp][i] = _xsec_spline_interpolators["CHI_T"][i].sample(_temperature[_qp]);
+    _chi_p[_qp][i] = _xsec_spline_interpolators["CHI_P"][i].sample(_temperature[_qp]);
     _chi_d[_qp][i] = _xsec_spline_interpolators["CHI_D"][i].sample(_temperature[_qp]);
     _d_remxs_d_temp[_qp][i] =
         _xsec_spline_interpolators["REMXS"][i].sampleDerivative(_temperature[_qp]);
@@ -169,8 +176,10 @@ NuclearMaterial::splineComputeQpProperties()
         _xsec_spline_interpolators["DIFFCOEF"][i].sampleDerivative(_temperature[_qp]);
     _d_recipvel_d_temp[_qp][i] =
         _xsec_spline_interpolators["RECIPVEL"][i].sampleDerivative(_temperature[_qp]);
-    _d_chi_d_temp[_qp][i] =
-        _xsec_spline_interpolators["CHI"][i].sampleDerivative(_temperature[_qp]);
+    _d_chi_t_d_temp[_qp][i] =
+        _xsec_spline_interpolators["CHI_T"][i].sampleDerivative(_temperature[_qp]);
+    _d_chi_p_d_temp[_qp][i] =
+        _xsec_spline_interpolators["CHI_P"][i].sampleDerivative(_temperature[_qp]);
     _d_chi_d_d_temp[_qp][i] =
         _xsec_spline_interpolators["CHI_D"][i].sampleDerivative(_temperature[_qp]);
   }
@@ -208,7 +217,8 @@ NuclearMaterial::monotoneCubicComputeQpProperties()
                      1e6 * 1.6e-19; // convert from MeV to Joules
     _diffcoef[_qp][i] = _xsec_monotone_cubic_interpolators["DIFFCOEF"][i].sample(_temperature[_qp]);
     _recipvel[_qp][i] = _xsec_monotone_cubic_interpolators["RECIPVEL"][i].sample(_temperature[_qp]);
-    _chi[_qp][i] = _xsec_monotone_cubic_interpolators["CHI"][i].sample(_temperature[_qp]);
+    _chi_t[_qp][i] = _xsec_monotone_cubic_interpolators["CHI_T"][i].sample(_temperature[_qp]);
+    _chi_p[_qp][i] = _xsec_monotone_cubic_interpolators["CHI_P"][i].sample(_temperature[_qp]);
     _chi_d[_qp][i] = _xsec_monotone_cubic_interpolators["CHI_D"][i].sample(_temperature[_qp]);
     _d_remxs_d_temp[_qp][i] =
         _xsec_monotone_cubic_interpolators["REMXS"][i].sampleDerivative(_temperature[_qp]);
@@ -223,8 +233,10 @@ NuclearMaterial::monotoneCubicComputeQpProperties()
         _xsec_monotone_cubic_interpolators["DIFFCOEF"][i].sampleDerivative(_temperature[_qp]);
     _d_recipvel_d_temp[_qp][i] =
         _xsec_monotone_cubic_interpolators["RECIPVEL"][i].sampleDerivative(_temperature[_qp]);
-    _d_chi_d_temp[_qp][i] =
-        _xsec_monotone_cubic_interpolators["CHI"][i].sampleDerivative(_temperature[_qp]);
+    _d_chi_t_d_temp[_qp][i] =
+        _xsec_monotone_cubic_interpolators["CHI_T"][i].sampleDerivative(_temperature[_qp]);
+    _d_chi_p_d_temp[_qp][i] =
+        _xsec_monotone_cubic_interpolators["CHI_P"][i].sampleDerivative(_temperature[_qp]);
     _d_chi_d_d_temp[_qp][i] =
         _xsec_monotone_cubic_interpolators["CHI_D"][i].sampleDerivative(_temperature[_qp]);
   }
@@ -263,7 +275,8 @@ NuclearMaterial::linearComputeQpProperties()
                      1.6e-19; // convert from MeV to Joules
     _diffcoef[_qp][i] = _xsec_linear_interpolators["DIFFCOEF"][i].sample(_temperature[_qp]);
     _recipvel[_qp][i] = _xsec_linear_interpolators["RECIPVEL"][i].sample(_temperature[_qp]);
-    _chi[_qp][i] = _xsec_linear_interpolators["CHI"][i].sample(_temperature[_qp]);
+    _chi_t[_qp][i] = _xsec_linear_interpolators["CHI_T"][i].sample(_temperature[_qp]);
+    _chi_p[_qp][i] = _xsec_linear_interpolators["CHI_P"][i].sample(_temperature[_qp]);
     _chi_d[_qp][i] = _xsec_linear_interpolators["CHI_D"][i].sample(_temperature[_qp]);
     _d_remxs_d_temp[_qp][i] =
         _xsec_linear_interpolators["REMXS"][i].sampleDerivative(_temperature[_qp]);
@@ -278,8 +291,10 @@ NuclearMaterial::linearComputeQpProperties()
         _xsec_linear_interpolators["DIFFCOEF"][i].sampleDerivative(_temperature[_qp]);
     _d_recipvel_d_temp[_qp][i] =
         _xsec_linear_interpolators["RECIPVEL"][i].sampleDerivative(_temperature[_qp]);
-    _d_chi_d_temp[_qp][i] =
-        _xsec_linear_interpolators["CHI"][i].sampleDerivative(_temperature[_qp]);
+    _d_chi_t_d_temp[_qp][i] =
+        _xsec_linear_interpolators["CHI_T"][i].sampleDerivative(_temperature[_qp]);
+    _d_chi_p_d_temp[_qp][i] =
+        _xsec_linear_interpolators["CHI_P"][i].sampleDerivative(_temperature[_qp]);
     _d_chi_d_d_temp[_qp][i] =
         _xsec_linear_interpolators["CHI_D"][i].sampleDerivative(_temperature[_qp]);
   }

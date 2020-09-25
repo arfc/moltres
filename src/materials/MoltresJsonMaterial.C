@@ -30,7 +30,8 @@ MoltresJsonMaterial::MoltresJsonMaterial(const InputParameters & parameters)
                                       "FISSE",
                                       "DIFFCOEF",
                                       "RECIPVEL",
-                                      "CHI",
+                                      "CHI_T",
+				      "CHI_P",
                                       "CHI_D",
                                       "GTRANSFXS",
                                       "BETA_EFF",
@@ -162,7 +163,8 @@ MoltresJsonMaterial::computeQpProperties()
   _fisse[_qp].resize(_num_groups);
   _diffcoef[_qp].resize(_num_groups);
   _recipvel[_qp].resize(_num_groups);
-  _chi[_qp].resize(_num_groups);
+  _chi_t[_qp].resize(_num_groups);
+  _chi_p[_qp].resize(_num_groups);
   _chi_d[_qp].resize(_num_groups);
 
   _gtransfxs[_qp].resize(_num_groups * _num_groups);
@@ -176,7 +178,8 @@ MoltresJsonMaterial::computeQpProperties()
   _d_fisse_d_temp[_qp].resize(_num_groups);
   _d_diffcoef_d_temp[_qp].resize(_num_groups);
   _d_recipvel_d_temp[_qp].resize(_num_groups);
-  _d_chi_d_temp[_qp].resize(_num_groups);
+  _d_chi_t_d_temp[_qp].resize(_num_groups);
+  _d_chi_p_d_temp[_qp].resize(_num_groups);
   _d_chi_d_d_temp[_qp].resize(_num_groups);
 
   _d_gtransfxs_d_temp[_qp].resize(_num_groups * _num_groups);
