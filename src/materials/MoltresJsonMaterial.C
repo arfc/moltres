@@ -30,7 +30,8 @@ MoltresJsonMaterial::MoltresJsonMaterial(const InputParameters & parameters)
                                       "FISSE",
                                       "DIFFCOEF",
                                       "RECIPVEL",
-                                      "CHI",
+                                      "CHI_T",
+				      "CHI_P",
                                       "CHI_D",
                                       "GTRANSFXS",
                                       "BETA_EFF",
@@ -61,6 +62,7 @@ MoltresJsonMaterial::Construct(moosecontrib::Json::Value xs_root,
                                std::vector<std::string> xsec_names)
 {
   auto xsec_interpolators = _xsec_linear_interpolators;
+  bool oneInfo = false;
   for (unsigned int j = 0; j < xsec_names.size(); ++j)
   {
 
@@ -93,7 +95,12 @@ MoltresJsonMaterial::Construct(moosecontrib::Json::Value xs_root,
                    _file_map[xsec_names[j]]);
 
       int dims = dataset.size();
-      if (o != dims)
+      if (o == 0 and !oneInfo)
+      {
+        mooseInfo("Only precursor material data initialized (num_groups = 0) for material " + _name);
+        oneInfo = true;
+      }
+      if (o != dims && o != 0)
         mooseError("Dimensions of " + _material_key + "/" + temp_key + "/" +
                    _file_map[xsec_names[j]] + " and num_groups do not match\n" +
                    std::to_string(dims) + "!=" + std::to_string(o));
@@ -139,7 +146,7 @@ MoltresJsonMaterial::Construct(moosecontrib::Json::Value xs_root,
         }
         break;
       default:
-        mooseError("Wrong enum type");
+        mooseError("Invalid enum type for interp_type");
         break;
     }
   }
@@ -156,7 +163,8 @@ MoltresJsonMaterial::computeQpProperties()
   _fisse[_qp].resize(_num_groups);
   _diffcoef[_qp].resize(_num_groups);
   _recipvel[_qp].resize(_num_groups);
-  _chi[_qp].resize(_num_groups);
+  _chi_t[_qp].resize(_num_groups);
+  _chi_p[_qp].resize(_num_groups);
   _chi_d[_qp].resize(_num_groups);
 
   _gtransfxs[_qp].resize(_num_groups * _num_groups);
@@ -170,7 +178,8 @@ MoltresJsonMaterial::computeQpProperties()
   _d_fisse_d_temp[_qp].resize(_num_groups);
   _d_diffcoef_d_temp[_qp].resize(_num_groups);
   _d_recipvel_d_temp[_qp].resize(_num_groups);
-  _d_chi_d_temp[_qp].resize(_num_groups);
+  _d_chi_t_d_temp[_qp].resize(_num_groups);
+  _d_chi_p_d_temp[_qp].resize(_num_groups);
   _d_chi_d_d_temp[_qp].resize(_num_groups);
 
   _d_gtransfxs_d_temp[_qp].resize(_num_groups * _num_groups);
@@ -193,13 +202,13 @@ MoltresJsonMaterial::computeQpProperties()
       linearComputeQpProperties();
       break;
     case SPLINE:
-      linearComputeQpProperties();
+      splineComputeQpProperties();
       break;
     case MONOTONE_CUBIC:
       monotoneCubicComputeQpProperties();
       break;
     default:
-      mooseError("Wrong enum type");
+      mooseError("Invalid enum type for interp_type");
       break;
   }
 }
