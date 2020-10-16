@@ -2,7 +2,7 @@
 #define MOLTRESJSONMATERIAL_H_
 
 #include "NuclearMaterial.h"
-#include "nlohmann/json.h"
+#include "json.h"
 
 class MoltresJsonMaterial;
 
@@ -15,7 +15,7 @@ public:
   MoltresJsonMaterial(const InputParameters & parameters);
 
 protected:
-  void Construct(nlohmann::json xs_root, std::vector<std::string> xsec_names);
+  void Construct(moosecontrib::Json::Value xs_root, std::vector<std::string> xsec_names);
   virtual void computeQpProperties();
 
   std::string _material_key;
