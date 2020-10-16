@@ -41,16 +41,17 @@ MoltresJsonMaterial::MoltresJsonMaterial(const InputParameters & parameters)
   std::ifstream myfile(file_name_ref.c_str());
   if (!myfile.good())
     mooseError("Unable to open XS file: " + base_file);
-  moosecontrib::Json::Value xs_root;
+  nlohmann::json xs_root;
   myfile >> xs_root;
 
   int k = 0;
   auto temp_root = xs_root[_material_key]["temp"];
   _XsTemperature.resize(temp_root.size());
 
-  for (moosecontrib::Json::ValueIterator itr = temp_root.begin(); itr != temp_root.end(); itr++)
+  for (auto & el : temp_root.items())
+  //for (moosecontrib::Json::ValueIterator itr = temp_root.begin(); itr != temp_root.end(); itr++)
   {
-    _XsTemperature[k] = itr->asInt();
+    _XsTemperature[k] = el.value().get<int>();
     k = k + 1;
   }
 
@@ -58,7 +59,7 @@ MoltresJsonMaterial::MoltresJsonMaterial(const InputParameters & parameters)
 }
 
 void
-MoltresJsonMaterial::Construct(moosecontrib::Json::Value xs_root,
+MoltresJsonMaterial::Construct(nlohmann::json xs_root,
                                std::vector<std::string> xsec_names)
 {
   auto xsec_interpolators = _xsec_linear_interpolators;
@@ -106,7 +107,7 @@ MoltresJsonMaterial::Construct(moosecontrib::Json::Value xs_root,
                    std::to_string(dims) + "!=" + std::to_string(o));
       for (auto k = 0; k < o; ++k)
       {
-        xsec_map[xsec_names[j]][k].push_back(dataset[k].asDouble());
+        xsec_map[xsec_names[j]][k].push_back(dataset[k].get<double>());
       }
     }
     switch (_interp_type)
