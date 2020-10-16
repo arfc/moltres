@@ -82,7 +82,7 @@ validParams<PrecursorAction>()
   params.addParam<bool>("eigen", false, "whether neutronics is in eigenvalue calculation mode");
   params.addParam<NonlinearVariableName>("weight",
                                          "The name of the variable that the SideCoupledIntegralVariablePostprocessor is integrated with");
-  params.addParam<PostprocessorName>("divisor", 1, "The postprocessor value of the divisor to normalize SideCoupledIntegralVariablePostprocessor by");
+  params.addParam<PostprocessorName>("divisor", 1, "The divisor used to normalize SideCoupledIntegralVariablePostprocessor");
   return params;
 }
 
