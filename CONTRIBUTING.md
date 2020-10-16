@@ -19,7 +19,7 @@
     [Integrator Workflow ](http://en.wikipedia.org/wiki/Integrator_workflow).
 
 -   Use a branching workflow similar to the one described
-    in the [progit gitbook](http://progit.org/book/ch3-4.html).
+    in the [progit gitbook](https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows).
 
 -   Keep your own "master" and "devel" branches in sync with the
     main repository's "master" and "devel" branches. Specifically,
@@ -50,7 +50,7 @@
 
 -   Look over the code.
 
--   Check that it meets the [MOOSE style guidelines](http://mooseframework.org/wiki/CodeStandards/).
+-   Check that it meets the [MOOSE style guidelines](https://www.mooseframework.org/framework_development/code_standards.html).
 
 -   Make inline review comments concerning improvements.
 
