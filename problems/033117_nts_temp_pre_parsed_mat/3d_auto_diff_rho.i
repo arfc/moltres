@@ -20,13 +20,14 @@ offset=2.5
 []
 
 [Mesh]
-  file = '3d_msre_29x29_136.msh'
-  # file = jac_test.msh
-[]
-
-[MeshModifiers]
+  [./file]
+    type = FileMeshGenerator
+    file = '3d_msre_29x29_136.msh'
+    # file = jac_test.msh
+  [../]
   [./scale]
-    type = Transform
+    type = TransformGenerator
+    input = file
     transform = SCALE
     vector_value = '1 1 ${scale}'
   [../]

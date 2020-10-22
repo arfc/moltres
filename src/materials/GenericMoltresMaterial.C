@@ -62,7 +62,7 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
                                       "DIFFCOEF",
                                       "RECIPVEL",
                                       "CHI_T",
-				      "CHI_P",
+                                      "CHI_P",
                                       "CHI_D",
                                       "GTRANSFXS",
                                       "BETA_EFF",

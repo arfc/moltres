@@ -81,7 +81,7 @@ CoupledFissionEigenKernel::computeQpJacobian()
       }
       else
       {
-	jac += -_test[_i][_qp] * _chi_t[_qp][_group] * _nsf[_qp][i] *
+        jac += -_test[_i][_qp] * _chi_t[_qp][_group] * _nsf[_qp][i] *
                computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp);
       }
       if (_account_delayed)
@@ -108,7 +108,7 @@ CoupledFissionEigenKernel::computeQpOffDiagJacobian(unsigned int jvar)
       }
       else
       {
-	jac += -_test[_i][_qp] * _chi_t[_qp][_group] * _nsf[_qp][i] *
+        jac += -_test[_i][_qp] * _chi_t[_qp][_group] * _nsf[_qp][i] *
                computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp);
       }
       if (_account_delayed)
