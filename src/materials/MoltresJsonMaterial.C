@@ -31,7 +31,7 @@ MoltresJsonMaterial::MoltresJsonMaterial(const InputParameters & parameters)
                                       "DIFFCOEF",
                                       "RECIPVEL",
                                       "CHI_T",
-				      "CHI_P",
+                                      "CHI_P",
                                       "CHI_D",
                                       "GTRANSFXS",
                                       "BETA_EFF",
