@@ -99,7 +99,7 @@ CoupledFissionKernel::computeQpOffDiagJacobian(unsigned int jvar)
       if (_account_delayed)
         jac *= (1. - _beta[_qp]) * _chi_p[_qp][_group];
       else
-	jac *= _chi_t[_qp][_group];
+        jac *= _chi_t[_qp][_group];
       break;
     }
   }
