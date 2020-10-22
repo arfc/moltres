@@ -168,7 +168,7 @@ Sometimes, your pull request will be held by the reviewer until further
 changes are made to appease the reviewer's concerns. This may be
 frustrating, but please act rationally, discuss the issues on the GitHub
 space made for your pull request, consult the
-[style guide](http://moltres.github.com/devdoc/style_guide.html),
+style guide,
 email the develer listhost for further advice, and make changes to
 your topic branch accordingly. The pull request will be updated with
 those changes when you push them to your fork. When you think your
@@ -180,5 +180,5 @@ with the button made available to you.
 A good description of a git workflow with good graphics is available 
 [here](http://nvie.com/posts/a-successful-git-branching-model/).
 
-This contributor document was isnpired by the one written by the [Cyclus team
-](github.com/cyclus/cyclus).
+This contributor document was inspired by the one written by the [Cyclus team
+](https://github.com/cyclus/cyclus).
