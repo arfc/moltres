@@ -12,7 +12,8 @@ InputParameters validParams<HeatPrecursorSource>();
 
 /**
  * This class computes the residual and Jacobian contributions for the
- * fission source term in the decay heat precursor equation.
+ * decay heat precursor source term in the decay heat precursor
+ * equation.
  */
 class HeatPrecursorSource : public Kernel, public ScalarTransportBase
 {
@@ -20,9 +21,9 @@ public:
   HeatPrecursorSource(const InputParameters & parameters);
 
 protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
-  virtual Real computeQpOffDiagJacobian(unsigned int jvar);
+  virtual Real computeQpResidual() override;
+  virtual Real computeQpJacobian() override;
+  virtual Real computeQpOffDiagJacobian(unsigned int jvar) override;
 
   // Material properties
   const MaterialProperty<std::vector<Real>> & _fisse;

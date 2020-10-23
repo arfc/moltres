@@ -9,7 +9,7 @@ validParams<HeatPrecursorDecay>()
   InputParameters params = validParams<Kernel>();
   params += validParams<ScalarTransportBase>();
   params.addRequiredParam<unsigned int>("decay_heat_group_number",
-                                        "What decay heat group this kernel is acting on.");
+                                        "The decay heat group this kernel acts on.");
   params.addRequiredParam<std::vector<Real>>("decay_heat_constants", "Decay Heat Constants");
   return params;
 }

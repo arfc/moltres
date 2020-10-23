@@ -10,6 +10,11 @@ class HeatPrecursorDecay;
 template <>
 InputParameters validParams<HeatPrecursorDecay>();
 
+/**
+ * This class computes the residual and Jacobian contributions for the
+ * decay heat precursor decay term in the decay heat precursor
+ * equation.
+ */
 class HeatPrecursorDecay : public Kernel, public ScalarTransportBase
 {
 public:

@@ -10,7 +10,7 @@ validParams<HeatPrecursorSource>()
   params += validParams<ScalarTransportBase>();
   params.addRequiredParam<unsigned int>("num_groups", "The total number of energy groups");
   params.addRequiredParam<unsigned int>("decay_heat_group_number",
-                                        "What decay heat group this kernel is acting on.");
+                                        "The decay heat group this kernel acts on.");
   params.addRequiredCoupledVar("group_fluxes", "All the variables that hold the group fluxes. "
                                                "These MUST be listed by decreasing "
                                                "energy/increasing group number.");
@@ -63,7 +63,7 @@ HeatPrecursorSource::computeQpResidual()
 Real
 HeatPrecursorSource::computeQpJacobian()
 {
-  return 0;
+  return 0.;
 }
 
 Real
@@ -91,5 +91,5 @@ HeatPrecursorSource::computeQpOffDiagJacobian(unsigned int jvar)
     return jac;
   }
 
-  return 0;
+  return 0.;
 }
