@@ -73,7 +73,8 @@ protected:
   MaterialProperty<std::vector<Real>> & _fisse;
   MaterialProperty<std::vector<Real>> & _diffcoef;
   MaterialProperty<std::vector<Real>> & _recipvel;
-  MaterialProperty<std::vector<Real>> & _chi;
+  MaterialProperty<std::vector<Real>> & _chi_t;
+  MaterialProperty<std::vector<Real>> & _chi_p;
   MaterialProperty<std::vector<Real>> & _chi_d;
   MaterialProperty<std::vector<Real>> & _gtransfxs;
   MaterialProperty<std::vector<Real>> & _beta_eff;
@@ -85,7 +86,8 @@ protected:
   MaterialProperty<std::vector<Real>> & _d_fisse_d_temp;
   MaterialProperty<std::vector<Real>> & _d_diffcoef_d_temp;
   MaterialProperty<std::vector<Real>> & _d_recipvel_d_temp;
-  MaterialProperty<std::vector<Real>> & _d_chi_d_temp;
+  MaterialProperty<std::vector<Real>> & _d_chi_t_d_temp;
+  MaterialProperty<std::vector<Real>> & _d_chi_p_d_temp;
   MaterialProperty<std::vector<Real>> & _d_chi_d_d_temp;
   MaterialProperty<std::vector<Real>> & _d_gtransfxs_d_temp;
   MaterialProperty<std::vector<Real>> & _d_beta_eff_d_temp;
@@ -112,7 +114,8 @@ protected:
   std::vector<std::vector<Real>> _fisse_consts = std::vector<std::vector<Real>>(2);
   std::vector<std::vector<Real>> _diffcoeff_consts = std::vector<std::vector<Real>>(2);
   std::vector<std::vector<Real>> _recipvel_consts = std::vector<std::vector<Real>>(2);
-  std::vector<std::vector<Real>> _chi_consts = std::vector<std::vector<Real>>(2);
+  std::vector<std::vector<Real>> _chi_t_consts = std::vector<std::vector<Real>>(2);
+  std::vector<std::vector<Real>> _chi_p_consts = std::vector<std::vector<Real>>(2);
   std::vector<std::vector<Real>> _chi_d_consts = std::vector<std::vector<Real>>(2);
   std::vector<std::vector<Real>> _gtransfxs_consts = std::vector<std::vector<Real>>(2);
   std::vector<std::vector<Real>> _beta_eff_consts = std::vector<std::vector<Real>>(2);

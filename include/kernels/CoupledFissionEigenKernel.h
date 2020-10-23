@@ -27,7 +27,8 @@ protected:
   virtual Real computeQpOffDiagJacobian(unsigned int jvar) override;
 
   const MaterialProperty<std::vector<Real>> & _nsf;
-  const MaterialProperty<std::vector<Real>> & _chi;
+  const MaterialProperty<std::vector<Real>> & _chi_t;
+  const MaterialProperty<std::vector<Real>> & _chi_p;
   const MaterialProperty<Real> & _beta;
   unsigned int _group;
   unsigned int _num_groups;

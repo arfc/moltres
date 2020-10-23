@@ -25,7 +25,8 @@ MsreFuelTwoGrpXSFunctionMaterial::MsreFuelTwoGrpXSFunctionMaterial(
     _fisse(declareProperty<std::vector<Real>>("fisse")),
     _diffcoef(declareProperty<std::vector<Real>>("diffcoef")),
     _recipvel(declareProperty<std::vector<Real>>("recipvel")),
-    _chi(declareProperty<std::vector<Real>>("chi")),
+    _chi_t(declareProperty<std::vector<Real>>("chi_t")),
+    _chi_p(declareProperty<std::vector<Real>>("chi_p")),
     _gtransfxs(declareProperty<std::vector<Real>>("gtransfxs")),
     _beta_eff(declareProperty<std::vector<Real>>("beta_eff")),
     _beta(declareProperty<Real>("beta")),
@@ -38,7 +39,8 @@ MsreFuelTwoGrpXSFunctionMaterial::MsreFuelTwoGrpXSFunctionMaterial(
     _d_fisse_d_temp(declareProperty<std::vector<Real>>("d_fisse_d_temp")),
     _d_diffcoef_d_temp(declareProperty<std::vector<Real>>("d_diffcoef_d_temp")),
     _d_recipvel_d_temp(declareProperty<std::vector<Real>>("d_recipvel_d_temp")),
-    _d_chi_d_temp(declareProperty<std::vector<Real>>("d_chi_d_temp")),
+    _d_chi_t_d_temp(declareProperty<std::vector<Real>>("d_chi_t_d_temp")),
+    _d_chi_p_d_temp(declareProperty<std::vector<Real>>("d_chi_p_d_temp")),
     _d_gtransfxs_d_temp(declareProperty<std::vector<Real>>("d_gtransfxs_d_temp")),
     _d_beta_eff_d_temp(declareProperty<std::vector<Real>>("d_beta_eff_d_temp")),
     _d_beta_d_temp(declareProperty<Real>("d_beta_d_temp")),
@@ -58,7 +60,8 @@ MsreFuelTwoGrpXSFunctionMaterial::computeQpProperties()
   _fisse[_qp].resize(2, 0);
   _diffcoef[_qp].resize(2, 0);
   _recipvel[_qp].resize(2, 0);
-  _chi[_qp].resize(2, 0);
+  _chi_t[_qp].resize(2, 0);
+  _chi_p[_qp].resize(2, 0);
   _chi_d[_qp].resize(2, 0);
   _gtransfxs[_qp].resize(4, 0);
   _beta_eff[_qp].resize(6, 0);
@@ -69,7 +72,8 @@ MsreFuelTwoGrpXSFunctionMaterial::computeQpProperties()
   _d_fisse_d_temp[_qp].resize(2, 0);
   _d_diffcoef_d_temp[_qp].resize(2, 0);
   _d_recipvel_d_temp[_qp].resize(2, 0);
-  _d_chi_d_temp[_qp].resize(2, 0);
+  _d_chi_t_d_temp[_qp].resize(2, 0);
+  _d_chi_p_d_temp[_qp].resize(2, 0);
   _d_gtransfxs_d_temp[_qp].resize(4, 0);
   _d_beta_eff_d_temp[_qp].resize(6, 0);
   _d_decay_constant_d_temp[_qp].resize(6, 0);
@@ -140,8 +144,10 @@ MsreFuelTwoGrpXSFunctionMaterial::computeQpProperties()
   _fisse[_qp][1] = 194. * 1e6 * 1.6e-19; // convert MeV to Joules
 
   // Assume that all prompt fission neutrons are born into the fast group
-  _chi[_qp][0] = 1;
-  _chi[_qp][1] = 0;
+  _chi_t[_qp][0] = 1;
+  _chi_t[_qp][1] = 0;
+  _chi_p[_qp][0] = 1;
+  _chi_p[_qp][1] = 0;
 
   // Assume that all delayed neutrons are born into the fast group
   _chi_d[_qp][0] = 1;

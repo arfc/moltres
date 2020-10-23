@@ -33,6 +33,8 @@ global_temperature=600
     material_key = 'F'
     interp_type = 'NONE'
     temperature = 600
+    prop_names = ''
+    prop_values = ''
   [../]
   [./C]
     type = MoltresJsonMaterial
@@ -40,6 +42,8 @@ global_temperature=600
     material_key = 'C'
     interp_type = 'NONE'
     temperature = 600
+    prop_names = ''
+    prop_values = ''
   [../]
   [./W]
     type = MoltresJsonMaterial
@@ -47,6 +51,8 @@ global_temperature=600
     material_key = 'W'
     interp_type = 'NONE'
     temperature = 600
+    prop_names = ''
+    prop_values = ''
   [../]
 []
 
