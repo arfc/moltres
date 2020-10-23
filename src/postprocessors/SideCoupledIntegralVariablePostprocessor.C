@@ -10,7 +10,7 @@ validParams<SideCoupledIntegralVariablePostprocessor>()
   params.addRequiredCoupledVar("weight",
                                "The name of the variable that this postprocessor is integrated with");
   params.addRequiredParam<PostprocessorName>("divisor",
-                                	     "The postprocessor value of the divisor to normalize by");
+                                             "The postprocessor value of the divisor to normalize by");
   return params;
 }
 
