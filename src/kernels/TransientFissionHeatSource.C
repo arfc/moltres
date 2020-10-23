@@ -119,7 +119,7 @@ TransientFissionHeatSource::computeQpOffDiagJacobian(unsigned int jvar)
     {
       jac += -_test[_i][_qp] * _fisse[_qp][i] * _fissxs[_qp][i] *
              computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp) * _nt_scale;
-      
+
       Real frac = 0;
       for (unsigned int i = 0; i < _num_heat_groups; ++i)
       {

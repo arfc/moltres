@@ -30,10 +30,10 @@ CoupledOutflowBC::computeQpResidual()
 
   Real vdotn = _vel_x[_qp] * _normals[_qp](0) + _vel_y[_qp] * _normals[_qp](1) +
                _vel_z[_qp] * _normals[_qp](2);
-  
+
   if (vdotn >= 0)
     r += vdotn * _u[_qp] * _test[_i][_qp];
-  
+
   return r;
 }
 
@@ -47,6 +47,6 @@ CoupledOutflowBC::computeQpJacobian()
 
   if (vdotn >= 0)
     r += vdotn * _phi[_j][_qp] * _test[_i][_qp];
-  
+
   return r;
 }

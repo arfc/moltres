@@ -41,7 +41,7 @@ DecayHeatSource::computeQpResidual()
   Real r = 0;
   for (unsigned int i=0; i < _num_heat_groups; ++i)
     r += -_test[_i][_qp] * computeConcentration((*_heat_concs[i]), _qp);
-  
+
   return r;
 }
 
