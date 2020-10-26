@@ -7,10 +7,14 @@ InputParameters
 validParams<SideCoupledIntegralVariablePostprocessor>()
 {
   InputParameters params = validParams<SideIntegralVariablePostprocessor>();
+  params.addClassDescription("Postprocessor for calculating the weighted integral sum/average of a "
+                             "variable along a boundary");
   params.addRequiredCoupledVar("weight",
-                               "The name of the variable that this postprocessor is integrated with");
+                               "The variable to use as the weight function for calculating the weighted sum");
   params.addRequiredParam<PostprocessorName>("divisor",
-                                             "The postprocessor value of the divisor to normalize by");
+                                             "Divisor value. For weighted sum, divisor = 1. "
+                                             "For weighted average, provide the postprocessor name for "
+                                             "the integral of the weight variable along the boundary.");
   return params;
 }
 

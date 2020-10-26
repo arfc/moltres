@@ -1,6 +1,6 @@
 #include "PostprocessorCoupledInflowBC.h"
 
-registerMooseObject("SquirrelApp", PostprocessorCoupledInflowBC);
+registerMooseObject("MoltresApp", PostprocessorCoupledInflowBC);
 
 template <>
 InputParameters
@@ -14,7 +14,7 @@ validParams<PostprocessorCoupledInflowBC>()
       "postprocessor", "The postprocessor from which to derive the inlet concentration.");
   params.addParam<Real>("scale", 1, "The amount to scale the postprocessor value by");
   params.addParam<Real>("offset", 0, "The amount to offset the scaled postprocessor by");
-  params.addClassDescription("DG postprocessor inflow for convection on Navier-Stokes velocity variables");
+  params.addClassDescription("Postprocessor inflow for convection on Navier-Stokes velocity variables");
   return params;
 }
 
