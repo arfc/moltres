@@ -10,6 +10,11 @@ class TransientFissionHeatSource;
 template <>
 InputParameters validParams<TransientFissionHeatSource>();
 
+/**
+ * This class computes the residual and Jacobian contributions of the
+ * fission heat source term in the temperature governing equation for
+ * the time-dependent case.
+ */
 class TransientFissionHeatSource : public Kernel, public ScalarTransportBase
 {
 public:
@@ -20,10 +25,12 @@ protected:
   virtual Real computeQpJacobian();
   virtual Real computeQpOffDiagJacobian(unsigned int jvar);
 
+  // Material properties
   const MaterialProperty<std::vector<Real>> & _fissxs;
   const MaterialProperty<std::vector<Real>> & _d_fissxs_d_temp;
   const MaterialProperty<std::vector<Real>> & _fisse;
   const MaterialProperty<std::vector<Real>> & _d_fisse_d_temp;
+
   unsigned int _num_groups;
   std::vector<const VariableValue *> _group_fluxes;
   std::vector<unsigned int> _flux_ids;
