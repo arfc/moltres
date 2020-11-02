@@ -80,9 +80,11 @@ validParams<PrecursorAction>()
   params.addParam<MultiAppName>("multi_app", "Multiapp name for looping precursors.");
   params.addParam<bool>("is_loopapp", "if circulating precursors, whether this is loop app");
   params.addParam<bool>("eigen", false, "whether neutronics is in eigenvalue calculation mode");
-  params.addParam<NonlinearVariableName>("weight",
-                                         "The name of the variable that the SideCoupledIntegralVariablePostprocessor is integrated with");
-  params.addParam<PostprocessorName>("divisor", 1, "The divisor used to normalize SideCoupledIntegralVariablePostprocessor");
+  params.addParam<NonlinearVariableName>("outlet_vel",
+                                         "Name of the velocity variable normal to the "
+                                         "outlet for calculating the flow-averaged "
+                                         "precursor concentration outflow when using "
+                                         "Navier-Stokes flow.");
   return params;
 }
 
@@ -161,6 +163,12 @@ PrecursorAction::act()
         !getParam<bool>("is_loopapp"))
       transferAct(var_name);
   }
+
+  // Add outflow rate postprocessor for Navier-Stokes velocities in the main
+  // app if precursors are looped
+  if (_current_task == "add_postprocessor" && isParamValid("uvel") &&
+      getParam<bool>("loop_precs") && !getParam<bool>("is_loopapp"))
+    addOutflowPostprocessor();
 }
 
 void
@@ -305,8 +313,18 @@ PrecursorAction::bcAct(const std::string & var_name)
   }
   else if (isParamValid("uvel"))
   {
-    mooseWarning("There's currently no DG transport OutflowBC using N-S velocities."
-                 "Assuming reactor geometry like MSFR w/ no outflow.");
+    InputParameters params = _factory.getValidParams("CoupledOutflowBC");
+    params.set<NonlinearVariableName>("variable") = var_name;
+    params.set<std::vector<BoundaryName>>("boundary") =
+      getParam<std::vector<BoundaryName>>("outlet_boundaries");
+    params.set<std::vector<VariableName>>("uvel") = {getParam<NonlinearVariableName>("uvel")};
+    if (isParamValid("vvel"))
+      params.set<std::vector<VariableName>>("vvel") = {getParam<NonlinearVariableName>("vvel")};
+    if (isParamValid("wvel"))
+      params.set<std::vector<VariableName>>("wvel") = {getParam<NonlinearVariableName>("wvel")};
+
+    std::string bc_name = "CoupledOutflowBC_" + var_name + "_" + _object_suffix;
+    _problem->addBoundaryCondition("CoupledOutflowBC", bc_name, params);
   }
   else
   {
@@ -402,22 +420,38 @@ PrecursorAction::postAct(const std::string & var_name)
   // to the inlet of the loop subproblem. In addition, the outlet of the
   // loop must be connected to the core problem.
   {
-    std::string postproc_name = "Outlet_SideAverageValue_" + var_name + "_" + _object_suffix;
     if (isParamValid("uvel"))
     {
-      InputParameters params = _factory.getValidParams("SideCoupledIntegralVariablePostprocessor");
-      std::vector<VariableName> varvec(1);
-      varvec[0] = var_name;
-      params.set<std::vector<VariableName>>("variable") = varvec;
-      params.set<std::vector<BoundaryName>>("boundary") =
-          getParam<std::vector<BoundaryName>>("outlet_boundaries");
-      params.set<std::vector<OutputName>>("outputs") = {"none"};
-      params.set<std::vector<VariableName>>("weight") = {getParam<NonlinearVariableName>("weight")};
-      params.set<PostprocessorName>("divisor") = getParam<PostprocessorName>("divisor");
-      _problem->addPostprocessor("SideCoupledIntegralVariablePostprocessor", postproc_name, params);
+      {
+        std::string postproc_name = "Outlet_Total_" + var_name + "_" + _object_suffix;
+        InputParameters params = _factory.getValidParams("SideWeightedIntegralPostprocessor");
+        std::vector<VariableName> varvec(1);
+        varvec[0] = var_name;
+        params.set<std::vector<VariableName>>("variable") = varvec;
+        params.set<std::vector<BoundaryName>>("boundary") =
+            getParam<std::vector<BoundaryName>>("outlet_boundaries");
+        params.set<std::vector<OutputName>>("outputs") = {"none"};
+        params.set<std::vector<VariableName>>("weight") =
+            {getParam<NonlinearVariableName>("outlet_vel")};
+
+        _problem->addPostprocessor("SideWeightedIntegralPostprocessor", postproc_name, params);
+      }
+
+      {
+        std::string postproc_name = "Outlet_Average_" + var_name + "_" + _object_suffix;
+        InputParameters params = _factory.getValidParams("DivisionPostprocessor");
+        std::vector<VariableName> varvec(1);
+        varvec[0] = var_name;
+        params.set<PostprocessorName>("value1") = "Outlet_Total_" + var_name + "_" + _object_suffix;
+        params.set<PostprocessorName>("value2") = "Salt_Outflow_" + _object_suffix;
+        params.set<std::vector<OutputName>>("outputs") = {"none"};
+
+        _problem->addPostprocessor("DivisionPostprocessor", postproc_name, params);
+      }
     }
     else
     {
+      std::string postproc_name = "Outlet_Average_" + var_name + "_" + _object_suffix;
       InputParameters params = _factory.getValidParams("SideAverageValue");
       std::vector<VariableName> varvec(1);
       varvec[0] = var_name;
@@ -425,6 +459,7 @@ PrecursorAction::postAct(const std::string & var_name)
       params.set<std::vector<BoundaryName>>("boundary") =
           getParam<std::vector<BoundaryName>>("outlet_boundaries");
       params.set<std::vector<OutputName>>("outputs") = {"none"};
+
       _problem->addPostprocessor("SideAverageValue", postproc_name, params);
     }
   }
@@ -447,7 +482,7 @@ PrecursorAction::transferAct(const std::string & var_name)
     InputParameters params = _factory.getValidParams("MultiAppPostprocessorTransfer");
     params.set<MultiAppName>("multi_app") = getParam<MultiAppName>("multi_app");
     params.set<PostprocessorName>("from_postprocessor") =
-        "Outlet_SideAverageValue_" + var_name + "_" + _object_suffix;
+        "Outlet_Average_" + var_name + "_" + _object_suffix;
     params.set<PostprocessorName>("to_postprocessor") =
         "Inlet_SideAverageValue_" + var_name + "_" + _object_suffix;
     params.set<MultiMooseEnum>("direction") = "to_multiapp";
@@ -461,7 +496,7 @@ PrecursorAction::transferAct(const std::string & var_name)
     InputParameters params = _factory.getValidParams("MultiAppPostprocessorTransfer");
     params.set<MultiAppName>("multi_app") = getParam<MultiAppName>("multi_app");
     params.set<PostprocessorName>("from_postprocessor") =
-        "Outlet_SideAverageValue_" + var_name + "_" + _object_suffix;
+        "Outlet_Average_" + var_name + "_" + _object_suffix;
     params.set<PostprocessorName>("to_postprocessor") =
         "Inlet_SideAverageValue_" + var_name + "_" + _object_suffix;
     params.set<MultiMooseEnum>("direction") = "from_multiapp";
@@ -469,4 +504,23 @@ PrecursorAction::transferAct(const std::string & var_name)
 
     _problem->addTransfer("MultiAppPostprocessorTransfer", transfer_name, params);
   }
+}
+
+void
+PrecursorAction::addOutflowPostprocessor()
+{
+  std::string postproc_name = "Salt_Outflow_" + _object_suffix;
+  InputParameters params = _factory.getValidParams("SideWeightedIntegralPostprocessor");
+  params.set<std::vector<VariableName>>("variable") =
+      {getParam<NonlinearVariableName>("outlet_vel")};
+  params.set<std::vector<BoundaryName>>("boundary") =
+      getParam<std::vector<BoundaryName>>("outlet_boundaries");
+  params.set<std::vector<OutputName>>("outputs") = {"none"};
+
+  //InputParameters weight_param = emptyInputParameters();
+  //weight_param.addCoupledVar("weight", 1, "The weight variable");
+  //params.applyParameter(weight_param, "weight");
+  //params.set<std::vector<VariableName>>("weight") = {1};
+
+  _problem->addPostprocessor("SideWeightedIntegralPostprocessor", postproc_name, params);
 }
