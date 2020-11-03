@@ -355,7 +355,7 @@ PrecursorAction::bcAct(const std::string & var_name)
       params.set<Real>("vv") = getParam<Real>("v_def");
       params.set<Real>("ww") = getParam<Real>("w_def");
       params.set<PostprocessorName>("postprocessor") =
-          "Inlet_SideAverageValue_" + var_name + "_" + _object_suffix;
+          "Inlet_Average_" + var_name + "_" + _object_suffix;
 
       std::string bc_name = "PostprocessorInflowBC_" + var_name + "_" + _object_suffix;
       _problem->addBoundaryCondition("PostprocessorInflowBC", bc_name, params);
@@ -372,7 +372,7 @@ PrecursorAction::bcAct(const std::string & var_name)
       if (isParamValid("wvel"))
         params.set<std::vector<VariableName>>("wvel") = {getParam<NonlinearVariableName>("wvel")};
       params.set<PostprocessorName>("postprocessor") =
-          "Inlet_SideAverageValue_" + var_name + "_" + _object_suffix;
+          "Inlet_Average_" + var_name + "_" + _object_suffix;
 
       std::string bc_name = "PostprocessorCoupledInflowBC_" + var_name + "_" + _object_suffix;
       _problem->addBoundaryCondition("PostprocessorCoupledInflowBC", bc_name, params);
@@ -384,7 +384,7 @@ PrecursorAction::bcAct(const std::string & var_name)
       params.set<std::vector<BoundaryName>>("boundary") =
           getParam<std::vector<BoundaryName>>("inlet_boundaries");
       params.set<PostprocessorName>("postprocessor") =
-          "Inlet_SideAverageValue_" + var_name + "_" + _object_suffix;
+          "Inlet_Average_" + var_name + "_" + _object_suffix;
 
       std::string bc_name = "PostprocessorInflowBC_" + var_name + "_" + _object_suffix;
       _problem->addBoundaryCondition("PostprocessorInflowBC", bc_name, params);
@@ -464,7 +464,7 @@ PrecursorAction::postAct(const std::string & var_name)
     }
   }
   {
-    std::string postproc_name = "Inlet_SideAverageValue_" + var_name + "_" + _object_suffix;
+    std::string postproc_name = "Inlet_Average_" + var_name + "_" + _object_suffix;
     InputParameters params = _factory.getValidParams("Receiver");
     params.set<ExecFlagEnum>("execute_on") = "nonlinear";
     params.set<std::vector<OutputName>>("outputs") = {"none"};
@@ -484,7 +484,7 @@ PrecursorAction::transferAct(const std::string & var_name)
     params.set<PostprocessorName>("from_postprocessor") =
         "Outlet_Average_" + var_name + "_" + _object_suffix;
     params.set<PostprocessorName>("to_postprocessor") =
-        "Inlet_SideAverageValue_" + var_name + "_" + _object_suffix;
+        "Inlet_Average_" + var_name + "_" + _object_suffix;
     params.set<MultiMooseEnum>("direction") = "to_multiapp";
 
     _problem->addTransfer("MultiAppPostprocessorTransfer", transfer_name, params);
@@ -498,7 +498,7 @@ PrecursorAction::transferAct(const std::string & var_name)
     params.set<PostprocessorName>("from_postprocessor") =
         "Outlet_Average_" + var_name + "_" + _object_suffix;
     params.set<PostprocessorName>("to_postprocessor") =
-        "Inlet_SideAverageValue_" + var_name + "_" + _object_suffix;
+        "Inlet_Average_" + var_name + "_" + _object_suffix;
     params.set<MultiMooseEnum>("direction") = "from_multiapp";
     params.set<MooseEnum>("reduction_type") = "average";
 
