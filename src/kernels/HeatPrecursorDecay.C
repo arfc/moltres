@@ -35,7 +35,7 @@ HeatPrecursorDecay::computeQpJacobian()
 }
 
 Real
-HeatPrecursorDecay::computeQpOffDiagJacobian(unsigned int jvar)
+HeatPrecursorDecay::computeQpOffDiagJacobian()
 {
   return 0;
 }
