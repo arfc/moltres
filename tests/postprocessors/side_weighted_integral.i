@@ -1,6 +1,6 @@
 [Mesh]
   [./box]
-    type = GeneratedMesh
+    type = GeneratedMeshGenerator
     dim = 2
     nx = 200
     ny = 10
