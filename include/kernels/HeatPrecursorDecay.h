@@ -23,7 +23,7 @@ public:
 protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();
-  virtual Real computeQpOffDiagJacobian(unsigned int jvar);
+  virtual Real computeQpOffDiagJacobian();
 
   unsigned int _heat_group;
   std::vector<Real> _decay_heat_const;
