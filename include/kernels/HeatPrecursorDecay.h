@@ -23,7 +23,6 @@ public:
 protected:
   virtual Real computeQpResidual() override;
   virtual Real computeQpJacobian() override;
-  virtual Real computeQpOffDiagJacobian() override;
 
   unsigned int _heat_group;
   std::vector<Real> _decay_heat_const;

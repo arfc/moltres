@@ -33,9 +33,3 @@ HeatPrecursorDecay::computeQpJacobian()
 {
   return _test[_i][_qp] * _decay_heat_const[_heat_group] * computeConcentrationDerivative(_u, _phi, _j, _qp);
 }
-
-Real
-HeatPrecursorDecay::computeQpOffDiagJacobian()
-{
-  return 0;
-}
