@@ -22,9 +22,10 @@ public:
   virtual ~ScalarAdvectionArtDiff() {}
 
 protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
-  virtual Real computeQpOffDiagJacobian(unsigned jvar);
+  Real tau();
+  virtual Real computeQpResidual() override;
+  virtual Real computeQpJacobian() override;
+  virtual Real computeQpOffDiagJacobian(unsigned jvar) override;
 
   Real _scale;
   // Coupled variables
@@ -40,8 +41,8 @@ protected:
   VariableValue _u_def;
   VariableValue _v_def;
   VariableValue _w_def;
+  Real _D;
   Real _conc_scaling;
-  Real _tau;
 };
 
 #endif // SCALARADVECTIONARTDIFF_H

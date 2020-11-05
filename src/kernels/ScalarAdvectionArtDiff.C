@@ -20,6 +20,8 @@ validParams<ScalarAdvectionArtDiff>()
       "v_def", 0, "Allows user to specify constant value for v component of velocity.");
   params.addParam<Real>(
       "w_def", 0, "Allows user to specify constant value for w component of velocity.");
+  params.addParam<MaterialPropertyName>(
+      "diffusivity", "D", "The diffusivity value or material property");
   params.addParam<Real>(
       "conc_scaling", 1, "The amount by which to scale the concentration variable.");
   return params;
@@ -39,8 +41,8 @@ ScalarAdvectionArtDiff::ScalarAdvectionArtDiff(const InputParameters & parameter
     _u_vel_var_number(coupled("u")),
     _v_vel_var_number(coupled("v")),
     _w_vel_var_number(coupled("w")),
+    _D(getMaterialProperty<Real>("diffusivity")),
     _conc_scaling(getParam<Real>("conc_scaling")),
-    _tau(getParam<Real>("tau"))
 {
   if (!(isCoupled("u")))
     _u_def.resize(_fe_problem.getMaxQps(), Real(getParam<Real>("u_def")));
@@ -51,20 +53,20 @@ ScalarAdvectionArtDiff::ScalarAdvectionArtDiff(const InputParameters & parameter
 }
 
 Real
-ScalarAdvectionArtDiff::computeTau()
+ScalarAdvectionArtDiff::tau()
 {
   RealVectorValue U(_u_vel[_qp], _v_vel[_qp], _w_vel[_qp]);
 
   Real u_norm = U.norm();
 
-  if (u_norm < 1e-10)
-  {
+  if (u_norm <= 1e-10)
     return 0.;
-  }
-  else
-  {
-    return coth
-  }
+
+  Real gamma = unorm * _current_elem->hmax() / 2 / _D[_qp];
+
+  if (gamma >= 5.0)
+    return 1 - 1 / gamma; // prevent overflow
+  return 1 / std::tanh(gamma) - 1.0 / gamma;
 }
 
 Real
@@ -72,7 +74,7 @@ ScalarAdvectionArtDiff::computeQpResidual()
 {
   RealVectorValue U(_u_vel[_qp], _v_vel[_qp], _w_vel[_qp]);
 
-  Real delta = U.norm() * _current_elem->hmax() / 2. * _tau;
+  Real delta = U.norm() * _current_elem->hmax() / 2. * ScalarAdvectionArtDiff::tau();
 
   return -_grad_test[_i][_qp] * -delta * computeConcentrationGradient(_u, _grad_u, _qp) * _scale *
          _conc_scaling;
@@ -83,7 +85,7 @@ ScalarAdvectionArtDiff::computeQpJacobian()
 {
   RealVectorValue U(_u_vel[_qp], _v_vel[_qp], _w_vel[_qp]);
 
-  Real delta = U.norm() * _current_elem->hmax() / 2. * _tau;
+  Real delta = U.norm() * _current_elem->hmax() / 2. * ScalarAdvectionArtDiff::tau();
 
   return -_grad_test[_i][_qp] * -delta *
          computeConcentrationGradientDerivative(_u, _grad_u, _phi, _grad_phi, _j, _qp) * _scale *
@@ -97,7 +99,8 @@ ScalarAdvectionArtDiff::computeQpOffDiagJacobian(unsigned int jvar)
   {
     RealVectorValue U(_u_vel[_qp], _v_vel[_qp], _w_vel[_qp]);
     Real d_delta_d_u_vel =
-        _u_vel[_qp] * _phi[_j][_qp] / U.norm() * _current_elem->hmax() / 2. * _tau;
+        _u_vel[_qp] * _phi[_j][_qp] / U.norm() *
+        _current_elem->hmax() / 2. * ScalarAdvectionArtDiff::tau();
     return -_grad_test[_i][_qp] * -d_delta_d_u_vel *
            computeConcentrationGradient(_u, _grad_u, _qp) * _scale * _conc_scaling;
   }
@@ -106,7 +109,8 @@ ScalarAdvectionArtDiff::computeQpOffDiagJacobian(unsigned int jvar)
   {
     RealVectorValue U(_u_vel[_qp], _v_vel[_qp], _w_vel[_qp]);
     Real d_delta_d_v_vel =
-        _v_vel[_qp] * _phi[_j][_qp] / U.norm() * _current_elem->hmax() / 2. * _tau;
+        _v_vel[_qp] * _phi[_j][_qp] / U.norm() *
+        _current_elem->hmax() / 2. * ScalarAdvectionArtDiff::tau();
     return -_grad_test[_i][_qp] * -d_delta_d_v_vel *
            computeConcentrationGradient(_u, _grad_u, _qp) * _scale * _conc_scaling;
   }
@@ -115,7 +119,8 @@ ScalarAdvectionArtDiff::computeQpOffDiagJacobian(unsigned int jvar)
   {
     RealVectorValue U(_u_vel[_qp], _v_vel[_qp], _w_vel[_qp]);
     Real d_delta_d_w_vel =
-        _w_vel[_qp] * _phi[_j][_qp] / U.norm() * _current_elem->hmax() / 2. * _tau;
+        _w_vel[_qp] * _phi[_j][_qp] / U.norm() *
+        _current_elem->hmax() / 2. * ScalarAdvectionArtDiff::tau();
     return -_grad_test[_i][_qp] * -d_delta_d_w_vel *
            computeConcentrationGradient(_u, _grad_u, _qp) * _scale * _conc_scaling;
   }
