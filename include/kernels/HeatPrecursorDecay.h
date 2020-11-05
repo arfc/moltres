@@ -21,9 +21,9 @@ public:
   HeatPrecursorDecay(const InputParameters & parameters);
 
 protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
-  virtual Real computeQpOffDiagJacobian();
+  virtual Real computeQpResidual() override;
+  virtual Real computeQpJacobian() override;
+  virtual Real computeQpOffDiagJacobian() override;
 
   unsigned int _heat_group;
   std::vector<Real> _decay_heat_const;
