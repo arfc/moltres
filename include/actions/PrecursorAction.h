@@ -33,6 +33,7 @@ protected:
   virtual void icAct(const std::string & var_name);
   virtual void postAct(const std::string & var_name);
   virtual void transferAct(const std::string & var_name);
+  virtual void addOutflowPostprocessor();
 
   /// number of precursor groups
   unsigned int _num_precursor_groups;
