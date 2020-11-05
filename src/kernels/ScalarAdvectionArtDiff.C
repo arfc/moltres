@@ -22,7 +22,6 @@ validParams<ScalarAdvectionArtDiff>()
       "w_def", 0, "Allows user to specify constant value for w component of velocity.");
   params.addParam<Real>(
       "conc_scaling", 1, "The amount by which to scale the concentration variable.");
-  params.addParam<Real>("tau", 1, "The amount by which to scale the artificial diffusion.");
   return params;
 }
 
@@ -49,6 +48,23 @@ ScalarAdvectionArtDiff::ScalarAdvectionArtDiff(const InputParameters & parameter
     _v_def.resize(_fe_problem.getMaxQps(), Real(getParam<Real>("v_def")));
   if (!(isCoupled("w")))
     _w_def.resize(_fe_problem.getMaxQps(), Real(getParam<Real>("w_def")));
+}
+
+Real
+ScalarAdvectionArtDiff::computeTau()
+{
+  RealVectorValue U(_u_vel[_qp], _v_vel[_qp], _w_vel[_qp]);
+
+  Real u_norm = U.norm();
+
+  if (u_norm < 1e-10)
+  {
+    return 0.;
+  }
+  else
+  {
+    return coth
+  }
 }
 
 Real
