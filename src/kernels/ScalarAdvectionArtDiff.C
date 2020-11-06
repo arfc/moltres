@@ -42,7 +42,7 @@ ScalarAdvectionArtDiff::ScalarAdvectionArtDiff(const InputParameters & parameter
     _v_vel_var_number(coupled("v")),
     _w_vel_var_number(coupled("w")),
     _D(getMaterialProperty<Real>("diffusivity")),
-    _conc_scaling(getParam<Real>("conc_scaling")),
+    _conc_scaling(getParam<Real>("conc_scaling"))
 {
   if (!(isCoupled("u")))
     _u_def.resize(_fe_problem.getMaxQps(), Real(getParam<Real>("u_def")));
@@ -62,7 +62,7 @@ ScalarAdvectionArtDiff::tau()
   if (u_norm <= 1e-10)
     return 0.;
 
-  Real gamma = unorm * _current_elem->hmax() / 2 / _D[_qp];
+  Real gamma = u_norm * _current_elem->hmax() / 2 / _D[_qp];
 
   if (gamma >= 5.0)
     return 1 - 1 / gamma; // prevent overflow

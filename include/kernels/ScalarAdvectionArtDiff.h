@@ -41,7 +41,7 @@ protected:
   VariableValue _u_def;
   VariableValue _v_def;
   VariableValue _w_def;
-  Real _D;
+  const MaterialProperty<Real> & _D;
   Real _conc_scaling;
 };
 
