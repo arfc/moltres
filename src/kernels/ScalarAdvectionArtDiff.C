@@ -56,24 +56,20 @@ Real
 ScalarAdvectionArtDiff::tau()
 {
   RealVectorValue U(_u_vel[_qp], _v_vel[_qp], _w_vel[_qp]);
-
   Real u_norm = U.norm();
+  Real gamma = u_norm * _current_elem->hmax() / 2. / _D[_qp];
+  if (gamma <= 1e-10)
+    return 0.; // low Peclet flow => no artificial diffusion
+  else if (gamma >= 5.)
+    return 1. - 1. / gamma; // prevent overflow
 
-  if (u_norm <= 1e-10)
-    return 0.;
-
-  Real gamma = u_norm * _current_elem->hmax() / 2 / _D[_qp];
-
-  if (gamma >= 5.0)
-    return 1 - 1 / gamma; // prevent overflow
-  return 1 / std::tanh(gamma) - 1.0 / gamma;
+  return 1. / std::tanh(gamma) - 1. / gamma;
 }
 
 Real
 ScalarAdvectionArtDiff::computeQpResidual()
 {
   RealVectorValue U(_u_vel[_qp], _v_vel[_qp], _w_vel[_qp]);
-
   Real delta = U.norm() * _current_elem->hmax() / 2. * ScalarAdvectionArtDiff::tau();
 
   return -_grad_test[_i][_qp] * -delta * computeConcentrationGradient(_u, _grad_u, _qp) * _scale *
@@ -84,7 +80,6 @@ Real
 ScalarAdvectionArtDiff::computeQpJacobian()
 {
   RealVectorValue U(_u_vel[_qp], _v_vel[_qp], _w_vel[_qp]);
-
   Real delta = U.norm() * _current_elem->hmax() / 2. * ScalarAdvectionArtDiff::tau();
 
   return -_grad_test[_i][_qp] * -delta *

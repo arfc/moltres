@@ -22,7 +22,7 @@ public:
   virtual ~ScalarAdvectionArtDiff() {}
 
 protected:
-  Real tau();
+  virtual Real tau();
   virtual Real computeQpResidual() override;
   virtual Real computeQpJacobian() override;
   virtual Real computeQpOffDiagJacobian(unsigned jvar) override;
