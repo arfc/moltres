@@ -29,12 +29,3 @@ SideWeightedIntegralPostprocessor::computeQpIntegral()
 {
   return _u[_qp] * _weight[_qp];
 }
-
-Real
-SideWeightedIntegralPostprocessor::computeIntegral()
-{
-  Real sum = 0;
-  for (_qp = 0; _qp < _qrule->n_points(); _qp++)
-    sum += _JxW[_qp] * computeQpIntegral();
-  return sum;
-}
