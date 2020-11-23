@@ -12,7 +12,18 @@ InputParameters validParams<ScalarAdvectionArtDiff>();
 
 /**
  * This class computes the residual and Jacobian contributions for the
- * incompressible Navier-Stokes temperature (energy) equation.
+ * artificial diffusion term:
+ * \f[
+ *   D' = \tau \frac{|u| l_e}{2},
+ * \f]
+ * where 
+ * \f[
+ *   \tau = \frac{1}{\tanh (\gamma)} - \frac{1}{\gamma}
+ * \f]
+ * and
+ * \f[
+ *   \gamma = \frac{|u| \Delta x}{2 D}.
+ * \f]
  */
 class ScalarAdvectionArtDiff : public Kernel, public ScalarTransportBase
 {

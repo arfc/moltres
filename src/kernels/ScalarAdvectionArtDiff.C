@@ -9,6 +9,9 @@ validParams<ScalarAdvectionArtDiff>()
 {
   InputParameters params = validParams<Kernel>();
   params += validParams<ScalarTransportBase>();
+  params.addClassDescription("This class computes the residual and Jacobian "
+      "contributions from the artificial diffusion term, "
+      "$D' = \\tau |u| \\Delta x / 2$.");
   params.addParam<Real>("scale", 1., "Amount to scale artificial diffusion.");
 
   // Coupled variables
