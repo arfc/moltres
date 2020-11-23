@@ -43,6 +43,7 @@ protected:
   VariableValue _w_def;
   const MaterialProperty<Real> & _D;
   Real _conc_scaling;
+  const Real & _current_elem_volume;
 };
 
 #endif // SCALARADVECTIONARTDIFF_H
