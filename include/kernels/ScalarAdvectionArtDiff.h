@@ -24,6 +24,8 @@ InputParameters validParams<ScalarAdvectionArtDiff>();
  * \f[
  *   \gamma = \frac{|u| \Delta x}{2 D}.
  * \f]
+ * Ref: E. Onate & M. Manzan, 2000, "Stabilization Techniques for Finite 
+ * Element Analysis of Convection-Diffusion Problems".
  */
 class ScalarAdvectionArtDiff : public Kernel, public ScalarTransportBase
 {
