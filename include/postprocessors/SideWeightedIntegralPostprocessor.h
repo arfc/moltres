@@ -22,7 +22,6 @@ public:
 
 protected:
   virtual Real computeQpIntegral() override;
-  virtual Real computeIntegral() override;
 
   // Weight variable
   const VariableValue & _weight;
