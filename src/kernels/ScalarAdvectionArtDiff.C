@@ -82,7 +82,6 @@ Real
 ScalarAdvectionArtDiff::computeQpResidual()
 {
   RealVectorValue U(_u_vel[_qp], _v_vel[_qp], _w_vel[_qp]);
-  Real volume = _current_elem->volume();
   Real h;
   if (_mesh.dimension() == 1)
     h = _current_elem->volume();
@@ -100,7 +99,6 @@ Real
 ScalarAdvectionArtDiff::computeQpJacobian()
 {
   RealVectorValue U(_u_vel[_qp], _v_vel[_qp], _w_vel[_qp]);
-  Real volume = _current_elem->volume();
   Real h;
   if (_mesh.dimension() == 1)
     h = _current_elem->volume();
@@ -118,7 +116,6 @@ ScalarAdvectionArtDiff::computeQpJacobian()
 Real
 ScalarAdvectionArtDiff::computeQpOffDiagJacobian(unsigned int jvar)
 {
-  Real volume = _current_elem->volume();
   Real h;
   if (_mesh.dimension() == 1)
     h = _current_elem->volume();
