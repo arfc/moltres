@@ -16,7 +16,7 @@ InputParameters validParams<ScalarAdvectionArtDiff>();
  * \f[
  *   D' = \tau \frac{|u| l_e}{2},
  * \f]
- * where 
+ * where
  * \f[
  *   \tau = \frac{1}{\tanh (\gamma)} - \frac{1}{\gamma}
  * \f]
@@ -24,7 +24,7 @@ InputParameters validParams<ScalarAdvectionArtDiff>();
  * \f[
  *   \gamma = \frac{|u| \Delta x}{2 D}.
  * \f]
- * Ref: E. Onate & M. Manzan, 2000, "Stabilization Techniques for Finite 
+ * Ref: E. Onate & M. Manzan, 2000, "Stabilization Techniques for Finite
  * Element Analysis of Convection-Diffusion Problems".
  */
 class ScalarAdvectionArtDiff : public Kernel, public ScalarTransportBase
