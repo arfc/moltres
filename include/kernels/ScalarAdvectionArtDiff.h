@@ -12,7 +12,20 @@ InputParameters validParams<ScalarAdvectionArtDiff>();
 
 /**
  * This class computes the residual and Jacobian contributions for the
- * incompressible Navier-Stokes temperature (energy) equation.
+ * artificial diffusion term:
+ * \f[
+ *   D' = \tau \frac{|u| l_e}{2},
+ * \f]
+ * where
+ * \f[
+ *   \tau = \frac{1}{\tanh (\gamma)} - \frac{1}{\gamma}
+ * \f]
+ * and
+ * \f[
+ *   \gamma = \frac{|u| \Delta x}{2 D}.
+ * \f]
+ * Ref: E. Onate & M. Manzan, 2000, "Stabilization Techniques for Finite
+ * Element Analysis of Convection-Diffusion Problems".
  */
 class ScalarAdvectionArtDiff : public Kernel, public ScalarTransportBase
 {
@@ -22,9 +35,10 @@ public:
   virtual ~ScalarAdvectionArtDiff() {}
 
 protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
-  virtual Real computeQpOffDiagJacobian(unsigned jvar);
+  virtual Real tau();
+  virtual Real computeQpResidual() override;
+  virtual Real computeQpJacobian() override;
+  virtual Real computeQpOffDiagJacobian(unsigned jvar) override;
 
   Real _scale;
   // Coupled variables
@@ -40,8 +54,9 @@ protected:
   VariableValue _u_def;
   VariableValue _v_def;
   VariableValue _w_def;
+  const MaterialProperty<Real> & _D;
   Real _conc_scaling;
-  Real _tau;
+  const Real & _current_elem_volume;
 };
 
 #endif // SCALARADVECTIONARTDIFF_H
