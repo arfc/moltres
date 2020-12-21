@@ -34,6 +34,7 @@ protected:
   virtual void postAct(const std::string & var_name);
   virtual void transferAct(const std::string & var_name);
   virtual void addOutflowPostprocessor();
+  virtual void setVarNameAndBlock(InputParameters & params, const std::string & var_name);
 
   /// number of precursor groups
   unsigned int _num_precursor_groups;
