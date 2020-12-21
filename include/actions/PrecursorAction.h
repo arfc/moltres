@@ -27,13 +27,17 @@ public:
   void addRelationshipManagers(Moose::RelationshipManagerType when_type) override;
 
 protected:
-  virtual void kernelAct(const unsigned & op, const std::string & var_name);
-  virtual void bcAct(const std::string & var_name);
-  virtual void dgKernelAct(const std::string & var_name);
-  virtual void icAct(const std::string & var_name);
-  virtual void postAct(const std::string & var_name);
-  virtual void transferAct(const std::string & var_name);
-  virtual void addOutflowPostprocessor();
+  virtual void addPrecursorSource(const unsigned & op, const std::string & var_name);
+  virtual void addPrecursorDecay(const unsigned & op, const std::string & var_name);
+  virtual void addTimeDerivative(const unsigned & op, const std::string & var_name);
+  virtual void addDGAdvection(const std::string & var_name);
+  virtual void addOutflowBC(const std::string & var_name);
+  virtual void addInflowBC(const std::string & var_name);
+  virtual void addIC(const std::string & var_name);
+  virtual void addOutletPostprocessor(const std::string & var_name);
+  virtual void addInletPostprocessor(const std::string & var_name);
+  virtual void addFlowTransfer(const std::string & var_name);
+  virtual void addSaltOutflowPostprocessor();
   virtual void setVarNameAndBlock(InputParameters & params, const std::string & var_name);
 
   /// number of precursor groups
