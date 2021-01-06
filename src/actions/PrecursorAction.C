@@ -242,32 +242,29 @@ PrecursorAction::addDGAdvection(const std::string & var_name)
     std::string kernel_name = "DGConvection_" + var_name + "_" + _object_suffix;
     _problem->addDGKernel("DGConvection", kernel_name, params);
   }
+  else if (isParamValid("uvel")) // checks if Navier-Stokes velocities are provided
+  {
+    // if using Navier-Stokes velocities to couple to: (u, v, w)
+    InputParameters params = _factory.getValidParams("DGCoupledAdvection");
+    setVarNameAndBlock(params, var_name);
+    params.set<std::vector<VariableName>>("uvel") = {getParam<NonlinearVariableName>("uvel")};
+    if (isParamValid("vvel"))
+      params.set<std::vector<VariableName>>("vvel") = {getParam<NonlinearVariableName>("vvel")};
+    if (isParamValid("wvel"))
+      params.set<std::vector<VariableName>>("wvel") = {getParam<NonlinearVariableName>("wvel")};
+    std::string kernel_name = "DGCoupledAdvection_" + var_name + "_" + _object_suffix;
+    _problem->addDGKernel("DGCoupledAdvection", kernel_name, params);
+  }
   else
   {
-    if (isParamValid("uvel")) // checks if Navier-Stokes velocities are provided
-    {
-      // if using Navier-Stokes velocities to couple to: (u, v, w)
-      InputParameters params = _factory.getValidParams("DGCoupledAdvection");
-      setVarNameAndBlock(params, var_name);
-      params.set<std::vector<VariableName>>("uvel") = {getParam<NonlinearVariableName>("uvel")};
-      if (isParamValid("vvel"))
-        params.set<std::vector<VariableName>>("vvel") = {getParam<NonlinearVariableName>("vvel")};
-      if (isParamValid("wvel"))
-        params.set<std::vector<VariableName>>("wvel") = {getParam<NonlinearVariableName>("wvel")};
-      std::string kernel_name = "DGCoupledAdvection_" + var_name + "_" + _object_suffix;
-      _problem->addDGKernel("DGCoupledAdvection", kernel_name, params);
-    }
-    else
-    {
-      // if using prespecified functions
-      InputParameters params = _factory.getValidParams("DGFunctionConvection");
-      setVarNameAndBlock(params, var_name);
-      params.set<FunctionName>("vel_x_func") = getParam<FunctionName>("u_func");
-      params.set<FunctionName>("vel_y_func") = getParam<FunctionName>("v_func");
-      params.set<FunctionName>("vel_z_func") = getParam<FunctionName>("w_func");
-      std::string kernel_name = "DGFunctionConvection_" + var_name + "_" + _object_suffix;
-      _problem->addDGKernel("DGFunctionConvection", kernel_name, params);
-    }
+    // if using prespecified functions
+    InputParameters params = _factory.getValidParams("DGFunctionConvection");
+    setVarNameAndBlock(params, var_name);
+    params.set<FunctionName>("vel_x_func") = getParam<FunctionName>("u_func");
+    params.set<FunctionName>("vel_y_func") = getParam<FunctionName>("v_func");
+    params.set<FunctionName>("vel_z_func") = getParam<FunctionName>("w_func");
+    std::string kernel_name = "DGFunctionConvection_" + var_name + "_" + _object_suffix;
+    _problem->addDGKernel("DGFunctionConvection", kernel_name, params);
   }
 }
 
