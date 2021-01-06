@@ -51,7 +51,7 @@ validParams<PrecursorAction>()
   params.addRequiredParam<std::vector<BoundaryName>>("outlet_boundaries", "Outflow boundaries.");
   params.addParam<std::vector<BoundaryName>>("inlet_boundaries", "Inflow boundaries.");
   params.addParam<bool>("nt_exp_form",
-                        true,
+                        false,
                         "Whether concentrations should be in an expotential/logarithmic format.");
   params.addParam<bool>("jac_test",
                         false,
@@ -167,11 +167,6 @@ PrecursorAction::act()
       // and receiving precursor conc at inlet from loop app
       addOutletPostprocessor(var_name);
       addInletPostprocessor(var_name);
-
-      // Add outflow rate postprocessor for Navier-Stokes velocities in the main
-      // app if precursors are looped
-      if (isParamValid("uvel") && !getParam<bool>("is_loopapp"))
-        addSaltOutflowPostprocessor();
     }
 
     // transfers
@@ -179,6 +174,12 @@ PrecursorAction::act()
         !getParam<bool>("is_loopapp"))
       addFlowTransfer(var_name);
   }
+
+  // Add outflow rate postprocessor for Navier-Stokes velocities in the main
+  // app if precursors are looped
+  if (_current_task == "add_postprocessor" && getParam<bool>("loop_precs") &&
+      isParamValid("uvel") && !getParam<bool>("is_loopapp"))
+    addSaltOutflowPostprocessor();
 }
 
 void
