@@ -172,7 +172,11 @@ PrecursorAction::act()
     // transfers
     if (_current_task == "add_transfer" && getParam<bool>("loop_precs") &&
         !getParam<bool>("is_loopapp"))
+    {
+      // Set up MultiAppTransfer to simulate precursor looped flow into and
+      // out of the reactor core
       addFlowTransfer(var_name);
+    }
   }
 
   // Add outflow rate postprocessor for Navier-Stokes velocities in the main
