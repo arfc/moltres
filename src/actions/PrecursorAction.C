@@ -336,7 +336,7 @@ PrecursorAction::addInflowBC(const std::string & var_name)
     std::string bc_name = "PostprocessorInflowBC_" + var_name + "_" + _object_suffix;
     _problem->addBoundaryCondition("PostprocessorInflowBC", bc_name, params);
   }
-  else if (isParamValid("uvel")) // checks if Navier-Stokes velocities are provided 
+  else if (isParamValid("uvel")) // checks if Navier-Stokes velocities are provided
   {
     // if using navier stokes velocities to couple to: (u, v, w)
     InputParameters params = _factory.getValidParams("PostprocessorCoupledInflowBC");
@@ -409,7 +409,7 @@ PrecursorAction::addOutletPostprocessor(const std::string & var_name)
     params.set<std::vector<OutputName>>("outputs") = {"none"};
      _problem->addPostprocessor("SideAverageValue", postproc_name, params);
   }
-  else if (isParamValid("uvel")) // checks if Navier-Stokes velocities are provided 
+  else if (isParamValid("uvel")) // checks if Navier-Stokes velocities are provided
   {
     {
       // Total flow-weighted precursor conc at outlet
