@@ -29,7 +29,7 @@ public:
 protected:
   virtual void addPrecursorSource(const unsigned & op, const std::string & var_name);
   virtual void addPrecursorDecay(const unsigned & op, const std::string & var_name);
-  virtual void addTimeDerivative(const unsigned & op, const std::string & var_name);
+  virtual void addTimeDerivative(const std::string & var_name);
   virtual void addDGAdvection(const std::string & var_name);
   virtual void addOutflowBC(const std::string & var_name);
   virtual void addInflowBC(const std::string & var_name);

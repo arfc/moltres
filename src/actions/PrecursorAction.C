@@ -134,7 +134,7 @@ PrecursorAction::act()
     if (_current_task == "add_kernel")
     {
       if (getParam<bool>("transient"))
-        addTimeDerivative(op, var_name);
+        addTimeDerivative(var_name);
 
       addPrecursorSource(op, var_name);
       addPrecursorDecay(op, var_name);
@@ -216,7 +216,7 @@ PrecursorAction::addPrecursorDecay(const unsigned & op, const std::string & var_
 }
 
 void
-PrecursorAction::addTimeDerivative(const unsigned & op, const std::string & var_name)
+PrecursorAction::addTimeDerivative(const std::string & var_name)
 {
   InputParameters params = _factory.getValidParams("ScalarTransportTimeDerivative");
   setVarNameAndBlock(params, var_name);
