@@ -57,12 +57,12 @@ validParams<PrecursorAction>()
                         false,
                         "Whether we're testing the Jacobian and should use some "
                         "random initial conditions for the precursors.");
-  params.addParam<Real>("prec_scale", "The amount by which the neutron fluxes are scaled.");
   params.addParam<bool>("transient", true, "Whether to run a transient simulation.");
   params.addParam<bool>(
       "init_from_file", false, "Whether to initialize the precursors from a file.");
   params.addParam<bool>("create_vars", true, "Whether this action should create the variables.");
-  params.addParam<bool>("loop_precursors", false, "Whether precursors are circulated in coolant loop.");
+  params.addRequiredParam<bool>(
+      "loop_precursors", "Whether precursors are circulated in coolant loop.");
   params.addParam<std::string>(
       "object_suffix",
       "",
