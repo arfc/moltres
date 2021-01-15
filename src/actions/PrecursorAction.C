@@ -62,13 +62,16 @@ validParams<PrecursorAction>()
   params.addParam<bool>(
       "init_from_file", false, "Whether to initialize the precursors from a file.");
   params.addParam<bool>("create_vars", true, "Whether this action should create the variables.");
-  params.addParam<bool>("loop_precs", false, "Whether precursors are circulated in salt loop.");
+  params.addParam<bool>("loop_precursors", false, "Whether precursors are circulated in coolant loop.");
   params.addParam<std::string>(
       "object_suffix",
       "",
       "An optional suffix string that can be helpful to avoid object name crashing.");
   params.addParam<std::vector<SubdomainName>>("kernel_block",
-                                              "Kernel block can be different from block.");
+                                              "Optional list of block names/IDs in which to"
+                                              "initialize kernels if user wishes to omit kernels"
+                                              "from the base list of blocks. Replaces the 'block'"
+                                              "parameter when initializing kernels.");
   params.addParam<MultiAppName>("multi_app", "Multiapp name for looping precursors.");
   params.addParam<bool>("is_loopapp", "if circulating precursors, whether this is loop app");
   params.addParam<bool>("eigen", false, "whether neutronics is in eigenvalue calculation mode");
@@ -87,7 +90,7 @@ PrecursorAction::PrecursorAction(const InputParameters & params)
     _num_groups(getParam<unsigned int>("num_groups")),
     _object_suffix(getParam<std::string>("object_suffix"))
 {
-  if (getParam<bool>("loop_precs"))
+  if (getParam<bool>("loop_precursors"))
   {
     if (!params.isParamSetByUser("inlet_boundaries"))
       mooseError("Looping precursors requires specification of inlet_boundaries.");
@@ -118,7 +121,7 @@ PrecursorAction::act()
         if (_current_task == "check_copy_nodal_vars")
           _app.setExodusFileRestart(true);
 
-        if (_current_task == "copy_nodal_vars")
+        else if (_current_task == "copy_nodal_vars")
         {
           SystemBase * system = &_problem->getNonlinearSystemBase();
           system->addVariableToCopy(var_name, var_name, "LATEST");
@@ -141,27 +144,24 @@ PrecursorAction::act()
     }
 
     // dg kernels
-    if (_current_task == "add_dg_kernel")
-    {
+    else if (_current_task == "add_dg_kernel")
       addDGAdvection(var_name);
-    }
 
-    // bcs
-    if (_current_task == "add_bc")
+    // boundary conditions
+    else if (_current_task == "add_bc")
     {
       addOutflowBC(var_name);
 
-      if (getParam<bool>("loop_precs"))
+      if (getParam<bool>("loop_precursors"))
         addInflowBC(var_name);
     }
 
-    // ics
-    if (_current_task == "add_ic" && !getParam<bool>("init_from_file"))
-      // Set up initial conditions for precursor conc
-      addIC(var_name);
+    // initial conditions
+    else if (_current_task == "add_ic" && !getParam<bool>("init_from_file"))
+      addInitialConditions(var_name);
 
     // postprocessors
-    if (_current_task == "add_postprocessor" && getParam<bool>("loop_precs"))
+    else if (_current_task == "add_postprocessor" && getParam<bool>("loop_precursors"))
     {
       // Set up postprocessors for calculating precursor conc at outlet
       // and receiving precursor conc at inlet from loop app
@@ -170,20 +170,20 @@ PrecursorAction::act()
     }
 
     // transfers
-    if (_current_task == "add_transfer" && getParam<bool>("loop_precs") &&
+    else if (_current_task == "add_transfer" && getParam<bool>("loop_precursors") &&
         !getParam<bool>("is_loopapp"))
     {
       // Set up MultiAppTransfer to simulate precursor looped flow into and
       // out of the reactor core
-      addFlowTransfer(var_name);
+      addMultiAppTransfer(var_name);
     }
   }
 
   // Add outflow rate postprocessor for Navier-Stokes velocities in the main
   // app if precursors are looped
-  if (_current_task == "add_postprocessor" && getParam<bool>("loop_precs") &&
+  if (_current_task == "add_postprocessor" && getParam<bool>("loop_precursors") &&
       isParamValid("uvel") && !getParam<bool>("is_loopapp"))
-    addSaltOutflowPostprocessor();
+    addCoolantOutflowPostprocessor();
 }
 
 void
@@ -370,7 +370,7 @@ PrecursorAction::addInflowBC(const std::string & var_name)
 }
 
 void
-PrecursorAction::addIC(const std::string & var_name)
+PrecursorAction::addInitialConditions(const std::string & var_name)
 {
   if (getParam<bool>("jac_test"))
   {
@@ -434,7 +434,7 @@ PrecursorAction::addOutletPostprocessor(const std::string & var_name)
       std::vector<VariableName> varvec(1);
       varvec[0] = var_name;
       params.set<PostprocessorName>("value1") = "Outlet_Total_" + var_name + "_" + _object_suffix;
-      params.set<PostprocessorName>("value2") = "Salt_Outflow_" + _object_suffix;
+      params.set<PostprocessorName>("value2") = "Coolant_Outflow_" + _object_suffix;
       params.set<std::vector<OutputName>>("outputs") = {"none"};
        _problem->addPostprocessor("DivisionPostprocessor", postproc_name, params);
     }
@@ -454,7 +454,7 @@ PrecursorAction::addInletPostprocessor(const std::string & var_name)
 }
 
 void
-PrecursorAction::addFlowTransfer(const std::string & var_name)
+PrecursorAction::addMultiAppTransfer(const std::string & var_name)
 {
   // from main app to loop app
   {
@@ -487,9 +487,9 @@ PrecursorAction::addFlowTransfer(const std::string & var_name)
 }
 
 void
-PrecursorAction::addSaltOutflowPostprocessor()
+PrecursorAction::addCoolantOutflowPostprocessor()
 {
-  std::string postproc_name = "Salt_Outflow_" + _object_suffix;
+  std::string postproc_name = "Coolant_Outflow_" + _object_suffix;
   InputParameters params = _factory.getValidParams("SideWeightedIntegralPostprocessor");
   params.set<std::vector<VariableName>>("variable") =
       {getParam<NonlinearVariableName>("outlet_vel")};
