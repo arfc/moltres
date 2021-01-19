@@ -28,29 +28,29 @@ public:
 
 protected:
   /// Adds PrecursorSource kernel
-  virtual void addPrecursorSource(const unsigned & op, const std::string & var_name);
+  void addPrecursorSource(const unsigned & op, const std::string & var_name);
   /// Adds PrecursorDecay kernel
-  virtual void addPrecursorDecay(const unsigned & op, const std::string & var_name);
+  void addPrecursorDecay(const unsigned & op, const std::string & var_name);
   /// Adds ScalarTransportTimeDerivative kernel
-  virtual void addTimeDerivative(const std::string & var_name);
+  void addTimeDerivative(const std::string & var_name);
   /// Adds DGAdvection kernel
-  virtual void addDGAdvection(const std::string & var_name);
+  void addDGAdvection(const std::string & var_name);
   /// Adds appropriate outflow BC depending on velocity type
-  virtual void addOutflowBC(const std::string & var_name);
+  void addOutflowBC(const std::string & var_name);
   /// Adds appropriate inflow BC depending on velocity type
-  virtual void addInflowBC(const std::string & var_name);
+  void addInflowBC(const std::string & var_name);
   /// Adds random initial conditions for Jacobian testing
-  virtual void addInitialConditions(const std::string & var_name);
+  void addInitialConditions(const std::string & var_name);
   /// Adds postprocessors to calculate flow-weighted precursor conc at outlet
-  virtual void addOutletPostprocessor(const std::string & var_name);
+  void addOutletPostprocessor(const std::string & var_name);
   /// Adds Receiver postprocessor required for precursor conc at inlet
-  virtual void addInletPostprocessor(const std::string & var_name);
+  void addInletPostprocessor(const std::string & var_name);
   /// Adds MultiAppTransfers to simulate precursor looped flow by exchanging inlet/outlet data
-  virtual void addMultiAppTransfer(const std::string & var_name);
+  void addMultiAppTransfer(const std::string & var_name);
   /// Adds postprocessor to calculate coolant outflow rate required by addOutletPostprocessor
-  virtual void addCoolantOutflowPostprocessor();
+  void addCoolantOutflowPostprocessor();
   /// Sets variable and block params. Used to reduce repeating code
-  virtual void setVarNameAndBlock(InputParameters & params, const std::string & var_name);
+  void setVarNameAndBlock(InputParameters & params, const std::string & var_name);
 
   /// number of precursor groups
   unsigned int _num_precursor_groups;
