@@ -27,29 +27,92 @@ public:
   void addRelationshipManagers(Moose::RelationshipManagerType when_type) override;
 
 protected:
-  /// Adds PrecursorSource kernel
+
+  /**
+  * Adds PrecursorSource kernel
+  *
+  * @param op The zero-based index for the precursor group the kernel acts on
+  * @param var_name The name of the variable the kernel acts on
+  */
   void addPrecursorSource(const unsigned & op, const std::string & var_name);
-  /// Adds PrecursorDecay kernel
+
+  /**
+  * Adds PrecursorDecay kernel
+  *
+  * @param op The zero-based index for the precursor group the kernel acts on
+  * @param var_name The name of the variable the kernel acts on
+  */
   void addPrecursorDecay(const unsigned & op, const std::string & var_name);
-  /// Adds ScalarTransportTimeDerivative kernel
+
+  /**
+  * Adds ScalarTransportTimeDerivative kernel
+  *
+  * @param var_name The name of the variable the kernel acts on
+  */
   void addTimeDerivative(const std::string & var_name);
-  /// Adds DGAdvection kernel
+
+  /**
+  * Adds DGAdvection kernel
+  *
+  * @param var_name The name of the variable the kernel acts on
+  */
   void addDGAdvection(const std::string & var_name);
-  /// Adds appropriate outflow BC depending on velocity type
+
+  /**
+  * Adds appropriate outflow BC depending on velocity type
+  *
+  * @param var_name The name of the variable the BC acts on
+  */
   void addOutflowBC(const std::string & var_name);
-  /// Adds appropriate inflow BC depending on velocity type
+
+  /**
+  * Adds appropriate inflow BC depending on velocity type
+  *
+  * @param var_name The name of the variable the BC acts on
+  */
   void addInflowBC(const std::string & var_name);
-  /// Adds random initial conditions for Jacobian testing
+
+  /**
+  * Adds random initial conditions for Jacobian testing
+  *
+  * @param var_name The name of the variable the IC acts on
+  */
   void addInitialConditions(const std::string & var_name);
-  /// Adds postprocessors to calculate flow-weighted precursor conc at outlet
+
+  /**
+  * Adds postprocessors to calculate flow-weighted precursor conc at outlet
+  *
+  * @param var_name The name of the variable the postprocessor acts on
+  */
   void addOutletPostprocessor(const std::string & var_name);
-  /// Adds Receiver postprocessor required for precursor conc at inlet
+
+  /**
+  * Adds Receiver postprocessor required for precursor conc at inlet
+  *
+  * @param var_name The name of the variable the postprocessor acts on
+  */
   void addInletPostprocessor(const std::string & var_name);
-  /// Adds MultiAppTransfers to simulate precursor looped flow by exchanging inlet/outlet data
+
+  /**
+  * Adds MultiAppTransfers to simulate precursor looped flow by exchanging inlet/outlet data
+  *
+  * @param var_name The name of the variable the MultiAppTransfers acts on
+  */
   void addMultiAppTransfer(const std::string & var_name);
-  /// Adds postprocessor to calculate coolant outflow rate required by addOutletPostprocessor
+
+  /**
+  * Adds postprocessor to calculate coolant outflow rate required by addOutletPostprocessor
+  *
+  * @param var_name The name of the variable the postprocessor acts on
+  */
   void addCoolantOutflowPostprocessor();
-  /// Sets variable and block params. Used to reduce repeating code
+
+  /**
+  * Sets variable and block params. Used to reduce repeating code
+  *
+  * @param params The InputParameters in which to set variable and block params
+  * @param var_name The name of the variable the postprocessor acts on
+  */
   void setVarNameAndBlock(InputParameters & params, const std::string & var_name);
 
   /// number of precursor groups
