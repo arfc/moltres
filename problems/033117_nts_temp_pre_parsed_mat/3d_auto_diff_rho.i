@@ -64,6 +64,7 @@ offset=2.5
     v_def = 0
     w_def = ${flow_velocity}
     nt_exp_form = false
+    loop_precursors = false
     family = MONOMIAL
     order = CONSTANT
     jac_test = true

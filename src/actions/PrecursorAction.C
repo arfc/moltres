@@ -7,21 +7,13 @@
 #include "DGKernelBase.h"
 
 registerMooseAction("MoltresApp", PrecursorAction, "add_kernel");
-
 registerMooseAction("MoltresApp", PrecursorAction, "add_postprocessor");
-
 registerMooseAction("MoltresApp", PrecursorAction, "add_bc");
-
 registerMooseAction("MoltresApp", PrecursorAction, "add_variable");
-
 registerMooseAction("MoltresApp", PrecursorAction, "add_ic");
-
 registerMooseAction("MoltresApp", PrecursorAction, "add_dg_kernel");
-
 registerMooseAction("MoltresApp", PrecursorAction, "add_transfer");
-
 registerMooseAction("MoltresApp", PrecursorAction, "check_copy_nodal_vars");
-
 registerMooseAction("MoltresApp", PrecursorAction, "copy_nodal_vars");
 
 template <>
@@ -59,24 +51,27 @@ validParams<PrecursorAction>()
   params.addRequiredParam<std::vector<BoundaryName>>("outlet_boundaries", "Outflow boundaries.");
   params.addParam<std::vector<BoundaryName>>("inlet_boundaries", "Inflow boundaries.");
   params.addParam<bool>("nt_exp_form",
-                        true,
+                        false,
                         "Whether concentrations should be in an expotential/logarithmic format.");
   params.addParam<bool>("jac_test",
                         false,
                         "Whether we're testing the Jacobian and should use some "
                         "random initial conditions for the precursors.");
-  params.addParam<Real>("prec_scale", "The amount by which the neutron fluxes are scaled.");
   params.addParam<bool>("transient", true, "Whether to run a transient simulation.");
   params.addParam<bool>(
       "init_from_file", false, "Whether to initialize the precursors from a file.");
   params.addParam<bool>("create_vars", true, "Whether this action should create the variables.");
-  params.addParam<bool>("loop_precs", false, "Whether precursors are circulated in salt loop.");
+  params.addRequiredParam<bool>(
+      "loop_precursors", "Whether precursors are circulated in coolant loop.");
   params.addParam<std::string>(
       "object_suffix",
       "",
       "An optional suffix string that can be helpful to avoid object name crashing.");
   params.addParam<std::vector<SubdomainName>>("kernel_block",
-                                              "Kernel bock can be different from block.");
+                                              "Optional list of block names/IDs in which to"
+                                              "initialize kernels if user wishes to omit kernels"
+                                              "from the base list of blocks. Replaces the 'block'"
+                                              "parameter when initializing kernels.");
   params.addParam<MultiAppName>("multi_app", "Multiapp name for looping precursors.");
   params.addParam<bool>("is_loopapp", "if circulating precursors, whether this is loop app");
   params.addParam<bool>("eigen", false, "whether neutronics is in eigenvalue calculation mode");
@@ -95,7 +90,7 @@ PrecursorAction::PrecursorAction(const InputParameters & params)
     _num_groups(getParam<unsigned int>("num_groups")),
     _object_suffix(getParam<std::string>("object_suffix"))
 {
-  if (getParam<bool>("loop_precs"))
+  if (getParam<bool>("loop_precursors"))
   {
     if (!params.isParamSetByUser("inlet_boundaries"))
       mooseError("Looping precursors requires specification of inlet_boundaries.");
@@ -126,7 +121,7 @@ PrecursorAction::act()
         if (_current_task == "check_copy_nodal_vars")
           _app.setExodusFileRestart(true);
 
-        if (_current_task == "copy_nodal_vars")
+        else if (_current_task == "copy_nodal_vars")
         {
           SystemBase * system = &_problem->getNonlinearSystemBase();
           system->addVariableToCopy(var_name, var_name, "LATEST");
@@ -140,111 +135,106 @@ PrecursorAction::act()
 
     // kernels
     if (_current_task == "add_kernel")
-      kernelAct(op, var_name);
+    {
+      if (getParam<bool>("transient"))
+        addTimeDerivative(var_name);
+
+      addPrecursorSource(op, var_name);
+      addPrecursorDecay(op, var_name);
+    }
 
     // dg kernels
-    if (_current_task == "add_dg_kernel")
-      dgKernelAct(var_name);
+    else if (_current_task == "add_dg_kernel")
+      addDGAdvection(var_name);
 
-    // bcs
-    if (_current_task == "add_bc")
-      bcAct(var_name);
+    // boundary conditions
+    else if (_current_task == "add_bc")
+    {
+      addOutflowBC(var_name);
 
-    // ics
-    if (_current_task == "add_ic" && !getParam<bool>("init_from_file"))
-      icAct(var_name);
+      if (getParam<bool>("loop_precursors"))
+        addInflowBC(var_name);
+    }
+
+    // initial conditions
+    else if (_current_task == "add_ic" && !getParam<bool>("init_from_file"))
+      addInitialConditions(var_name);
 
     // postprocessors
-    if (_current_task == "add_postprocessor" && getParam<bool>("loop_precs"))
-      postAct(var_name);
+    else if (_current_task == "add_postprocessor" && getParam<bool>("loop_precursors"))
+    {
+      // Set up postprocessors for calculating precursor conc at outlet
+      // and receiving precursor conc at inlet from loop app
+      addOutletPostprocessor(var_name);
+      addInletPostprocessor(var_name);
+    }
 
     // transfers
-    if (_current_task == "add_transfer" && getParam<bool>("loop_precs") &&
+    else if (_current_task == "add_transfer" && getParam<bool>("loop_precursors") &&
         !getParam<bool>("is_loopapp"))
-      transferAct(var_name);
+    {
+      // Set up MultiAppTransfer to simulate precursor looped flow into and
+      // out of the reactor core
+      addMultiAppTransfer(var_name);
+    }
   }
 
   // Add outflow rate postprocessor for Navier-Stokes velocities in the main
   // app if precursors are looped
-  if (_current_task == "add_postprocessor" && isParamValid("uvel") &&
-      getParam<bool>("loop_precs") && !getParam<bool>("is_loopapp"))
-    addOutflowPostprocessor();
+  if (_current_task == "add_postprocessor" && getParam<bool>("loop_precursors") &&
+      isParamValid("uvel") && !getParam<bool>("is_loopapp"))
+    addCoolantOutflowPostprocessor();
 }
 
 void
-PrecursorAction::kernelAct(const unsigned & op, const std::string & var_name)
+PrecursorAction::addPrecursorSource(const unsigned & op, const std::string & var_name)
 {
-  // Set up PrecursorSource kernels
-  {
-    InputParameters params = _factory.getValidParams("PrecursorSource");
-    params.set<NonlinearVariableName>("variable") = var_name;
-    params.set<unsigned int>("num_groups") = _num_groups;
-    params.set<unsigned int>("precursor_group_number") = op;
-    std::vector<std::string> include = {"temperature", "group_fluxes"};
-    params.applySpecificParameters(parameters(), include);
-    if (isParamValid("kernel_block"))
-      params.set<std::vector<SubdomainName>>("block") =
-          getParam<std::vector<SubdomainName>>("kernel_block");
-    else if (isParamValid("block"))
-      params.set<std::vector<SubdomainName>>("block") =
-          getParam<std::vector<SubdomainName>>("block");
-    params.set<bool>("use_exp_form") = getParam<bool>("nt_exp_form");
+  InputParameters params = _factory.getValidParams("PrecursorSource");
+  setVarNameAndBlock(params, var_name);
+  params.set<unsigned int>("num_groups") = _num_groups;
+  params.set<unsigned int>("precursor_group_number") = op;
+  std::vector<std::string> include = {"temperature", "group_fluxes"};
+  params.applySpecificParameters(parameters(), include);
+  params.set<bool>("use_exp_form") = getParam<bool>("nt_exp_form");
 
-    std::string kernel_name = "PrecursorSource_" + var_name + "_" + _object_suffix;
-    _problem->addKernel("PrecursorSource", kernel_name, params);
-  }
-
-  // Set up PrecursorDecay kernels
-  {
-    InputParameters params = _factory.getValidParams("PrecursorDecay");
-    params.set<NonlinearVariableName>("variable") = var_name;
-    params.set<unsigned int>("precursor_group_number") = op;
-    std::vector<std::string> include = {"temperature"};
-    params.applySpecificParameters(parameters(), include);
-    if (isParamValid("kernel_block"))
-      params.set<std::vector<SubdomainName>>("block") =
-          getParam<std::vector<SubdomainName>>("kernel_block");
-    else if (isParamValid("block"))
-      params.set<std::vector<SubdomainName>>("block") =
-          getParam<std::vector<SubdomainName>>("block");
-    params.set<bool>("use_exp_form") = false;
-
-    std::string kernel_name = "PrecursorDecay_" + var_name + "_" + _object_suffix;
-    _problem->addKernel("PrecursorDecay", kernel_name, params);
-  }
-
-  // Set up TimeDerivative kernels
-  if (getParam<bool>("transient"))
-  {
-    InputParameters params = _factory.getValidParams("ScalarTransportTimeDerivative");
-    params.set<NonlinearVariableName>("variable") = var_name;
-    params.set<bool>("implicit") = true;
-    if (isParamValid("kernel_block"))
-      params.set<std::vector<SubdomainName>>("block") =
-          getParam<std::vector<SubdomainName>>("kernel_block");
-    else if (isParamValid("block"))
-      params.set<std::vector<SubdomainName>>("block") =
-          getParam<std::vector<SubdomainName>>("block");
-    params.set<bool>("use_exp_form") = false;
-
-    std::string kernel_name = "ScalarTransportTimeDerivative_" + var_name + "_" + _object_suffix;
-    _problem->addKernel("ScalarTransportTimeDerivative", kernel_name, params);
-  }
+  std::string kernel_name = "PrecursorSource_" + var_name + "_" + _object_suffix;
+  _problem->addKernel("PrecursorSource", kernel_name, params);
 }
 
 void
-PrecursorAction::dgKernelAct(const std::string & var_name)
+PrecursorAction::addPrecursorDecay(const unsigned & op, const std::string & var_name)
+{
+  InputParameters params = _factory.getValidParams("PrecursorDecay");
+  setVarNameAndBlock(params, var_name);
+  params.set<unsigned int>("precursor_group_number") = op;
+  std::vector<std::string> include = {"temperature"};
+  params.applySpecificParameters(parameters(), include);
+  params.set<bool>("use_exp_form") = getParam<bool>("nt_exp_form");
+
+  std::string kernel_name = "PrecursorDecay_" + var_name + "_" + _object_suffix;
+  _problem->addKernel("PrecursorDecay", kernel_name, params);
+}
+
+void
+PrecursorAction::addTimeDerivative(const std::string & var_name)
+{
+  InputParameters params = _factory.getValidParams("ScalarTransportTimeDerivative");
+  setVarNameAndBlock(params, var_name);
+  params.set<bool>("implicit") = true;
+  params.set<bool>("use_exp_form") = getParam<bool>("nt_exp_form");
+
+  std::string kernel_name = "ScalarTransportTimeDerivative_" + var_name + "_" + _object_suffix;
+  _problem->addKernel("ScalarTransportTimeDerivative", kernel_name, params);
+}
+
+void
+PrecursorAction::addDGAdvection(const std::string & var_name)
 {
   if (getParam<bool>("constant_velocity_values"))
   {
+    // if using constant and uniform velocity values
     InputParameters params = _factory.getValidParams("DGConvection");
-    params.set<NonlinearVariableName>("variable") = var_name;
-    if (isParamValid("kernel_block"))
-      params.set<std::vector<SubdomainName>>("block") =
-          getParam<std::vector<SubdomainName>>("kernel_block");
-    else if (isParamValid("block"))
-      params.set<std::vector<SubdomainName>>("block") =
-          getParam<std::vector<SubdomainName>>("block");
+    setVarNameAndBlock(params, var_name);
     RealVectorValue vel = {
         getParam<Real>("u_def"), getParam<Real>("v_def"), getParam<Real>("w_def")};
     params.set<RealVectorValue>("velocity") = vel;
@@ -252,54 +242,38 @@ PrecursorAction::dgKernelAct(const std::string & var_name)
     std::string kernel_name = "DGConvection_" + var_name + "_" + _object_suffix;
     _problem->addDGKernel("DGConvection", kernel_name, params);
   }
+  else if (isParamValid("uvel")) // checks if Navier-Stokes velocities are provided
+  {
+    // if using Navier-Stokes velocities to couple to: (u, v, w)
+    InputParameters params = _factory.getValidParams("DGCoupledAdvection");
+    setVarNameAndBlock(params, var_name);
+    params.set<std::vector<VariableName>>("uvel") = {getParam<NonlinearVariableName>("uvel")};
+    if (isParamValid("vvel"))
+      params.set<std::vector<VariableName>>("vvel") = {getParam<NonlinearVariableName>("vvel")};
+    if (isParamValid("wvel"))
+      params.set<std::vector<VariableName>>("wvel") = {getParam<NonlinearVariableName>("wvel")};
+    std::string kernel_name = "DGCoupledAdvection_" + var_name + "_" + _object_suffix;
+    _problem->addDGKernel("DGCoupledAdvection", kernel_name, params);
+  }
   else
   {
-    if (isParamValid("uvel"))
-    {
-      // this stuff happens if you have navier stokes velocities to couple to, u,v,w.
-      InputParameters params = _factory.getValidParams("DGCoupledAdvection");
-      params.set<NonlinearVariableName>("variable") = var_name;
-      if (isParamValid("kernel_block"))
-        params.set<std::vector<SubdomainName>>("block") =
-            getParam<std::vector<SubdomainName>>("kernel_block");
-      else if (isParamValid("block"))
-        params.set<std::vector<SubdomainName>>("block") =
-            getParam<std::vector<SubdomainName>>("block");
-      params.set<std::vector<VariableName>>("uvel") = {getParam<NonlinearVariableName>("uvel")};
-      if (isParamValid("vvel"))
-        params.set<std::vector<VariableName>>("vvel") = {getParam<NonlinearVariableName>("vvel")};
-      if (isParamValid("wvel"))
-        params.set<std::vector<VariableName>>("wvel") = {getParam<NonlinearVariableName>("wvel")};
-      std::string kernel_name = "DGCoupledAdvection_" + var_name + "_" + _object_suffix;
-      _problem->addDGKernel("DGCoupledAdvection", kernel_name, params);
-    }
-    else
-    {
-      // this stuff happens if no navier stokes velocities are available:
-      // use prespecified functions.
-      InputParameters params = _factory.getValidParams("DGFunctionConvection");
-      params.set<NonlinearVariableName>("variable") = var_name;
-      if (isParamValid("kernel_block"))
-        params.set<std::vector<SubdomainName>>("block") =
-            getParam<std::vector<SubdomainName>>("kernel_block");
-      else if (isParamValid("block"))
-        params.set<std::vector<SubdomainName>>("block") =
-            getParam<std::vector<SubdomainName>>("block");
-      params.set<FunctionName>("vel_x_func") = getParam<FunctionName>("u_func");
-      params.set<FunctionName>("vel_y_func") = getParam<FunctionName>("v_func");
-      params.set<FunctionName>("vel_z_func") = getParam<FunctionName>("w_func");
-      std::string kernel_name = "DGFunctionConvection_" + var_name + "_" + _object_suffix;
-      _problem->addDGKernel("DGFunctionConvection", kernel_name, params);
-    }
+    // if using prespecified functions
+    InputParameters params = _factory.getValidParams("DGFunctionConvection");
+    setVarNameAndBlock(params, var_name);
+    params.set<FunctionName>("vel_x_func") = getParam<FunctionName>("u_func");
+    params.set<FunctionName>("vel_y_func") = getParam<FunctionName>("v_func");
+    params.set<FunctionName>("vel_z_func") = getParam<FunctionName>("w_func");
+    std::string kernel_name = "DGFunctionConvection_" + var_name + "_" + _object_suffix;
+    _problem->addDGKernel("DGFunctionConvection", kernel_name, params);
   }
 }
 
 void
-PrecursorAction::bcAct(const std::string & var_name)
+PrecursorAction::addOutflowBC(const std::string & var_name)
 {
-  // OUTFLOW
   if (getParam<bool>("constant_velocity_values"))
   {
+    // if using constant and uniform velocity values
     InputParameters params = _factory.getValidParams("OutflowBC");
     params.set<NonlinearVariableName>("variable") = var_name;
     params.set<std::vector<BoundaryName>>("boundary") =
@@ -311,8 +285,9 @@ PrecursorAction::bcAct(const std::string & var_name)
     std::string bc_name = "OutflowBC_" + var_name + "_" + _object_suffix;
     _problem->addBoundaryCondition("OutflowBC", bc_name, params);
   }
-  else if (isParamValid("uvel"))
+  else if (isParamValid("uvel")) // checks if Navier-Stokes velocities are provided
   {
+    // if using navier stokes velocities to couple to: (u, v, w)
     InputParameters params = _factory.getValidParams("CoupledOutflowBC");
     params.set<NonlinearVariableName>("variable") = var_name;
     params.set<std::vector<BoundaryName>>("boundary") =
@@ -328,6 +303,7 @@ PrecursorAction::bcAct(const std::string & var_name)
   }
   else
   {
+    // if using prespecified functions
     InputParameters params = _factory.getValidParams("VelocityFunctionOutflowBC");
     params.set<NonlinearVariableName>("variable") = var_name;
     params.set<std::vector<BoundaryName>>("boundary") =
@@ -339,61 +315,62 @@ PrecursorAction::bcAct(const std::string & var_name)
     std::string bc_name = "VelocityFunctionOutflowBC_" + var_name + "_" + _object_suffix;
     _problem->addBoundaryCondition("VelocityFunctionOutflowBC", bc_name, params);
   }
-  // INFLOW
-  if (getParam<bool>("loop_precs"))
+}
+
+void
+PrecursorAction::addInflowBC(const std::string & var_name)
+{
+  if (getParam<bool>("constant_velocity_values"))
   {
-    // this will work for both constant and nonconstant flows as long as
-    // nonconstant flows implemented in the Controls module by
-    // setting values called uu, vv, ww.
-    if (getParam<bool>("constant_velocity_values"))
-    {
-      InputParameters params = _factory.getValidParams("PostprocessorInflowBC");
-      params.set<NonlinearVariableName>("variable") = var_name;
-      params.set<std::vector<BoundaryName>>("boundary") =
-          getParam<std::vector<BoundaryName>>("inlet_boundaries");
-      params.set<Real>("uu") = getParam<Real>("u_def");
-      params.set<Real>("vv") = getParam<Real>("v_def");
-      params.set<Real>("ww") = getParam<Real>("w_def");
-      params.set<PostprocessorName>("postprocessor") =
-          "Inlet_Average_" + var_name + "_" + _object_suffix;
+    // if using constant and uniform velocity values
+    InputParameters params = _factory.getValidParams("PostprocessorInflowBC");
+    params.set<NonlinearVariableName>("variable") = var_name;
+    params.set<std::vector<BoundaryName>>("boundary") =
+        getParam<std::vector<BoundaryName>>("inlet_boundaries");
+    params.set<Real>("uu") = getParam<Real>("u_def");
+    params.set<Real>("vv") = getParam<Real>("v_def");
+    params.set<Real>("ww") = getParam<Real>("w_def");
+    params.set<PostprocessorName>("postprocessor") =
+        "Inlet_Average_" + var_name + "_" + _object_suffix;
 
-      std::string bc_name = "PostprocessorInflowBC_" + var_name + "_" + _object_suffix;
-      _problem->addBoundaryCondition("PostprocessorInflowBC", bc_name, params);
-    }
-    else if (isParamValid("uvel"))
-    {
-      InputParameters params = _factory.getValidParams("PostprocessorCoupledInflowBC");
-      params.set<NonlinearVariableName>("variable") = var_name;
-      params.set<std::vector<BoundaryName>>("boundary") =
-          getParam<std::vector<BoundaryName>>("inlet_boundaries");
-      params.set<std::vector<VariableName>>("uvel") = {getParam<NonlinearVariableName>("uvel")};
-      if (isParamValid("vvel"))
-        params.set<std::vector<VariableName>>("vvel") = {getParam<NonlinearVariableName>("vvel")};
-      if (isParamValid("wvel"))
-        params.set<std::vector<VariableName>>("wvel") = {getParam<NonlinearVariableName>("wvel")};
-      params.set<PostprocessorName>("postprocessor") =
-          "Inlet_Average_" + var_name + "_" + _object_suffix;
+    std::string bc_name = "PostprocessorInflowBC_" + var_name + "_" + _object_suffix;
+    _problem->addBoundaryCondition("PostprocessorInflowBC", bc_name, params);
+  }
+  else if (isParamValid("uvel")) // checks if Navier-Stokes velocities are provided
+  {
+    // if using navier stokes velocities to couple to: (u, v, w)
+    InputParameters params = _factory.getValidParams("PostprocessorCoupledInflowBC");
+    params.set<NonlinearVariableName>("variable") = var_name;
+    params.set<std::vector<BoundaryName>>("boundary") =
+        getParam<std::vector<BoundaryName>>("inlet_boundaries");
+    params.set<std::vector<VariableName>>("uvel") = {getParam<NonlinearVariableName>("uvel")};
+    if (isParamValid("vvel"))
+      params.set<std::vector<VariableName>>("vvel") = {getParam<NonlinearVariableName>("vvel")};
+    if (isParamValid("wvel"))
+      params.set<std::vector<VariableName>>("wvel") = {getParam<NonlinearVariableName>("wvel")};
+    params.set<PostprocessorName>("postprocessor") =
+        "Inlet_Average_" + var_name + "_" + _object_suffix;
 
-      std::string bc_name = "PostprocessorCoupledInflowBC_" + var_name + "_" + _object_suffix;
-      _problem->addBoundaryCondition("PostprocessorCoupledInflowBC", bc_name, params);
-    }
-    else
-    {
-      InputParameters params = _factory.getValidParams("PostprocessorInflowBC");
-      params.set<NonlinearVariableName>("variable") = var_name;
-      params.set<std::vector<BoundaryName>>("boundary") =
-          getParam<std::vector<BoundaryName>>("inlet_boundaries");
-      params.set<PostprocessorName>("postprocessor") =
-          "Inlet_Average_" + var_name + "_" + _object_suffix;
+    std::string bc_name = "PostprocessorCoupledInflowBC_" + var_name + "_" + _object_suffix;
+    _problem->addBoundaryCondition("PostprocessorCoupledInflowBC", bc_name, params);
+  }
+  else
+  {
+    // if using prespecified functions
+    InputParameters params = _factory.getValidParams("PostprocessorInflowBC");
+    params.set<NonlinearVariableName>("variable") = var_name;
+    params.set<std::vector<BoundaryName>>("boundary") =
+        getParam<std::vector<BoundaryName>>("inlet_boundaries");
+    params.set<PostprocessorName>("postprocessor") =
+        "Inlet_Average_" + var_name + "_" + _object_suffix;
 
-      std::string bc_name = "PostprocessorInflowBC_" + var_name + "_" + _object_suffix;
-      _problem->addBoundaryCondition("PostprocessorInflowBC", bc_name, params);
-    }
+    std::string bc_name = "PostprocessorInflowBC_" + var_name + "_" + _object_suffix;
+    _problem->addBoundaryCondition("PostprocessorInflowBC", bc_name, params);
   }
 }
 
 void
-PrecursorAction::icAct(const std::string & var_name)
+PrecursorAction::addInitialConditions(const std::string & var_name)
 {
   if (getParam<bool>("jac_test"))
   {
@@ -414,67 +391,70 @@ PrecursorAction::icAct(const std::string & var_name)
 }
 
 void
-PrecursorAction::postAct(const std::string & var_name)
+PrecursorAction::addOutletPostprocessor(const std::string & var_name)
 {
   // looping precursors requires connecting outlet of core problem
   // to the inlet of the loop subproblem. In addition, the outlet of the
   // loop must be connected to the core problem.
+  if (getParam<bool>("constant_velocity_values"))
   {
-    if (isParamValid("uvel"))
+    // Area-averaged precursor conc at outlet for constant and uniform flow
+    std::string postproc_name = "Outlet_Average_" + var_name + "_" + _object_suffix;
+    InputParameters params = _factory.getValidParams("SideAverageValue");
+    std::vector<VariableName> varvec(1);
+    varvec[0] = var_name;
+    params.set<std::vector<VariableName>>("variable") = varvec;
+    params.set<std::vector<BoundaryName>>("boundary") =
+        getParam<std::vector<BoundaryName>>("outlet_boundaries");
+    params.set<std::vector<OutputName>>("outputs") = {"none"};
+     _problem->addPostprocessor("SideAverageValue", postproc_name, params);
+  }
+  else if (isParamValid("uvel")) // checks if Navier-Stokes velocities are provided
+  {
     {
-      {
-        std::string postproc_name = "Outlet_Total_" + var_name + "_" + _object_suffix;
-        InputParameters params = _factory.getValidParams("SideWeightedIntegralPostprocessor");
-        std::vector<VariableName> varvec(1);
-        varvec[0] = var_name;
-        params.set<std::vector<VariableName>>("variable") = varvec;
-        params.set<std::vector<BoundaryName>>("boundary") =
-            getParam<std::vector<BoundaryName>>("outlet_boundaries");
-        params.set<std::vector<OutputName>>("outputs") = {"none"};
-        params.set<std::vector<VariableName>>("weight") =
-            {getParam<NonlinearVariableName>("outlet_vel")};
-
-        _problem->addPostprocessor("SideWeightedIntegralPostprocessor", postproc_name, params);
-      }
-
-      {
-        std::string postproc_name = "Outlet_Average_" + var_name + "_" + _object_suffix;
-        InputParameters params = _factory.getValidParams("DivisionPostprocessor");
-        std::vector<VariableName> varvec(1);
-        varvec[0] = var_name;
-        params.set<PostprocessorName>("value1") = "Outlet_Total_" + var_name + "_" + _object_suffix;
-        params.set<PostprocessorName>("value2") = "Salt_Outflow_" + _object_suffix;
-        params.set<std::vector<OutputName>>("outputs") = {"none"};
-
-        _problem->addPostprocessor("DivisionPostprocessor", postproc_name, params);
-      }
-    }
-    else
-    {
-      std::string postproc_name = "Outlet_Average_" + var_name + "_" + _object_suffix;
-      InputParameters params = _factory.getValidParams("SideAverageValue");
+      // Total flow-weighted precursor conc at outlet
+      std::string postproc_name = "Outlet_Total_" + var_name + "_" + _object_suffix;
+      InputParameters params = _factory.getValidParams("SideWeightedIntegralPostprocessor");
       std::vector<VariableName> varvec(1);
       varvec[0] = var_name;
       params.set<std::vector<VariableName>>("variable") = varvec;
       params.set<std::vector<BoundaryName>>("boundary") =
           getParam<std::vector<BoundaryName>>("outlet_boundaries");
       params.set<std::vector<OutputName>>("outputs") = {"none"};
+      params.set<std::vector<VariableName>>("weight") =
+          {getParam<NonlinearVariableName>("outlet_vel")};
 
-      _problem->addPostprocessor("SideAverageValue", postproc_name, params);
+      _problem->addPostprocessor("SideWeightedIntegralPostprocessor", postproc_name, params);
     }
-  }
-  {
-    std::string postproc_name = "Inlet_Average_" + var_name + "_" + _object_suffix;
-    InputParameters params = _factory.getValidParams("Receiver");
-    params.set<ExecFlagEnum>("execute_on") = "nonlinear";
-    params.set<std::vector<OutputName>>("outputs") = {"none"};
 
-    _problem->addPostprocessor("Receiver", postproc_name, params);
+    {
+      // Area-averaged flow-weighted precursor conc at outlet
+      std::string postproc_name = "Outlet_Average_" + var_name + "_" + _object_suffix;
+      InputParameters params = _factory.getValidParams("DivisionPostprocessor");
+      std::vector<VariableName> varvec(1);
+      varvec[0] = var_name;
+      params.set<PostprocessorName>("value1") = "Outlet_Total_" + var_name + "_" + _object_suffix;
+      params.set<PostprocessorName>("value2") = "Coolant_Outflow_" + _object_suffix;
+      params.set<std::vector<OutputName>>("outputs") = {"none"};
+       _problem->addPostprocessor("DivisionPostprocessor", postproc_name, params);
+    }
   }
 }
 
 void
-PrecursorAction::transferAct(const std::string & var_name)
+PrecursorAction::addInletPostprocessor(const std::string & var_name)
+{
+  // Area-averaged precursor conc at inlet
+  std::string postproc_name = "Inlet_Average_" + var_name + "_" + _object_suffix;
+  InputParameters params = _factory.getValidParams("Receiver");
+  params.set<ExecFlagEnum>("execute_on") = "nonlinear";
+  params.set<std::vector<OutputName>>("outputs") = {"none"};
+
+  _problem->addPostprocessor("Receiver", postproc_name, params);
+}
+
+void
+PrecursorAction::addMultiAppTransfer(const std::string & var_name)
 {
   // from main app to loop app
   {
@@ -507,9 +487,9 @@ PrecursorAction::transferAct(const std::string & var_name)
 }
 
 void
-PrecursorAction::addOutflowPostprocessor()
+PrecursorAction::addCoolantOutflowPostprocessor()
 {
-  std::string postproc_name = "Salt_Outflow_" + _object_suffix;
+  std::string postproc_name = "Coolant_Outflow_" + _object_suffix;
   InputParameters params = _factory.getValidParams("SideWeightedIntegralPostprocessor");
   params.set<std::vector<VariableName>>("variable") =
       {getParam<NonlinearVariableName>("outlet_vel")};
@@ -517,10 +497,17 @@ PrecursorAction::addOutflowPostprocessor()
       getParam<std::vector<BoundaryName>>("outlet_boundaries");
   params.set<std::vector<OutputName>>("outputs") = {"none"};
 
-  //InputParameters weight_param = emptyInputParameters();
-  //weight_param.addCoupledVar("weight", 1, "The weight variable");
-  //params.applyParameter(weight_param, "weight");
-  //params.set<std::vector<VariableName>>("weight") = {1};
-
   _problem->addPostprocessor("SideWeightedIntegralPostprocessor", postproc_name, params);
+}
+
+void
+PrecursorAction::setVarNameAndBlock(InputParameters & params, const std::string & var_name)
+{
+  params.set<NonlinearVariableName>("variable") = var_name;
+    if (isParamValid("kernel_block"))
+      params.set<std::vector<SubdomainName>>("block") =
+          getParam<std::vector<SubdomainName>>("kernel_block");
+    else if (isParamValid("block"))
+      params.set<std::vector<SubdomainName>>("block") =
+          getParam<std::vector<SubdomainName>>("block");
 }

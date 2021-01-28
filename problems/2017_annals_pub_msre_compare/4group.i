@@ -49,6 +49,7 @@ H=162.56
     v_def = ${flow_velocity}
     w_def = 0
     nt_exp_form = false
+    loop_precursors = false
     family = MONOMIAL
     order = CONSTANT
     # jac_test = true
