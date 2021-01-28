@@ -40,6 +40,7 @@ flow_velocity=0.5 # cm/s. See MSRE-properties.ods
   v_def = 0
   w_def = 0
   nt_exp_form = false
+  loop_precursors = false
   family = MONOMIAL
   order = FIRST
  [../]
