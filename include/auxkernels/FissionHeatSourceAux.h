@@ -12,7 +12,7 @@ InputParameters validParams<FissionHeatSourceAux>();
 /**
  * computes the heating term due to fissions.
  * \f[
- *   \dot{Q} = \sum_g \phi_g \Sigma_{g,f} \q_{fiss}
+ *   \dot{Q} = \sum_g \phi_g \Sigma_{g,f} q_{fiss}
  * \f]
  * Where \f$ q_{fiss} \f$ is the average heat produced per fission.
  * Note that in particular, this kernel is not meant for transients and instead is for

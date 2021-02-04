@@ -10,7 +10,7 @@ InputParameters validParams<DiffusionNoBCBC>();
 
 /**
  * This kernel implements the Laplacian operator:
- * $\nabla u \cdot \nabla \phi_i$
+ * \f$\nabla u \cdot \nabla \phi_i\f$
  */
 class DiffusionNoBCBC : public IntegratedBC
 {
