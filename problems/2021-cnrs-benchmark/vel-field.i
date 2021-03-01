@@ -1,3 +1,5 @@
+# Step 0.1: Velocity Field
+
 density = .002      # kg cm-3
 viscosity = .5      # dynamic viscosity, mu = nu * rho, kg cm-1 s-1
 alpha = 1           # INS SUPG and PSPG stabilization parameter
