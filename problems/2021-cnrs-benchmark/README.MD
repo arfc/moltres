@@ -20,3 +20,22 @@ along AA' or BB' unless otherwise stated.
 - ```vel-field_exodus.e```: Exodus output of the velocity field solution
 - ```vel-field_csv_aa_0002.csv```: Velocity values along the AA' centerline
 - ```vel-field_csv_bb_0002.csv```: Velocity values along the BB' centerline
+
+## Step 0.2: Neutronics
+
+### Input file
+
+- ```nts.i```
+
+### Output files
+
+- ```nts_exodus.e```: Exodus ouput of the neutron group fluxes and delayed
+neutron precursor distributions
+- ```nts_csv_aa_0002.csv```: Neutron group flux values along the AA'
+centerline
+
+## Step 0.3: Temperature
+
+### Input file
+
+- ```temp.i```
