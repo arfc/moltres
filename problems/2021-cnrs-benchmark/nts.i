@@ -1,4 +1,4 @@
-# Step 0.2: Neutronics
+# Step 0.2: Neutronics input file
 
 [GlobalParams]
   num_groups = 6

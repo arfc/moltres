@@ -1,4 +1,4 @@
-# Step 0.1: Velocity Field
+# Step 0.1: Velocity Field input file
 
 density = .002      # kg cm-3
 viscosity = .5      # dynamic viscosity, mu = nu * rho, kg cm-1 s-1
