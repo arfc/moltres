@@ -1,7 +1,7 @@
 # CNRS Benchmark
 
 This subdirectory contains the Moltres input files to run the various subcases
-in the CNRS multiphysics benchmark for MSRs (Tiberga et al., 2021).
+in the CNRS multiphysics benchmark for MSRs (Tiberga et al., 2020).
 
 Each subsection lists the input and output files relevant to each subcase.
 The domain is a homogeneous, 2m by 2m square of molten salt. AA' and BB' refer
@@ -29,7 +29,7 @@ along AA' or BB' unless otherwise stated.
 
 ### Output files
 
-- ```nts_exodus.e```: Exodus ouput of the neutron group fluxes and delayed
+- ```nts_exodus.e```: Exodus output of the neutron group fluxes and delayed
 neutron precursor distributions
 - ```nts_csv_aa_0002.csv```: Neutron group flux values along the AA'
 centerline
@@ -38,4 +38,12 @@ centerline
 
 ### Input file
 
-- ```temp.i```
+- ```temperature.i```
+
+### Output files
+
+- ```temperature_exodus.e```: Exodus output of the temperature distribution
+- ```temperature_csv_aa_0002.csv```: Temperature values along the AA'
+centerline
+- ```temperature_csv_bb_0002.csv```: Temperature values along the BB'
+centerline
