@@ -46,6 +46,7 @@
     nt_exp_form = false
     family = MONOMIAL
     order = CONSTANT
+    loop_precursors = false
     transient = false
     scaling = 1e3
     eigen = true
