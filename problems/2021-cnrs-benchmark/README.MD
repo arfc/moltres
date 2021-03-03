@@ -9,6 +9,14 @@ to the horizontal and vertical centerlines across the domain. All reported
 values (e.g. velocity, temperature, etc.) are measured at 0.01m intervals
 along AA' or BB' unless otherwise stated.
 
+Step 0.1 does not require much memory to run and takes about 1 minute on a
+single processor. Step 0.2 is more computationally and memory intensive; it
+takes approximately 7 minutes with 256 processors on the Blue Waters
+supercomputer. ```bw_job_script.pbs``` provides a template for running the
+Moltres simulation on Blue Waters. Step 0.3 may be memory intensive and it
+requires the neutron flux distribution from the Step 0.2 ```nts_exodus.e```
+output file.
+
 ## Step 0.1: Velocity Field
 
 ### Input file
@@ -47,3 +55,23 @@ centerline
 centerline
 - ```temperature_csv_bb_0002.csv```: Temperature values along the BB'
 centerline
+
+## Step 1.1: Circulating Fuel
+
+TODO: Add input and output files for Step 1.1
+
+## Step 1.2: Power Coupling
+
+TODO: Add input and output files for Step 1.2
+
+## Step 1.3: Buoyancy
+
+TODO: Add input and output files for Step 1.3
+
+## Step 1.4: Full Coupling
+
+TODO: Add input and output files for Step 1.4
+
+## Step 2.1: Forced Convection Transient
+
+TODO: Add input and output files for Step 2.1

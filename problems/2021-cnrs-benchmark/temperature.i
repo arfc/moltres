@@ -1,4 +1,5 @@
 # Step 0.3: Temperature input file
+# Requires neutron fluxes from Step 0.2
 
 density = .002      # kg cm-3
 cp = 3075           # J kg-1 K-1, 6.15 / 2.0e-3
@@ -233,7 +234,7 @@ alpha = 1           # INS SUPG and PSPG stabilization parameter
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
-    property_tables_root = '../neutron-data/benchmark_'
+    property_tables_root = '../../property_file_dir/cnrs-benchmark/benchmark_'
     interp_type = 'linear'
     prop_names = 'k rho cp'
     prop_values = '${k} ${density} ${cp}'
