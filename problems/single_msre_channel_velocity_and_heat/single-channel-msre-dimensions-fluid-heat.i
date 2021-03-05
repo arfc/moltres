@@ -96,7 +96,7 @@ length = 162.56
   [../]
   [./temp_mod_transport]
     type = MatDiffusion
-    D_name = 'k'
+    diffusivity = 'k'
     variable = temp
     block = 'moderator'
   [../]
