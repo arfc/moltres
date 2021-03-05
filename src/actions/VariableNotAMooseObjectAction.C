@@ -6,8 +6,6 @@
 #include "libmesh/string_to_enum.h"
 #include "libmesh/fe_type.h"
 
-#include <iostream>
-
 template <>
 InputParameters
 validParams<VariableNotAMooseObjectAction>()
