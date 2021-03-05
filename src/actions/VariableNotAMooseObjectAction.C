@@ -52,15 +52,20 @@ void
 VariableNotAMooseObjectAction::addVariable(const std::string & var_name)
 {
   std::set<SubdomainID> blocks = getSubdomainIDs();
+  auto fe_type = AddVariableAction::feType(_pars);
+  auto type = AddVariableAction::determineType(fe_type, 1);
+  auto var_params = _factory.getValidParams(type);
+  var_params.applySpecificParameters(_pars, {"family", "order"});
+  var_params.set<std::vector<Real>>("scaling") = {getParam<Real>("scaling")};
+
   if (blocks.empty())
-    _problem->addVariable(var_name,
-                          FEType(Utility::string_to_enum<Order>(getParam<MooseEnum>("order")),
-                                 Utility::string_to_enum<FEFamily>(getParam<MooseEnum>("family"))),
-                          getParam<Real>("scaling"));
+    _problem->addVariable(type, var_name, var_params);
+
   else
-    _problem->addVariable(var_name,
-                          FEType(Utility::string_to_enum<Order>(getParam<MooseEnum>("order")),
-                                 Utility::string_to_enum<FEFamily>(getParam<MooseEnum>("family"))),
-                          getParam<Real>("scaling"),
-                          &blocks);
+  {
+    for (const SubdomainID & id : blocks)
+      var_params.set<std::vector<SubdomainName>>("block").push_back(Moose::stringify(id));
+
+    _problem->addVariable(type, var_name, var_params);
+  }
 }

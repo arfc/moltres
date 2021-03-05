@@ -25,7 +25,7 @@
   [./diff]
     type = MatDiffusion
     variable = u
-    D_name = 'k'
+    diffusivity = 'k'
     block = '0 1'
   [../]
   [./time]

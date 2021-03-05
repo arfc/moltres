@@ -139,7 +139,7 @@ nt_scale=1e13
   [../]
   [./temp_diffusion]
     type = MatDiffusion
-    D_name = 'k'
+    diffusivity = 'k'
     variable = temp
   [../]
   [./temp_source_fuel]

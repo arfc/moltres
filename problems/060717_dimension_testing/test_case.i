@@ -69,7 +69,7 @@ diri_temp=1
   [../]
   [./temp_diffusion]
     type = MatDiffusion
-    D_name = 'k'
+    diffusivity = 'k'
     variable = temp
   [../]
   [./temp_advection_fuel]

@@ -32,7 +32,7 @@ velocity=1
   [./diffusion]
     type = MatDiffusion
     variable = u
-    D_name = 'mu'
+    diffusivity = 'mu'
   [../]
   # [./time]
   #   type = TimeDerivative
