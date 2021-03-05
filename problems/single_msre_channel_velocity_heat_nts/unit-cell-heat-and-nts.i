@@ -153,7 +153,7 @@ nt_scale=1e13
   [../]
   [./temp_mod_transport]
     type = MatDiffusion
-    D_name = 'k'
+    diffusivity = 'k'
     variable = temp
     # block = 'moderator'
   [../]

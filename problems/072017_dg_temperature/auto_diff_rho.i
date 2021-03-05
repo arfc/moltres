@@ -143,7 +143,7 @@ sigma_val=.6
   [../]
   [./temp_diffusion]
     type = MatDiffusion
-    D_name = 'k'
+    diffusivity = 'k'
     variable = temp
   [../]
   [./temp_advection_fuel]
@@ -187,7 +187,7 @@ sigma_val=.6
     variable = temp
     sigma = ${sigma_val}
     epsilon = -1
-    D_name = 'k'
+    diffusivity = 'k'
     postprocessor = coreEndTemp
     offset = -50
   [../]

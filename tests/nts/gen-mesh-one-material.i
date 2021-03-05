@@ -90,7 +90,7 @@
   [./temp_cond]
     type = MatDiffusion
     variable = temp
-    D_name = 'k'
+    diffusivity = 'k'
     save_in = 'diffus_resid tot_resid'
   [../]
   # [./temp_cond]
