@@ -1,13 +1,16 @@
 # CNRS Benchmark
 
 This subdirectory contains the Moltres input files to run the various subcases
-in the CNRS multiphysics benchmark for MSRs (Tiberga et al., 2020).
+in the CNRS multiphysics benchmark for MSRs [1]. The required cross section
+data files are in the ```property_file_dir/cnrs-benchmark/``` subdirectory. Run
+the ```feedback.py``` script in that subdirectory to generate the extrapolated
+cross section data based on thermal salt expansion feedback.
 
-Each subsection lists the input and output files relevant to each subcase.
-The domain is a homogeneous, 2m by 2m square of molten salt. AA' and BB' refer
-to the horizontal and vertical centerlines across the domain. All reported
-values (e.g. velocity, temperature, etc.) are measured at 0.01m intervals
-along AA' or BB' unless otherwise stated.
+Each subsection below lists the input and output files relevant to each
+subcase. The domain is a homogeneous, 2m by 2m square of molten salt. AA' and
+BB' refer to the horizontal and vertical centerlines across the domain. All
+reported values (e.g. velocity, temperature, etc.) are measured at 0.01m
+intervals along AA' or BB' unless otherwise stated.
 
 Step 0.1 does not require much memory to run and takes about 1 minute on a
 single processor. Step 0.2 is more computationally and memory intensive; it
@@ -75,3 +78,7 @@ TODO: Add input and output files for Step 1.4
 ## Step 2.1: Forced Convection Transient
 
 TODO: Add input and output files for Step 2.1
+
+[1] Tiberga et al., "Results from a multi-physics numerical benchmark for codes
+dedicated to molten salt fast reactors", Annals of Nuclear Energy, vol. 142,
+July 2020, 107428.
