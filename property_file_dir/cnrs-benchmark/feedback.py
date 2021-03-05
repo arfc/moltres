@@ -8,7 +8,7 @@ def extrapolate(xs_name):
     based on the thermal salt expansion feedback formula from [1]. Writes
     the extrapolated data back into the .txt cross section files in the
     Moltres-compatible format.
-    
+
     Parameters
     ----------
     xs_name : list of str
