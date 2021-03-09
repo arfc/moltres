@@ -13,6 +13,6 @@ protected:
   virtual Real computeQpResidual() override;
   virtual Real computeQpJacobian() override;
 
-  Real _htc;
+  const Real & _htc;
   Real _tref;
 };
