@@ -49,6 +49,7 @@ H=162.56
     v_def = ${flow_velocity}
     w_def = 0
     nt_exp_form = false
+    loop_precursors = false
     family = MONOMIAL
     order = CONSTANT
     # jac_test = true
@@ -83,7 +84,7 @@ H=162.56
   [../]
   [./temp_diffusion]
     type = MatDiffusion
-    D_name = 'k'
+    diffusivity = 'k'
     variable = temp
   [../]
   [./temp_advection_fuel]

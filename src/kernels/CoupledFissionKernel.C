@@ -24,8 +24,10 @@ CoupledFissionKernel::CoupledFissionKernel(const InputParameters & parameters)
     ScalarTransportBase(parameters),
     _nsf(getMaterialProperty<std::vector<Real>>("nsf")),
     _d_nsf_d_temp(getMaterialProperty<std::vector<Real>>("d_nsf_d_temp")),
-    _chi(getMaterialProperty<std::vector<Real>>("chi")),
-    _d_chi_d_temp(getMaterialProperty<std::vector<Real>>("d_chi_d_temp")),
+    _chi_t(getMaterialProperty<std::vector<Real>>("chi_t")),
+    _chi_p(getMaterialProperty<std::vector<Real>>("chi_p")),
+    _d_chi_t_d_temp(getMaterialProperty<std::vector<Real>>("d_chi_t_d_temp")),
+    _d_chi_p_d_temp(getMaterialProperty<std::vector<Real>>("d_chi_p_d_temp")),
     _beta(getMaterialProperty<Real>("beta")),
     _d_beta_d_temp(getMaterialProperty<Real>("d_beta_d_temp")),
     _group(getParam<unsigned int>("group_number") - 1),
@@ -56,9 +58,11 @@ CoupledFissionKernel::computeQpResidual()
     r += -_nsf[_qp][i] * computeConcentration((*_group_fluxes[i]), _qp);
 
   if (_account_delayed)
-    r *= (1. - _beta[_qp]);
+    r *= (1. - _beta[_qp]) * _chi_p[_qp][_group];
+  else
+    r *= _chi_t[_qp][_group];
 
-  return _test[_i][_qp] * _chi[_qp][_group] * r;
+  return _test[_i][_qp] * r;
 }
 
 Real
@@ -75,9 +79,11 @@ CoupledFissionKernel::computeQpJacobian()
   }
 
   if (_account_delayed)
-    jac *= (1. - _beta[_qp]);
+    jac *= (1. - _beta[_qp]) * _chi_p[_qp][_group];
+  else
+    jac *= _chi_t[_qp][_group];
 
-  return _test[_i][_qp] * _chi[_qp][_group] * jac;
+  return _test[_i][_qp] * jac;
 }
 
 Real
@@ -88,10 +94,12 @@ CoupledFissionKernel::computeQpOffDiagJacobian(unsigned int jvar)
   {
     if (jvar == _flux_ids[i])
     {
-      jac = -_test[_i][_qp] * _chi[_qp][_group] * _nsf[_qp][i] *
+      jac = -_test[_i][_qp] * _nsf[_qp][i] *
             computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp);
       if (_account_delayed)
-        jac *= (1. - _beta[_qp]);
+        jac *= (1. - _beta[_qp]) * _chi_p[_qp][_group];
+      else
+        jac *= _chi_t[_qp][_group];
       break;
     }
   }
@@ -102,13 +110,13 @@ CoupledFissionKernel::computeQpOffDiagJacobian(unsigned int jvar)
     {
       if (_account_delayed)
         jac += -_test[_i][_qp] * computeConcentration((*_group_fluxes[i]), _qp) *
-               (_d_chi_d_temp[_qp][_group] * _phi[_j][_qp] * _nsf[_qp][i] * (1. - _beta[_qp]) +
-                _chi[_qp][_group] * _d_nsf_d_temp[_qp][i] * _phi[_j][_qp] * (1. - _beta[_qp]) +
-                _chi[_qp][_group] * _nsf[_qp][i] * -_d_beta_d_temp[_qp] * _phi[_j][_qp]);
+               (_d_chi_p_d_temp[_qp][_group] * _phi[_j][_qp] * _nsf[_qp][i] * (1. - _beta[_qp]) +
+                _chi_p[_qp][_group] * _d_nsf_d_temp[_qp][i] * _phi[_j][_qp] * (1. - _beta[_qp]) +
+                _chi_p[_qp][_group] * _nsf[_qp][i] * -_d_beta_d_temp[_qp] * _phi[_j][_qp]);
       else
         jac += -_test[_i][_qp] * computeConcentration((*_group_fluxes[i]), _qp) *
-               (_d_chi_d_temp[_qp][_group] * _phi[_j][_qp] * _nsf[_qp][i] +
-                _chi[_qp][_group] * _d_nsf_d_temp[_qp][i] * _phi[_j][_qp]);
+               (_d_chi_t_d_temp[_qp][_group] * _phi[_j][_qp] * _nsf[_qp][i] +
+                _chi_t[_qp][_group] * _d_nsf_d_temp[_qp][i] * _phi[_j][_qp]);
     }
   }
 

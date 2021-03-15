@@ -39,7 +39,8 @@ RoddedMaterial::computeSplineAbsorbingQpProperties()
                      1.6e-19; // convert from MeV to Joules
     _diffcoef[_qp][i] = _xsec_spline_interpolators["DIFFCOEF"][i].sample(_temperature[_qp]);
     _recipvel[_qp][i] = _xsec_spline_interpolators["RECIPVEL"][i].sample(_temperature[_qp]);
-    _chi[_qp][i] = _xsec_spline_interpolators["CHI"][i].sample(_temperature[_qp]);
+    _chi_t[_qp][i] = _xsec_spline_interpolators["CHI_T"][i].sample(_temperature[_qp]);
+    _chi_p[_qp][i] = _xsec_spline_interpolators["CHI_P"][i].sample(_temperature[_qp]);
     _d_remxs_d_temp[_qp][i] =
         _xsec_spline_interpolators["REMXS"][i].sampleDerivative(_temperature[_qp]) * _absorb_factor;
     _d_fissxs_d_temp[_qp][i] = 0.0;
@@ -52,8 +53,10 @@ RoddedMaterial::computeSplineAbsorbingQpProperties()
         _xsec_spline_interpolators["DIFFCOEF"][i].sampleDerivative(_temperature[_qp]);
     _d_recipvel_d_temp[_qp][i] =
         _xsec_spline_interpolators["RECIPVEL"][i].sampleDerivative(_temperature[_qp]);
-    _d_chi_d_temp[_qp][i] =
-        _xsec_spline_interpolators["CHI"][i].sampleDerivative(_temperature[_qp]);
+    _d_chi_t_d_temp[_qp][i] =
+        _xsec_spline_interpolators["CHI_T"][i].sampleDerivative(_temperature[_qp]);
+    _d_chi_p_d_temp[_qp][i] =
+        _xsec_spline_interpolators["CHI_P"][i].sampleDerivative(_temperature[_qp]);
   }
   for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
   {
@@ -87,7 +90,8 @@ RoddedMaterial::computeQpProperties()
   _fisse[_qp].resize(_vec_lengths["FISSE"]);
   _diffcoef[_qp].resize(_vec_lengths["DIFFCOEF"]);
   _recipvel[_qp].resize(_vec_lengths["RECIPVEL"]);
-  _chi[_qp].resize(_vec_lengths["CHI"]);
+  _chi_t[_qp].resize(_vec_lengths["CHI_T"]);
+  _chi_p[_qp].resize(_vec_lengths["CHI_P"]);
   _gtransfxs[_qp].resize(_vec_lengths["GTRANSFXS"]);
   _beta_eff[_qp].resize(_vec_lengths["BETA_EFF"]);
   _decay_constant[_qp].resize(_vec_lengths["DECAY_CONSTANT"]);
@@ -97,7 +101,8 @@ RoddedMaterial::computeQpProperties()
   _d_fisse_d_temp[_qp].resize(_vec_lengths["FISSE"]);
   _d_diffcoef_d_temp[_qp].resize(_vec_lengths["DIFFCOEF"]);
   _d_recipvel_d_temp[_qp].resize(_vec_lengths["RECIPVEL"]);
-  _d_chi_d_temp[_qp].resize(_vec_lengths["CHI"]);
+  _d_chi_t_d_temp[_qp].resize(_vec_lengths["CHI_T"]);
+  _d_chi_p_d_temp[_qp].resize(_vec_lengths["CHI_P"]);
   _d_gtransfxs_d_temp[_qp].resize(_vec_lengths["GTRANSFXS"]);
   _d_beta_eff_d_temp[_qp].resize(_vec_lengths["BETA_EFF"]);
   _d_decay_constant_d_temp[_qp].resize(_vec_lengths["DECAY_CONSTANT"]);

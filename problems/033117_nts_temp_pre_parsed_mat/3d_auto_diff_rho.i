@@ -20,13 +20,14 @@ offset=2.5
 []
 
 [Mesh]
-  file = '3d_msre_29x29_136.msh'
-  # file = jac_test.msh
-[]
-
-[MeshModifiers]
+  [./file]
+    type = FileMeshGenerator
+    file = '3d_msre_29x29_136.msh'
+    # file = jac_test.msh
+  [../]
   [./scale]
-    type = Transform
+    type = TransformGenerator
+    input = file
     transform = SCALE
     vector_value = '1 1 ${scale}'
   [../]
@@ -63,6 +64,7 @@ offset=2.5
     v_def = 0
     w_def = ${flow_velocity}
     nt_exp_form = false
+    loop_precursors = false
     family = MONOMIAL
     order = CONSTANT
     jac_test = true
@@ -148,7 +150,7 @@ offset=2.5
   # [../]
   [./temp_diffusion]
     type = MatDiffusion
-    D_name = 'k'
+    diffusivity = 'k'
     variable = temp
   [../]
   [./temp_advection_fuel]

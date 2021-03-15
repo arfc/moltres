@@ -90,7 +90,7 @@
   [./temp_cond]
     type = MatDiffusion
     variable = temp
-    D_name = 'k'
+    diffusivity = 'k'
     save_in = 'diffus_resid tot_resid'
   [../]
   # [./temp_cond]
@@ -102,7 +102,7 @@
   # [../]
   [./temp_source]
     type = FissionHeatSource
-    tot_fissions = tot_fissions
+    tot_fission_heat = tot_fission_heat
     variable = temp
     save_in = 'src_resid tot_resid'
   [../]
@@ -139,7 +139,7 @@
   [./Qf]
     type = FissionHeatSourceAux
     variable = Qf
-    tot_fissions = tot_fissions
+    tot_fission_heat = tot_fission_heat
   [../]
   [./diffus_temp]
     type = MatDiffusionAux
@@ -212,8 +212,8 @@
     group_fluxes = 'group1 group2'
     execute_on = linear
   [../]
-  [./tot_fissions]
-    type = ElmIntegTotFissPostprocessor
+  [./tot_fission_heat]
+    type = ElmIntegTotFissHeatPostprocessor
     execute_on = linear
   [../]
   [./group1norm]

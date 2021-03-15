@@ -40,7 +40,7 @@ diri_temp=922
   family = MONOMIAL
   order = CONSTANT
   init_from_file = true
-  loop_precs = true
+  loop_precursors = true
   multi_app = loopApp
   is_loopapp = true
   inlet_boundaries = left
@@ -67,7 +67,7 @@ diri_temp=922
   # [../]
   # [./temp_diffusion]
   #   type = MatDiffusion
-  #   D_name = 'k'
+  #   diffusivity = 'k'
   #   variable = temp
   # [../]
   # [./temp_advection_fuel]

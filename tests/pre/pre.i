@@ -27,6 +27,7 @@ global_temperature=922
     v_def = ${flow_velocity}
     w_def = 0
     nt_exp_form = false
+    loop_precursors = false
     family = MONOMIAL
     order = CONSTANT
     block = 'fuel'
