@@ -1,12 +1,6 @@
-#ifndef POSTPROCESSORCOUPLEDINFLOWBC_H
-#define POSTPROCESSORCOUPLEDINFLOWBC_H
+#pragma once
 
 #include "IntegratedBC.h"
-
-class PostprocessorCoupledInflowBC;
-
-template <>
-InputParameters validParams<PostprocessorCoupledInflowBC>();
 
 /**
  * This class computes the residual and Jacobian contributions for the
@@ -17,6 +11,8 @@ class PostprocessorCoupledInflowBC : public IntegratedBC
 {
 public:
   PostprocessorCoupledInflowBC(const InputParameters & parameters);
+
+  static InputParameters validParams();
 
 protected:
   const PostprocessorValue & _pp_value;
@@ -31,5 +27,3 @@ private:
   const VariableValue & _vel_y;
   const VariableValue & _vel_z;
 };
-
-#endif // POSTPROCESSORCOUPLEDINFLOWBC_H

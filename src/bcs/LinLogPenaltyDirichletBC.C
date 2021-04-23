@@ -3,12 +3,11 @@
 
 registerMooseObject("MoltresApp", LinLogPenaltyDirichletBC);
 
-template <>
 InputParameters
-validParams<LinLogPenaltyDirichletBC>()
+LinLogPenaltyDirichletBC::validParams()
 {
-  InputParameters params = validParams<IntegratedBC>();
-  params += validParams<ScalarTransportBase>();
+  InputParameters params = IntegratedBC::validParams();
+  params += ScalarTransportBase::validParams();
   params.addRequiredParam<Real>("penalty", "LinLogPenalty scalar");
   params.addParam<Real>("value", 0.0, "Boundary value of the variable");
 

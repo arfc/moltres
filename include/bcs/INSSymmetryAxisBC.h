@@ -1,13 +1,6 @@
-#ifndef INSSYMMETRYAXISBC_H
-#define INSSYMMETRYAXISBC_H
+#pragma once
 
 #include "IntegratedBC.h"
-
-// Forward Declarations
-class INSSymmetryAxisBC;
-
-template <>
-InputParameters validParams<INSSymmetryAxisBC>();
 
 /**
  * This class computes momentum equation residual and Jacobian
@@ -19,12 +12,14 @@ class INSSymmetryAxisBC : public IntegratedBC
 public:
   INSSymmetryAxisBC(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
   virtual ~INSSymmetryAxisBC() {}
 
 protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
-  virtual Real computeQpOffDiagJacobian(unsigned jvar);
+  virtual Real computeQpResidual() override;
+  virtual Real computeQpJacobian() override;
+  virtual Real computeQpOffDiagJacobian(unsigned jvar) override;
 
   // Coupled variables
   const VariableValue & _u_vel;
@@ -53,5 +48,3 @@ protected:
   unsigned _component;
   bool _integrate_p_by_parts;
 };
-
-#endif // INSSYMMETRYAXISBC_H
