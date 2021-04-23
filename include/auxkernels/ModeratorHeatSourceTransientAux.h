@@ -1,13 +1,6 @@
-#ifndef MODERATORHEATSOURCETRANSIENTAUX_H
-#define MODERATORHEATSOURCETRANSIENTAUX_H
+#pragma once
 
 #include "AuxKernel.h"
-
-// Forward Declarations
-class ModeratorHeatSourceTransientAux;
-
-template <>
-InputParameters validParams<ModeratorHeatSourceTransientAux>();
 
 /**
  * When a reactor runs, gamma rays are emitted in extraordinary quantity.
@@ -26,11 +19,11 @@ class ModeratorHeatSourceTransientAux : public AuxKernel
 public:
   ModeratorHeatSourceTransientAux(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
 protected:
-  virtual Real computeValue();
+  virtual Real computeValue() override;
 
   const PostprocessorValue & _average_fission_heat;
   const Function & _gamma;
 };
-
-#endif // MODERATORHEATSOURCETRANSIENTAUX_H

@@ -1,14 +1,7 @@
-#ifndef MATDIFFUSIONAUX_H
-#define MATDIFFUSIONAUX_H
+#pragma once
 
 #include "AuxKernel.h"
 #include "MaterialProperty.h"
-
-// Forward Declaration
-class MatDiffusionAux;
-
-template <>
-InputParameters validParams<MatDiffusionAux>();
 
 /**
  * Computes the Euclidean norm of the flux of some diffusing variable at
@@ -23,12 +16,12 @@ class MatDiffusionAux : public AuxKernel
 public:
   MatDiffusionAux(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
 protected:
-  virtual Real computeValue();
+  virtual Real computeValue() override;
 
   std::string _prop_name;
   const VariableGradient & _grad_diffuse_var;
   const MaterialProperty<Real> * _diff;
 };
-
-#endif // MATDIFFUSIONAUX_H
