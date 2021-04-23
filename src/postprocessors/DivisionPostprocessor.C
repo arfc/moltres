@@ -2,11 +2,10 @@
 
 registerMooseObject("MoltresApp", DivisionPostprocessor);
 
-template <>
 InputParameters
-validParams<DivisionPostprocessor>()
+DivisionPostprocessor::validParams()
 {
-  InputParameters params = validParams<DifferencePostprocessor>();
+  InputParameters params = DifferencePostprocessor::validParams();
   return params;
 }
 

@@ -1,20 +1,15 @@
-#ifndef ELMINTEGTOTFISSNTSPOSTPROCESSOR_H
-#define ELMINTEGTOTFISSNTSPOSTPROCESSOR_H
+#pragma once
 
 #include "ElementIntegralPostprocessor.h"
 #include "MooseVariableInterface.h"
-
-// Forward Declarations
-class ElmIntegTotFissNtsPostprocessor;
-
-template <>
-InputParameters validParams<ElmIntegTotFissNtsPostprocessor>();
 
 class ElmIntegTotFissNtsPostprocessor : public ElementIntegralPostprocessor
 /* public MooseVariableInterface */
 {
 public:
   ElmIntegTotFissNtsPostprocessor(const InputParameters & parameters);
+
+  static InputParameters validParams();
 
 protected:
   virtual Real computeQpIntegral() override;
@@ -24,5 +19,3 @@ protected:
   std::vector<MooseVariableFEBase *> _vars;
   std::vector<const VariableValue *> _group_fluxes;
 };
-
-#endif

@@ -2,11 +2,10 @@
 
 registerMooseObject("MoltresApp", SideWeightedIntegralPostprocessor);
 
-template <>
 InputParameters
-validParams<SideWeightedIntegralPostprocessor>()
+SideWeightedIntegralPostprocessor::validParams()
 {
-  InputParameters params = validParams<SideIntegralVariablePostprocessor>();
+  InputParameters params = SideIntegralVariablePostprocessor::validParams();
   params.addClassDescription("Postprocessor for calculating the weighted integral sum/average of a "
                              "variable along a boundary");
   params.addCoupledVar("weight",

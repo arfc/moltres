@@ -2,12 +2,11 @@
 
 registerMooseObject("MoltresApp", IntegralOldVariablePostprocessor);
 
-template <>
 InputParameters
-validParams<IntegralOldVariablePostprocessor>()
+IntegralOldVariablePostprocessor::validParams()
 {
-  InputParameters params = validParams<ElementIntegralPostprocessor>();
-  params += validParams<ScalarTransportBase>();
+  InputParameters params = ElementIntegralPostprocessor::validParams();
+  params += ScalarTransportBase::validParams();
   params.addRequiredCoupledVar("variable", "The name of the variable that this object operates on");
   return params;
 }

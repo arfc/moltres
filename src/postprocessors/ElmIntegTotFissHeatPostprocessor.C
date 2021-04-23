@@ -2,11 +2,10 @@
 
 registerMooseObject("MoltresApp", ElmIntegTotFissHeatPostprocessor);
 
-template <>
 InputParameters
-validParams<ElmIntegTotFissHeatPostprocessor>()
+ElmIntegTotFissHeatPostprocessor::validParams()
 {
-  InputParameters params = validParams<ElmIntegTotFissPostprocessor>();
+  InputParameters params = ElmIntegTotFissPostprocessor::validParams();
   return params;
 }
 
