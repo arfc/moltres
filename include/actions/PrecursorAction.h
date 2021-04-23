@@ -1,5 +1,4 @@
-#ifndef PRECURSORACTION_H
-#define PRECURSORACTION_H
+#pragma once
 
 #include "VariableNotAMooseObjectAction.h"
 
@@ -21,12 +20,13 @@ class PrecursorAction : public VariableNotAMooseObjectAction
 public:
   PrecursorAction(const InputParameters & params);
 
-  void act() override;
+  static InputParameters validParams();
 
   using Action::addRelationshipManagers;
   void addRelationshipManagers(Moose::RelationshipManagerType when_type) override;
 
 protected:
+  void act() override;
 
   /**
   * Adds PrecursorSource kernel
@@ -127,8 +127,3 @@ protected:
   /// optional object name suffix
   std::string _object_suffix;
 };
-
-template <>
-InputParameters validParams<PrecursorAction>();
-
-#endif // PRECURSORACTION_H
