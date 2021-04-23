@@ -22,11 +22,12 @@ public:
 
   static InputParameters validParams();
 
-  using Action::addRelationshipManagers;
-  void addRelationshipManagers(Moose::RelationshipManagerType when_type) override;
 
 protected:
   void act() override;
+
+  using Action::addRelationshipManagers;
+  void addRelationshipManagers(Moose::RelationshipManagerType when_type) override;
 
   /**
   * Adds PrecursorSource kernel

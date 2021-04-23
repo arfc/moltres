@@ -101,7 +101,7 @@ PrecursorAction::PrecursorAction(const InputParameters & params)
 void
 PrecursorAction::addRelationshipManagers(Moose::RelationshipManagerType input_rm_type)
 {
-  auto dg_kernel_params = ::validParams<DGKernelBase>();
+  auto dg_kernel_params = DGKernelBase::validParams();
   addRelationshipManagers(input_rm_type, dg_kernel_params);
 }
 
