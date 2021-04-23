@@ -4,11 +4,10 @@
 
 registerMooseObject("MoltresApp", MsreFuelTwoGrpXSFunctionMaterial);
 
-template <>
 InputParameters
-validParams<MsreFuelTwoGrpXSFunctionMaterial>()
+MsreFuelTwoGrpXSFunctionMaterial::validParams()
 {
-  InputParameters params = validParams<GenericConstantMaterial>();
+  InputParameters params = GenericConstantMaterial::validParams();
   params.addCoupledVar(
       "temperature", 937, "The temperature field for determining group constants.");
   return params;

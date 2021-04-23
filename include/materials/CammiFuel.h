@@ -1,25 +1,19 @@
-#ifndef CAMMIFUEL_H_
-#define CAMMIFUEL_H_
+#pragma once
 
 #include "GenericMoltresMaterial.h"
 #include "SplineInterpolation.h"
 #include "BicubicSplineInterpolation.h"
-
-class CammiFuel;
-
-template <>
-InputParameters validParams<CammiFuel>();
 
 class CammiFuel : public GenericMoltresMaterial
 {
 public:
   CammiFuel(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
 protected:
-  virtual void computeQpProperties();
+  virtual void computeQpProperties() override;
 
   MaterialProperty<Real> & _rho;
   MaterialProperty<Real> & _k;
 };
-
-#endif // CAMMIFUEL_H
