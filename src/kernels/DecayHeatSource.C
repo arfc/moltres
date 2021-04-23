@@ -2,12 +2,11 @@
 
 registerMooseObject("MoltresApp", DecayHeatSource);
 
-template <>
 InputParameters
-validParams<DecayHeatSource>()
+DecayHeatSource::validParams()
 {
-  InputParameters params = validParams<Kernel>();
-  params += validParams<ScalarTransportBase>();
+  InputParameters params = Kernel::validParams();
+  params += ScalarTransportBase::validParams();
   params.addRequiredParam<unsigned int>("num_decay_heat_groups", "The number of decay heat groups.");
   params.addRequiredCoupledVar("heat_concs", "All the variables that hold the decay heat "
                                              "precursor concentrations.");

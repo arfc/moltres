@@ -1,29 +1,22 @@
-#ifndef GROUPDIFFUSION_H
-#define GROUPDIFFUSION_H
+#pragma once
 
 #include "Kernel.h"
 #include "ScalarTransportBase.h"
-
-// Forward Declaration
-class GroupDiffusion;
-
-template <>
-InputParameters validParams<GroupDiffusion>();
 
 class GroupDiffusion : public Kernel, public ScalarTransportBase
 {
 public:
   GroupDiffusion(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
 protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
-  virtual Real computeQpOffDiagJacobian(unsigned int jvar);
+  virtual Real computeQpResidual() override;
+  virtual Real computeQpJacobian() override;
+  virtual Real computeQpOffDiagJacobian(unsigned int jvar) override;
 
   const MaterialProperty<std::vector<Real>> & _diffcoef;
   const MaterialProperty<std::vector<Real>> & _d_diffcoef_d_temp;
   unsigned int _group;
   unsigned int _temp_id;
 };
-
-#endif // GROUPDIFFUSION_H

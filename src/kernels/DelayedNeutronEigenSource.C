@@ -2,12 +2,11 @@
 
 registerMooseObject("MoltresApp", DelayedNeutronEigenSource);
 
-template <>
 InputParameters
-validParams<DelayedNeutronEigenSource>()
+DelayedNeutronEigenSource::validParams()
 {
-  InputParameters params = validParams<EigenKernel>();
-  params += validParams<ScalarTransportBase>();
+  InputParameters params = EigenKernel::validParams();
+  params += ScalarTransportBase::validParams();
   params.addRequiredParam<unsigned int>("num_precursor_groups", "The number of precursor groups.");
   params.addCoupledVar("temperature", "The temperature used to interpolate material properties");
   params.addRequiredCoupledVar("pre_concs", "All the variables that hold the precursor "

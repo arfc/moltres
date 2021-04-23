@@ -3,12 +3,11 @@
 
 registerMooseObject("MoltresApp", DivFreeCoupledScalarAdvection);
 
-template <>
 InputParameters
-validParams<DivFreeCoupledScalarAdvection>()
+DivFreeCoupledScalarAdvection::validParams()
 {
-  InputParameters params = validParams<Kernel>();
-  params += validParams<ScalarTransportBase>();
+  InputParameters params = Kernel::validParams();
+  params += ScalarTransportBase::validParams();
 
   // DivFreeCoupled variables
   params.addCoupledVar("u", "x-velocity");
