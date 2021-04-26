@@ -25,9 +25,9 @@ public:
 
   static InputParameters validParams();
 
-protected:
-  void act() override;
+  virtual void act() override;
 
+protected:
   /// number of precursor groups
   unsigned int _num_precursor_groups;
 

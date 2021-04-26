@@ -22,10 +22,9 @@ public:
 
   static InputParameters validParams();
 
+  virtual void act() override;
 
 protected:
-  void act() override;
-
   using Action::addRelationshipManagers;
   void addRelationshipManagers(Moose::RelationshipManagerType when_type) override;
 
