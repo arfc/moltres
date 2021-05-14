@@ -2,9 +2,9 @@
 
 This subdirectory contains the Moltres input files to run the various subcases
 in the CNRS multiphysics benchmark for MSRs [1]. The required cross section
-data files are in the ```property_file_dir/cnrs-benchmark/``` subdirectory. Run
-the ```feedback.py``` script in that subdirectory to generate the extrapolated
-cross section data based on thermal salt expansion feedback.
+data files are in the ```$MOLTRES/property_file_dir/cnrs-benchmark/```
+subdirectory. Run the ```feedback.py``` script in that subdirectory to generate
+the extrapolated cross section data based on thermal salt expansion feedback.
 
 Each subsection below lists the input and output files relevant to each
 subcase. The domain is a homogeneous, 2m by 2m square of molten salt. AA' and
