@@ -234,7 +234,7 @@ alpha = 1           # INS SUPG and PSPG stabilization parameter
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
-    property_tables_root = '../../property_file_dir/cnrs-benchmark/benchmark_'
+    property_tables_root = '../../../property_file_dir/cnrs-benchmark/benchmark_'
     interp_type = 'linear'
     prop_names = 'k rho cp'
     prop_values = '${k} ${density} ${cp}'

@@ -56,7 +56,7 @@
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
-    property_tables_root = '../../property_file_dir/cnrs-benchmark/benchmark_'
+    property_tables_root = '../../../property_file_dir/cnrs-benchmark/benchmark_'
     interp_type = 'linear'
   [../]
 []
@@ -76,7 +76,6 @@
   xdiff = 'group1diff'
   bx_norm = 'bnorm'
   k0 = 1.00400
-  pfactor = 1e-2
   l_max_its = 100
   eig_check_tol = 1e-7
 
