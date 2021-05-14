@@ -1,4 +1,5 @@
 # Step 1.1: Circulating fuel input file
+# Requires velocity fields from Step 0.1
 
 [GlobalParams]
   num_groups = 6
