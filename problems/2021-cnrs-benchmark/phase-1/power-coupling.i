@@ -1,3 +1,6 @@
+# Step 1.2: Power coupling input file
+# Requires velocity fields from Step 0.1
+
 density = .002  # kg cm-3
 cp = 3075       # J kg-1 K-1, 6.15 / 2.0e-3
 k = .005        # W cm-1 K-1
@@ -54,7 +57,7 @@ alpha = 1           # INS SUPG and PSPG stabilization parameter
 [Precursors]
   [./pres]
     var_name_base = pre
-    outlet_boundaries = 'bottom'
+    outlet_boundaries = ''
     constant_velocity_values = false
     uvel = ux
     vvel = uy
