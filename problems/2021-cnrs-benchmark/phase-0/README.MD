@@ -1,24 +1,25 @@
-# CNRS Benchmark
+# Phase 0: Single physics benchmark
 
-This subdirectory contains the Moltres input files to run the various subcases
-in the CNRS multiphysics benchmark for MSRs [1]. The required cross section
-data files are in the ```$MOLTRES/property_file_dir/cnrs-benchmark/```
-subdirectory. Run the ```feedback.py``` script in that subdirectory to generate
-the extrapolated cross section data based on thermal salt expansion feedback.
+The input files for the Phase 0 results in our journal article [2] were run on
+a 200-by-200 uniform structured mesh on the Blue Waters supercomputer with
+sixteen XK or eight XE computing nodes. We recommend having at least 32GB of
+RAM to run Steps 0.2 and 0.3 on a quad-core desktop with four MPI threads,
+possibly more if running on a cluster with more computing cores.
 
-Each subsection below lists the input and output files relevant to each
-subcase. The domain is a homogeneous, 2m by 2m square of molten salt. AA' and
-BB' refer to the horizontal and vertical centerlines across the domain. All
-reported values (e.g. velocity, temperature, etc.) are measured at 0.01m
-intervals along AA' or BB' unless otherwise stated.
+Sample command to run the input files:
+```mpirun -n 4 $MOLTRES/moltres-opt -i nts.i```
 
-Step 0.1 does not require much memory to run and takes about 1 minute on a
-single processor. Step 0.2 is more computationally and memory intensive; it
-takes approximately 7 minutes with 256 processors on the Blue Waters
-supercomputer. ```bw_job_script.pbs``` provides a template for running the
-Moltres simulation on Blue Waters. Step 0.3 may be memory intensive and it
-requires the neutron flux distribution from the Step 0.2 ```nts_exodus.e```
-output file.
+Otherwise, on a general dual/quad-core computer with 8GB of RAM, we recommend
+running on a coarser 40-by-40 mesh to reduce the memory requirements with the
+following preconditioner settings in the ```Executioner``` block of the input
+file on a dual-core/quad-core computer with 8GB of RAM:
+
+```petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type'
+  petsc_options_value = 'asm      lu           200                1                NONZERO'```
+
+The Step 0.2 reactivity results on the different mesh resolutions are:
+- 200-by-200 mesh: 465.6 pcm
+- 40-by-40 mesh: 460.7 pcm
 
 ## Step 0.1: Velocity Field
 
@@ -59,26 +60,10 @@ centerline
 - ```temperature_csv_bb_0002.csv```: Temperature values along the BB'
 centerline
 
-## Step 1.1: Circulating Fuel
-
-TODO: Add input and output files for Step 1.1
-
-## Step 1.2: Power Coupling
-
-TODO: Add input and output files for Step 1.2
-
-## Step 1.3: Buoyancy
-
-TODO: Add input and output files for Step 1.3
-
-## Step 1.4: Full Coupling
-
-TODO: Add input and output files for Step 1.4
-
-## Step 2.1: Forced Convection Transient
-
-TODO: Add input and output files for Step 2.1
-
-[1] Tiberga et al., "Results from a multi-physics numerical benchmark for codes
+[1] Tiberga M. et al., "Results from a multi-physics numerical benchmark for codes
 dedicated to molten salt fast reactors", Annals of Nuclear Energy, vol. 142,
 July 2020, 107428.
+
+[2] Park S., Munk M., & Huff K. D., "Verification of Moltres for Multiphysics
+Simulations of Fast-Spectrum Molten Salt Reactors", Annals of Nuclear Energy.
+(Forthcoming)
