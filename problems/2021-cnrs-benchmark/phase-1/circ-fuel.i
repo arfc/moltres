@@ -15,8 +15,13 @@
 [Mesh]
     type = GeneratedMesh
     dim = 2
+
     nx = 200
     ny = 200
+## Use a 40-by-40 mesh instead if running on a desktop/small cluster
+#    nx = 40
+#    ny = 40
+
     xmin = 0
     xmax = 200
     ymin = 0
@@ -116,6 +121,12 @@
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_gasm_overlap -sub_pc_factor_shift_type -pc_gasm_blocks -sub_pc_factor_mat_solver_type'
   petsc_options_value = 'gasm     lu           200                1                NONZERO                   16              superlu_dist'
+
+## Use the settings below instead if running on a desktop/small cluster
+#  petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type'
+#  petsc_options_value = 'asm      lu           200                1               NONZERO'
+
+  line_search = none
 []
 
 [Preconditioning]
@@ -173,40 +184,10 @@
 []
 
 [VectorPostprocessors]
-  [./aa]
-    type = LineValueSampler
+  [./pre_elemental]
+    type = ElementValueSampler
     variable = 'pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8'
-    start_point = '0 100 0'
-    end_point = '200 100 0'
-    num_points = 201
-    sort_by = x
-    execute_on = FINAL
-  [../]
-  [./bb]
-    type = LineValueSampler
-    variable = 'pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8'
-    start_point = '100 0 0'
-    end_point = '100 200 0'
-    num_points = 201
-    sort_by = y
-    execute_on = FINAL
-  [../]
-  [./aa_ext]
-    type = LineValueSampler
-    variable = 'pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8'
-    start_point = '0.5 100 0'
-    end_point = '199.5 100 0'
-    num_points = 200
-    sort_by = x
-    execute_on = FINAL
-  [../]
-  [./bb_ext]
-    type = LineValueSampler
-    variable = 'pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8'
-    start_point = '100 0.5 0'
-    end_point = '100 199.5 0'
-    num_points = 200
-    sort_by = y
+    sort_by = id
     execute_on = FINAL
   [../]
 []
