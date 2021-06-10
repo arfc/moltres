@@ -92,6 +92,8 @@
 ## Use the settings below instead if running on a desktop/small cluster
 #  petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type'
 #  petsc_options_value = 'asm      lu           200                1               NONZERO'
+
+  line_search = none
 []
 
 [Preconditioning]
