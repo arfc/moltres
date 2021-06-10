@@ -24,8 +24,8 @@ The CNRS benchmark consists of three phases:
 - Phase 2: Time dependent coupling
   - Step 2.1: Forced convection transient
 
-Refer to the ```phase-0/```, ```phase-1/```, and ```phase-2/``` for the
-input files and relevant instructions on how to run them.
+Refer to the ```phase-0/```, ```phase-1/```, and ```phase-2/``` subdirectories
+for the input files and relevant instructions on how to run them.
 
 [1] Tiberga et al., "Results from a multi-physics numerical benchmark for codes
 dedicated to molten salt fast reactors", Annals of Nuclear Energy, vol. 142,
