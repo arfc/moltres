@@ -1,7 +1,8 @@
 # Phase 0: Single physics benchmark
 
 The input files for the Phase 0 results in our journal article [2] were run on
-a 200-by-200 uniform structured mesh on the Blue Waters supercomputer with
+a 200-by-200 uniform structured mesh on the Blue Waters supercomputer with 256
+MPI processes on
 sixteen XK or eight XE computing nodes. We recommend having at least 32GB of
 RAM to run Steps 0.2 and 0.3 on a quad-core desktop with four MPI threads,
 possibly more if running on a cluster with more computing cores.

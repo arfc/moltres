@@ -1,9 +1,9 @@
 # Phase 1: Steady-state coupling
 
 Like the Phase 0 results, the input files for the Phase 1 results in our
-journal article [2] were run on
-a 200-by-200 uniform structured mesh on the Blue Waters supercomputer with
-sixteen XK or eight XE computing nodes. We recommend having at least 32GB of
+journal article [2] were run on a 200-by-200 uniform structured mesh on the
+Blue Waters supercomputer with 256 MPI processes on sixteen XK or eight XE
+computing nodes. We recommend having at least 32GB of
 RAM to run all Phase 1 Steps on a quad-core desktop with four MPI threads,
 possibly more if running on a cluster with more computing cores.
 
