@@ -14,8 +14,10 @@ running on a coarser 40-by-40 mesh to reduce the memory requirements with the
 following preconditioner settings in the ```Executioner``` block of the input
 file on a dual-core/quad-core computer with 8GB of RAM:
 
-```petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type'
-  petsc_options_value = 'asm      lu           200                1                NONZERO'```
+```
+petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type'
+  petsc_options_value = 'asm      lu           200                1                NONZERO'
+```
 
 The Step 0.2 reactivity results on the different mesh resolutions are:
 - 200-by-200 mesh: 465.6 pcm
