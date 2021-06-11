@@ -37,7 +37,7 @@ The k_eff results on the different mesh resolutions are:
   - 40-by-40 mesh: 0.992553
 - Step 1.3
   - 200-by-200 mesh: 0.992634
-  - 40-by-40 mesh: 0.992655
+  - 40-by-40 mesh: 0.992497
 - Step 1.4: U_lid = 0.5 m s-1 and P = 1 GW
   - 200-by-200 mesh: 0.992782
   - 40-by-40 mesh: 0.992655
