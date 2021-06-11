@@ -17,7 +17,7 @@ file on a dual-core/quad-core computer with 8GB of RAM:
 
 ```
 petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type'
-  petsc_options_value = 'asm      lu           200                1                NONZERO'
+petsc_options_value = 'asm      lu           200                1                NONZERO'
 ```
 
 Note that Steps 1.3 and 1.4 each have a neutronics sub-app input file to
