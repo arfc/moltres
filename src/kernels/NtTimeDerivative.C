@@ -6,11 +6,10 @@
 
 registerMooseObject("MoltresApp", NtTimeDerivative);
 
-template <>
 InputParameters
-validParams<NtTimeDerivative>()
+NtTimeDerivative::validParams()
 {
-  InputParameters params = validParams<ScalarTransportTimeDerivative>();
+  InputParameters params = ScalarTransportTimeDerivative::validParams();
   params.addRequiredParam<unsigned int>("group_number",
                                         "The group for which this kernel controls diffusion");
   params.addCoupledVar("temperature",

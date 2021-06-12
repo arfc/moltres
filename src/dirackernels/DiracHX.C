@@ -2,11 +2,10 @@
 
 registerMooseObject("MoltresApp", DiracHX);
 
-template <>
 InputParameters
-validParams<DiracHX>()
+DiracHX::validParams()
 {
-  InputParameters params = validParams<DiracKernel>();
+  InputParameters params = DiracKernel::validParams();
   params.addRequiredParam<Real>("power", "HX Power in Watts");
   params.addRequiredParam<Point>("point", "The x,y,z coordinates of the point");
   params.declareControllable("power");

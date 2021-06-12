@@ -4,11 +4,10 @@
 
 registerMooseObject("MoltresApp", CammiFuel);
 
-template <>
 InputParameters
-validParams<CammiFuel>()
+CammiFuel::validParams()
 {
-  InputParameters params = validParams<GenericMoltresMaterial>();
+  InputParameters params = GenericMoltresMaterial::validParams();
   return params;
 }
 

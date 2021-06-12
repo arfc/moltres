@@ -3,11 +3,10 @@
 
 registerMooseObject("MoltresApp", ModeratorHeatSourceTransientAux);
 
-template <>
 InputParameters
-validParams<ModeratorHeatSourceTransientAux>()
+ModeratorHeatSourceTransientAux::validParams()
 {
-  InputParameters params = validParams<AuxKernel>();
+  InputParameters params = AuxKernel::validParams();
   params.addRequiredParam<PostprocessorName>(
       "average_fission_heat",
       "The average fission heat being generated in the fuel portion of the reactor.");

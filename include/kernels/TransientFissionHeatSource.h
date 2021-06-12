@@ -1,14 +1,7 @@
-#ifndef TRANSIENTFISSIONEHEATSOURCE_H
-#define TRANSIENTFISSIONEHEATSOURCE_H
+#pragma once
 
 #include "Kernel.h"
 #include "ScalarTransportBase.h"
-
-// Forward Declarations
-class TransientFissionHeatSource;
-
-template <>
-InputParameters validParams<TransientFissionHeatSource>();
 
 /**
  * This class computes the residual and Jacobian contributions of the
@@ -20,10 +13,12 @@ class TransientFissionHeatSource : public Kernel, public ScalarTransportBase
 public:
   TransientFissionHeatSource(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
 protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
-  virtual Real computeQpOffDiagJacobian(unsigned int jvar);
+  virtual Real computeQpResidual() override;
+  virtual Real computeQpJacobian() override;
+  virtual Real computeQpOffDiagJacobian(unsigned int jvar) override;
 
   // Material properties
   const MaterialProperty<std::vector<Real>> & _fissxs;
@@ -42,5 +37,3 @@ protected:
   std::vector<const VariableValue *> _heat_concs;
   std::vector<unsigned int> _heat_ids;
 };
-
-#endif // TRANSIENTFISSIONEHEATSOURCE_H

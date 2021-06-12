@@ -2,11 +2,10 @@
 
 registerMooseObject("MoltresApp", PostprocessorCoupledInflowBC);
 
-template <>
 InputParameters
-validParams<PostprocessorCoupledInflowBC>()
+PostprocessorCoupledInflowBC::validParams()
 {
-  InputParameters params = validParams<IntegratedBC>();
+  InputParameters params = IntegratedBC::validParams();
   params.addRequiredCoupledVar("uvel", "x direction velocity");
   params.addCoupledVar("vvel", 0, "y direction velocity");
   params.addCoupledVar("wvel", 0, "z direction velocity");

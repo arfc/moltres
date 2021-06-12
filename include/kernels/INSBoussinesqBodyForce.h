@@ -1,13 +1,6 @@
-#ifndef INSBOUSSINESQBODYFORCE_H
-#define INSBOUSSINESQBODYFORCE_H
+#pragma once
 
 #include "Kernel.h"
-
-// Forward Declarations
-class INSBoussinesqBodyForce;
-
-template <>
-InputParameters validParams<INSBoussinesqBodyForce>();
 
 /**
  * Computes a body force that approximates natural buoyancy in
@@ -19,11 +12,13 @@ class INSBoussinesqBodyForce : public Kernel
 public:
   INSBoussinesqBodyForce(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
   virtual ~INSBoussinesqBodyForce() {}
 
 protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
+  virtual Real computeQpResidual() override;
+  virtual Real computeQpJacobian() override;
   virtual Real computeQpOffDiagJacobian(unsigned jvar);
 
   // Parameters
@@ -37,5 +32,3 @@ protected:
   const MaterialProperty<Real> & _rho;
   const MaterialProperty<Real> & _T_ref;
 };
-
-#endif

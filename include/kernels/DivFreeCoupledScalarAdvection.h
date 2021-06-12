@@ -1,14 +1,7 @@
-#ifndef DIVFREECOUPLEDSCALARADVECTION_H
-#define DIVFREECOUPLEDSCALARADVECTION_H
+#pragma once
 
 #include "Kernel.h"
 #include "ScalarTransportBase.h"
-
-// Forward Declarations
-class DivFreeCoupledScalarAdvection;
-
-template <>
-InputParameters validParams<DivFreeCoupledScalarAdvection>();
 
 /**
  * This class computes the residual and Jacobian contributions for the
@@ -18,6 +11,8 @@ class DivFreeCoupledScalarAdvection : public Kernel, public ScalarTransportBase
 {
 public:
   DivFreeCoupledScalarAdvection(const InputParameters & parameters);
+
+  static InputParameters validParams();
 
   virtual ~DivFreeCoupledScalarAdvection() {}
 
@@ -41,5 +36,3 @@ protected:
   VariableValue _w_def;
   Real _conc_scaling;
 };
-
-#endif // DIVFREECOUPLEDSCALARADVECTION_H

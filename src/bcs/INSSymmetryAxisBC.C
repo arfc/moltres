@@ -2,11 +2,10 @@
 
 registerMooseObject("MoltresApp", INSSymmetryAxisBC);
 
-template <>
 InputParameters
-validParams<INSSymmetryAxisBC>()
+INSSymmetryAxisBC::validParams()
 {
-  InputParameters params = validParams<IntegratedBC>();
+  InputParameters params = IntegratedBC::validParams();
 
   // Coupled variables
   params.addRequiredCoupledVar("u", "x-velocity");

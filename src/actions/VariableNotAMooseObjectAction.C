@@ -6,11 +6,10 @@
 #include "libmesh/string_to_enum.h"
 #include "libmesh/fe_type.h"
 
-template <>
 InputParameters
-validParams<VariableNotAMooseObjectAction>()
+VariableNotAMooseObjectAction::validParams()
 {
-  InputParameters params = validParams<Action>();
+  InputParameters params = Action::validParams();
 
   // Get MooseEnums for the possible order/family options for this variable
   MooseEnum families(AddVariableAction::getNonlinearVariableFamilies());

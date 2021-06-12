@@ -1,15 +1,8 @@
-#ifndef INTEGRALNEWVARIABLEPOSTPROCESSOR_H
-#define INTEGRALNEWVARIABLEPOSTPROCESSOR_H
+#pragma once
 
 #include "ElementIntegralPostprocessor.h"
 #include "MooseVariableInterface.h"
 #include "ScalarTransportBase.h"
-
-// Forward Declarations
-class IntegralNewVariablePostprocessor;
-
-template <>
-InputParameters validParams<IntegralNewVariablePostprocessor>();
 
 /**
  * This postprocessor computes a volume integral of the specified variable.
@@ -24,6 +17,8 @@ class IntegralNewVariablePostprocessor : public ElementIntegralPostprocessor,
 public:
   IntegralNewVariablePostprocessor(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
 protected:
   virtual Real computeQpIntegral() override;
 
@@ -34,5 +29,3 @@ protected:
   /// Holds the solution derivative at the current quadrature points
   const VariableValue & _u_dot;
 };
-
-#endif

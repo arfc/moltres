@@ -2,11 +2,10 @@
 
 registerMooseObject("MoltresApp", ElmIntegTotFissNtsPostprocessor);
 
-template <>
 InputParameters
-validParams<ElmIntegTotFissNtsPostprocessor>()
+ElmIntegTotFissNtsPostprocessor::validParams()
 {
-  InputParameters params = validParams<ElementIntegralPostprocessor>();
+  InputParameters params = ElementIntegralPostprocessor::validParams();
   params.addRequiredCoupledVar(
       "group_fluxes",
       "The group fluxes. MUST be arranged by decreasing energy/increasing group number.");

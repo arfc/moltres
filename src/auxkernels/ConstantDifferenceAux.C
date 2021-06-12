@@ -2,11 +2,10 @@
 
 registerMooseObject("MoltresApp", ConstantDifferenceAux);
 
-template <>
 InputParameters
-validParams<ConstantDifferenceAux>()
+ConstantDifferenceAux::validParams()
 {
-  InputParameters params = validParams<AuxKernel>();
+  InputParameters params = AuxKernel::validParams();
   params.addParam<Real>("constant", 0.0, "Scalar value subtracted from compareVar");
   params.addRequiredCoupledVar("compareVar", "Coupled variable");
   params.declareControllable("constant");

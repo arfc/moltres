@@ -7,6 +7,8 @@ class VariableNotAMooseObjectAction : public Action
 public:
   VariableNotAMooseObjectAction(const InputParameters & params);
 
+  static InputParameters validParams();
+
 protected:
   /**
    * Get the block ids from the input parameters
@@ -20,6 +22,3 @@ protected:
    */
   void addVariable(const std::string & var_name);
 };
-
-template <>
-InputParameters validParams<VariableNotAMooseObjectAction>();

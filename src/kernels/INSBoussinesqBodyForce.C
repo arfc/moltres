@@ -2,11 +2,10 @@
 
 registerMooseObject("MoltresApp", INSBoussinesqBodyForce);
 
-template <>
 InputParameters
-validParams<INSBoussinesqBodyForce>()
+INSBoussinesqBodyForce::validParams()
 {
-  InputParameters params = validParams<Kernel>();
+  InputParameters params = Kernel::validParams();
 
   params.addClassDescription("Computes a body force for natural convection buoyancy.");
 

@@ -2,12 +2,11 @@
 
 registerMooseObject("MoltresApp", ScalarAdvectionArtDiffNoBCBC);
 
-template <>
 InputParameters
-validParams<ScalarAdvectionArtDiffNoBCBC>()
+ScalarAdvectionArtDiffNoBCBC::validParams()
 {
-  InputParameters params = validParams<IntegratedBC>();
-  params += validParams<ScalarTransportBase>();
+  InputParameters params = IntegratedBC::validParams();
+  params += ScalarTransportBase::validParams();
 
   params.addParam<Real>("scale", 1., "Amount to scale artificial diffusion.");
 

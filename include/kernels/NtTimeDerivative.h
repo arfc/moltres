@@ -1,18 +1,13 @@
-#ifndef NTTIMEDERIVATIVE_H
-#define NTTIMEDERIVATIVE_H
+#pragma once
 
 #include "ScalarTransportTimeDerivative.h"
-
-// Forward Declaration
-class NtTimeDerivative;
-
-template <>
-InputParameters validParams<NtTimeDerivative>();
 
 class NtTimeDerivative : public ScalarTransportTimeDerivative
 {
 public:
   NtTimeDerivative(const InputParameters & parameters);
+
+  static InputParameters validParams();
 
 protected:
   virtual Real computeQpResidual() override;
@@ -24,5 +19,3 @@ protected:
   unsigned int _group;
   unsigned int _temp_id;
 };
-
-#endif // NTTIMEDERIVATIVE_H

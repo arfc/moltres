@@ -1,13 +1,6 @@
-#ifndef INSMOMENTUMKEPSILON_H
-#define INSMOMENTUMKEPSILON_H
+#pragma once
 
 #include "Kernel.h"
-
-// Forward Declarations
-class INSMomentumKEpsilon;
-
-template <>
-InputParameters validParams<INSMomentumKEpsilon>();
 
 /**
  * This class computes momentum equation residual and Jacobian
@@ -19,12 +12,14 @@ class INSMomentumKEpsilon : public Kernel
 public:
   INSMomentumKEpsilon(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
   virtual ~INSMomentumKEpsilon() {}
 
 protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
-  virtual Real computeQpOffDiagJacobian(unsigned jvar);
+  virtual Real computeQpResidual() override;
+  virtual Real computeQpJacobian() override;
+  virtual Real computeQpOffDiagJacobian(unsigned jvar) override;
 
   // Coupled variables
   const VariableValue & _u_vel;
@@ -57,5 +52,3 @@ protected:
   unsigned _component;
   bool _integrate_p_by_parts;
 };
-
-#endif // INSMOMENTUMKEPSILON_H

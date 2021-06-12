@@ -1,25 +1,18 @@
-#ifndef SELFFISSIONEIGENKERNEL_H
-#define SELFFISSIONEIGENKERNEL_H
+#pragma once
 
 #include "EigenKernel.h"
-
-// Forward Declarations
-class SelfFissionEigenKernel;
-
-template <>
-InputParameters validParams<SelfFissionEigenKernel>();
 
 class SelfFissionEigenKernel : public EigenKernel
 {
 public:
   SelfFissionEigenKernel(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
 protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
+  virtual Real computeQpResidual() override;
+  virtual Real computeQpJacobian() override;
 
   const MaterialProperty<Real> & _nu_f;
   const MaterialProperty<Real> & _sigma_f;
 };
-
-#endif // SELFFISSIONEIGENKERNEL_H
