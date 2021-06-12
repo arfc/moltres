@@ -1,5 +1,4 @@
-#ifndef NUCLEARMATERIAL_H_
-#define NUCLEARMATERIAL_H_
+#pragma once
 
 #include "GenericConstantMaterial.h"
 #include "SplineInterpolation.h"
@@ -7,11 +6,6 @@
 #include "MonotoneCubicInterpolation.h"
 #include "LinearInterpolation.h"
 #include "json.h"
-
-class NuclearMaterial;
-
-template <>
-InputParameters validParams<NuclearMaterial>();
 
 /**
  * This class hinges on the `interp_type` chosen by the user. The user can choose from the
@@ -40,6 +34,8 @@ class NuclearMaterial : public GenericConstantMaterial
 {
 public:
   NuclearMaterial(const InputParameters & parameters);
+
+  static InputParameters validParams();
 
   // correspond to descriptions above
   enum INTERPOLATOR
@@ -121,5 +117,3 @@ protected:
   std::vector<std::vector<Real>> _beta_eff_consts = std::vector<std::vector<Real>>(2);
   std::vector<std::vector<Real>> _decay_constants_consts = std::vector<std::vector<Real>>(2);
 };
-
-#endif // NUCLEARMATERIAL_H

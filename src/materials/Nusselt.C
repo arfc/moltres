@@ -2,11 +2,10 @@
 
 registerMooseObject("MoltresApp", Nusselt);
 
-template <>
 InputParameters
-validParams<Nusselt>()
+Nusselt::validParams()
 {
-  InputParameters params = validParams<Material>();
+  InputParameters params = Material::validParams();
   params.addParam<MaterialPropertyName>("k_name", "k", "The name of the thermal conductivity");
   params.addRequiredParam<Real>("L", "The channel radius");
   return params;

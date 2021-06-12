@@ -2,11 +2,10 @@
 
 registerMooseObject("MoltresApp", MatDiffusionAux);
 
-template <>
 InputParameters
-validParams<MatDiffusionAux>()
+MatDiffusionAux::validParams()
 {
-  InputParameters params = validParams<AuxKernel>();
+  InputParameters params = AuxKernel::validParams();
   params.addRequiredParam<MaterialPropertyName>(
       "prop_name", "the name of the material property we are going to use");
   params.addRequiredCoupledVar("diffuse_var", "The variable that's diffusing.");

@@ -2,12 +2,11 @@
 
 registerMooseObject("MoltresApp", PrecursorDecay);
 
-template <>
 InputParameters
-validParams<PrecursorDecay>()
+PrecursorDecay::validParams()
 {
-  InputParameters params = validParams<Kernel>();
-  params += validParams<ScalarTransportBase>();
+  InputParameters params = Kernel::validParams();
+  params += ScalarTransportBase::validParams();
   params.addRequiredParam<unsigned int>("precursor_group_number",
                                         "What precursor group this kernel is acting on.");
   params.addRequiredCoupledVar("temperature",

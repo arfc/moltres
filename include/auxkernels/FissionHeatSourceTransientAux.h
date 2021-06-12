@@ -1,13 +1,6 @@
-#ifndef FISSIONHEATSOURCETRANSIENTAUX_H
-#define FISSIONHEATSOURCETRANSIENTAUX_H
+#pragma once
 
 #include "AuxKernel.h"
-
-// Forward Declarations
-class FissionHeatSourceTransientAux;
-
-template <>
-InputParameters validParams<FissionHeatSourceTransientAux>();
 
 /**
  * Computes heat source due to fission during a transient.
@@ -21,8 +14,10 @@ class FissionHeatSourceTransientAux : public AuxKernel
 public:
   FissionHeatSourceTransientAux(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
 protected:
-  virtual Real computeValue();
+  virtual Real computeValue() override;
 
   const MaterialProperty<std::vector<Real>> & _fissxs;
   const MaterialProperty<std::vector<Real>> & _fisse;
@@ -30,5 +25,3 @@ protected:
   Real _nt_scale;
   std::vector<const VariableValue *> _group_fluxes;
 };
-
-#endif // FISSIONHEATSOURCETRANSIENTAUX_H

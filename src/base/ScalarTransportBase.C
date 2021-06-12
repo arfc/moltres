@@ -2,9 +2,8 @@
 
 #include "libmesh/vector_value.h"
 
-template <>
 InputParameters
-validParams<ScalarTransportBase>()
+ScalarTransportBase::validParams()
 {
   InputParameters params = emptyInputParameters();
   params.addParam<bool>("use_exp_form",

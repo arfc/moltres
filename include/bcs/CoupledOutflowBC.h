@@ -1,13 +1,6 @@
-#ifndef COUPLEDOUTFLOWBC_H
-#define COUPLEDOUTFLOWBC_H
+#pragma once
 
 #include "IntegratedBC.h"
-
-// Forward Declarations
-class CoupledOutflowBC;
-
-template<>
-InputParameters validParams<CoupledOutflowBC>();
 
 /**
  * This class computes the residual and Jacobian contributions for the
@@ -19,6 +12,8 @@ class CoupledOutflowBC : public IntegratedBC
 public:
   CoupledOutflowBC(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
 protected:
   virtual Real computeQpResidual() override;
   virtual Real computeQpJacobian() override;
@@ -29,5 +24,3 @@ private:
   const VariableValue & _vel_y;
   const VariableValue & _vel_z;
 };
-
-#endif // COUPLEDOUTFLOWBC_H

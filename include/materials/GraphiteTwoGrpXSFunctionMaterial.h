@@ -1,5 +1,4 @@
-#ifndef GRAPHITETWOGRPXSFUNCTIONMATERIAL_H_
-#define GRAPHITETWOGRPXSFUNCTIONMATERIAL_H_
+#pragma once
 
 #include "GenericConstantMaterial.h"
 #include "SplineInterpolation.h"
@@ -7,18 +6,15 @@
 #include "MonotoneCubicInterpolation.h"
 #include "LinearInterpolation.h"
 
-class GraphiteTwoGrpXSFunctionMaterial;
-
-template <>
-InputParameters validParams<GraphiteTwoGrpXSFunctionMaterial>();
-
 class GraphiteTwoGrpXSFunctionMaterial : public GenericConstantMaterial
 {
 public:
   GraphiteTwoGrpXSFunctionMaterial(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
 protected:
-  virtual void computeQpProperties();
+  virtual void computeQpProperties() override;
 
   const VariableValue & _T;
   // const MaterialProperty<Real> & _rho;
@@ -48,5 +44,3 @@ protected:
   MaterialProperty<Real> & _d_beta_d_temp;
   MaterialProperty<std::vector<Real>> & _d_decay_constant_d_temp;
 };
-
-#endif // GRAPHITETWOGRPXSFUNCTIONMATERIAL_H

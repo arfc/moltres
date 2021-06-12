@@ -1,14 +1,7 @@
-#ifndef COUPLEDSCALARADVECTION_H
-#define COUPLEDSCALARADVECTION_H
+#pragma once
 
 #include "Kernel.h"
 #include "ScalarTransportBase.h"
-
-// Forward Declarations
-class CoupledScalarAdvection;
-
-template <>
-InputParameters validParams<CoupledScalarAdvection>();
 
 /**
  * This class computes the residual and Jacobian contributions for the
@@ -18,6 +11,8 @@ class CoupledScalarAdvection : public Kernel, public ScalarTransportBase
 {
 public:
   CoupledScalarAdvection(const InputParameters & parameters);
+
+  static InputParameters validParams();
 
   virtual ~CoupledScalarAdvection() {}
 
@@ -42,5 +37,3 @@ protected:
 
   Real _conc_scaling;
 };
-
-#endif // COUPLEDSCALARADVECTION_H

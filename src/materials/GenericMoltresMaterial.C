@@ -5,11 +5,10 @@
 
 registerMooseObject("MoltresApp", GenericMoltresMaterial);
 
-template <>
 InputParameters
-validParams<GenericMoltresMaterial>()
+GenericMoltresMaterial::validParams()
 {
-  InputParameters params = validParams<NuclearMaterial>();
+  InputParameters params = NuclearMaterial::validParams();
   params.addRequiredParam<std::string>(
       "property_tables_root",
       "The file root name containing interpolation tables for material properties.");

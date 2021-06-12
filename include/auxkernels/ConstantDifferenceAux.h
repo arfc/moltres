@@ -1,13 +1,6 @@
-#ifndef CONSTANTDIFFERENCEAUX_H
-#define CONSTANTDIFFERENCEAUX_H
+#pragma once
 
 #include "AuxKernel.h"
-
-// Forward Declarations
-class ConstantDifferenceAux;
-
-template <>
-InputParameters validParams<ConstantDifferenceAux>();
 
 /**
  * The original intention of this aux kernel is to compute a delta T about some
@@ -21,11 +14,11 @@ class ConstantDifferenceAux : public AuxKernel
 public:
   ConstantDifferenceAux(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
 protected:
   virtual Real computeValue() override;
 
   const VariableValue & _variable;
   const Real & _constant;
 };
-
-#endif // CONSTANTDIFFERENCEAUX_H

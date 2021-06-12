@@ -2,11 +2,10 @@
 
 registerMooseObject("MoltresApp", ConservativeAdvectionNoBCBC);
 
-template <>
 InputParameters
-validParams<ConservativeAdvectionNoBCBC>()
+ConservativeAdvectionNoBCBC::validParams()
 {
-  InputParameters params = validParams<IntegratedBC>();
+  InputParameters params = IntegratedBC::validParams();
   params.addRequiredParam<RealVectorValue>("velocity", "Velocity vector");
   return params;
 }

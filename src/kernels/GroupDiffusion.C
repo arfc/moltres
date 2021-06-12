@@ -2,12 +2,11 @@
 
 registerMooseObject("MoltresApp", GroupDiffusion);
 
-template <>
 InputParameters
-validParams<GroupDiffusion>()
+GroupDiffusion::validParams()
 {
-  InputParameters params = validParams<Kernel>();
-  params += validParams<ScalarTransportBase>();
+  InputParameters params = Kernel::validParams();
+  params += ScalarTransportBase::validParams();
   params.addRequiredParam<unsigned int>("group_number",
                                         "The group for which this kernel controls diffusion");
   params.addCoupledVar("temperature",

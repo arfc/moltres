@@ -1,14 +1,7 @@
-#ifndef HEATPRECURSORDECAY_H
-#define HEATPRECURSORDECAY_H
+#pragma once
 
 #include "Kernel.h"
 #include "ScalarTransportBase.h"
-
-// Forward Declarations
-class HeatPrecursorDecay;
-
-template <>
-InputParameters validParams<HeatPrecursorDecay>();
 
 /**
  * This class computes the residual and Jacobian contributions for the
@@ -20,6 +13,8 @@ class HeatPrecursorDecay : public Kernel, public ScalarTransportBase
 public:
   HeatPrecursorDecay(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
 protected:
   virtual Real computeQpResidual() override;
   virtual Real computeQpJacobian() override;
@@ -27,5 +22,3 @@ protected:
   unsigned int _heat_group;
   std::vector<Real> _decay_heat_const;
 };
-
-#endif // HEATPRECURSORDECAY_H

@@ -3,12 +3,11 @@
 
 registerMooseObject("MoltresApp", CoupledScalarAdvectionNoBCBC);
 
-template <>
 InputParameters
-validParams<CoupledScalarAdvectionNoBCBC>()
+CoupledScalarAdvectionNoBCBC::validParams()
 {
-  InputParameters params = validParams<IntegratedBC>();
-  params += validParams<ScalarTransportBase>();
+  InputParameters params = IntegratedBC::validParams();
+  params += ScalarTransportBase::validParams();
 
   // Coupled variables
   params.addCoupledVar("u", "x-velocity");

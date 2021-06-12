@@ -3,11 +3,10 @@
 
 registerMooseObject("MoltresApp", GammaHeatSource);
 
-template <>
 InputParameters
-validParams<GammaHeatSource>()
+GammaHeatSource::validParams()
 {
-  InputParameters params = validParams<Kernel>();
+  InputParameters params = Kernel::validParams();
   params.addRequiredParam<PostprocessorName>(
       "average_fission_heat",
       "The average fission heat being generated in the fuel portion of the reactor.");

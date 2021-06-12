@@ -2,12 +2,11 @@
 
 registerMooseObject("MoltresApp", CoupledFissionEigenKernel);
 
-template <>
 InputParameters
-validParams<CoupledFissionEigenKernel>()
+CoupledFissionEigenKernel::validParams()
 {
-  InputParameters params = validParams<EigenKernel>();
-  params += validParams<ScalarTransportBase>();
+  InputParameters params = EigenKernel::validParams();
+  params += ScalarTransportBase::validParams();
   params.addRequiredParam<unsigned int>("group_number", "The current energy group");
   params.addRequiredParam<unsigned int>("num_groups", "The total numer of energy groups");
   params.addRequiredCoupledVar("group_fluxes", "All the variables that hold the group fluxes. "

@@ -2,12 +2,11 @@
 
 registerMooseObject("MoltresApp", VacuumConcBC);
 
-template <>
 InputParameters
-validParams<VacuumConcBC>()
+VacuumConcBC::validParams()
 {
-  InputParameters params = validParams<IntegratedBC>();
-  params += validParams<ScalarTransportBase>();
+  InputParameters params = IntegratedBC::validParams();
+  params += ScalarTransportBase::validParams();
   return params;
 }
 

@@ -2,12 +2,11 @@
 
 registerMooseObject("MoltresApp", SigmaR);
 
-template <>
 InputParameters
-validParams<SigmaR>()
+SigmaR::validParams()
 {
-  InputParameters params = validParams<Kernel>();
-  params += validParams<ScalarTransportBase>();
+  InputParameters params = Kernel::validParams();
+  params += ScalarTransportBase::validParams();
   params.addRequiredParam<unsigned int>("group_number", "The current energy group.");
   params.addCoupledVar("temperature", "The temperature used to interpolate material properties");
   return params;

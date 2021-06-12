@@ -1,24 +1,18 @@
-#ifndef CAMMIMODERATOR_H_
-#define CAMMIMODERATOR_H_
+#pragma once
 
 #include "GenericMoltresMaterial.h"
 #include "SplineInterpolation.h"
 #include "BicubicSplineInterpolation.h"
-
-class CammiModerator;
-
-template <>
-InputParameters validParams<CammiModerator>();
 
 class CammiModerator : public GenericMoltresMaterial
 {
 public:
   CammiModerator(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
 protected:
-  virtual void computeQpProperties();
+  virtual void computeQpProperties() override;
 
   MaterialProperty<Real> & _k;
 };
-
-#endif // CAMMIMODERATOR_H
