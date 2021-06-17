@@ -48,6 +48,7 @@ The Step 0.2 reactivity results on the different mesh resolutions are:
 neutron precursor distributions
 - ```nts_csv_aa_0002.csv```: Neutron group flux values along the AA'
 centerline
+- ```nts_csv.csv```: Contains the k_eff estimate
 
 ## Step 0.3: Temperature
 

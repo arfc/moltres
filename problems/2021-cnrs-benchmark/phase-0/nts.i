@@ -37,6 +37,7 @@
   vacuum_boundaries = 'bottom left right top'
   create_temperature_var = false
   eigen = true
+  transient = false
   scaling = 1e3
 []
 

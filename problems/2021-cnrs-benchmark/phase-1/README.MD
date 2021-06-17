@@ -53,6 +53,7 @@ The k_eff results on the different mesh resolutions are:
 - ```circ-fuel_exodus.e```: Exodus output of the circulating fuel solution
 - ```circ-fuel_csv_pre_elemental_0002.csv```: 2D, element-centered precursor
 concentration values
+- ```circ-fuel_csv.csv```: Contains the k_eff estimate
 
 ## Step 1.2: Power coupling
 
@@ -71,6 +72,7 @@ the BB' centerline
 centerline
 - ```power-coupling_csv_temp_bb_0003.csv```: Temperature values along the BB'
 centerline
+- ```power-coupling_csv.csv```: Contains the k_eff estimate
 
 ## Step 1.3: Buoyancy
 
@@ -95,6 +97,7 @@ centerline
 centerline
 - ```buoyancy_out_ntsApp0_csv_pre_elemental_0054.csv```: 2D, element-centered
 precursor concentration values
+- ```buoyancy_out_ntsApp0_csv.csv```: Contains the k_eff estimate
 
 ## Step 1.4: Full coupling
 
@@ -109,6 +112,7 @@ precursor concentration values
 of the full coupling solution
 - ```full-coupling_out_ntsApp0_exodus.e```: Exodus output of the neutron flux and
 precursor concentrations of the full coupling solution
+- ```full-coupling_out_ntsApp0_csv.csv```: Contains the k_eff estimate
 
 [1] Tiberga M. et al., "Results from a multi-physics numerical benchmark for codes
 dedicated to molten salt fast reactors", Annals of Nuclear Energy, vol. 142,

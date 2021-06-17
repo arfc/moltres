@@ -34,6 +34,7 @@
   var_name_base = group
   vacuum_boundaries = 'bottom left right top'
   create_temperature_var = false
+  transient = false
   eigen = true
   scaling = 1e3
 []
@@ -186,6 +187,9 @@
   print_linear_residuals = true
   [./exodus]
     type = Exodus
+  [../]
+  [./csv]
+    type = CSV
   [../]
 []
 

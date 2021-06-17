@@ -231,7 +231,7 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
 #  petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type'
 #  petsc_options_value = 'asm      lu           200                1               NONZERO'
 
-  nl_abs_tol = 1e-10
+  nl_abs_tol = 1e-8
 
   dtmin = 1e-1
   dtmax = 10
@@ -243,6 +243,7 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
     growth_factor = 1.5
     optimal_iterations = 10
     iteration_window = 4
+    linear_iteration_ratio = 1000
   [../]
 []
 
