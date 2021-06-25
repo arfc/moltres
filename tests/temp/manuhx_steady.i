@@ -1,13 +1,12 @@
+# Expected solution is u = cosh(x) / cosh(1)
+
 [Mesh]
   [./square]
     type = GeneratedMeshGenerator
-    dim = 2
-    nx = 10
-    ny = 10
-    xmin = 0
+    dim = 1
+    nx = 100
+    xmin = -1
     xmax = 1
-    ymin = 0
-    ymax = 1
   [../]
 []
 
@@ -24,7 +23,7 @@
   [./heat_sink]
     type = ManuHX
     variable = u
-    htc = 19.7392
+    htc = 1
     tref = 0
   [../]
 []
@@ -33,7 +32,7 @@
   [./dirichlet]
     type = DirichletBC
     variable = u
-    boundary = 'left right bottom top'
+    boundary = 'left right'
     value = 1
   [../]
 []
