@@ -2,11 +2,10 @@
 
 registerMooseObject("MoltresApp", SelfFissionEigenKernel);
 
-template <>
 InputParameters
-validParams<SelfFissionEigenKernel>()
+SelfFissionEigenKernel::validParams()
 {
-  InputParameters params = validParams<EigenKernel>();
+  InputParameters params = EigenKernel::validParams();
   params.addRequiredParam<MaterialPropertyName>("nu_f",
                                                 "The number of neutrons produced per fission.");
   params.addRequiredParam<MaterialPropertyName>("sigma_f",

@@ -1,20 +1,14 @@
-#ifndef ELMINTEGTOTFISSPOSTPROCESSOR_H
-#define ELMINTEGTOTFISSPOSTPROCESSOR_H
+#pragma once
 
 #include "ElementIntegralPostprocessor.h"
 #include "ScalarTransportBase.h"
 
-// Forward Declarations
-class ElmIntegTotFissPostprocessor;
-
-template <>
-InputParameters validParams<ElmIntegTotFissPostprocessor>();
-
 class ElmIntegTotFissPostprocessor : public ElementIntegralPostprocessor, public ScalarTransportBase
 {
-
 public:
   ElmIntegTotFissPostprocessor(const InputParameters & parameters);
+
+  static InputParameters validParams();
 
 protected:
   virtual Real computeQpIntegral() override;
@@ -26,5 +20,3 @@ protected:
   Real _nt_scale;
   std::vector<const VariableValue *> _group_fluxes;
 };
-
-#endif

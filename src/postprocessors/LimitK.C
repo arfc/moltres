@@ -17,11 +17,10 @@
 
 registerMooseObject("MoltresApp", LimitK);
 
-template <>
 InputParameters
-validParams<LimitK>()
+LimitK::validParams()
 {
-  InputParameters params = validParams<TimestepSize>();
+  InputParameters params = TimestepSize::validParams();
   params.addRequiredParam<Real>("growth_factor",
                                 "How much to grow the time step if multiplication is ok.");
   params.addRequiredParam<Real>("cutback_factor",

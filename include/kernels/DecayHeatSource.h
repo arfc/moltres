@@ -1,19 +1,14 @@
-#ifndef DECAYHEATSOURCE_H
-#define DECAYHEATSOURCE_H
+#pragma once
 
 #include "Kernel.h"
 #include "ScalarTransportBase.h"
-
-// Forward Declarations
-class DecayHeatSource;
-
-template <>
-InputParameters validParams<DecayHeatSource>();
 
 class DecayHeatSource : public Kernel, public ScalarTransportBase
 {
 public:
   DecayHeatSource(const InputParameters & parameters);
+
+  static InputParameters validParams();
 
 protected:
   virtual Real computeQpResidual() override;
@@ -25,5 +20,3 @@ protected:
   std::vector<const VariableValue *> _heat_concs;
   std::vector<unsigned int> _heat_ids;
 };
-
-#endif // DECAYHEATSOURCE_H

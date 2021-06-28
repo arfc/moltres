@@ -2,11 +2,10 @@
 
 registerMooseObject("MoltresApp", FissionHeatSourceAux);
 
-template <>
 InputParameters
-validParams<FissionHeatSourceAux>()
+FissionHeatSourceAux::validParams()
 {
-  InputParameters params = validParams<AuxKernel>();
+  InputParameters params = AuxKernel::validParams();
   params.addRequiredParam<unsigned int>("num_groups", "The total numer of energy groups");
   params.addRequiredCoupledVar("group_fluxes", "All the variables that hold the group fluxes. "
                                                "These MUST be listed by decreasing "

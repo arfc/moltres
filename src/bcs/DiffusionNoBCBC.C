@@ -2,11 +2,10 @@
 
 registerMooseObject("MoltresApp", DiffusionNoBCBC);
 
-template <>
 InputParameters
-validParams<DiffusionNoBCBC>()
+DiffusionNoBCBC::validParams()
 {
-  InputParameters params = validParams<IntegratedBC>();
+  InputParameters params = IntegratedBC::validParams();
   params.addClassDescription("The Laplacian operator ($-\\nabla \\cdot \\nabla u$), with the weak "
                              "form of $(\\nabla \\phi_i, \\nabla u_h)$.");
   return params;

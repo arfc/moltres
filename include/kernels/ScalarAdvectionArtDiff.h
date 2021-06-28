@@ -1,14 +1,7 @@
-#ifndef SCALARADVECTIONARTDIFF_H
-#define SCALARADVECTIONARTDIFF_H
+#pragma once
 
 #include "Kernel.h"
 #include "ScalarTransportBase.h"
-
-// Forward Declarations
-class ScalarAdvectionArtDiff;
-
-template <>
-InputParameters validParams<ScalarAdvectionArtDiff>();
 
 /**
  * This class computes the residual and Jacobian contributions for the
@@ -31,6 +24,8 @@ class ScalarAdvectionArtDiff : public Kernel, public ScalarTransportBase
 {
 public:
   ScalarAdvectionArtDiff(const InputParameters & parameters);
+
+  static InputParameters validParams();
 
   virtual ~ScalarAdvectionArtDiff() {}
 
@@ -58,5 +53,3 @@ protected:
   Real _conc_scaling;
   const Real & _current_elem_volume;
 };
-
-#endif // SCALARADVECTIONARTDIFF_H

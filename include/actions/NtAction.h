@@ -1,5 +1,4 @@
-#ifndef NTACTION_H
-#define NTACTION_H
+#pragma once
 
 #include "VariableNotAMooseObjectAction.h"
 
@@ -24,6 +23,8 @@ class NtAction : public VariableNotAMooseObjectAction
 public:
   NtAction(const InputParameters & params);
 
+  static InputParameters validParams();
+
   virtual void act() override;
 
 protected:
@@ -36,8 +37,3 @@ protected:
   /// number of energy groups
   unsigned int _num_groups;
 };
-
-template <>
-InputParameters validParams<NtAction>();
-
-#endif // NTACTION_H

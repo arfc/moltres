@@ -2,11 +2,10 @@
 
 registerMooseObject("MoltresApp", INSOutflowBC);
 
-template <>
 InputParameters
-validParams<INSOutflowBC>()
+INSOutflowBC::validParams()
 {
-  InputParameters params = validParams<IntegratedBC>();
+  InputParameters params = IntegratedBC::validParams();
 
   // Coupled variables
   params.addRequiredCoupledVar("u", "x-velocity");

@@ -1,13 +1,6 @@
-#ifndef INSOUTFLOWBC_H
-#define INSOUTFLOWBC_H
+#pragma once
 
 #include "IntegratedBC.h"
-
-// Forward Declarations
-class INSOutflowBC;
-
-template <>
-InputParameters validParams<INSOutflowBC>();
 
 /**
  * This class computes momentum equation residual and Jacobian
@@ -19,12 +12,14 @@ class INSOutflowBC : public IntegratedBC
 public:
   INSOutflowBC(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
   virtual ~INSOutflowBC() {}
 
 protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
-  virtual Real computeQpOffDiagJacobian(unsigned jvar);
+  virtual Real computeQpResidual() override;
+  virtual Real computeQpJacobian() override;
+  virtual Real computeQpOffDiagJacobian(unsigned jvar) override;
 
   // Coupled variables
   const VariableValue & _u_vel;
@@ -53,5 +48,3 @@ protected:
   unsigned _component;
   bool _integrate_p_by_parts;
 };
-
-#endif // INSOUTFLOWBC_H

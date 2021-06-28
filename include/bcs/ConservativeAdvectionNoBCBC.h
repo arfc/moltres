@@ -1,24 +1,17 @@
-#ifndef CONSERVATIVEADVECTIONOBCBC_H
-#define CONSERVATIVEADVECTIONOBCBC_H
+#pragma once
 
 #include "IntegratedBC.h"
-
-// Forward Declaration
-class ConservativeAdvectionNoBCBC;
-
-template <>
-InputParameters validParams<ConservativeAdvectionNoBCBC>();
 
 class ConservativeAdvectionNoBCBC : public IntegratedBC
 {
 public:
   ConservativeAdvectionNoBCBC(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
 protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
+  virtual Real computeQpResidual() override;
+  virtual Real computeQpJacobian() override;
 
   RealVectorValue _velocity;
 };
-
-#endif // CONSERVATIVEADVECTIONOBCBC_H

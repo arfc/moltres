@@ -1,13 +1,7 @@
-#ifndef RODDEDMATERIAL_H_
-#define RODDEDMATERIAL_H_
+#pragma once
 
 #include "GenericMoltresMaterial.h"
 #include "ODEKernel.h"
-
-class RoddedMaterial;
-
-template <>
-InputParameters validParams<RoddedMaterial>();
 
 /**
  * This class is meant to simulate a piece of material with a rod in it.
@@ -27,6 +21,8 @@ class RoddedMaterial : public GenericMoltresMaterial
 public:
   RoddedMaterial(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
 protected:
   void splineConstruct(std::string & property_tables_root, std::vector<std::string> xsec_names);
   virtual void computeQpProperties() override;
@@ -36,5 +32,3 @@ protected:
   const VariableValue & _rod_pos;
   MooseEnum _rod_dim;
 };
-
-#endif // RODDEDMATERIAL_H

@@ -3,12 +3,11 @@
 
 registerMooseObject("MoltresApp", CoupledScalarAdvection);
 
-template <>
 InputParameters
-validParams<CoupledScalarAdvection>()
+CoupledScalarAdvection::validParams()
 {
-  InputParameters params = validParams<Kernel>();
-  params += validParams<ScalarTransportBase>();
+  InputParameters params = Kernel::validParams();
+  params += ScalarTransportBase::validParams();
 
   // Coupled variables
   params.addCoupledVar("u", "x-velocity");

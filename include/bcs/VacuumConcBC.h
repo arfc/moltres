@@ -1,14 +1,7 @@
-#ifndef VACUUMCONCBC_H
-#define VACUUMCONCBC_H
+#pragma once
 
 #include "IntegratedBC.h"
 #include "ScalarTransportBase.h"
-
-// Forward Declarations
-class VacuumConcBC;
-
-template <>
-InputParameters validParams<VacuumConcBC>();
 
 /**
  * Implements a simple VacuumConc BC for neutron diffusion on the boundary.
@@ -25,6 +18,8 @@ public:
    */
   VacuumConcBC(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
 protected:
   virtual Real computeQpResidual() override;
 
@@ -33,5 +28,3 @@ protected:
   /// Ratio of u to du/dn
   Real _alpha;
 };
-
-#endif // VACUUMCONCBC_H

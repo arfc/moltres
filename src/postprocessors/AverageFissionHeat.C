@@ -2,11 +2,10 @@
 
 registerMooseObject("MoltresApp", AverageFissionHeat);
 
-template <>
 InputParameters
-validParams<AverageFissionHeat>()
+AverageFissionHeat::validParams()
 {
-  InputParameters params = validParams<ElmIntegTotFissHeatPostprocessor>();
+  InputParameters params = ElmIntegTotFissHeatPostprocessor::validParams();
   return params;
 }
 
