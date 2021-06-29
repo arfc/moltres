@@ -304,7 +304,7 @@ nt_scale=1e13
   print_linear_residuals = true
   [./exodus]
     type = Exodus
-    file_base = 'auto_diff_rho'
+    file_base = 'auto_diff_rho_serpent'
     execute_on = 'final'
   [../]
 []

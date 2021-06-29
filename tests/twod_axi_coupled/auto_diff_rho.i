@@ -242,12 +242,12 @@ nt_scale=1e13
   nl_max_its = 30
   l_max_its = 100
 
-  dtmin = 1e-5
+  dtmin = 1e-0
   # dtmax = 1
   # dt = 1e-3
   [./TimeStepper]
     type = IterationAdaptiveDT
-    dt = 1e-3
+    dt = 1e-0
     cutback_factor = 0.4
     growth_factor = 1.2
     optimal_iterations = 20
