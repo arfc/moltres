@@ -21,7 +21,7 @@
     variable = u
   [../]
   [./heat_sink]
-    type = ManuHX
+    type = ConvectiveHeatExchanger
     variable = u
     htc = 1
     tref = 0
