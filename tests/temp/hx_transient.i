@@ -70,6 +70,7 @@
   type = Transient
   dt = 0.1
   end_time = 10
+  nl_abs_tol = 1e-12
 []
 
 [Outputs]
