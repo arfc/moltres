@@ -14,8 +14,13 @@
 [Mesh]
     type = GeneratedMesh
     dim = 2
+
     nx = 200
     ny = 200
+## Use a 40-by-40 mesh instead if running on a desktop/small cluster
+#    nx = 40
+#    ny = 40
+
     xmin = 0
     xmax = 200
     ymin = 0
@@ -32,6 +37,7 @@
   vacuum_boundaries = 'bottom left right top'
   create_temperature_var = false
   eigen = true
+  transient = false
   scaling = 1e3
 []
 
@@ -56,7 +62,7 @@
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
-    property_tables_root = '../../property_file_dir/cnrs-benchmark/benchmark_'
+    property_tables_root = '../../../property_file_dir/cnrs-benchmark/benchmark_'
     interp_type = 'linear'
   [../]
 []
@@ -76,7 +82,6 @@
   xdiff = 'group1diff'
   bx_norm = 'bnorm'
   k0 = 1.00400
-  pfactor = 1e-2
   l_max_its = 100
   eig_check_tol = 1e-7
 
@@ -84,6 +89,12 @@
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_mat_solver_package'
   petsc_options_value = 'lu       NONZERO               superlu_dist'
+
+## Use the settings below instead if running on a desktop/small cluster
+#  petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type'
+#  petsc_options_value = 'asm      lu           200                1               NONZERO'
+
+  line_search = none
 []
 
 [Preconditioning]
