@@ -20,8 +20,13 @@ alpha = 1           # INS SUPG and PSPG stabilization parameter
   [./square]
     type = GeneratedMeshGenerator
     dim = 2
+
     nx = 200
     ny = 200
+## Use a 40-by-40 mesh instead if running on a desktop/small cluster
+#    nx = 40
+#    ny = 40
+
     xmin = 0
     xmax = 200
     ymin = 0
@@ -234,7 +239,7 @@ alpha = 1           # INS SUPG and PSPG stabilization parameter
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
-    property_tables_root = '../../property_file_dir/cnrs-benchmark/benchmark_'
+    property_tables_root = '../../../property_file_dir/cnrs-benchmark/benchmark_'
     interp_type = 'linear'
     prop_names = 'k rho cp'
     prop_values = '${k} ${density} ${cp}'
