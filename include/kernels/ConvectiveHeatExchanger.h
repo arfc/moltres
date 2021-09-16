@@ -2,10 +2,10 @@
 
 #include "Kernel.h"
 
-class ManuHX : public Kernel
+class ConvectiveHeatExchanger : public Kernel
 {
 public:
-  ManuHX(const InputParameters & parameters);
+  ConvectiveHeatExchanger(const InputParameters & parameters);
 
   static InputParameters validParams();
 
@@ -13,6 +13,6 @@ protected:
   virtual Real computeQpResidual() override;
   virtual Real computeQpJacobian() override;
 
-  Real _htc;
+  const Real & _htc;
   Real _tref;
 };
