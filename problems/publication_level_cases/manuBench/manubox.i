@@ -132,7 +132,7 @@ library_path=/home/gavin/projects/moose/modules/navier_stokes/lib/
   [../]
 
   [./heatRemoval]
-    type = ManuHX
+    type = ConvectiveHeatExchanger
     variable = temp
     tref = 900.0
     htc  = 1.0
