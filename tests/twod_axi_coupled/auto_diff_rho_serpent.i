@@ -9,7 +9,7 @@ nt_scale=1e13
   use_exp_form = false
   group_fluxes = 'group1 group2'
   temperature = temp
-  sss2_input = false
+  sss2_input = true
   pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6'
   account_delayed = true
 []
@@ -192,7 +192,7 @@ nt_scale=1e13
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
-    property_tables_root = '../../property_file_dir/newt_msre_fuel_'
+    property_tables_root = '../../property_file_dir/newt_msre_converted_to_serpent/serpent_msre_fuel_'
     interp_type = 'spline'
     block = 'fuel'
     prop_names = 'k cp'
@@ -208,7 +208,7 @@ nt_scale=1e13
   [../]
   [./moder]
     type = GenericMoltresMaterial
-    property_tables_root = '../../property_file_dir/newt_msre_mod_'
+    property_tables_root = '../../property_file_dir/newt_msre_converted_to_serpent/serpent_msre_mod_'
     interp_type = 'spline'
     prop_names = 'k cp'
     prop_values = '.312 1760' # Cammi 2011 at 908 K
@@ -306,7 +306,7 @@ nt_scale=1e13
   print_linear_residuals = true
   [./exodus]
     type = Exodus
-    file_base = 'auto_diff_rho'
+    file_base = 'auto_diff_rho_serpent'
     execute_on = 'final'
   [../]
 []
