@@ -2,12 +2,11 @@
 
 registerMooseObject("MoltresApp", InScatter);
 
-template <>
 InputParameters
-validParams<InScatter>()
+InScatter::validParams()
 {
-  InputParameters params = validParams<Kernel>();
-  params += validParams<ScalarTransportBase>();
+  InputParameters params = Kernel::validParams();
+  params += ScalarTransportBase::validParams();
   params.addRequiredParam<unsigned int>("group_number", "The current energy group");
   params.addRequiredParam<unsigned int>("num_groups", "The total numer of energy groups");
   params.addCoupledVar("temperature", "The temperature used to interpolate material properties");
@@ -92,8 +91,12 @@ InScatter::computeQpOffDiagJacobian(unsigned int jvar)
     {
       if (i == _group)
         continue;
-      jac += -_test[_i][_qp] * _d_gtransfxs_d_temp[_qp][i + _group * _num_groups] * _phi[_j][_qp] *
-             computeConcentration((*_group_fluxes[i]), _qp);
+      if (_sss2_input)
+        jac += -_test[_i][_qp] * _d_gtransfxs_d_temp[_qp][i * _num_groups + _group] * _phi[_j][_qp] *
+               computeConcentration((*_group_fluxes[i]), _qp);
+      else
+        jac += -_test[_i][_qp] * _d_gtransfxs_d_temp[_qp][i + _group * _num_groups] * _phi[_j][_qp] *
+               computeConcentration((*_group_fluxes[i]), _qp);
     }
   }
 

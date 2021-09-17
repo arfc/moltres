@@ -1,25 +1,18 @@
-#ifndef GAMMAEHEATSOURCE_H
-#define GAMMAEHEATSOURCE_H
+#pragma once
 
 #include "Kernel.h"
-
-// Forward Declarations
-class GammaHeatSource;
-
-template <>
-InputParameters validParams<GammaHeatSource>();
 
 class GammaHeatSource : public Kernel
 {
 public:
   GammaHeatSource(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
 protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
+  virtual Real computeQpResidual() override;
+  virtual Real computeQpJacobian() override;
 
   const PostprocessorValue & _average_fission_heat;
   const Function & _gamma;
 };
-
-#endif // GAMMAEHEATSOURCE_H

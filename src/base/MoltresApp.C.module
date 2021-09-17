@@ -3,10 +3,10 @@
 #include "AppFactory.h"
 #include "MooseSyntax.h"
 
-template<>
-InputParameters validParams<MoltresApp>()
+InputParameters
+MoltresApp::validParams()
 {
-  InputParameters params = validParams<MooseApp>();
+  InputParameters params = MooseApp::validParams();
 
   params.set<bool>("use_legacy_uo_initialization") = false;
   params.set<bool>("use_legacy_uo_aux_computation") = false;
@@ -15,8 +15,8 @@ InputParameters validParams<MoltresApp>()
   return params;
 }
 
-MoltresApp::MoltresApp(InputParameters parameters) :
-    MooseApp(parameters)
+MoltresApp::MoltresApp(InputParameters parameters)
+  : MooseApp(parameters)
 {
   Moose::registerObjects(_factory);
   MoltresApp::registerObjects(_factory);

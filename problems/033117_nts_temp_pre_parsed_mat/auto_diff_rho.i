@@ -207,7 +207,6 @@ diri_temp=922
     block = 'fuel'
     prop_names = 'k cp'
     prop_values = '.0553 1967' # Robertson MSRE technical report @ 922 K
-    peak_power_density = peak_power_density
     controller_gain = 0
   [../]
   [./rho_fuel]
@@ -225,7 +224,6 @@ diri_temp=922
     prop_names = 'k cp'
     prop_values = '.312 1760' # Cammi 2011 at 908 K
     block = 'moder'
-    peak_power_density = peak_power_density
     controller_gain = 0
   [../]
   [./rho_moder]

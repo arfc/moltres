@@ -1,12 +1,6 @@
-#ifndef DIVISIONPOSTPROCESSOR_H
-#define DIVISIONPOSTPROCESSOR_H
+#pragma once
 
 #include "DifferencePostprocessor.h"
-
-class DivisionPostprocessor;
-
-template <>
-InputParameters validParams<DivisionPostprocessor>();
 
 /**
  * Computes the quotient between two postprocessors
@@ -18,7 +12,8 @@ class DivisionPostprocessor : public DifferencePostprocessor
 public:
   DivisionPostprocessor(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
+protected:
   virtual PostprocessorValue getValue() override;
 };
-
-#endif /* DIVISIONPOSTPROCESSOR_H */

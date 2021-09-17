@@ -1,14 +1,7 @@
-#ifndef HEATPRECURSORSOURCE_H
-#define HEATPRECURSORSOURCE_H
+#pragma once
 
 #include "Kernel.h"
 #include "ScalarTransportBase.h"
-
-// Forward Declarations
-class HeatPrecursorSource;
-
-template <>
-InputParameters validParams<HeatPrecursorSource>();
 
 /**
  * This class computes the residual and Jacobian contributions for the
@@ -19,6 +12,8 @@ class HeatPrecursorSource : public Kernel, public ScalarTransportBase
 {
 public:
   HeatPrecursorSource(const InputParameters & parameters);
+
+  static InputParameters validParams();
 
 protected:
   virtual Real computeQpResidual() override;
@@ -41,5 +36,3 @@ protected:
   std::vector<const VariableValue *> _group_fluxes;
   std::vector<unsigned int> _flux_ids;
 };
-
-#endif // HEATPRECURSORSOURCE_H

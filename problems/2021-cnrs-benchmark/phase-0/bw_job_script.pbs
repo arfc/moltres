@@ -1,0 +1,13 @@
+#!/bin/bash
+#PBS -l nodes=16:ppn=16:xk
+#PBS -l walltime=00:30:00
+#PBS -N out
+#PBS -j oe
+#PBS -A bbcc
+#PBS -q normal
+
+cd $PBS_O_WORKDIR
+source /u/sciteam/park2/projects/moose_env
+aprun -n 256 /u/sciteam/park2/projects/moltres/moltres-opt -i /u/sciteam/park2/projects/cnrs-benchmark/problems/2021-cnrs-benchmark/phase-0/vel-field.i 2>&1 | tee vel-field.out
+aprun -n 256 /u/sciteam/park2/projects/moltres/moltres-opt -i /u/sciteam/park2/projects/cnrs-benchmark/problems/2021-cnrs-benchmark/phase-0/nts.i 2>&1 | tee nts.out
+aprun -n 256 /u/sciteam/park2/projects/moltres/moltres-opt -i /u/sciteam/park2/projects/cnrs-benchmark/problems/2021-cnrs-benchmark/phase-0/temperature.i 2>&1 | tee temperature.out

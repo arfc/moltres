@@ -1,14 +1,7 @@
-#ifndef COUPLEDSCALARADVECTIONNOBCBC_H
-#define COUPLEDSCALARADVECTIONNOBCBC_H
+#pragma once
 
 #include "IntegratedBC.h"
 #include "ScalarTransportBase.h"
-
-// Forward Declarations
-class CoupledScalarAdvectionNoBCBC;
-
-template <>
-InputParameters validParams<CoupledScalarAdvectionNoBCBC>();
 
 /**
  * This class computes the residual and Jacobian contributions for the
@@ -19,12 +12,14 @@ class CoupledScalarAdvectionNoBCBC : public IntegratedBC, public ScalarTransport
 public:
   CoupledScalarAdvectionNoBCBC(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
   virtual ~CoupledScalarAdvectionNoBCBC() {}
 
 protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
-  virtual Real computeQpOffDiagJacobian(unsigned jvar);
+  virtual Real computeQpResidual() override;
+  virtual Real computeQpJacobian() override;
+  virtual Real computeQpOffDiagJacobian(unsigned jvar) override;
 
   // Coupled variables
   const VariableValue & _u_vel;
@@ -41,5 +36,3 @@ protected:
   VariableValue _w_def;
   Real _conc_scaling;
 };
-
-#endif // COUPLEDSCALARADVECTIONNOBCBC_H

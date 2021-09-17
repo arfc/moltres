@@ -3,11 +3,10 @@
 
 registerMooseObject("MoltresApp", RoddedMaterial);
 
-template <>
 InputParameters
-validParams<RoddedMaterial>()
+RoddedMaterial::validParams()
 {
-  InputParameters params = validParams<GenericMoltresMaterial>();
+  InputParameters params = GenericMoltresMaterial::validParams();
   params.addRequiredCoupledVar("rodPosition", "Position of the control rod.");
   params.addRequiredParam<Real>("absorb_factor",
                                 "The material inherits from some other. How much more absorbing?");

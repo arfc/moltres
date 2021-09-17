@@ -226,7 +226,7 @@ nt_scale=1e13
 
 [Executioner]
   type = Transient
-  end_time = 10000
+  num_steps = 80
 
   nl_rel_tol = 1e-6
   nl_abs_tol = 1e-6
@@ -241,6 +241,8 @@ nt_scale=1e13
 
   nl_max_its = 30
   l_max_its = 100
+  steady_state_detection = true
+  steady_state_tolerance = 1e-10
 
   dtmin = 1e-5
   # dtmax = 1
@@ -250,7 +252,7 @@ nt_scale=1e13
     dt = 1e-3
     cutback_factor = 0.4
     growth_factor = 1.2
-    optimal_iterations = 20
+    optimal_iterations = 5
   [../]
 []
 

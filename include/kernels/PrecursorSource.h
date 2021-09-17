@@ -1,24 +1,19 @@
-#ifndef PRECURSORSOURCE_H
-#define PRECURSORSOURCE_H
+#pragma once
 
 #include "Kernel.h"
 #include "ScalarTransportBase.h"
-
-// Forward Declarations
-class PrecursorSource;
-
-template <>
-InputParameters validParams<PrecursorSource>();
 
 class PrecursorSource : public Kernel, public ScalarTransportBase
 {
 public:
   PrecursorSource(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
 protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
-  virtual Real computeQpOffDiagJacobian(unsigned int jvar);
+  virtual Real computeQpResidual() override;
+  virtual Real computeQpJacobian() override;
+  virtual Real computeQpOffDiagJacobian(unsigned int jvar) override;
 
   const MaterialProperty<std::vector<Real>> & _nsf;
   const MaterialProperty<std::vector<Real>> & _d_nsf_d_temp;
@@ -32,5 +27,3 @@ protected:
   std::vector<unsigned int> _flux_ids;
   Real _prec_scale;
 };
-
-#endif // PRECURSORSOURCE_H

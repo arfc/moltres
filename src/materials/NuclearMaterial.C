@@ -4,11 +4,10 @@
 
 registerMooseObject("MoltresApp", NuclearMaterial);
 
-template <>
 InputParameters
-validParams<NuclearMaterial>()
+NuclearMaterial::validParams()
 {
-  InputParameters params = validParams<GenericConstantMaterial>();
+  InputParameters params = GenericConstantMaterial::validParams();
   params.addRequiredParam<unsigned>("num_groups",
                                     "The number of groups the energy spectrum is divided into.");
   params.addRequiredParam<unsigned>("num_precursor_groups",

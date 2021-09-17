@@ -1,13 +1,6 @@
-#ifndef SIDEWEIGHTEDINTEGRALPOSTPROCESSOR_H
-#define SIDEWEIGHTEDINTEGRALPOSTPROCESSOR_H
+#pragma once
 
 #include "SideIntegralVariablePostprocessor.h"
-
-// Forward Declarations
-class SideWeightedIntegralPostprocessor;
-
-template <>
-InputParameters validParams<SideIntegralVariablePostprocessor>();
 
 /**
  * This postprocessor computes the weighted integral of a
@@ -16,9 +9,9 @@ InputParameters validParams<SideIntegralVariablePostprocessor>();
 class SideWeightedIntegralPostprocessor : public SideIntegralVariablePostprocessor
 {
 public:
-  static InputParameters validParams();
-
   SideWeightedIntegralPostprocessor(const InputParameters & parameters);
+
+  static InputParameters validParams();
 
 protected:
   virtual Real computeQpIntegral() override;
@@ -26,5 +19,3 @@ protected:
   // Weight variable
   const VariableValue & _weight;
 };
-
-#endif // SIDEWEIGHTEDINTEGRALPOSTPROCESSOR_H

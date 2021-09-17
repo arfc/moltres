@@ -1,19 +1,14 @@
-#ifndef DELAYEDNEUTRONSOURCE_H
-#define DELAYEDNEUTRONSOURCE_H
+#pragma once
 
 #include "Kernel.h"
 #include "ScalarTransportBase.h"
-
-// Forward Declarations
-class DelayedNeutronSource;
-
-template <>
-InputParameters validParams<DelayedNeutronSource>();
 
 class DelayedNeutronSource : public Kernel, public ScalarTransportBase
 {
 public:
   DelayedNeutronSource(const InputParameters & parameters);
+
+  static InputParameters validParams();
 
 protected:
   virtual Real computeQpResidual() override;
@@ -32,5 +27,3 @@ protected:
   std::vector<const VariableValue *> _pre_concs;
   std::vector<unsigned int> _pre_ids;
 };
-
-#endif // DELAYEDNEUTRONSOURCE_H

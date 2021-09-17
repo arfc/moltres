@@ -1,13 +1,7 @@
-#ifndef SCALARTRANSPORTBASE_H
-#define SCALARTRANSPORTBASE_H
+#pragma once
 
 #include "InputParameters.h"
 #include "MooseVariableBase.h"
-
-class ScalarTransportBase;
-
-template <>
-InputParameters validParams<ScalarTransportBase>();
 
 /**
  * This class is useful for calculating the concentration, independent
@@ -19,6 +13,8 @@ class ScalarTransportBase
 {
 public:
   ScalarTransportBase(const InputParameters & parameters);
+
+  static InputParameters validParams();
 
   /// Computes \f$c\f$
   virtual Real computeConcentration(const VariableValue & u, unsigned int qp);
@@ -59,5 +55,3 @@ private:
   /// Boolean flag that determines whether to use the exponential/logarithmic formulation
   const bool _use_exp_form;
 };
-
-#endif // SCALARTRANSPORTBASE_H

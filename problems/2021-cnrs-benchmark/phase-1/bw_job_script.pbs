@@ -1,0 +1,13 @@
+#!/bin/bash
+#PBS -l nodes=16:ppn=16:xk
+#PBS -l walltime=01:00:00
+#PBS -N out
+#PBS -j oe
+#PBS -A bbcc
+#PBS -q normal
+
+cd $PBS_O_WORKDIR
+source /projects/sciteam/bbcc/env/moose_env
+aprun -n 256 /u/sciteam/park2/projects/moltres/moltres-opt -i /u/sciteam/park2/projects/cnrs-benchmark/problems/2021-cnrs-benchmark/phase-1/circ-fuel.i 2>&1 | tee circ-fuel.out
+aprun -n 256 /u/sciteam/park2/projects/moltres/moltres-opt -i /u/sciteam/park2/projects/cnrs-benchmark/problems/2021-cnrs-benchmark/phase-1/power-coupling.i 2>&1 | tee power-coupling.out
+aprun -n 256 /u/sciteam/park2/projects/moltres/moltres-opt -i /u/sciteam/park2/projects/cnrs-benchmark/problems/2021-cnrs-benchmark/phase-1/buoyancy.i 2>&1 | tee buoyancy.out

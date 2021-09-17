@@ -2,12 +2,11 @@
 
 registerMooseObject("MoltresApp", ScalarTransportTimeDerivative);
 
-template <>
 InputParameters
-validParams<ScalarTransportTimeDerivative>()
+ScalarTransportTimeDerivative::validParams()
 {
-  InputParameters params = validParams<TimeKernel>();
-  params += validParams<ScalarTransportBase>();
+  InputParameters params = TimeKernel::validParams();
+  params += ScalarTransportBase::validParams();
   params.addParam<bool>("lumping", false, "True for mass matrix lumping, false otherwise");
   params.addParam<Real>(
       "conc_scaling", 1, "The amount by which to scale the concentration variable.");

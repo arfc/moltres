@@ -3,12 +3,11 @@
 
 registerMooseObject("MoltresApp", ScalarAdvectionArtDiff);
 
-template <>
 InputParameters
-validParams<ScalarAdvectionArtDiff>()
+ScalarAdvectionArtDiff::validParams()
 {
-  InputParameters params = validParams<Kernel>();
-  params += validParams<ScalarTransportBase>();
+  InputParameters params = Kernel::validParams();
+  params += ScalarTransportBase::validParams();
   params.addClassDescription("This class computes the residual and Jacobian "
       "contributions from the artificial diffusion term, "
       "$D' = \\tau |u| \\Delta x / 2$.");

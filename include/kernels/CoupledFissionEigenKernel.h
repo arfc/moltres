@@ -1,14 +1,7 @@
-#ifndef COUPLEDFISSIONEIGENKERNEL_H
-#define COUPLEDFISSIONEIGENKERNEL_H
+#pragma once
 
 #include "EigenKernel.h"
 #include "ScalarTransportBase.h"
-
-// Forward Declarations
-class CoupledFissionEigenKernel;
-
-template <>
-InputParameters validParams<CoupledFissionEigenKernel>();
 
 /**
  * Computes the fission source normalized by eigenvalue. In other words:
@@ -20,6 +13,8 @@ class CoupledFissionEigenKernel : public EigenKernel, public ScalarTransportBase
 {
 public:
   CoupledFissionEigenKernel(const InputParameters & parameters);
+
+  static InputParameters validParams();
 
 protected:
   virtual Real computeQpResidual() override;
@@ -36,5 +31,3 @@ protected:
   std::vector<unsigned int> _flux_ids;
   bool _account_delayed;
 };
-
-#endif // COUPLEDFISSIONEIGENKERNEL_H

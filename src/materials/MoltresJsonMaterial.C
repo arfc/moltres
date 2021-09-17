@@ -4,11 +4,10 @@
 
 registerMooseObject("MoltresApp", MoltresJsonMaterial);
 
-template <>
 InputParameters
-validParams<MoltresJsonMaterial>()
+MoltresJsonMaterial::validParams()
 {
-  InputParameters params = validParams<NuclearMaterial>();
+  InputParameters params = NuclearMaterial::validParams();
   params.addRequiredParam<std::string>("base_file", "The file containing macroscopic XS.");
   params.addRequiredParam<std::string>("material_key",
                                        "The file key where the macroscopic XS can be found.");

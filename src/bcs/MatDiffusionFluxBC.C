@@ -2,11 +2,10 @@
 
 registerMooseObject("MoltresApp", MatDiffusionFluxBC);
 
-template <>
 InputParameters
-validParams<MatDiffusionFluxBC>()
+MatDiffusionFluxBC::validParams()
 {
-  InputParameters params = validParams<IntegratedBC>();
+  InputParameters params = IntegratedBC::validParams();
   params.addRequiredParam<MaterialPropertyName>(
       "prop_name", "the name of the material property we are going to use");
 

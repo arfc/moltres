@@ -2,12 +2,11 @@
 
 registerMooseObject("MoltresApp", HeatPrecursorDecay);
 
-template <>
 InputParameters
-validParams<HeatPrecursorDecay>()
+HeatPrecursorDecay::validParams()
 {
-  InputParameters params = validParams<Kernel>();
-  params += validParams<ScalarTransportBase>();
+  InputParameters params = Kernel::validParams();
+  params += ScalarTransportBase::validParams();
   params.addRequiredParam<unsigned int>("decay_heat_group_number",
                                         "The decay heat group this kernel acts on.");
   params.addRequiredParam<std::vector<Real>>("decay_heat_constants", "Decay Heat Constants");

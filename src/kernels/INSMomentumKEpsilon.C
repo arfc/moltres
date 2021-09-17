@@ -2,11 +2,10 @@
 
 registerMooseObject("MoltresApp", INSMomentumKEpsilon);
 
-template <>
 InputParameters
-validParams<INSMomentumKEpsilon>()
+INSMomentumKEpsilon::validParams()
 {
-  InputParameters params = validParams<Kernel>();
+  InputParameters params = Kernel::validParams();
 
   // Coupled variables
   params.addRequiredCoupledVar("u", "x-velocity");

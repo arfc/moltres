@@ -12,21 +12,16 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#ifndef LIMITK_H
-#define LIMITK_H
+#pragma once
 
 #include "TimestepSize.h"
-
-// Forward Declarations
-class LimitK;
-
-template <>
-InputParameters validParams<LimitK>();
 
 class LimitK : public TimestepSize
 {
 public:
   LimitK(const InputParameters & parameters);
+
+  static InputParameters validParams();
 
   virtual void initialize() override {}
   virtual void execute() override {}
@@ -42,5 +37,3 @@ protected:
   const Real & _cutback_factor;
   const Real & _k_threshold;
 };
-
-#endif // LIMITK_H

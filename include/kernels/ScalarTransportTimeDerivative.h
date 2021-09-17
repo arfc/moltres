@@ -1,26 +1,19 @@
-#ifndef SCALARTRANSPORTTIMEDERIVATIVE_H
-#define SCALARTRANSPORTTIMEDERIVATIVE_H
+#pragma once
 
 #include "TimeKernel.h"
 #include "ScalarTransportBase.h"
-
-// Forward Declaration
-class ScalarTransportTimeDerivative;
-
-template <>
-InputParameters validParams<ScalarTransportTimeDerivative>();
 
 class ScalarTransportTimeDerivative : public TimeKernel, public ScalarTransportBase
 {
 public:
   ScalarTransportTimeDerivative(const InputParameters & parameters);
 
+  static InputParameters validParams();
+
 protected:
-  virtual Real computeQpResidual();
-  virtual Real computeQpJacobian();
+  virtual Real computeQpResidual() override;
+  virtual Real computeQpJacobian() override;
 
   bool _lumping;
   Real _conc_scaling;
 };
-
-#endif // SCALARTRANSPORTTIMEDERIVATIVE_H

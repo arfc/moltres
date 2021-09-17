@@ -1,25 +1,19 @@
-#ifndef INSCATTER_H
-#define INSCATTER_H
+#pragma once
 
 #include "Kernel.h"
 #include "ScalarTransportBase.h"
-
-// Forward Declaration
-class InScatter;
-
-template <>
-InputParameters validParams<InScatter>();
 
 class InScatter : public Kernel, public ScalarTransportBase
 {
 public:
   InScatter(const InputParameters & parameters);
 
-protected:
-  virtual Real computeQpResidual();
+  static InputParameters validParams();
 
-  virtual Real computeQpJacobian();
-  virtual Real computeQpOffDiagJacobian(unsigned int jvar);
+protected:
+  virtual Real computeQpResidual() override;
+  virtual Real computeQpJacobian() override;
+  virtual Real computeQpOffDiagJacobian(unsigned int jvar) override;
 
   const MaterialProperty<std::vector<Real>> & _gtransfxs;
   const MaterialProperty<std::vector<Real>> & _d_gtransfxs_d_temp;
@@ -30,5 +24,3 @@ protected:
   std::vector<unsigned int> _flux_ids;
   bool _sss2_input;
 };
-
-#endif // INSCATTER_H

@@ -23,11 +23,10 @@ registerMooseAction("MoltresApp", NtAction, "check_copy_nodal_vars");
 
 registerMooseAction("MoltresApp", NtAction, "copy_nodal_vars");
 
-template <>
 InputParameters
-validParams<NtAction>()
+NtAction::validParams()
 {
-  InputParameters params = validParams<VariableNotAMooseObjectAction>();
+  InputParameters params = VariableNotAMooseObjectAction::validParams();
 
   params.addRequiredParam<unsigned int>("num_precursor_groups",
                                         "specifies the total number of precursors to create");
