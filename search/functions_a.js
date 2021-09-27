@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['main_702',['main',['../main_8_c.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main.C']]],
-  ['manuhx_703',['ManuHX',['../class_manu_h_x.html#a8a0d2f1c27f9f43232b292a75ed90000',1,'ManuHX']]],
+  ['main_703',['main',['../main_8_c.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main.C']]],
   ['matdiffusionaux_704',['MatDiffusionAux',['../class_mat_diffusion_aux.html#ab2e9def910cf922e72fb1723c144e27d',1,'MatDiffusionAux']]],
   ['matdiffusionfluxbc_705',['MatDiffusionFluxBC',['../class_mat_diffusion_flux_b_c.html#a7c6808753c8ce70b3cc9710c4dc23b64',1,'MatDiffusionFluxBC']]],
   ['moderatorbicubic_706',['moderatorBicubic',['../class_generic_moltres_material.html#a32a8fc8eec2665e481abbeed1fedcb7c',1,'GenericMoltresMaterial']]],

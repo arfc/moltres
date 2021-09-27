@@ -1,8 +1,6 @@
 var searchData=
 [
-  ['main_2ec_565',['main.C',['../main_8_c.html',1,'']]],
-  ['manuhx_2ec_566',['ManuHX.C',['../_manu_h_x_8_c.html',1,'']]],
-  ['manuhx_2eh_567',['ManuHX.h',['../_manu_h_x_8h.html',1,'']]],
+  ['main_2ec_567',['main.C',['../main_8_c.html',1,'']]],
   ['matdiffusionaux_2ec_568',['MatDiffusionAux.C',['../_mat_diffusion_aux_8_c.html',1,'']]],
   ['matdiffusionaux_2eh_569',['MatDiffusionAux.h',['../_mat_diffusion_aux_8h.html',1,'']]],
   ['matdiffusionfluxbc_2ec_570',['MatDiffusionFluxBC.C',['../_mat_diffusion_flux_b_c_8_c.html',1,'']]],

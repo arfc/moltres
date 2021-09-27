@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['manuhx_461',['ManuHX',['../class_manu_h_x.html',1,'']]],
   ['matdiffusionaux_462',['MatDiffusionAux',['../class_mat_diffusion_aux.html',1,'']]],
   ['matdiffusionfluxbc_463',['MatDiffusionFluxBC',['../class_mat_diffusion_flux_b_c.html',1,'']]],
   ['moderatorheatsourcetransientaux_464',['ModeratorHeatSourceTransientAux',['../class_moderator_heat_source_transient_aux.html',1,'']]],
