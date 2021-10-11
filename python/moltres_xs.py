@@ -271,10 +271,8 @@ def read_input(fin):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
-        description="Extracts Serpent 2 or SCALE group \
-            constants and puts them in a JSON file suitable \
-                for Moltres."
-    )
+        description="Extracts Serpent 2 or SCALE group constants and puts \
+                    them in a JSON file suitable for Moltres.")
     parser.add_argument(
         "input_file",
         type=str,
