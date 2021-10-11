@@ -277,9 +277,7 @@ if __name__ == "__main__":
         "input_file",
         type=str,
         nargs=1,
-        help="*_res.m or *.t16 XS \
-                            file from Serpent 2 or SCALE, \
-                            respectively",
+        help="*_res.m or *.t16 XS file from Serpent 2 or SCALE, respectively",
     )
     args = parser.parse_args()
 
