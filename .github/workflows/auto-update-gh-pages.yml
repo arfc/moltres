@@ -1,0 +1,34 @@
+# This GitHub Action automatically updates built Doxygen files for Moltres' documentation
+# on `https://arfc.github.io/moltres/` every time a new pull request is merged into devel.
+
+name: Doxygen & Github Pages Action
+
+# Activate on pushes and pull requests into devel
+on:
+  push:
+    branches: [ devel ]
+  pull_request:
+    branches: [ devel ]
+    
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      # Generate Doxygen output files in ./docs directory using Doxyfile in base directory
+      - name: Doxygen Action
+        uses: mattnotmitt/doxygen-action@v1
+        with:
+          working-directory: .
+      
+      # Merge Doxygen output files in ./docs into gh-pages branch base directory
+      - name: GitHub Pages action
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          commit_message: ${{ github.event.head_commit.message }}
