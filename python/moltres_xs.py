@@ -5,14 +5,14 @@ import json
 import sys
 import argparse
 import numpy as np
-from pyne import serpent
+import importlib
 
 
 class scale_xs:
     """
     Python class that reads in a scale t16 file and organizes the cross
     section data into a numpy dictionary. Currently set up to read an
-    arbitrary number of energy groups, an arbitrart number of delayed
+    arbitrary number of energy groups, an arbitrary number of delayed
     neutron groups, an arbitrary number of identities, an arbitrary
     number of temperature branches, and an arbitrary number of burnups.
 
@@ -207,7 +207,7 @@ class serpent_xs:
                     )
 
 
-def read_input(fin):
+def read_input(fin, files):
     with open(fin) as f:
         lines = f.readlines()
     k = 0
@@ -236,49 +236,64 @@ def read_input(fin):
                 mat_dict[val[0]]["uni"].extend([int(val[4])])
                 mat_dict[val[0]]["bran"].extend([int(val[5])])
 
-        if "FILES" in line:
-            num_files = int(lines[k + 1].split()[0])
-            files = {}
-            for i in range(num_files):
-                XS_in, XS_t = lines[k + 2 + i].split()
-                if "scale" in XS_t:
-                    files[i] = scale_xs(XS_in)
-                elif "serpent" in XS_t:
-                    files[i] = serpent_xs(XS_in)
-                else:
-                    raise (
-                        "XS data not understood\n \
-                          Please use: scale or serpent"
-                    )
     out_dict = {}
-    for entry in mat_dict:
-        out_dict[entry] = {"temp": mat_dict[entry]["temps"]}
-        for i, t in enumerate(mat_dict[entry]["temps"]):
-            L = mat_dict[entry]["file"][i] - 1
-            m = mat_dict[entry]["burn"][i] - 1
-            n = mat_dict[entry]["uni"][i] - 1
-            p = mat_dict[entry]["bran"][i] - 1
-            out_dict[entry][str(t)] = files[L].xs_lib[m][n][p]
+    for material in mat_dict:
+        out_dict[material] = {"temp": mat_dict[material]["temps"]}
+        for i, temp in enumerate(mat_dict[material]["temps"]):
+            file_index = mat_dict[material]["file"][i] - 1
+            burnup_index = mat_dict[material]["burn"][i] - 1
+            uni_index = mat_dict[material]["uni"][i] - 1
+            branch_index = mat_dict[material]["bran"][i] - 1
+            out_dict[material][str(temp)] = files[file_index].xs_lib[burnup_index][
+                uni_index
+            ][branch_index]
     f.write(json.dumps(out_dict, sort_keys=True, indent=4))
 
 
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
-        description="Extracts Serpent 2 or SCALE group \
-            constants and puts them in a JSON file suitable \
-                for Moltres."
+        description="Extracts Serpent 2 or SCALE or OpenMC group constants \
+            and puts them in a JSON file suitable for Moltres."
     )
     parser.add_argument(
         "input_file",
         type=str,
         nargs=1,
-        help="*_res.m or *.t16 XS \
-                            file from Serpent 2 or SCALE, \
+        help="*_res.m or *.t16 XS or *.h5 \
+                            file from Serpent 2 or SCALE or OpenMC, \
                             respectively",
     )
     args = parser.parse_args()
+    # import relevant modules for each software
+    with open(sys.argv[1]) as f:
+        lines = f.readlines()
+    for k, line in enumerate(lines):
+        if "FILES" in line:
+            num_files = int(lines[k + 1].split()[0])
+            files = {}
+            for i in range(num_files):
+                XS_in, XS_t, XS_ref = lines[k + 2 + i].split()
+                if "scale" in XS_t:
+                    files[i] = scale_xs(XS_in)
+                elif "serpent" in XS_t:
+                    from pyne import serpent
 
-    read_input(sys.argv[1])
+                    files[i] = serpent_xs(XS_in)
+                elif "openmc" in XS_t:
+                    import openmc
+                    import openmc.mgxs as mgxs
+
+                    openmc_ref_modules = {}
+                    openmc_ref_modules[i] = importlib.import_module(
+                        XS_ref.replace(".py", "")
+                    )
+                    files[i] = openmc_xs(XS_in, i)
+                else:
+                    raise (
+                        "XS data not understood\n \
+                            Please use: Scale or Serpent or OpenMC"
+                    )
+    read_input(sys.argv[1], files)
 
     print("Successfully made JSON property file.")
