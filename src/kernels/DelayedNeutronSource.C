@@ -53,7 +53,7 @@ DelayedNeutronSource::computeQpResidual()
   for (unsigned int i = 0; i < _num_precursor_groups; ++i)
     r += -_decay_constant[_qp][i] * computeConcentration((*_pre_concs[i]), _qp);
 
-  if (!(_eigenvalue_scaling == 1.0))
+  if ((_eigenvalue_scaling != 1.0))
     r /= _eigenvalue_scaling;
 
   return _chi_d[_qp][_group-1] * _test[_i][_qp] * r;
@@ -84,7 +84,7 @@ DelayedNeutronSource::computeQpOffDiagJacobian(unsigned int jvar)
       jac += -_test[_i][_qp] * computeConcentration((*_pre_concs[i]), _qp) *
              _d_decay_constant_d_temp[_qp][i] * _phi[_j][_qp];
 
-  if (!(_eigenvalue_scaling == 1.0))
+  if ((_eigenvalue_scaling != 1.0))
     jac /= _eigenvalue_scaling;
 
   return _chi_d[_qp][_group-1] * jac;
