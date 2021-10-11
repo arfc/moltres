@@ -117,7 +117,7 @@ class scale_xs:
                 self.xs_lib[L][m][n]["DECAY_CONSTANT"].extend(lam_temp)
             if "branch no." in line:
                 index = line.find(",")
-                L = int(line[index - 4 : index])
+                L = int(line[index - 4: index])
                 n = int(line.split()[-1])
             for key in self.catch.keys():
                 if key in line:
