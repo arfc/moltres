@@ -127,9 +127,10 @@ class scale_xs:
                         elif key == "Lambdas":
                             lam_temp = self.get_multi_line_values(k)
                         else:
-                            self.xs_lib[L][m][n][self.catch[key].xs_entry[0]].extend(
-                                self.get_multi_line_values(k)
-                            )
+                            self.xs_lib[L][m][n][
+                              self.catch[key].xs_entry[0]
+                                ].extend(
+                                  self.get_multi_line_values(k))
                     else:
                         for dex, xs in enumerate(self.catch[key].xs_entry):
                             dex = self.catch[key].index[dex]
