@@ -8,6 +8,256 @@ import numpy as np
 import importlib
 
 
+class openmc_xs:
+    """
+    Reads OpenMC h5 statepoint file and organizes the cross section
+    date into a dictionary. Currently set up to read an
+    arbitrary number of energy groups, an arbitrary number of delayed
+    neutron groups, an arbitrary number of identities, and an arbitrary
+    number of temperature branches.
+
+    Parameters
+    ----------
+    xs_filename: str
+        Name of file containing collapsed cross section data
+    file_num: int
+        File number
+    Returns
+    ----------
+    xs_lib: dict
+        A hierarchical dictionary, organized by burnup, id, and temperature.
+        Currently stores REMXS, FISSXS, NSF, FISSE, DIFFCOEF, RECIPVEL,
+        CHI, BETA_EFF, DECAY_CONSTANT and GTRANSFXS.
+    """
+
+    def __init__(self, xs_filename, file_num, xs_summary):
+        sp = openmc.StatePoint(xs_filename)
+        summary = openmc.Summary(xs_summary)
+        sp.link_with_summary(summary)
+        domain_dict = openmc_ref_modules[file_num].domain_dict
+        num_burn = 1
+        num_uni = []
+        for k in sp.filters:
+            v = sp.filters[k]
+            if isinstance(v, openmc.filter.MaterialFilter):
+                num_uni.append(v.bins[0])
+        self.xs_lib = {}
+        for i in range(num_burn):
+            self.xs_lib[i] = {}
+            for j in num_uni:
+                k = j - 1
+                self.xs_lib[i][j - 1] = {}
+                self.xs_lib[i][j - 1][k] = {}
+                self.xs_lib[i][j - 1][k]["BETA_EFF"] = self.mgxs_tallies(
+                    sp, domain_dict[j]["beta"]
+                )
+                self.xs_lib[i][j - 1][k]["CHI_T"] = self.mgxs_tallies(
+                    sp, domain_dict[j]["chi"]
+                )
+                self.xs_lib[i][j - 1][k]["CHI_P"] = self.mgxs_tallies(
+                    sp, domain_dict[j]["chiprompt"]
+                )
+                self.xs_lib[i][j - 1][k]["CHI_D"] = self.mgxs_tallies(
+                    sp, domain_dict[j]["chidelayed"]
+                )
+                self.xs_lib[i][j - 1][k]["DECAY_CONSTANT"] = self.mgxs_tallies(
+                    sp, domain_dict[j]["decayrate"]
+                )
+                self.xs_lib[i][j - 1][k]["DIFFCOEF"] = self.get_diffcoeff(
+                    sp, domain_dict[j]["diffusioncoefficient"]
+                )
+                self.xs_lib[i][j - 1][k]["FISSE"] = self.get_fisse(
+                    sp, domain_dict[j]["fissionxs"], domain_dict[j]["kappafissionxs"]
+                )
+                self.xs_lib[i][j - 1][k]["GTRANSFXS"] = self.get_scatter(
+                    sp, domain_dict[j]["scatterprobmatrix"], domain_dict[j]["scatterxs"]
+                )
+                self.xs_lib[i][j - 1][k]["NSF"] = self.get_nsf(sp, j)
+                self.xs_lib[i][j - 1][k]["RECIPVEL"] = self.mgxs_tallies(
+                    sp, domain_dict[j]["inversevelocity"]
+                )
+                self.xs_lib[i][j - 1][k]["FISSXS"] = self.mgxs_tallies(
+                    sp, domain_dict[j]["fissionxs"]
+                )
+                self.xs_lib[i][j - 1][k]["REMXS"] = self.get_remxs(
+                    sp,
+                    domain_dict[j]["scatterprobmatrix"],
+                    domain_dict[j]["scatterxs"],
+                    domain_dict[j]["absorptionxs"],
+                )
+        return
+
+    def mgxs_tallies(self, sp, tally):
+        tally.load_from_statepoint(sp)
+        return list(tally.get_pandas_dataframe()["mean"])
+
+    def get_diffcoeff(self, sp, tally):
+        tally.load_from_statepoint(sp)
+        df = tally.get_pandas_dataframe()
+        df = df.loc[df["legendre"] == "P1"]
+        return list(df["mean"])
+
+    def get_fisse(self, sp, fissionxs, kappa):
+        fissionxs.load_from_statepoint(sp)
+        kappa.load_from_statepoint(sp)
+        fissionxs_df = fissionxs.get_pandas_dataframe()
+        kappa_df = kappa.get_pandas_dataframe()
+        return list(kappa_df["mean"] / fissionxs_df["mean"] * 1e-6)
+
+    def get_scatter(self, sp, prob_matrix, scatterxs):
+        prob_matrix.load_from_statepoint(sp)
+        scatterxs.load_from_statepoint(sp)
+        scatterxs_df = scatterxs.get_pandas_dataframe()
+        prob_matrix_df = prob_matrix.get_pandas_dataframe()
+        group_nums = list(scatterxs_df["group in"])
+        final_matrix_list = []
+        for i in group_nums:
+            scatter = float(scatterxs_df.loc[scatterxs_df["group in"] == i]["mean"])
+            prob_list = np.array(
+                prob_matrix_df.loc[prob_matrix_df["group in"] == i]["mean"]
+            )
+            final_matrix_list += list(prob_list * scatter)
+        return final_matrix_list
+
+    def get_nsf(self, sp, index):
+        tally = sp.get_tally(name=str(index) + " tally")
+        df = tally.get_pandas_dataframe()
+        df_flux = np.array(df.loc[df["score"] == "flux"]["mean"])
+        df_nu_fission = df.loc[df["score"] == "nu-fission"]
+        nu_fission = list(np.array(df_nu_fission["mean"]) / df_flux)
+        nu_fission.reverse()
+        return nu_fission
+
+    def get_remxs(self, sp, prob_matrix, scatterxs, absorbxs):
+        prob_matrix.load_from_statepoint(sp)
+        scatterxs.load_from_statepoint(sp)
+        absorbxs.load_from_statepoint(sp)
+        scatterxs_df = scatterxs.get_pandas_dataframe()
+        prob_matrix_df = prob_matrix.get_pandas_dataframe()
+        absorbxs_df = absorbxs.get_pandas_dataframe()
+        group_nums = list(scatterxs_df["group in"])
+        remxs = []
+        for i in group_nums:
+            scatter = float(scatterxs_df.loc[scatterxs_df["group in"] == i]["mean"])
+            absxs = float(absorbxs_df.loc[absorbxs_df["group in"] == i]["mean"])
+            out_scatter_prob = prob_matrix_df.loc[prob_matrix_df["group in"] == i]
+            out_scatter_prob = np.array(
+                out_scatter_prob.loc[out_scatter_prob["group out"] != i]["mean"]
+            )
+            remxs.append(sum(out_scatter_prob) * scatter + absxs)
+        return remxs
+
+    def generate_openmc_tallies_xml(
+        energy_groups, delayed_groups, domains, domain_ids, tallies_file
+    ):
+        """
+        Users should use this function to generate the OpenMC tallies file
+        for group constant generation.
+
+        Parameters
+        ----------
+        energy_groups: list
+            list of energy group edges (must include all edges)
+        delayed_groups: list
+            list of number of delayed neutron groups
+        domains: list
+            list of openmc domains
+        domain_ids: list
+            list of openmc domain ids
+        tallies_file: openmc.Tallies
+            an initialized openmc tallies object
+
+        Returns
+        -------
+        domain_dict: dict
+            dictionary containing initialized tallies
+
+        """
+
+        import openmc
+        import openmc.mgxs as mgxs
+
+        groups = mgxs.EnergyGroups()
+        groups.group_edges = np.array(energy_groups)
+        big_group = mgxs.EnergyGroups()
+        big_energy_group = [energy_groups[0], energy_groups[-1]]
+        big_group.group_edges = np.array(big_energy_group)
+        energy_filter = openmc.EnergyFilter(energy_groups)
+        domain_dict = {}
+        for id in domain_ids:
+            domain_dict[id] = {}
+        for domain, id in zip(domains, domain_ids):
+            domain_dict[id]["beta"] = mgxs.Beta(
+                domain=domain,
+                energy_groups=big_group,
+                delayed_groups=delayed_groups,
+                name=str(id) + "_beta",
+            )
+            domain_dict[id]["chi"] = mgxs.Chi(
+                domain=domain, groups=groups, name=str(id) + "_chi"
+            )
+            domain_dict[id]["chiprompt"] = mgxs.Chi(
+                domain=domain, groups=groups, name=str(id) + "_chiprompt", prompt=True
+            )
+            domain_dict[id]["chidelayed"] = mgxs.ChiDelayed(
+                domain=domain, energy_groups=groups, name=str(id) + "_chidelayed"
+            )
+            domain_dict[id]["decayrate"] = mgxs.DecayRate(
+                domain=domain,
+                energy_groups=big_group,
+                delayed_groups=delayed_groups,
+                name=str(id) + "_decayrate",
+            )
+            domain_dict[id]["diffusioncoefficient"] = mgxs.DiffusionCoefficient(
+                domain=domain,
+                groups=groups,
+                name=str(id) + "_diffusioncoefficient",
+            )
+            domain_dict[id]["scatterprobmatrix"] = mgxs.ScatterProbabilityMatrix(
+                domain=domain, groups=groups, name=str(id) + "_scatterprobmatrix"
+            )
+            domain_dict[id]["scatterxs"] = mgxs.ScatterXS(
+                domain=domain, groups=groups, name=str(id) + "_scatterxs", nu=True
+            )
+            domain_dict[id]["inversevelocity"] = mgxs.InverseVelocity(
+                domain=domain, groups=groups, name=str(id) + "_inversevelocity"
+            )
+            domain_dict[id]["fissionxs"] = mgxs.FissionXS(
+                domain=domain, groups=groups, name=str(id) + "_fissionxs"
+            )
+            domain_dict[id]["kappafissionxs"] = mgxs.KappaFissionXS(
+                domain=domain, groups=groups, name=str(id) + "_kappafissionxs"
+            )
+            domain_dict[id]["absorptionxs"] = mgxs.AbsorptionXS(
+                domain=domain, groups=groups, name=str(id) + "_absorptionxs"
+            )
+            domain_dict[id]["tally"] = openmc.Tally(name=str(id) + " tally")
+            domain_dict[id]["filter"] = openmc.MaterialFilter(domain)
+            domain_dict[id]["tally"].filters = [
+                domain_dict[id]["filter"],
+                energy_filter,
+            ]
+            domain_dict[id]["tally"].scores = [
+                "nu-fission",
+                "flux",
+            ]
+            tallies_file += domain_dict[id]["beta"].tallies.values()
+            tallies_file += domain_dict[id]["chi"].tallies.values()
+            tallies_file += domain_dict[id]["chiprompt"].tallies.values()
+            tallies_file += domain_dict[id]["chidelayed"].tallies.values()
+            tallies_file += domain_dict[id]["decayrate"].tallies.values()
+            tallies_file += domain_dict[id]["diffusioncoefficient"].tallies.values()
+            tallies_file += domain_dict[id]["scatterprobmatrix"].tallies.values()
+            tallies_file += domain_dict[id]["scatterxs"].tallies.values()
+            tallies_file += domain_dict[id]["inversevelocity"].tallies.values()
+            tallies_file += domain_dict[id]["fissionxs"].tallies.values()
+            tallies_file += domain_dict[id]["kappafissionxs"].tallies.values()
+            tallies_file += domain_dict[id]["absorptionxs"].tallies.values()
+            tallies_file.append(domain_dict[id]["tally"])
+        tallies_file.export_to_xml()
+        return domain_dict
+
+
 class scale_xs:
     """
     Python class that reads in a scale t16 file and organizes the cross
@@ -20,8 +270,9 @@ class scale_xs:
     ----------
     xs_filename: str
         Name of file containing collapsed cross section data
+
     Returns
-    ----------
+    -------
     xs_lib: dict
         A hierarchical dictionary, organized by burnup, id,
         and temperature.
@@ -273,7 +524,7 @@ if __name__ == "__main__":
             num_files = int(lines[k + 1].split()[0])
             files = {}
             for i in range(num_files):
-                XS_in, XS_t, XS_ref = lines[k + 2 + i].split()
+                XS_in, XS_t, XS_ref, XS_sum = lines[k + 2 + i].split()
                 if "scale" in XS_t:
                     files[i] = scale_xs(XS_in)
                 elif "serpent" in XS_t:
@@ -288,7 +539,7 @@ if __name__ == "__main__":
                     openmc_ref_modules[i] = importlib.import_module(
                         XS_ref.replace(".py", "")
                     )
-                    files[i] = openmc_xs(XS_in, i)
+                    files[i] = openmc_xs(XS_in, i, XS_sum)
                 else:
                     raise (
                         "XS data not understood\n \
