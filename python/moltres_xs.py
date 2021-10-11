@@ -44,7 +44,7 @@ class scale_xs:
                                  ),
             'detector': self.t16_line([4], False, ['RECIPVEL']),
             'Scattering cross': self.t16_line([], True, ['GTRANSFXS'])
-            }
+        }
         XS_entries = ['REMXS', 'FISSXS', 'NSF', 'FISSE', 'DIFFCOEF',
                       'RECIPVEL', 'CHI_T', 'BETA_EFF', 'DECAY_CONSTANT',
                       'CHI_P', 'CHI_D', 'GTRANSFXS'
@@ -77,16 +77,16 @@ class scale_xs:
             for j in range(self.num_uni):
                 for k in range(self.num_temps):
                     for ii in range(self.num_groups):
-                        start = ii*self.num_groups
+                        start = ii * self.num_groups
                         stop = start + self.num_groups
                         self.xs_lib[i][j][k]["REMXS"][ii] += np.sum(
                             self.xs_lib[i][j][k]["GTRANSFXS"][start:stop])\
-                            - self.xs_lib[i][j][k]["GTRANSFXS"][start+ii]
+                            - self.xs_lib[i][j][k]["GTRANSFXS"][start + ii]
                         if self.xs_lib[i][j][k]["FISSE"][ii] != 0:
                             self.xs_lib[i][j][k]["FISSE"][ii] = (
                                 self.xs_lib[i][j][k]["FISSE"][ii] /
                                 self.xs_lib[i][j][k]["FISSXS"][ii]
-                                )
+                            )
 
     def get_xs(self):
         uni = []
@@ -97,7 +97,7 @@ class scale_xs:
         beta_temp = 0
         for k, line in enumerate(self.lines):
             if 'Identifier' in line:
-                val = int(self.lines[k+1].split()[0])
+                val = int(self.lines[k + 1].split()[0])
                 if val not in uni:
                     uni.extend([val])
                 m = uni.index(val)
@@ -107,7 +107,7 @@ class scale_xs:
                     .extend(lam_temp)
             if 'branch no.' in line:
                 index = line.find(',')
-                L = int(line[index-4:index])
+                L = int(line[index - 4:index])
                 n = int(line.split()[-1])
             for key in self.catch.keys():
                 if key in line:
@@ -120,7 +120,7 @@ class scale_xs:
                             self.xs_lib[L][m][n][self.catch[key].xs_entry[0]]\
                                 .extend(
                                     self.get_multi_line_values(k)
-                                    )
+                            )
                     else:
                         for dex, xs in enumerate(self.catch[key].xs_entry):
                             dex = self.catch[key].index[dex]
@@ -128,13 +128,13 @@ class scale_xs:
                                 .append(self.get_values(k, dex))
 
     def get_values(self, k, index):
-        val = list(np.array(self.lines[k+1].split()).astype(float))
+        val = list(np.array(self.lines[k + 1].split()).astype(float))
         return val[index]
 
     def get_multi_line_values(self, k):
         values = []
         while True:
-            val = self.lines[k+1].split()
+            val = self.lines[k + 1].split()
             k += 1
             for ent in val:
                 try:
@@ -169,7 +169,7 @@ class serpent_xs:
         except(KeyError):
             num_burn = 1
         num_uni = len(np.unique(data['GC_UNIVERSE_NAME']))
-        num_temps = int(len(data['GC_UNIVERSE_NAME'])/(num_uni*num_burn))
+        num_temps = int(len(data['GC_UNIVERSE_NAME']) / (num_uni * num_burn))
         self.xs_lib = {}
         for i in range(num_burn):
             self.xs_lib[i] = {}
@@ -177,7 +177,7 @@ class serpent_xs:
                 self.xs_lib[i][j] = {}
                 for k in range(num_temps):
                     self.xs_lib[i][j][k] = {}
-                    index = i*(num_uni)+k*(num_burn*num_uni)+j
+                    index = i * (num_uni) + k * (num_burn * num_uni) + j
                     self.xs_lib[i][j][k]["REMXS"] = list(
                         data['INF_REMXS'][index][::2])
                     self.xs_lib[i][j][k]["FISSXS"] = list(
@@ -210,11 +210,11 @@ def read_input(fin):
     k = 0
     for k, line in enumerate(lines):
         if '[TITLE]' in line:
-            f = open(lines[k+1].split()[0], 'w')
+            f = open(lines[k + 1].split()[0], 'w')
         if '[MAT]' in line:
             mat_dict = {}
-            num_mats = int(lines[k+1].split()[0])
-            val = lines[k+2].split()
+            num_mats = int(lines[k + 1].split()[0])
+            val = lines[k + 2].split()
             for i in range(num_mats):
                 mat_dict[val[i]] = {'temps': [],
                                     'file': [],
@@ -223,9 +223,9 @@ def read_input(fin):
                                     'bran': []
                                     }
         if '[BRANCH]' in line:
-            tot_branch = int(lines[k+1].split()[0])
+            tot_branch = int(lines[k + 1].split()[0])
             for i in range(tot_branch):
-                val = lines[k+2+i].split()
+                val = lines[k + 2 + i].split()
                 mat_dict[val[0]]['temps'].extend(
                     [int(val[1])])
                 mat_dict[val[0]]['file'].extend(
@@ -238,10 +238,10 @@ def read_input(fin):
                     [int(val[5])])
 
         if 'FILES' in line:
-            num_files = int(lines[k+1].split()[0])
+            num_files = int(lines[k + 1].split()[0])
             files = {}
             for i in range(num_files):
-                XS_in, XS_t = lines[k+2+i].split()
+                XS_in, XS_t = lines[k + 2 + i].split()
                 if 'scale' in XS_t:
                     files[i] = scale_xs(XS_in)
                 elif 'serpent'in XS_t:
