@@ -287,7 +287,8 @@ class scale_xs:
             "Betas": self.t16_line([], True, ["BETA_EFF"]),
             "Lambdas": self.t16_line([], True, ["DECAY_CONSTANT"]),
             "total-transfer": self.t16_line([1], False, ["REMXS"]),
-            "fission": self.t16_line([0, 3, 4], False, ["FISSXS", "NSF", "FISSE"]),
+            "fission": self.t16_line(
+                [0, 3, 4], False, ["FISSXS", "NSF", "FISSE"]),
             "chi": self.t16_line(
                 [1, 1, 1, 2], False, ["CHI_T", "CHI_P", "CHI_D", "DIFFCOEF"]
             ),
@@ -339,7 +340,9 @@ class scale_xs:
                         start = ii * self.num_groups
                         stop = start + self.num_groups
                         self.xs_lib[i][j][k]["REMXS"][ii] += (
-                            np.sum(self.xs_lib[i][j][k]["GTRANSFXS"][start:stop])
+                            np.sum(
+                              self.xs_lib[i][j][k]["GTRANSFXS"][start:stop]
+                            )
                             - self.xs_lib[i][j][k]["GTRANSFXS"][start + ii]
                         )
                         if self.xs_lib[i][j][k]["FISSE"][ii] != 0:
@@ -365,7 +368,7 @@ class scale_xs:
                 self.xs_lib[L][m][n]["DECAY_CONSTANT"].extend(lam_temp)
             if "branch no." in line:
                 index = line.find(",")
-                L = int(line[index - 4 : index])
+                L = int(line[index - 4: index])
                 n = int(line.split()[-1])
             for key in self.catch.keys():
                 if key in line:
@@ -375,13 +378,15 @@ class scale_xs:
                         elif key == "Lambdas":
                             lam_temp = self.get_multi_line_values(k)
                         else:
-                            self.xs_lib[L][m][n][self.catch[key].xs_entry[0]].extend(
-                                self.get_multi_line_values(k)
-                            )
+                            self.xs_lib[L][m][n][
+                              self.catch[key].xs_entry[0]
+                                ].extend(
+                                  self.get_multi_line_values(k))
                     else:
                         for dex, xs in enumerate(self.catch[key].xs_entry):
                             dex = self.catch[key].index[dex]
-                            self.xs_lib[L][m][n][xs].append(self.get_values(k, dex))
+                            self.xs_lib[L][m][n][xs].append(
+                                self.get_values(k, dex))
 
     def get_values(self, k, index):
         val = list(np.array(self.lines[k + 1].split()).astype(float))
@@ -433,29 +438,31 @@ class serpent_xs:
                 self.xs_lib[i][j] = {}
                 for k in range(num_temps):
                     self.xs_lib[i][j][k] = {}
-                    index = i * (num_uni) + k * (num_burn * num_uni) + j
-                    self.xs_lib[i][j][k]["REMXS"] = list(data["INF_REMXS"][index][::2])
-                    self.xs_lib[i][j][k]["FISSXS"] = list(data["INF_FISS"][index][::2])
-                    self.xs_lib[i][j][k]["NSF"] = list(data["INF_NSF"][index][::2])
-                    self.xs_lib[i][j][k]["FISSE"] = list(data["INF_KAPPA"][index][::2])
+                    index = i*(num_uni)+k*(num_burn*num_uni)+j
+                    self.xs_lib[i][j][k]["REMXS"] = list(
+                        data['INF_REMXS'][index][::2])
+                    self.xs_lib[i][j][k]["FISSXS"] = list(
+                        data['INF_FISS'][index][::2])
+                    self.xs_lib[i][j][k]["NSF"] = list(
+                        data['INF_NSF'][index][::2])
+                    self.xs_lib[i][j][k]["FISSE"] = list(
+                        data['INF_KAPPA'][index][::2])
                     self.xs_lib[i][j][k]["DIFFCOEF"] = list(
-                        data["INF_DIFFCOEF"][index][::2]
-                    )
+                        data['INF_DIFFCOEF'][index][::2])
                     self.xs_lib[i][j][k]["RECIPVEL"] = list(
-                        data["INF_INVV"][index][::2]
-                    )
-                    self.xs_lib[i][j][k]["CHI_T"] = list(data["INF_CHIT"][index][::2])
-                    self.xs_lib[i][j][k]["CHI_P"] = list(data["INF_CHIP"][index][::2])
-                    self.xs_lib[i][j][k]["CHI_D"] = list(data["INF_CHID"][index][::2])
+                        data['INF_INVV'][index][::2])
+                    self.xs_lib[i][j][k]["CHI_T"] = list(
+                        data['INF_CHIT'][index][::2])
+                    self.xs_lib[i][j][k]["CHI_P"] = list(
+                        data['INF_CHIP'][index][::2])
+                    self.xs_lib[i][j][k]["CHI_D"] = list(
+                        data['INF_CHID'][index][::2])
                     self.xs_lib[i][j][k]["BETA_EFF"] = list(
-                        data["BETA_EFF"][index][2::2]
-                    )
+                        data['BETA_EFF'][index][2::2])
                     self.xs_lib[i][j][k]["DECAY_CONSTANT"] = list(
-                        data["LAMBDA"][index][2::2]
-                    )
+                        data['LAMBDA'][index][2::2])
                     self.xs_lib[i][j][k]["GTRANSFXS"] = list(
-                        data["INF_SP0"][index][::2]
-                    )
+                        data['INF_SP0'][index][::2])
 
 
 def read_input(fin, files):
@@ -504,16 +511,13 @@ def read_input(fin, files):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
-        description="Extracts Serpent 2 or SCALE or OpenMC group constants \
-            and puts them in a JSON file suitable for Moltres."
-    )
+        description="Extracts Serpent 2 or SCALE group constants and puts \
+                    them in a JSON file suitable for Moltres.")
     parser.add_argument(
         "input_file",
         type=str,
         nargs=1,
-        help="*_res.m or *.t16 XS or *.h5 \
-                            file from Serpent 2 or SCALE or OpenMC, \
-                            respectively",
+        help="*_res.m or *.t16 XS file from Serpent 2 or SCALE, respectively",
     )
     args = parser.parse_args()
     # import relevant modules for each software
