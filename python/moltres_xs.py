@@ -89,7 +89,9 @@ class scale_xs:
                         start = ii * self.num_groups
                         stop = start + self.num_groups
                         self.xs_lib[i][j][k]["REMXS"][ii] += (
-                            np.sum(self.xs_lib[i][j][k]["GTRANSFXS"][start:stop])
+                            np.sum(
+                              self.xs_lib[i][j][k]["GTRANSFXS"][start:stop]
+                            )
                             - self.xs_lib[i][j][k]["GTRANSFXS"][start + ii]
                         )
                         if self.xs_lib[i][j][k]["FISSE"][ii] != 0:
