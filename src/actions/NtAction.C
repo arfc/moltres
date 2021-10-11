@@ -67,7 +67,10 @@ NtAction::validParams()
   params.addRequiredParam<bool>("sss2_input",
                                 "Whether the input follows sss2 form scattering matrices.");
   params.addParam<std::vector<SubdomainName>>("pre_blocks", "The blocks the precursors live on.");
-  params.addParam<Real>("eigenvalue_scaling", 1.0, "Eigenvalue scaling factor.");
+  params.addParam<Real>("eigenvalue_scaling", 1.0, "Artificial scaling factor for the fission "
+                                                   "source. Primarily introduced to make "
+                                                   "super/sub-critical systems exactly critical "
+                                                   "for the CNRS benchmark.");
   return params;
 }
 

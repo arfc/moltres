@@ -15,7 +15,10 @@ CoupledFissionKernel::validParams()
                                                "These MUST be listed by decreasing "
                                                "energy/increasing group number.");
   params.addRequiredParam<bool>("account_delayed", "Whether to account for delayed neutrons.");
-  params.addParam<Real>("eigenvalue_scaling", 1.0, "Eigenvalue scaling factor.");
+  params.addParam<Real>("eigenvalue_scaling", 1.0, "Artificial scaling factor for the fission "
+                                                   "source. Primarily introduced to make "
+                                                   "super/sub-critical systems exactly critical "
+                                                   "for the CNRS benchmark.");
   return params;
 }
 

@@ -13,7 +13,10 @@ DelayedNeutronSource::validParams()
                                             "concentrations. These MUST be listed by increasing "
                                             "group number.");
   params.addRequiredParam<unsigned int>("group_number","neutron energy group number for chi_d");
-  params.addParam<Real>("eigenvalue_scaling", 1.0, "Eigenvalue scaling factor.");
+  params.addParam<Real>("eigenvalue_scaling", 1.0, "Artificial scaling factor for the fission "
+                                                   "source. Primarily introduced to make "
+                                                   "super/sub-critical systems exactly critical "
+                                                   "for the CNRS benchmark.");
   return params;
 }
 
