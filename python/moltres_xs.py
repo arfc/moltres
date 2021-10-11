@@ -134,7 +134,8 @@ class scale_xs:
                     else:
                         for dex, xs in enumerate(self.catch[key].xs_entry):
                             dex = self.catch[key].index[dex]
-                            self.xs_lib[L][m][n][xs].append(self.get_values(k, dex))
+                            self.xs_lib[L][m][n][xs].append(
+                                self.get_values(k, dex))
 
     def get_values(self, k, index):
         val = list(np.array(self.lines[k + 1].split()).astype(float))
