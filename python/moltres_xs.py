@@ -186,29 +186,31 @@ class serpent_xs:
                 self.xs_lib[i][j] = {}
                 for k in range(num_temps):
                     self.xs_lib[i][j][k] = {}
-                    index = i * (num_uni) + k * (num_burn * num_uni) + j
-                    self.xs_lib[i][j][k]["REMXS"] = list(data["INF_REMXS"][index][::2])
-                    self.xs_lib[i][j][k]["FISSXS"] = list(data["INF_FISS"][index][::2])
-                    self.xs_lib[i][j][k]["NSF"] = list(data["INF_NSF"][index][::2])
-                    self.xs_lib[i][j][k]["FISSE"] = list(data["INF_KAPPA"][index][::2])
+                    index = i*(num_uni)+k*(num_burn*num_uni)+j
+                    self.xs_lib[i][j][k]["REMXS"] = list(
+                        data['INF_REMXS'][index][::2])
+                    self.xs_lib[i][j][k]["FISSXS"] = list(
+                        data['INF_FISS'][index][::2])
+                    self.xs_lib[i][j][k]["NSF"] = list(
+                        data['INF_NSF'][index][::2])
+                    self.xs_lib[i][j][k]["FISSE"] = list(
+                        data['INF_KAPPA'][index][::2])
                     self.xs_lib[i][j][k]["DIFFCOEF"] = list(
-                        data["INF_DIFFCOEF"][index][::2]
-                    )
+                        data['INF_DIFFCOEF'][index][::2])
                     self.xs_lib[i][j][k]["RECIPVEL"] = list(
-                        data["INF_INVV"][index][::2]
-                    )
-                    self.xs_lib[i][j][k]["CHI_T"] = list(data["INF_CHIT"][index][::2])
-                    self.xs_lib[i][j][k]["CHI_P"] = list(data["INF_CHIP"][index][::2])
-                    self.xs_lib[i][j][k]["CHI_D"] = list(data["INF_CHID"][index][::2])
+                        data['INF_INVV'][index][::2])
+                    self.xs_lib[i][j][k]["CHI_T"] = list(
+                        data['INF_CHIT'][index][::2])
+                    self.xs_lib[i][j][k]["CHI_P"] = list(
+                        data['INF_CHIP'][index][::2])
+                    self.xs_lib[i][j][k]["CHI_D"] = list(
+                        data['INF_CHID'][index][::2])
                     self.xs_lib[i][j][k]["BETA_EFF"] = list(
-                        data["BETA_EFF"][index][2::2]
-                    )
+                        data['BETA_EFF'][index][2::2])
                     self.xs_lib[i][j][k]["DECAY_CONSTANT"] = list(
-                        data["LAMBDA"][index][2::2]
-                    )
+                        data['LAMBDA'][index][2::2])
                     self.xs_lib[i][j][k]["GTRANSFXS"] = list(
-                        data["INF_SP0"][index][::2]
-                    )
+                        data['INF_SP0'][index][::2])
 
 
 def read_input(fin):
