@@ -36,7 +36,8 @@ class scale_xs:
             "Betas": self.t16_line([], True, ["BETA_EFF"]),
             "Lambdas": self.t16_line([], True, ["DECAY_CONSTANT"]),
             "total-transfer": self.t16_line([1], False, ["REMXS"]),
-            "fission": self.t16_line([0, 3, 4], False, ["FISSXS", "NSF", "FISSE"]),
+            "fission": self.t16_line(
+                [0, 3, 4], False, ["FISSXS", "NSF", "FISSE"]),
             "chi": self.t16_line(
                 [1, 1, 1, 2], False, ["CHI_T", "CHI_P", "CHI_D", "DIFFCOEF"]
             ),
