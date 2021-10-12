@@ -67,6 +67,10 @@ NtAction::validParams()
   params.addRequiredParam<bool>("sss2_input",
                                 "Whether the input follows sss2 form scattering matrices.");
   params.addParam<std::vector<SubdomainName>>("pre_blocks", "The blocks the precursors live on.");
+  params.addParam<Real>("eigenvalue_scaling", 1.0, "Artificial scaling factor for the fission "
+                                                   "source. Primarily introduced to make "
+                                                   "super/sub-critical systems exactly critical "
+                                                   "for the CNRS benchmark.");
   return params;
 }
 
@@ -211,6 +215,7 @@ NtAction::act()
         params.set<unsigned int>("num_groups") = _num_groups;
         params.set<std::vector<VariableName>>("group_fluxes") = all_var_names;
         params.set<bool>("account_delayed") = getParam<bool>("account_delayed");
+        params.set<Real>("eigenvalue_scaling") = getParam<Real>("eigenvalue_scaling");
 
         std::string kernel_name = "CoupledFissionKernel_" + var_name;
         _problem->addKernel("CoupledFissionKernel", kernel_name, params);
@@ -254,6 +259,7 @@ NtAction::act()
           std::vector<std::string> include = {"temperature", "pre_concs"};
           params.applySpecificParameters(parameters(), include);
           params.set<unsigned int>("num_precursor_groups") = _num_precursor_groups;
+          params.set<Real>("eigenvalue_scaling") = getParam<Real>("eigenvalue_scaling");
 
           std::string kernel_name = "DelayedNeutronSource_" + var_name;
           _problem->addKernel("DelayedNeutronSource", kernel_name, params);

@@ -34,4 +34,5 @@ protected:
   std::vector<const VariableValue *> _group_fluxes;
   std::vector<unsigned int> _flux_ids;
   bool _account_delayed;
+  Real _eigenvalue_scaling;
 };
