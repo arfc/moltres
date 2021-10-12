@@ -67,10 +67,12 @@ class openmc_xs:
                     sp, domain_dict[j]["diffusioncoefficient"]
                 )
                 self.xs_lib[i][j - 1][k]["FISSE"] = self.get_fisse(
-                    sp, domain_dict[j]["fissionxs"], domain_dict[j]["kappafissionxs"]
+                    sp, domain_dict[j]["fissionxs"],
+                    domain_dict[j]["kappafissionxs"]
                 )
                 self.xs_lib[i][j - 1][k]["GTRANSFXS"] = self.get_scatter(
-                    sp, domain_dict[j]["scatterprobmatrix"], domain_dict[j]["scatterxs"]
+                    sp, domain_dict[j]["scatterprobmatrix"],
+                    domain_dict[j]["scatterxs"]
                 )
                 self.xs_lib[i][j - 1][k]["NSF"] = self.get_nsf(sp, j)
                 self.xs_lib[i][j - 1][k]["RECIPVEL"] = self.mgxs_tallies(
@@ -143,9 +145,11 @@ class openmc_xs:
                 scatterxs_df.loc[scatterxs_df["group in"] == i]["mean"])
             absxs = float(
                 absorbxs_df.loc[absorbxs_df["group in"] == i]["mean"])
-            out_scatter_prob = prob_matrix_df.loc[prob_matrix_df["group in"] == i]
+            out_scatter_prob = prob_matrix_df.loc[
+                prob_matrix_df["group in"] == i]
             out_scatter_prob = np.array(
-                out_scatter_prob.loc[out_scatter_prob["group out"] != i]["mean"]
+                out_scatter_prob.loc[out_scatter_prob["group out"] != i]
+                ["mean"]
             )
             remxs.append(sum(out_scatter_prob) * scatter + absxs)
         return remxs
