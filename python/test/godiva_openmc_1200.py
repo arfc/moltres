@@ -22,7 +22,6 @@ fuel_core = openmc.Cell(fill=fuel_mat, region=-sph)
 geom = openmc.Geometry([fuel_core])
 geom.export_to_xml()
 
-### SETTINGS ###
 settings = openmc.Settings()
 settings.batches = 200
 settings.inactive = 10
