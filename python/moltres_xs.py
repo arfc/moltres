@@ -512,7 +512,8 @@ if __name__ == '__main__':
             num_files = int(lines[k + 1].split()[0])
             files = {}
             for i in range(num_files):
-                XS_in, XS_t, XS_ref, XS_sum = lines[k + 2 + i].split()
+                inputs = lines[k + 2 + i].split()
+                XS_in, XS_t = inputs[0], inputs[1]
                 if "scale" in XS_t:
                     files[i] = scale_xs(XS_in)
                 elif "serpent" in XS_t:
@@ -520,6 +521,7 @@ if __name__ == '__main__':
 
                     files[i] = serpent_xs(XS_in)
                 elif "openmc" in XS_t:
+                    XS_ref, XS_sum = inputs[2], inputs[3]
                     import openmc
                     import openmc.mgxs as mgxs
 

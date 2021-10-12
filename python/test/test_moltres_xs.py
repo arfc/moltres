@@ -4,8 +4,6 @@ import numpy as np
 from pyne import serpent
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from moltres_xs import *
 
 
 def test_serpent_xs():
@@ -14,7 +12,8 @@ def test_serpent_xs():
     """
 
     # Run moltres_xs with Serpent 2 data
-    read_input('msfr_xs.inp')
+    os.system('python ../moltres_xs.py msfr_xs.inp')
+
 
     # Load the output json xs file
     with open('msfrXS.json') as f:
@@ -40,7 +39,7 @@ def test_scale_xs():
     """
 
     # Run moltres_xs with SCALE data
-    read_input('pin_cell_XS.inp')
+    os.system('python ../moltres_xs.py pin_cell_XS.inp')
 
     # Load the output json xs file
     with open('PinXS.json') as f:
