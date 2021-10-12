@@ -454,30 +454,46 @@ def read_input(fin, files):
         lines = f.readlines()
     k = 0
     for k, line in enumerate(lines):
-        if "[TITLE]" in line:
-            f = open(lines[k + 1].split()[0], "w")
-        if "[MAT]" in line:
+        if '[TITLE]' in line:
+            f = open(lines[k + 1].split()[0], 'w')
+        if '[MAT]' in line:
             mat_dict = {}
             num_mats = int(lines[k + 1].split()[0])
             val = lines[k + 2].split()
             for i in range(num_mats):
-                mat_dict[val[i]] = {
-                    "temps": [],
-                    "file": [],
-                    "uni": [],
-                    "burn": [],
-                    "bran": [],
-                }
-        if "[BRANCH]" in line:
+                mat_dict[val[i]] = {'temps': [],
+                                    'file': [],
+                                    'uni': [],
+                                    'burn': [],
+                                    'bran': []
+                                    }
+        if '[BRANCH]' in line:
             tot_branch = int(lines[k + 1].split()[0])
             for i in range(tot_branch):
                 val = lines[k + 2 + i].split()
-                mat_dict[val[0]]["temps"].extend([int(val[1])])
-                mat_dict[val[0]]["file"].extend([int(val[2])])
-                mat_dict[val[0]]["burn"].extend([int(val[3])])
-                mat_dict[val[0]]["uni"].extend([int(val[4])])
-                mat_dict[val[0]]["bran"].extend([int(val[5])])
+                mat_dict[val[0]]['temps'].extend(
+                    [int(val[1])])
+                mat_dict[val[0]]['file'].extend(
+                    [int(val[2])])
+                mat_dict[val[0]]['burn'].extend(
+                    [int(val[3])])
+                mat_dict[val[0]]['uni'].extend(
+                    [int(val[4])])
+                mat_dict[val[0]]['bran'].extend(
+                    [int(val[5])])
 
+        if 'FILES' in line:
+            num_files = int(lines[k + 1].split()[0])
+            files = {}
+            for i in range(num_files):
+                XS_in, XS_t = lines[k + 2 + i].split()
+                if 'scale' in XS_t:
+                    files[i] = scale_xs(XS_in)
+                elif 'serpent' in XS_t:
+                    files[i] = serpent_xs(XS_in)
+                else:
+                    raise("XS data not understood\n \
+                          Please use: scale or serpent")
     out_dict = {}
     for material in mat_dict:
         out_dict[material] = {"temp": mat_dict[material]["temps"]}
