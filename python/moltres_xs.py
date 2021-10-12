@@ -215,13 +215,21 @@ class openmc_xs:
                 delayed_groups=delayed_groups,
                 name=str(id) + "_decayrate",
             )
-            domain_dict[id]["diffusioncoefficient"] = mgxs.DiffusionCoefficient(
-                domain=domain, groups=groups, name=str(id) + "_diffusioncoefficient", )
-            domain_dict[id]["scatterprobmatrix"] = mgxs.ScatterProbabilityMatrix(
-                domain=domain, groups=groups, name=str(id) + "_scatterprobmatrix"
+            domain_dict[id]["diffusioncoefficient"] = \
+                mgxs.DiffusionCoefficient(
+                domain=domain,
+                groups=groups,
+                name=str(id) +
+                "_diffusioncoefficient",
+            )
+            domain_dict[id]["scatterprobmatrix"] = \
+                mgxs.ScatterProbabilityMatrix(
+                domain=domain, groups=groups,
+                name=str(id) + "_scatterprobmatrix"
             )
             domain_dict[id]["scatterxs"] = mgxs.ScatterXS(
-                domain=domain, groups=groups, name=str(id) + "_scatterxs", nu=True)
+                domain=domain, groups=groups,
+                name=str(id) + "_scatterxs", nu=True)
             domain_dict[id]["inversevelocity"] = mgxs.InverseVelocity(
                 domain=domain, groups=groups, name=str(id) + "_inversevelocity"
             )
@@ -249,8 +257,10 @@ class openmc_xs:
             tallies_file += domain_dict[id]["chiprompt"].tallies.values()
             tallies_file += domain_dict[id]["chidelayed"].tallies.values()
             tallies_file += domain_dict[id]["decayrate"].tallies.values()
-            tallies_file += domain_dict[id]["diffusioncoefficient"].tallies.values()
-            tallies_file += domain_dict[id]["scatterprobmatrix"].tallies.values()
+            tallies_file += domain_dict[id]["diffusioncoefficient"] \
+                .tallies.values()
+            tallies_file += domain_dict[id]["scatterprobmatrix"] \
+                .tallies.values()
             tallies_file += domain_dict[id]["scatterxs"].tallies.values()
             tallies_file += domain_dict[id]["inversevelocity"].tallies.values()
             tallies_file += domain_dict[id]["fissionxs"].tallies.values()
