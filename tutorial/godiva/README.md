@@ -1,6 +1,17 @@
-# Godiva Sphere 
+# Group Constant Generation for Godiva Sphere with OpenMC
 
-In this tutorial, I demonstrate how to use OpenMC to generate group constants for Moltres using `moltres_xs.py`. 
+In this tutorial, I demonstrate how to use OpenMC to generate group constants for Moltres using `moltres_xs.py`.
+
+### OpenMC Input File 
+In this directory, there are 2 OpenMC input files for 900K and 1200K simulations: `godiva_openmc_900.py` and `godiva_openmc_1200.py`. Unlike Scale and Serpent, OpenMC does not have a notion of branches to generate group constants for different temperatures and burnups. Thus, separate input files for different temperatures is required. 
+
+To run these input files, the user must install OpenMC (https://github.com/openmc-dev/openmc/). However, for this tutorial, I provide the OpenMC output files: `statepoint_900_openmc.100.h5`, `statepoint_1200_openmc.100.h5`, `summary_900.h5`, and `summary_1200.h5`. Each OpenMC simulation outputs a statepoint and summary file, both output files are required for the group constant generation. 
+
+`godiva_openmc.inp` is the input file that informs `moltres_xs.py` how to parse the various OpenMC output files to generate Moltres group constants. To generate the Moltres group constants, the user runs: 
+```
+python ../../python/moltres_xs.py godiva_openmc.inp
+```
+This will output `godiva_openmc.json` containing the Moltres group constants. An example of this output file can be found in `../../python/test/gold/godiva.json`
 
 # OpenMC Group Constant Generation 
 
