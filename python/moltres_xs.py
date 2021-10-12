@@ -259,10 +259,9 @@ class scale_xs:
     """
         Python class that reads in a scale t16 file and organizes the cross
         section data into a numpy dictionary. Currently set up to read an
-        arbitrary number of energy groups, an arbitrary number of delayed
+        arbitrary number of energy groups, an arbitrart number of delayed
         neutron groups, an arbitrary number of identities, an arbitrary
         number of temperature branches, and an arbitrary number of burnups.
-
         Parameters
         ----------
         xs_filename: str
@@ -396,7 +395,6 @@ class serpent_xs:
         section data into a numpy dictionary. Currently set up to read an
         arbitrary number of energy groups, delayed neutron groups, identities,
         temperature branches, and burnups.
-
         Parameters
         ----------
         xs_filename: str
