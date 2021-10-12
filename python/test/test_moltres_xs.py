@@ -60,10 +60,10 @@ def test_openmc_xs():
     """
 
     # Run moltres_xs with OpenMC data
-    os.system('python ../moltres_xs.py godiva/godiva_openmc.inp')
+    os.system('python ../moltres_xs.py godiva_openmc.inp')
 
     # Load the output json xs file
-    with open('godiva/godiva_openmc.json') as f:
+    with open('godiva_openmc.json') as f:
         data = json.load(f)
 
     # Load gold copy of json xs file
@@ -74,7 +74,7 @@ def test_openmc_xs():
     assert data == expected
 
     # Delete output json xs file after check
-    if os.path.exists('godiva/godiva_openmc.json'):
-        os.remove('godiva/godiva_openmc.json')
+    if os.path.exists('godiva_openmc.json'):
+        os.remove('godiva_openmc.json')
     else:
         print('Attempted to delete JSON output file but it does not exist')

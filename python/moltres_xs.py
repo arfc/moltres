@@ -481,19 +481,6 @@ def read_input(fin, files):
                     [int(val[4])])
                 mat_dict[val[0]]['bran'].extend(
                     [int(val[5])])
-
-        if 'FILES' in line:
-            num_files = int(lines[k + 1].split()[0])
-            files = {}
-            for i in range(num_files):
-                XS_in, XS_t = lines[k + 2 + i].split()
-                if 'scale' in XS_t:
-                    files[i] = scale_xs(XS_in)
-                elif 'serpent' in XS_t:
-                    files[i] = serpent_xs(XS_in)
-                else:
-                    raise("XS data not understood\n \
-                          Please use: scale or serpent")
     out_dict = {}
     for material in mat_dict:
         out_dict[material] = {"temp": mat_dict[material]["temps"]}
