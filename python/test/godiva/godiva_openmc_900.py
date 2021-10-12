@@ -22,13 +22,13 @@ fuel_core = openmc.Cell(fill=fuel_mat, region=-sph)
 geom = openmc.Geometry([fuel_core])
 geom.export_to_xml()
 
-### SETTINGS ### 
+### SETTINGS ###
 settings = openmc.Settings()
 settings.batches = 100
 settings.inactive = 20
 settings.particles = 50000
 settings.temperature = {"multipole": True, "method": "interpolation"}
-point = openmc.stats.Point((0,0,0))
+point = openmc.stats.Point((0, 0, 0))
 src = openmc.Source(space=point)
 settings.source = src
 settings.export_to_xml()
