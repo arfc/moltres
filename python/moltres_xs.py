@@ -90,16 +90,58 @@ class openmc_xs:
         return
 
     def mgxs_tallies(self, sp, tally):
+        """Returns list of tally values for each energy group
+
+        Parameters
+        ----------
+        sp: openmc.Statepoint
+        tally: OpenMC mgxs tally object
+
+        Returns
+        -------
+        list
+            list of tally values for each energy group
+        """
+
         tally.load_from_statepoint(sp)
         return list(tally.get_pandas_dataframe()["mean"])
 
     def get_diffcoeff(self, sp, tally):
+        """Returns list of diffusion coefficient values for each energy group
+
+        Parameters
+        ----------
+        sp: openmc.Statepoint
+        tally: OpenMC mgxs.DiffusionCoefficient object
+
+        Returns
+        -------
+        list
+            list of diffusion coefficient values for each energy group
+        """
+
         tally.load_from_statepoint(sp)
         df = tally.get_pandas_dataframe()
         df = df.loc[df["legendre"] == "P1"]
         return list(df["mean"])
 
     def get_fisse(self, sp, fissionxs, kappa):
+        """Returns list of average deposited fission energy values for each
+        energy group
+
+        Parameters
+        ----------
+        sp: openmc.Statepoint
+        fissionxs: OpenMC mgxs.FissionXS object
+        kappa: OpenMC mgxs.KappaFissionXS object
+
+        Returns
+        -------
+        list
+            list of average deposited fission energy values for each energy
+            group
+        """
+
         fissionxs.load_from_statepoint(sp)
         kappa.load_from_statepoint(sp)
         fissionxs_df = fissionxs.get_pandas_dataframe()
@@ -107,6 +149,22 @@ class openmc_xs:
         return list(kappa_df["mean"] / fissionxs_df["mean"] * 1e-6)
 
     def get_scatter(self, sp, prob_matrix, scatterxs):
+        """Returns scatter production xs matrix values for each energy group.
+        The matrix is flattened into a list. It is calculated by multiplying
+        the scatter probability matrix with the scatter cross section.
+
+        Parameters
+        ----------
+        sp: openmc.Statepoint
+        prob_matrix: OpenMC mgxs.ScatterProbabilityMatrix object
+        scatterxs: OpenMC mgxs.ScatterXS object
+
+        Returns
+        -------
+        list
+            list of scatter production xs matrix values for each energy group
+        """
+
         prob_matrix.load_from_statepoint(sp)
         scatterxs.load_from_statepoint(sp)
         scatterxs_df = scatterxs.get_pandas_dataframe()
@@ -123,6 +181,22 @@ class openmc_xs:
         return final_matrix_list
 
     def get_nsf(self, sp, index):
+        """Returns fission neutron production xs values for each energy group.
+        It is calculated by dividing OpenMC's nu-fission by flux.
+        dividing
+
+        Parameters
+        ----------
+        sp: openmc.Statepoint
+        index: int
+            file index
+
+        Returns
+        -------
+        list
+            list of fission neutron production xs values for each energy group
+        """
+
         tally = sp.get_tally(name=str(index) + " tally")
         df = tally.get_pandas_dataframe()
         df_flux = np.array(df.loc[df["score"] == "flux"]["mean"])
@@ -132,6 +206,24 @@ class openmc_xs:
         return nu_fission
 
     def get_remxs(self, sp, prob_matrix, scatterxs, absorbxs):
+        """Returns removal xs values for each energy group. It is calculated
+        by summing each energy group's out scatter probability multiplying
+        it with its corresponding scatter xs and adding it with its
+        corresponding absorption xs.
+
+        Parameters
+        ----------
+        sp: openmc.Statepoint
+        prob_matrix: OpenMC mgxs.ScatterProbabilityMatrix object
+        scatterxs: OpenMC mgxs.ScatterXS object
+        absorbxs: OpenMC mgxs.AbsorbXS object
+
+        Returns
+        -------
+        list
+            list of removal xs values for each energy group
+        """
+
         prob_matrix.load_from_statepoint(sp)
         scatterxs.load_from_statepoint(sp)
         absorbxs.load_from_statepoint(sp)
