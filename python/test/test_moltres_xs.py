@@ -55,7 +55,7 @@ def test_scale_xs():
 
 
 def test_openmc_xs():
-    """Testing moltres_xs.py with OpenMC XS data, compared with the expected 
+    """Testing moltres_xs.py with OpenMC XS data, compared with the expected
     JSON file in the gold directory
     """
 
