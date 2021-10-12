@@ -204,9 +204,11 @@ class openmc_xs:
                 domain=domain, groups=groups, name=str(id) + "_chi"
             )
             domain_dict[id]["chiprompt"] = mgxs.Chi(
-                domain=domain, groups=groups, name=str(id) + "_chiprompt", prompt=True)
+                domain=domain, groups=groups,
+                name=str(id) + "_chiprompt", prompt=True)
             domain_dict[id]["chidelayed"] = mgxs.ChiDelayed(
-                domain=domain, energy_groups=groups, name=str(id) + "_chidelayed")
+                domain=domain, energy_groups=groups,
+                name=str(id) + "_chidelayed")
             domain_dict[id]["decayrate"] = mgxs.DecayRate(
                 domain=domain,
                 energy_groups=big_group,
