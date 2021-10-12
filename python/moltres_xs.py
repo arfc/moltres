@@ -505,9 +505,8 @@ def read_input(fin, files):
             burnup_index = mat_dict[material]["burn"][i] - 1
             uni_index = mat_dict[material]["uni"][i] - 1
             branch_index = mat_dict[material]["bran"][i] - 1
-            out_dict[material][str(temp)] = files[file_index].xs_lib[burnup_index][
-                uni_index
-            ][branch_index]
+            out_dict[material][str(temp)] = \
+                files[file_index].xs_lib[burnup_index][uni_index][branch_index]
     f.write(json.dumps(out_dict, sort_keys=True, indent=4))
 
 
