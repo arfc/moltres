@@ -244,7 +244,7 @@ def read_input(fin):
                 XS_in, XS_t = lines[k + 2 + i].split()
                 if 'scale' in XS_t:
                     files[i] = scale_xs(XS_in)
-                elif 'serpent'in XS_t:
+                elif 'serpent' in XS_t:
                     files[i] = serpent_xs(XS_in)
                 else:
                     raise("XS data not understood\n \
