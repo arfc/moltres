@@ -3,7 +3,7 @@ import openmc.mgxs as mgxs
 import numpy as np
 import sys
 sys.path.insert(1, '../')
-from moltres_xs import *
+from moltres_xs import *  # noqa: E402
 
 fuel_mat = openmc.Material(name='fuel', material_id=1)
 fuel_mat.set_density('atom/b-cm', 4.7984E-02)
@@ -22,7 +22,6 @@ fuel_core = openmc.Cell(fill=fuel_mat, region=-sph)
 geom = openmc.Geometry([fuel_core])
 geom.export_to_xml()
 
-### SETTINGS ###
 settings = openmc.Settings()
 settings.batches = 200
 settings.inactive = 10
