@@ -1,8 +1,8 @@
-import sys
-sys.path.insert(1, '../')
-from moltres_xs import *
 import openmc
 import openmc.mgxs as mgxs
+import sys
+sys.path.insert(1, '../')
+from moltres_xs import openmc_xs
 import numpy as np
 
 fuel_mat = openmc.Material(name='fuel', material_id=1)
