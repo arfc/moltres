@@ -48,42 +48,43 @@ class openmc_xs:
         for i in range(num_burn):
             self.xs_lib[i] = {}
             for j in num_uni:
+                k = num_branch
                 self.xs_lib[i][j - 1] = {}
-                self.xs_lib[i][j - 1][num_branch] = {}
-                self.xs_lib[i][j - 1][num_branch]["BETA_EFF"] = self.mgxs_tallies(
+                self.xs_lib[i][j - 1][k] = {}
+                self.xs_lib[i][j - 1][k]["BETA_EFF"] = self.mgxs_tallies(
                     sp, domain_dict[j]["beta"]
                 )
-                self.xs_lib[i][j - 1][num_branch]["CHI_T"] = self.mgxs_tallies(
+                self.xs_lib[i][j - 1][k]["CHI_T"] = self.mgxs_tallies(
                     sp, domain_dict[j]["chi"]
                 )
-                self.xs_lib[i][j - 1][num_branch]["CHI_P"] = self.mgxs_tallies(
+                self.xs_lib[i][j - 1][k]["CHI_P"] = self.mgxs_tallies(
                     sp, domain_dict[j]["chiprompt"]
                 )
-                self.xs_lib[i][j - 1][num_branch]["CHI_D"] = self.mgxs_tallies(
+                self.xs_lib[i][j - 1][k]["CHI_D"] = self.mgxs_tallies(
                     sp, domain_dict[j]["chidelayed"]
                 )
-                self.xs_lib[i][j - 1][num_branch]["DECAY_CONSTANT"] = self.mgxs_tallies(
+                self.xs_lib[i][j - 1][k]["DECAY_CONSTANT"] = self.mgxs_tallies(
                     sp, domain_dict[j]["decayrate"]
                 )
-                self.xs_lib[i][j - 1][num_branch]["DIFFCOEF"] = self.get_diffcoeff(
+                self.xs_lib[i][j - 1][k]["DIFFCOEF"] = self.get_diffcoeff(
                     sp, domain_dict[j]["diffusioncoefficient"]
                 )
-                self.xs_lib[i][j - 1][num_branch]["FISSE"] = self.get_fisse(
+                self.xs_lib[i][j - 1][k]["FISSE"] = self.get_fisse(
                     sp, domain_dict[j]["fissionxs"],
                     domain_dict[j]["kappafissionxs"]
                 )
-                self.xs_lib[i][j - 1][num_branch]["GTRANSFXS"] = self.get_scatter(
+                self.xs_lib[i][j - 1][k]["GTRANSFXS"] = self.get_scatter(
                     sp, domain_dict[j]["scatterprobmatrix"],
                     domain_dict[j]["scatterxs"]
                 )
-                self.xs_lib[i][j - 1][num_branch]["NSF"] = self.get_nsf(sp, j)
-                self.xs_lib[i][j - 1][num_branch]["RECIPVEL"] = self.mgxs_tallies(
+                self.xs_lib[i][j - 1][k]["NSF"] = self.get_nsf(sp, j)
+                self.xs_lib[i][j - 1][k]["RECIPVEL"] = self.mgxs_tallies(
                     sp, domain_dict[j]["inversevelocity"]
                 )
-                self.xs_lib[i][j - 1][num_branch]["FISSXS"] = self.mgxs_tallies(
+                self.xs_lib[i][j - 1][k]["FISSXS"] = self.mgxs_tallies(
                     sp, domain_dict[j]["fissionxs"]
                 )
-                self.xs_lib[i][j - 1][num_branch]["REMXS"] = self.get_remxs(
+                self.xs_lib[i][j - 1][k]["REMXS"] = self.get_remxs(
                     sp,
                     domain_dict[j]["scatterprobmatrix"],
                     domain_dict[j]["scatterxs"],
