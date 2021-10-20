@@ -36,52 +36,54 @@ class openmc_xs:
         sp.link_with_summary(summary)
         domain_dict = openmc_ref_modules[file_num].domain_dict
         num_burn = 1
+        num_branch = 0
         num_uni = []
         for k in sp.filters:
             v = sp.filters[k]
             if isinstance(v, openmc.filter.MaterialFilter):
                 num_uni.append(v.bins[0])
+            elif isinstance(v, openmc.filter.CellFilter):
+                num_uni.append(v.bins[0])
         self.xs_lib = {}
         for i in range(num_burn):
             self.xs_lib[i] = {}
             for j in num_uni:
-                k = j - 1
                 self.xs_lib[i][j - 1] = {}
-                self.xs_lib[i][j - 1][k] = {}
-                self.xs_lib[i][j - 1][k]["BETA_EFF"] = self.mgxs_tallies(
+                self.xs_lib[i][j - 1][num_branch] = {}
+                self.xs_lib[i][j - 1][num_branch]["BETA_EFF"] = self.mgxs_tallies(
                     sp, domain_dict[j]["beta"]
                 )
-                self.xs_lib[i][j - 1][k]["CHI_T"] = self.mgxs_tallies(
+                self.xs_lib[i][j - 1][num_branch]["CHI_T"] = self.mgxs_tallies(
                     sp, domain_dict[j]["chi"]
                 )
-                self.xs_lib[i][j - 1][k]["CHI_P"] = self.mgxs_tallies(
+                self.xs_lib[i][j - 1][num_branch]["CHI_P"] = self.mgxs_tallies(
                     sp, domain_dict[j]["chiprompt"]
                 )
-                self.xs_lib[i][j - 1][k]["CHI_D"] = self.mgxs_tallies(
+                self.xs_lib[i][j - 1][num_branch]["CHI_D"] = self.mgxs_tallies(
                     sp, domain_dict[j]["chidelayed"]
                 )
-                self.xs_lib[i][j - 1][k]["DECAY_CONSTANT"] = self.mgxs_tallies(
+                self.xs_lib[i][j - 1][num_branch]["DECAY_CONSTANT"] = self.mgxs_tallies(
                     sp, domain_dict[j]["decayrate"]
                 )
-                self.xs_lib[i][j - 1][k]["DIFFCOEF"] = self.get_diffcoeff(
+                self.xs_lib[i][j - 1][num_branch]["DIFFCOEF"] = self.get_diffcoeff(
                     sp, domain_dict[j]["diffusioncoefficient"]
                 )
-                self.xs_lib[i][j - 1][k]["FISSE"] = self.get_fisse(
+                self.xs_lib[i][j - 1][num_branch]["FISSE"] = self.get_fisse(
                     sp, domain_dict[j]["fissionxs"],
                     domain_dict[j]["kappafissionxs"]
                 )
-                self.xs_lib[i][j - 1][k]["GTRANSFXS"] = self.get_scatter(
+                self.xs_lib[i][j - 1][num_branch]["GTRANSFXS"] = self.get_scatter(
                     sp, domain_dict[j]["scatterprobmatrix"],
                     domain_dict[j]["scatterxs"]
                 )
-                self.xs_lib[i][j - 1][k]["NSF"] = self.get_nsf(sp, j)
-                self.xs_lib[i][j - 1][k]["RECIPVEL"] = self.mgxs_tallies(
+                self.xs_lib[i][j - 1][num_branch]["NSF"] = self.get_nsf(sp, j)
+                self.xs_lib[i][j - 1][num_branch]["RECIPVEL"] = self.mgxs_tallies(
                     sp, domain_dict[j]["inversevelocity"]
                 )
-                self.xs_lib[i][j - 1][k]["FISSXS"] = self.mgxs_tallies(
+                self.xs_lib[i][j - 1][num_branch]["FISSXS"] = self.mgxs_tallies(
                     sp, domain_dict[j]["fissionxs"]
                 )
-                self.xs_lib[i][j - 1][k]["REMXS"] = self.get_remxs(
+                self.xs_lib[i][j - 1][num_branch]["REMXS"] = self.get_remxs(
                     sp,
                     domain_dict[j]["scatterprobmatrix"],
                     domain_dict[j]["scatterxs"],
@@ -260,7 +262,7 @@ class openmc_xs:
         delayed_groups: list
             list of number of delayed neutron groups
         domains: list
-            list of openmc domains
+            list of openmc domains, these can be openmc.Materials or openmc.Cells
         domain_ids: list
             list of openmc domain ids
         tallies_file: openmc.Tallies
@@ -335,7 +337,10 @@ class openmc_xs:
                 domain=domain, groups=groups, name=str(id) + "_absorptionxs"
             )
             domain_dict[id]["tally"] = openmc.Tally(name=str(id) + " tally")
-            domain_dict[id]["filter"] = openmc.MaterialFilter(domain)
+            if isinstance(domain, openmc.Material):
+                domain_dict[id]["filter"] = openmc.MaterialFilter(domain)
+            elif isinstance(domain, openmc.Cell):
+                domain_dict[id]["filter"] = openmc.CellFilter(domain)
             domain_dict[id]["tally"].filters = [
                 domain_dict[id]["filter"],
                 energy_filter,

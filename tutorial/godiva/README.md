@@ -7,7 +7,7 @@ To run these input files and subsequent group constant generation scripts, the u
 ### OpenMC Input File 
 In this directory, there are 2 OpenMC input files for 900K and 1200K simulations: `godiva_openmc_900.py` and `godiva_openmc_1200.py`. Unlike Scale and Serpent, OpenMC does not have a notion of branches to generate group constants for different temperatures and burnups. Thus, separate input files for different temperatures is required. 
 
-The user must include the `openmc_xs.generate_openmc_tallies_xml()` function in the OpenMC input file to generate a `domain_dict`. The function sets up the OpenMC tallies required for the group constant generation. This is necessary because unlike Serpent, OpenMC does not generate all the group constant data with any simulation, the user must specify what they want. 
+The user must include the `openmc_xs.generate_openmc_tallies_xml()` function in the OpenMC input file to generate a `domain_dict`. The function sets up the OpenMC tallies required for the group constant generation. This is necessary because unlike Serpent, OpenMC does not generate all the group constant data with any simulation, the user must specify what they want. The user may define domains as either openmc.Material or openmc.Cell.
 
 For this tutorial, I provide the OpenMC output files: `statepoint_900_openmc.100.h5`, `statepoint_1200_openmc.100.h5`, `summary_900.h5`, and `summary_1200.h5`. Each OpenMC simulation outputs a statepoint and summary file, both output files are required for the group constant generation. 
 
@@ -29,7 +29,8 @@ For this tutorial, I provide the OpenMC output files: `statepoint_900_openmc.100
   *number of files*
   *statepoint file name* *openmc* *openmc input file* *summary file*
 ```
-For OpenMC, we do not utilize the burnup and universe indexes, and suggests that users leave it as 1 so that `moltres_xs.py` correctly parses the input file. For OpenMC, we also add additional openmc input files and summary files.  
+For OpenMC, we do not utilize the burnup and branch indexes, users must input both index values as 1 so that `moltres_xs.py` correctly parses the input file. For OpenMC, we also add additional openmc input files and summary files.  
+The universe index must correspond to the material or cell id defined in the OpenMC input file. 
 
 To generate the Moltres group constants, the user runs: 
 ```
