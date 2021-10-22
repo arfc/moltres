@@ -149,7 +149,10 @@ class openmc_xs:
         kappa.load_from_statepoint(sp)
         fissionxs_df = fissionxs.get_pandas_dataframe()
         kappa_df = kappa.get_pandas_dataframe()
-        return list(kappa_df["mean"] / fissionxs_df["mean"] * 1e-6)
+        fisse = kappa_df["mean"] / fissionxs_df["mean"] * 1e-6
+        fisse = np.array(fisse)
+        fisse[np.isnan(fisse)] = 0
+        return list(fisse)
 
     def get_scatter(self, sp, prob_matrix, scatterxs):
         """Returns scatter production xs matrix values for each energy group.
