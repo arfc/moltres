@@ -7,10 +7,10 @@ assignees: ''
 
 ---
 
-**Background and motivation**
+## Background and motivation
 
-**Description of idea**
+## Description of idea
 
-**Implementation details**
+## Implementation details
 
-**Potential snags**
+## Potential snags
