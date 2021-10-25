@@ -266,7 +266,7 @@ class openmc_xs:
         delayed_groups: list
             list of number of delayed neutron groups
         domains: list
-            list of openmc domains, these can be openmc.Materials or 
+            list of openmc domains, these can be openmc.Materials or
             openmc.Cells
         domain_ids: list
             list of openmc domain ids
