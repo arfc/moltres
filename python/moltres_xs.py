@@ -644,7 +644,7 @@ if __name__ == '__main__':
                     XS_ref, XS_sum = inputs[2], inputs[3]
                     import openmc
                     import openmc.mgxs as mgxs
-
+                    sys.path.append('./')
                     openmc_ref_modules = {}
                     openmc_ref_modules[i] = importlib.import_module(
                         XS_ref.replace(".py", "")
