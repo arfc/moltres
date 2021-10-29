@@ -1,9 +1,7 @@
 import openmc
-import openmc.mgxs as mgxs
 import sys
-import numpy as np
 sys.path.insert(1, '../')
-from moltres_xs import *  # noqa: E402
+from moltres_xs import openmc_xs  # noqa: E402
 
 fuel_mat = openmc.Material(name='fuel', material_id=1)
 fuel_mat.set_density('atom/b-cm', 4.7984E-02)
