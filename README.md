@@ -24,9 +24,10 @@ underlying Moltres components.
 
 ## Install
 
-Moltres relies on the MOOSE framework. To install MOOSE please follow the
-instructions at http://mooseframework.org/getting-started/. After installing
-MOOSE, you can install Moltres by running the following commands in a shell
+Moltres relies on the MOOSE framework. We suggest that users install the MOOSE 
+environment using Conda Packages by following the instructions in the `Install 
+MOOSE Conda Packages` section of https://mooseframework.inl.gov/getting_started/installation/conda.html/. 
+After that, the user can install Moltres by running the following commands in a shell
 after changing into the directory holding your MOOSE directory (perhaps `~/projects`):
 
 ```bash
@@ -34,7 +35,7 @@ git clone https://github.com/arfc/moltres
 cd moltres
 git submodule init
 git submodule update
-./build_libmesh_and_moltres.sh
+make -j8
 ```
 
 You may also compile a debug version of Moltres by replacing the last line in 
