@@ -653,7 +653,7 @@ if __name__ == '__main__':
                 else:
                     raise (
                         "XS data not understood\n \
-                            Please use: Scale or Serpent or OpenMC"
+                            Please use: scale or serpent, or openmc"
                     )
     read_input(sys.argv[1], files)
 
