@@ -26,7 +26,9 @@ underlying Moltres components.
 
 Moltres relies on the MOOSE framework. We suggest that users install the MOOSE 
 environment using Conda Packages by following the instructions in the `Install 
-MOOSE Conda Packages` section of https://mooseframework.inl.gov/getting_started/installation/conda.html/. 
+MOOSE Conda Packages` section of https://mooseframework.inl.gov/getting_started/installation/conda.html/.
+Since the Moltres repository contains MOOSE and Squirrel as Git
+submodules, there is no need to clone MOOSE into a separate directory.
 After that, the user can install Moltres by running the following commands in a shell
 after changing into the directory holding your MOOSE directory (perhaps `~/projects`):
 
