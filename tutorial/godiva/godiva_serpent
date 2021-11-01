@@ -1,0 +1,44 @@
+set title "Godiva solid bare HEU sphere. CSB Data used. 05/12/93."
+
+/************************
+ * Material definitions *
+ ************************/
+
+mat fuel 4.7984E-02
+92235.12c 4.4994E-02 
+92238.12c 2.4984E-03 
+92234.12c 4.9184E-04
+
+/************************
+ * Geometry definitions *
+ ************************/
+
+surf 1 sph 0.0 0.0 0.0 8.7407
+surf 3001 inf
+
+cell 1 0 fuel -1
+cell 2 0 outside 1
+
+cell 801 1 fuel		-3001	% Fuel material
+
+/******************
+ * Run parameters *
+ ******************/
+
+set pop 100000 100 20
+
+set gcu 1
+set nfg  6	748.5e-6	5.5308e-3	24.7875e-3	0.4979	2.2313
+
+set ures 1
+set acelib "/projects/sciteam/bbcc/serpent/xsdata/jeff312/sss_jeff312.xsdata"
+
+branch fuel900
+stp fuel    4.7984E-02    900
+
+branch fuel1200
+stp fuel    4.7984E-02   1200
+
+coef 1
+0
+2 fuel900 fuel1200
