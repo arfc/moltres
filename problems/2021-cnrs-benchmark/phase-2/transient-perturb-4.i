@@ -21,7 +21,7 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
 [Mesh]
   [./file_mesh]
     type = FileMeshGenerator
-    file = '../full-coupling/u5p10_out_ntsApp0_exodus.e'
+    file = '../full-coupling/full-coupling_out_ntsApp0_exodus.e'
     use_for_exodus_restart = true
   [../]
   [./corner_node]
@@ -40,17 +40,14 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
   [./temp]
     family = LAGRANGE
     order = FIRST
-    scaling = 1e-2
   [../]
   [./vel]
     family = LAGRANGE_VEC
     order = FIRST
-    scaling = 1e2
   [../]
   [./p]
     family = LAGRANGE
     order = FIRST
-    scaling = 1e2
   [../]
 []
 
@@ -59,8 +56,7 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
   vacuum_boundaries = 'bottom left right top'
   create_temperature_var = false
   init_nts_from_file = true
-  scaling = 1e-8
-  eigenvalue_scaling = 0.9927821803
+  eigenvalue_scaling = 0.9927821802
 []
 
 [Precursors]
@@ -74,7 +70,6 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
     family = MONOMIAL
     order = CONSTANT
     transient = true
-    scaling = 1e-8
   [../]
 []
 
@@ -192,14 +187,14 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
 [UserObjects]
   [./initial_th]
     type = SolutionUserObject
-    mesh = '../full-coupling/u5p10_exodus.e'
+    mesh = '../full-coupling/full-coupling_exodus.e'
     system_variables = 'vel_x vel_y p temp'
     timestep = LATEST
     execute_on = INITIAL
   [../]
   [./initial_pre]
     type = SolutionUserObject
-    mesh = '../full-coupling/u5p10_out_ntsApp0_exodus.e'
+    mesh = '../full-coupling/full-coupling_out_ntsApp0_exodus.e'
     system_variables = 'pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8 heat'
     timestep = LATEST
     execute_on = INITIAL
@@ -224,49 +219,49 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
     type = SolutionFunction
     from_variable = pre1
     solution = initial_pre
-    scale_factor = 7.66908e+17
+    scale_factor = 7.61666e+17
   [../]
   [./pre2f]
     type = SolutionFunction
     from_variable = pre2
     solution = initial_pre
-    scale_factor = 7.66908e+17
+    scale_factor = 7.61666e+17
   [../]
   [./pre3f]
     type = SolutionFunction
     from_variable = pre3
     solution = initial_pre
-    scale_factor = 7.66908e+17
+    scale_factor = 7.61666e+17
   [../]
   [./pre4f]
     type = SolutionFunction
     from_variable = pre4
     solution = initial_pre
-    scale_factor = 7.66908e+17
+    scale_factor = 7.61666e+17
   [../]
   [./pre5f]
     type = SolutionFunction
     from_variable = pre5
     solution = initial_pre
-    scale_factor = 7.66908e+17
+    scale_factor = 7.61666e+17
   [../]
   [./pre6f]
     type = SolutionFunction
     from_variable = pre6
     solution = initial_pre
-    scale_factor = 7.66908e+17
+    scale_factor = 7.61666e+17
   [../]
   [./pre7f]
     type = SolutionFunction
     from_variable = pre7
     solution = initial_pre
-    scale_factor = 7.66908e+17
+    scale_factor = 7.61666e+17
   [../]
   [./pre8f]
     type = SolutionFunction
     from_variable = pre8
     solution = initial_pre
-    scale_factor = 7.66908e+17
+    scale_factor = 7.61666e+17
   [../]
   [./velxf]
     type = SolutionFunction
@@ -383,7 +378,7 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
-    property_tables_root = '../neutron-data/benchmark_'
+    property_tables_root = '../../../property_file_dir/cnrs-benchmark/benchmark_'
     interp_type = 'linear'
     prop_names = 'temp_ref'
     prop_values = '900'
@@ -409,9 +404,14 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
 
   solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_gasm_overlap -sub_pc_factor_shift_type -pc_gasm_blocks -sub_pc_factor_mat_solver_type'
-  petsc_options_value = 'gasm     lu           200                1                NONZERO                   64             superlu_dist'
+  petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_gasm_overlap -sub_pc_factor_shift_type -sub_pc_factor_mat_solver_type'
+  petsc_options_value = 'gasm     lu           200                1                NONZERO                   superlu_dist'
   line_search = 'none'
+
+  automatic_scaling = true
+  compute_scaling_once = false
+  resid_vs_jac_scaling_param = 0.1
+  scaling_group_variables = 'group1 group2 group3 group4 group5 group6; pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8; vel; p; temp'
 
   nl_abs_tol = 1e-6
   nl_rel_tol = 1e-6
