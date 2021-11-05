@@ -57,6 +57,8 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
   create_temperature_var = false
   init_nts_from_file = true
   eigenvalue_scaling = 0.9927821802
+## Use the eigenvalue scaling factor below if running on a 40x40 mesh
+#  eigenvalue_scaling = 0.9926551482
 []
 
 [Precursors]
@@ -159,7 +161,7 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
     velocity = vel
   [../]
   [./temp_sink]
-    type = ManuHX
+    type = ConvectiveHeatExchanger
     variable = temp
     htc = ${gamma}
     tref = 900
@@ -405,8 +407,8 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
 
   solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_gasm_overlap -sub_pc_factor_shift_type -sub_pc_factor_mat_solver_type'
-  petsc_options_value = 'gasm     lu           200                1                NONZERO                   superlu_dist'
+  petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type'
+  petsc_options_value = 'asm      lu           200                1                NONZERO'
   line_search = 'none'
 
   automatic_scaling = true
