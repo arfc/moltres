@@ -21,7 +21,7 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
 [Mesh]
   [./file_mesh]
     type = FileMeshGenerator
-    file = '../full-coupling/full-coupling_out_ntsApp0_exodus.e'
+    file = '../phase-1/full-coupling_out_ntsApp0_exodus.e'
     use_for_exodus_restart = true
   [../]
   [./corner_node]
@@ -178,14 +178,14 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
 [UserObjects]
   [./initial_th]
     type = SolutionUserObject
-    mesh = '../full-coupling/full-coupling_exodus.e'
+    mesh = '../phase-1/full-coupling_exodus.e'
     system_variables = 'vel_x vel_y p temp'
     timestep = LATEST
     execute_on = INITIAL
   [../]
   [./initial_pre]
     type = SolutionUserObject
-    mesh = '../full-coupling/full-coupling_out_ntsApp0_exodus.e'
+    mesh = '../phase-1/full-coupling_out_ntsApp0_exodus.e'
     system_variables = 'pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8'
     timestep = LATEST
     execute_on = INITIAL
