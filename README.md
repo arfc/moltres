@@ -41,7 +41,7 @@ make -j8
 ```
 
 You may also compile a debug version of Moltres by replacing the last line in 
-build_libmesh_and_moltres.sh with `METHOD=dbg make
+`build_libmesh_and_moltres.sh` with `METHOD=dbg make
 -j8`. Note that you should replace `8` with the number of processors available
 on your machine.
 
@@ -58,6 +58,8 @@ ensure that any commits you make adhere to the MOOSE/Moltres C++ style. Pull
 requests should be submitted to the `devel` branch of the `arfc/moltres`
 repository. Each pull request is automatically tested for style and for whether
 it breaks any of the core Moltres physics capabilities.
+
+A full list of contributing guildeines can be found [here](https://github.com/arfc/blob/devl/CONTRIBUTING.md)
 
 ## Contact
 
