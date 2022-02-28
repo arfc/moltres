@@ -8,8 +8,8 @@ Because there is no desire to homogenize spatially here, the materials that the 
 own infinite universe. Then, this universe should have its group constants generated using the "set gcu <material universe numbers>".
 
 It's important that universe 0, the main universe, is not included. Serpent takes tallies for group constants in the first universe
-it identifies, so including 0 means that no further universes will be included in GC generation. (please double check this on the serpent
-forum).
+it identifies, so including 0 means that no further universes will be included in GC generation. (please double check this on the 
+[serpent forum](ttuki.vtt.fi/serpent)).
 
 ### Serpent Input
 
