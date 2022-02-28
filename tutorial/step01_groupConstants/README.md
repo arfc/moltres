@@ -9,7 +9,7 @@ own infinite universe. Then, this universe should have its group constants gener
 
 It's important that universe 0, the main universe, is not included. Serpent takes tallies for group constants in the first universe
 it identifies, so including 0 means that no further universes will be included in GC generation. (please double check this on the 
-[serpent forum](https://www.ttuki.vtt.fi/serpent)).
+[serpent forum](https://ttuki.vtt.fi/serpent)).
 
 ### Serpent Input
 
