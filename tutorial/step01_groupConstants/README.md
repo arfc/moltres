@@ -25,7 +25,7 @@ The PDF of these findings can be found
 The "fuel" file contains "cards" (a relic term referring to the fortran-dominated reactor physics ages of yore)
 that will generate group constants at a few temperatures, and likewise for the "moder" file.
 Like a cooking show, the important results have already been prepared for you in the ```fuel.coe``` and ```moder.coe``` files, which
-get parsed by ```serpentTools``` in the extractSerpent2GCs script. ```serpentTools``` is a suite of parsers designed by GATech for parsing ```SERPENT``` output files. More information can be found at http://serpent-tools.readthedocs.io/en/latest/
+get parsed by ```serpentTools``` in the ```extractSerpent2GCs``` script. ```serpentTools``` is a suite of parsers designed by GATech for parsing ```SERPENT``` output files. More information can be found at http://serpent-tools.readthedocs.io/en/latest/
 
 ### Command to run:
 
