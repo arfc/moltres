@@ -6,8 +6,8 @@ These will be used to generate an JSON file, which can be used by Moltres.
 
 ### SCALE Input file
 
-Here, the scale input file for a pin cell based on the 
-[BEAVRS benchmark](https://crpg.mit.edu/research/beavrs) can be found.
+The SCALE input file for a pin cell based on the 
+[BEAVRS benchmark](https://crpg.mit.edu/research/beavrs) is found here.
 
 For group constant generation, the standard 2 group LWR structure is used.
 The `pin\_cell.scale` file contains branches and burnup that will generate group constants at different temperatures and burnup levels.
