@@ -60,7 +60,7 @@ repository. Each pull request is automatically tested for style and for whether
 it breaks any of the core Moltres physics capabilities.
 
 A full list of contributing guidelines can be found 
-[here](https://github.com/arfc/moltres/blob/devel/CONTRIBUTING.md)
+[here](https://github.com/arfc/moltres/blob/devel/CONTRIBUTING.md).
 
 ## Contact
 
