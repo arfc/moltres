@@ -31,7 +31,7 @@ class openmc_xs:
     """
 
     def __init__(self, xs_filename, file_num, xs_summary):
-        sp = openmc.StatePoint(xs_filename)
+        sp = openmc.StatePoint(xs_filename, autolink=False)
         summary = openmc.Summary(xs_summary)
         sp.link_with_summary(summary)
         domain_dict = openmc_ref_modules[file_num].domain_dict
@@ -346,6 +346,8 @@ class openmc_xs:
                 domain_dict[id]["filter"] = openmc.MaterialFilter(domain)
             elif isinstance(domain, openmc.Cell):
                 domain_dict[id]["filter"] = openmc.CellFilter(domain)
+            else:
+                domain_dict[id]["filter"] = openmc.MeshFilter(domain)
             domain_dict[id]["tally"].filters = [
                 domain_dict[id]["filter"],
                 energy_filter,
