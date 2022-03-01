@@ -9,7 +9,7 @@ reactors.
 
 ## Use
 
-Moltres documentation can be found at
+Moltres documentation can be found
 [here](http://arfc.github.io/software/moltres). Doxygen pages are
 [here](https://arfc.github.io/moltres/classes.html). Outlines of the kernels and boundary
 conditions used to construct the Moltres governing equations can be found on the
@@ -28,8 +28,8 @@ Moltres relies on the MOOSE framework. We suggest that users install the MOOSE
 environment using Conda Packages by following the instructions in the `Install 
 MOOSE Conda Packages` section of
 https://mooseframework.inl.gov/getting_started/installation/conda.html.
-Since the Moltres repository contains MOOSE and Squirrel as Git
-submodules, there is no need to clone MOOSE into a separate directory.
+The Moltres repository contains MOOSE and Squirrel as Git
+submodules, therefore there is no need to clone MOOSE into a separate directory.
 Instead, users can install Moltres by running the following commands in a shell
 after changing into the directory which will hold the Moltres directory (perhaps `~/projects`):
 
