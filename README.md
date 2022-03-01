@@ -17,8 +17,9 @@ conditions used to construct the Moltres governing equations can be found on the
 full-fledged Moltres input file can be found
 [here](http://arfc.github.io/software/moltres/wiki/input_example/). New Moltres
 users who have never used MOOSE before are encouraged to check-out the MOOSE
-workshop [slides](https://mooseframework.inl.gov/workshop/index.html#/) and 
-[video](https://www.youtube.com/watch?v=2tJwBsYaLaI) to help understand the
+[website](https://mooseframework.inl.gov/) and
+workshop [slides](https://mooseframework.inl.gov/workshop/index.html#/) for
+tutorials and examples to help understand the
 underlying Moltres components.
 
 ## Install
