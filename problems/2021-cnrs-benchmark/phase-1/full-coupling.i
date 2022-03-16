@@ -226,6 +226,7 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_gasm_overlap -sub_pc_factor_shift_type -pc_gasm_blocks -sub_pc_factor_mat_solver_type'
   petsc_options_value = 'gasm     lu           200                1                NONZERO                   16             superlu_dist'
+  line_search = none
 
 ## Use the settings below instead if running on a desktop/small cluster
 #  petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type'
