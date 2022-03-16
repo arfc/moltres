@@ -69,5 +69,4 @@ dedicated to molten salt fast reactors", Annals of Nuclear Energy, vol. 142,
 July 2020, 107428.
 
 [2] Park S., Munk M., & Huff K. D., "Verification of Moltres for Multiphysics
-Simulations of Fast-Spectrum Molten Salt Reactors", Annals of Nuclear Energy.
-(Forthcoming)
+Simulations of Fast-Spectrum Molten Salt Reactors". (Manuscript in progress)
