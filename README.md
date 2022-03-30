@@ -28,10 +28,22 @@ Moltres relies on the MOOSE framework. We suggest that users install the MOOSE
 environment using Conda Packages by following the instructions in the `Install 
 MOOSE Conda Packages` section of
 https://mooseframework.inl.gov/getting_started/installation/conda.html.
-The Moltres repository contains MOOSE and Squirrel as Git
-submodules, therefore there is no need to clone MOOSE into a separate directory.
-Instead, users can install Moltres by running the following commands in a shell
-after changing into the directory which will hold the Moltres directory (perhaps `~/projects`):
+The `moose-tools` and `moose-libmesh` Conda package versions which are
+compatible with the current MOOSE Git submodule on this repository are
+`moose-tools=2021.07.14` and `moose-libmesh=2021.07.14`. We cannot guarantee
+compatibility with the older/newer MOOSE builds and their corresponding Conda
+environments. Run the following command to install the specified package
+versions:
+
+```bash
+mamba install moose-tools=2021.07.14 moose-libmesh=2021.07.14
+```
+
+The Moltres repository already contains MOOSE and Squirrel as Git
+submodules, therefore there is **no need to separately clone and compile
+MOOSE.** Instead, users can install Moltres and the relevant MOOSE
+components by running the commands below in a shell after changing into the
+directory which will hold the Moltres directory (perhaps `~/projects`).
 
 ```bash
 git clone https://github.com/arfc/moltres
@@ -65,5 +77,5 @@ A full list of contributing guidelines can be found
 
 ## Contact
 
-Please post to our discussion list at
-moltres-users@googlegroups.com.
+Please post to our [discussion list](https://groups.google.com/g/moltres-users)
+at moltres-users@googlegroups.com.
