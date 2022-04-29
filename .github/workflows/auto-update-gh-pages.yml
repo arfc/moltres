@@ -1,7 +1,7 @@
 # This GitHub Action automatically updates built Doxygen files for Moltres' documentation
 # on `https://arfc.github.io/moltres/` every time a new pull request is merged into devel.
 
-name: Doxygen & Github Pages Action
+name: Doxygen & MooseDocs & Github Pages Action
 
 # Activate on pushes and pull requests into devel
 on:
@@ -16,6 +16,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-python@v3
+      
+      # Install MooseDocs dependencies
+      - shell: bash -l {0}
+        run: |
+          pip install --user pybtex livereload==2.5.1 pylatexenc anytree pandas
+      
+      # Create/Update MooseDocs files
+      - shell: bash -l {0}
+        run: |
+          cd doc
+          ./moosedocs.py generate MoltresApp
       
       # Generate Doxygen output files in ./docs directory using Doxyfile in base directory
       - name: Doxygen Action
@@ -28,5 +40,6 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./doc/content/doxygen
+          publish_dir: ./doc
           commit_message: ${{ github.event.head_commit.message }}
+
