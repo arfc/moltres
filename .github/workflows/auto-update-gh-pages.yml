@@ -17,6 +17,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      # Generate Doxygen output files in ./doc/content/html directory using Doxyfile in
+      # base directory
+      - name: Doxygen Action
+        uses: mattnotmitt/doxygen-action@v1
+        with:
+          working-directory: .
+      
       # Install MOOSE Conda environment & update MooseDocs documentation
       - uses: conda-incubator/setup-miniconda@v2
         with:
@@ -28,21 +35,14 @@ jobs:
         run: |
           mamba install moose-tools moose-libmesh
           git submodule init && git submodule update
-          make -j 2
           cd doc
-          ./moosedocs.py generate MoltresApp
-      
-      # Generate Doxygen output files in ./docs directory using Doxyfile in base directory
-      - name: Doxygen Action
-        uses: mattnotmitt/doxygen-action@v1
-        with:
-          working-directory: .
+          ./moosedocs.py build --destination html
       
       # Merge Doxygen output files in ./docs into gh-pages branch base directory
       - name: GitHub Pages action
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./doc
+          publish_dir: ./doc/html
           commit_message: ${{ github.event.head_commit.message }}
 
