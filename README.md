@@ -4,14 +4,14 @@
 Moltres
 =====
 
-Moltres is a MOOSE-application code designed for simulation of molten salt
-reactors.
+Moltres is an open-source MOOSE-application code designed for simulation of molten salt
+reactors and other advanced reactors.
 
-## Use
+## Documentation
 
-Moltres documentation can be found
-[here](http://arfc.github.io/software/moltres). Doxygen pages are
-[here](https://arfc.github.io/moltres/classes.html). Outlines of the kernels and boundary
+Moltres documentation can be found at
+[http://arfc.github.io/software/moltres](http://arfc.github.io/software/moltres).
+Outlines of the kernels and boundary
 conditions used to construct the Moltres governing equations can be found on the
 [Moltres wiki](http://arfc.github.io/software/moltres/wiki/). Breakdown of a
 full-fledged Moltres input file can be found
@@ -24,32 +24,8 @@ underlying Moltres components.
 
 ## Install
 
-Moltres relies on the MOOSE framework. We suggest that users install the MOOSE 
-environment using Conda Packages by following the instructions in the `Install 
-MOOSE Conda Packages` section of
-https://mooseframework.inl.gov/getting_started/installation/conda.html.
-The Moltres repository contains MOOSE and Squirrel as Git
-submodules, therefore there is no need to clone MOOSE into a separate directory.
-Instead, users can install Moltres by running the following commands in a shell
-after changing into the directory which will hold the Moltres directory (perhaps `~/projects`):
-
-```bash
-git clone https://github.com/arfc/moltres
-cd moltres
-git submodule init
-git submodule update
-make -j8
-```
-
-You may also compile a debug version of Moltres by replacing the last line in 
-the code block above with `METHOD=dbg make
--j8`. Note that you should replace `8` with the number of processors available
-on your machine.
-
-## Testing
-
-To ensure that Moltres is functioning properly, run `./run_tests -j8` from the
-root of the Moltres directory.
+Installation instructions can be found at
+[https://smpark7.github.io/moltres/getting_started/installation.html](https://smpark7.github.io/moltres/getting_started/installation.html)
 
 ## Development
 
@@ -65,5 +41,4 @@ A full list of contributing guidelines can be found
 
 ## Contact
 
-Please post to our discussion list at
-moltres-users@googlegroups.com.
+Please post to our GitHub Discussions tab.
