@@ -33,7 +33,11 @@ jobs:
           activate-environment: moose-env
       - shell: bash -l {0}
         run: |
+          conda deactivate
+          conda activate moose-env
           mamba install moose-tools moose-libmesh
+          conda deactivate
+          conda activate moose-env
           git submodule init && git submodule update
           cd doc
           ./moosedocs.py build --destination html
