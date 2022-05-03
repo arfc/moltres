@@ -1,6 +1,6 @@
 # Install Moltres
 
-## Install the Conda MOOSE Environment
+## 1. Install the Conda MOOSE Environment
 
 Moltres relies on the MOOSE framework. We suggest that users install the MOOSE environment using
 Conda packages by following the instructions in the "Install Mambaforge3" and "Install MOOSE Conda
@@ -15,7 +15,7 @@ environments. Run the following command to install the specified package version
 mamba install moose-tools=2021.07.14 moose-libmesh=2021.07.14
 ```
 
-## Clone Moltres
+## 2. Clone Moltres
 
 The Moltres GitHub repository already contains MOOSE and Squirrel as Git submodules, therefore
 +there is no need to clone and compile MOOSE separately+. 
@@ -33,13 +33,13 @@ git submodule init
 git submodule update
 ```
 
-## Compile and Test Moltres
+## 3. Compile and Test Moltres
 
 Before proceeding with this step, check that the Conda MOOSE environment is activated in your
 current terminal. This is achieved by running the following command every time you open a new
 terminal:
 
-``bash
+```bash
 conda activate moose
 ```
 
@@ -56,7 +56,7 @@ the code block above with `METHOD=dbg make
 -j8`. Note that you should replace `8` with the number of processors available
 on your machine.
 
-## Running Moltres Simulations
+## 4. Running Moltres Simulations
 
 If you have successfully compiled Moltres, you should have a `moltres-opt` executable in the
 `~\projects\moltres` directory. To run your input file, use the following command:
