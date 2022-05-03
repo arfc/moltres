@@ -6,7 +6,7 @@ documenting the class, which includes the typical automatic documentation associ
 MooseObject; however, what is contained is ultimately determined by what is necessary to make the
 documentation clear for users.
 
-!syntax description /UserObjects/DivisionPostprocessor
+!syntax description /Postprocessors/DivisionPostprocessor
 
 ## Overview
 
@@ -16,8 +16,8 @@ documentation clear for users.
 
 !! Describe and include an example of how to use the DivisionPostprocessor object.
 
-!syntax parameters /UserObjects/DivisionPostprocessor
+!syntax parameters /Postprocessors/DivisionPostprocessor
 
-!syntax inputs /UserObjects/DivisionPostprocessor
+!syntax inputs /Postprocessors/DivisionPostprocessor
 
-!syntax children /UserObjects/DivisionPostprocessor
+!syntax children /Postprocessors/DivisionPostprocessor

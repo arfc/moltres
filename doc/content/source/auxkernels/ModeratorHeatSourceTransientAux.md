@@ -6,7 +6,7 @@ documenting the class, which includes the typical automatic documentation associ
 MooseObject; however, what is contained is ultimately determined by what is necessary to make the
 documentation clear for users.
 
-!syntax description /Bounds/ModeratorHeatSourceTransientAux
+!syntax description /AuxKernels/ModeratorHeatSourceTransientAux
 
 ## Overview
 
@@ -16,8 +16,8 @@ documentation clear for users.
 
 !! Describe and include an example of how to use the ModeratorHeatSourceTransientAux object.
 
-!syntax parameters /Bounds/ModeratorHeatSourceTransientAux
+!syntax parameters /AuxKernels/ModeratorHeatSourceTransientAux
 
-!syntax inputs /Bounds/ModeratorHeatSourceTransientAux
+!syntax inputs /AuxKernels/ModeratorHeatSourceTransientAux
 
-!syntax children /Bounds/ModeratorHeatSourceTransientAux
+!syntax children /AuxKernels/ModeratorHeatSourceTransientAux

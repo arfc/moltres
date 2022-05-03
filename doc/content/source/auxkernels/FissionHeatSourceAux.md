@@ -6,7 +6,7 @@ documenting the class, which includes the typical automatic documentation associ
 MooseObject; however, what is contained is ultimately determined by what is necessary to make the
 documentation clear for users.
 
-!syntax description /Bounds/FissionHeatSourceAux
+!syntax description /AuxKernels/FissionHeatSourceAux
 
 ## Overview
 
@@ -16,8 +16,8 @@ documentation clear for users.
 
 !! Describe and include an example of how to use the FissionHeatSourceAux object.
 
-!syntax parameters /Bounds/FissionHeatSourceAux
+!syntax parameters /AuxKernels/FissionHeatSourceAux
 
-!syntax inputs /Bounds/FissionHeatSourceAux
+!syntax inputs /AuxKernels/FissionHeatSourceAux
 
-!syntax children /Bounds/FissionHeatSourceAux
+!syntax children /AuxKernels/FissionHeatSourceAux

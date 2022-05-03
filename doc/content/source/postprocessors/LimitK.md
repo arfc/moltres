@@ -6,7 +6,7 @@ documenting the class, which includes the typical automatic documentation associ
 MooseObject; however, what is contained is ultimately determined by what is necessary to make the
 documentation clear for users.
 
-!syntax description /UserObjects/LimitK
+!syntax description /Postprocessors/LimitK
 
 ## Overview
 
@@ -16,8 +16,8 @@ documentation clear for users.
 
 !! Describe and include an example of how to use the LimitK object.
 
-!syntax parameters /UserObjects/LimitK
+!syntax parameters /Postprocessors/LimitK
 
-!syntax inputs /UserObjects/LimitK
+!syntax inputs /Postprocessors/LimitK
 
-!syntax children /UserObjects/LimitK
+!syntax children /Postprocessors/LimitK

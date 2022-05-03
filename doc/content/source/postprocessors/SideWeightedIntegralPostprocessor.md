@@ -6,7 +6,7 @@ documenting the class, which includes the typical automatic documentation associ
 MooseObject; however, what is contained is ultimately determined by what is necessary to make the
 documentation clear for users.
 
-!syntax description /UserObjects/SideWeightedIntegralPostprocessor
+!syntax description /Postprocessors/SideWeightedIntegralPostprocessor
 
 ## Overview
 
@@ -16,8 +16,8 @@ documentation clear for users.
 
 !! Describe and include an example of how to use the SideWeightedIntegralPostprocessor object.
 
-!syntax parameters /UserObjects/SideWeightedIntegralPostprocessor
+!syntax parameters /Postprocessors/SideWeightedIntegralPostprocessor
 
-!syntax inputs /UserObjects/SideWeightedIntegralPostprocessor
+!syntax inputs /Postprocessors/SideWeightedIntegralPostprocessor
 
-!syntax children /UserObjects/SideWeightedIntegralPostprocessor
+!syntax children /Postprocessors/SideWeightedIntegralPostprocessor

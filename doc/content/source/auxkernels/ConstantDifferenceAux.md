@@ -6,7 +6,7 @@ documenting the class, which includes the typical automatic documentation associ
 MooseObject; however, what is contained is ultimately determined by what is necessary to make the
 documentation clear for users.
 
-!syntax description /Bounds/ConstantDifferenceAux
+!syntax description /AuxKernels/ConstantDifferenceAux
 
 ## Overview
 
@@ -16,8 +16,8 @@ documentation clear for users.
 
 !! Describe and include an example of how to use the ConstantDifferenceAux object.
 
-!syntax parameters /Bounds/ConstantDifferenceAux
+!syntax parameters /AuxKernels/ConstantDifferenceAux
 
-!syntax inputs /Bounds/ConstantDifferenceAux
+!syntax inputs /AuxKernels/ConstantDifferenceAux
 
-!syntax children /Bounds/ConstantDifferenceAux
+!syntax children /AuxKernels/ConstantDifferenceAux

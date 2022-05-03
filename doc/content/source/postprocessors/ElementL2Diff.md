@@ -6,7 +6,7 @@ documenting the class, which includes the typical automatic documentation associ
 MooseObject; however, what is contained is ultimately determined by what is necessary to make the
 documentation clear for users.
 
-!syntax description /UserObjects/ElementL2Diff
+!syntax description /Postprocessors/ElementL2Diff
 
 ## Overview
 
@@ -16,8 +16,8 @@ documentation clear for users.
 
 !! Describe and include an example of how to use the ElementL2Diff object.
 
-!syntax parameters /UserObjects/ElementL2Diff
+!syntax parameters /Postprocessors/ElementL2Diff
 
-!syntax inputs /UserObjects/ElementL2Diff
+!syntax inputs /Postprocessors/ElementL2Diff
 
-!syntax children /UserObjects/ElementL2Diff
+!syntax children /Postprocessors/ElementL2Diff

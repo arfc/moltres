@@ -6,7 +6,7 @@ documenting the class, which includes the typical automatic documentation associ
 MooseObject; however, what is contained is ultimately determined by what is necessary to make the
 documentation clear for users.
 
-!syntax description /UserObjects/IntegralOldVariablePostprocessor
+!syntax description /Postprocessors/IntegralOldVariablePostprocessor
 
 ## Overview
 
@@ -16,8 +16,8 @@ documentation clear for users.
 
 !! Describe and include an example of how to use the IntegralOldVariablePostprocessor object.
 
-!syntax parameters /UserObjects/IntegralOldVariablePostprocessor
+!syntax parameters /Postprocessors/IntegralOldVariablePostprocessor
 
-!syntax inputs /UserObjects/IntegralOldVariablePostprocessor
+!syntax inputs /Postprocessors/IntegralOldVariablePostprocessor
 
-!syntax children /UserObjects/IntegralOldVariablePostprocessor
+!syntax children /Postprocessors/IntegralOldVariablePostprocessor

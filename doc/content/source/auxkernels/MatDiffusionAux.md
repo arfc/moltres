@@ -6,7 +6,7 @@ documenting the class, which includes the typical automatic documentation associ
 MooseObject; however, what is contained is ultimately determined by what is necessary to make the
 documentation clear for users.
 
-!syntax description /Bounds/MatDiffusionAux
+!syntax description /AuxKernels/MatDiffusionAux
 
 ## Overview
 
@@ -16,8 +16,8 @@ documentation clear for users.
 
 !! Describe and include an example of how to use the MatDiffusionAux object.
 
-!syntax parameters /Bounds/MatDiffusionAux
+!syntax parameters /AuxKernels/MatDiffusionAux
 
-!syntax inputs /Bounds/MatDiffusionAux
+!syntax inputs /AuxKernels/MatDiffusionAux
 
-!syntax children /Bounds/MatDiffusionAux
+!syntax children /AuxKernels/MatDiffusionAux

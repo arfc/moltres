@@ -6,7 +6,7 @@ documenting the class, which includes the typical automatic documentation associ
 MooseObject; however, what is contained is ultimately determined by what is necessary to make the
 documentation clear for users.
 
-!syntax description /UserObjects/AverageFissionHeat
+!syntax description /Postprocessors/AverageFissionHeat
 
 ## Overview
 
@@ -16,8 +16,8 @@ documentation clear for users.
 
 !! Describe and include an example of how to use the AverageFissionHeat object.
 
-!syntax parameters /UserObjects/AverageFissionHeat
+!syntax parameters /Postprocessors/AverageFissionHeat
 
-!syntax inputs /UserObjects/AverageFissionHeat
+!syntax inputs /Postprocessors/AverageFissionHeat
 
-!syntax children /UserObjects/AverageFissionHeat
+!syntax children /Postprocessors/AverageFissionHeat

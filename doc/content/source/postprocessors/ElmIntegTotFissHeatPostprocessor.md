@@ -6,7 +6,7 @@ documenting the class, which includes the typical automatic documentation associ
 MooseObject; however, what is contained is ultimately determined by what is necessary to make the
 documentation clear for users.
 
-!syntax description /UserObjects/ElmIntegTotFissHeatPostprocessor
+!syntax description /Postprocessors/ElmIntegTotFissHeatPostprocessor
 
 ## Overview
 
@@ -16,8 +16,8 @@ documentation clear for users.
 
 !! Describe and include an example of how to use the ElmIntegTotFissHeatPostprocessor object.
 
-!syntax parameters /UserObjects/ElmIntegTotFissHeatPostprocessor
+!syntax parameters /Postprocessors/ElmIntegTotFissHeatPostprocessor
 
-!syntax inputs /UserObjects/ElmIntegTotFissHeatPostprocessor
+!syntax inputs /Postprocessors/ElmIntegTotFissHeatPostprocessor
 
-!syntax children /UserObjects/ElmIntegTotFissHeatPostprocessor
+!syntax children /Postprocessors/ElmIntegTotFissHeatPostprocessor

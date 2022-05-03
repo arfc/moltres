@@ -6,7 +6,7 @@ documenting the class, which includes the typical automatic documentation associ
 MooseObject; however, what is contained is ultimately determined by what is necessary to make the
 documentation clear for users.
 
-!syntax description /UserObjects/ElmIntegTotFissNtsPostprocessor
+!syntax description /Postprocessors/ElmIntegTotFissNtsPostprocessor
 
 ## Overview
 
@@ -16,8 +16,8 @@ documentation clear for users.
 
 !! Describe and include an example of how to use the ElmIntegTotFissNtsPostprocessor object.
 
-!syntax parameters /UserObjects/ElmIntegTotFissNtsPostprocessor
+!syntax parameters /Postprocessors/ElmIntegTotFissNtsPostprocessor
 
-!syntax inputs /UserObjects/ElmIntegTotFissNtsPostprocessor
+!syntax inputs /Postprocessors/ElmIntegTotFissNtsPostprocessor
 
-!syntax children /UserObjects/ElmIntegTotFissNtsPostprocessor
+!syntax children /Postprocessors/ElmIntegTotFissNtsPostprocessor
