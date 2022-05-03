@@ -25,7 +25,7 @@ underlying Moltres components.
 ## Install
 
 Installation instructions can be found at
-[https://smpark7.github.io/moltres/getting_started/installation.html](https://smpark7.github.io/moltres/getting_started/installation.html)
+[https://arfc.github.io/moltres/getting_started/installation.html](https://arfc.github.io/moltres/getting_started/installation.html)
 
 ## Development
 
