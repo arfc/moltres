@@ -1,7 +1,9 @@
 # Contributing
 
-The contributing guidelines here are mostly adapted from the
-[MOOSE contributing guidelines](https://mooseframework.inl.gov/framework/contributing.html).
+The contributing guidelines here are mostly adapted from
+[MOOSE contributing guidelines](https://mooseframework.inl.gov/framework/contributing.html) and
+[Commit Often, Perfect Later, Publish Once: Git Best Practices](https://sethrobertson.github.io/GitBestPractices/)
+by Seth Robertson (CC BY-SA 3.0).
 
 ## Code Standards
 
@@ -50,7 +52,7 @@ cd moltres
 git remote add upstream git@github.com:arfc/moltres.git
 ```
 
-### 3. Make Modifications
+### 3. Make Changes to Moltres
 
 Create a branch for your work:
 
@@ -58,20 +60,32 @@ Create a branch for your work:
 git checkout -b branch_name
 ```
 
-Make your modifications and commit them to the branch you just created:
+Make your changes and commit them to the branch you just created:
 
 ```bash
 git add your_new_file.C your_new_file.h
 git commit -m "Your commit message here"
 ```
 
-You may have to run git merge or rebase to incorporate any new updates to Moltres which may have
-occurred since the last time you pulled from the `upstream` remote.
+Ensure that your commit messages are insightful and descriptive such that they let people quickly
+understand your changes without having to read code. *Commit early and often* to create checkpoints
+that you can revert to if you break something while implementing your changes. Frequent commits
+also helps to keep your commits short and sweet.
+
+If you have been working on your changes for some time, there may have been new updates to Moltres
+implemented by others since the last time you pulled from the `upstream` remote. Merge those
+updates into your current branch by running the following commands while your current branch is
+checked out.
 
 ```bash
 git fetch upstream
-git rebase upstream/devel
+git merge upstream/devel
 ```
+
+!alert tip
+Refer to
+[Commit Often, Perfect Later, Publish Once: Git Best Practices](https://sethrobertson.github.io/GitBestPractices/)
+for an in-depth guide on Git workflows.
 
 ### 4. Update Documentation
 
@@ -91,7 +105,7 @@ Feel free to reach out to anyone in the Moltres development team for help with d
 Detailed documentation of Moltres syntax is currently a work in progress. However, feel free to
 contribute if you are familiar with the source code.
 
-### 5. Push Modifications Back to Your GitHub Fork
+### 5. Push Your Changes to Your GitHub Fork
 
 Push your branch to your fork on GitHub.
 
