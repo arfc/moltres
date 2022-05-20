@@ -89,7 +89,7 @@ for an in-depth guide on Git workflows.
 
 ### 4. Update Documentation
 
-If you make any changes to the source code which significantly alters functionality, please make
+If you make any changes to the source code which alters functionality, please make
 the corresponding changes to the documentation in `moltres/doc/content/source` for the specific
 class you modified. You may build this website locally to review your documentation
 changes by running the following commands in the `moltres/doc` directory:
