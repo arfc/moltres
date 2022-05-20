@@ -10,12 +10,12 @@ reactors and other advanced reactors.
 ## Documentation
 
 Moltres documentation can be found at
-[http://arfc.github.io/software/moltres](http://arfc.github.io/software/moltres).
+[https://arfc.github.io/software/moltres](https://arfc.github.io/software/moltres).
 Outlines of the kernels and boundary
 conditions used to construct the Moltres governing equations can be found on the
-[Moltres wiki](http://arfc.github.io/software/moltres/wiki/). Breakdown of a
+[Moltres wiki](https://arfc.github.io/software/moltres/wiki/). Breakdown of a
 full-fledged Moltres input file can be found
-[here](http://arfc.github.io/software/moltres/wiki/input_example/). New Moltres
+[here](https://arfc.github.io/software/moltres/wiki/input_example/). New Moltres
 users who have never used MOOSE before are encouraged to check-out the MOOSE
 [website](https://mooseframework.inl.gov/) and
 workshop [slides](https://mooseframework.inl.gov/workshop/index.html#/) for
