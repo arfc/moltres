@@ -1,6 +1,7 @@
 # List of Publications
 
 Here is a non-exhaustive list of publications and theses using Moltres
+If you have a publication that uses moltres, please submit a pull request and add it here! We'd love to see your work. 
 
 ## Journal Publications
 

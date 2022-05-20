@@ -89,7 +89,7 @@ for an in-depth guide on Git workflows.
 
 ### 4. Update Documentation
 
-If you make any changes to the source code which significantly alters functionality, please make
+If you make any changes to the source code which alters functionality, please make
 the corresponding changes to the documentation in `moltres/doc/content/source` for the specific
 class you modified. You may build this website locally to review your documentation
 changes by running the following commands in the `moltres/doc` directory:
@@ -115,7 +115,9 @@ git push origin branch_name
 
 ## Create a Pull Request
 
-Go back to the [main Moltres repository](https://github.com/arfc/moltres) and create a pull request
+Once you are satisfied with the changes you've made, 
+and you've checked that the tests pass and your documentation is clear, 
+go back to the [main Moltres repository](https://github.com/arfc/moltres) and create a pull request 
 to merge your branch to the Moltres `devel` branch. If you had just pushed your branch to GitHub,
 GitHub will display a prompt asking whether you wish to create a new pull request using that
 branch. Otherwise, simply select your fork and branch from the dropdown list in the new pull
