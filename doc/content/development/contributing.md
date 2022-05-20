@@ -28,10 +28,10 @@ relevant context to the new changes proposed for quicker code review.
 
 ## Work in a Fork
 
+### 1. Fork Moltres
+
 Create your own [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) where you can
 make and commit your set of changes.
-
-### 1. Fork Moltres
 
 - Navigate to [https://github.com/arfc/moltres](https://github.com/arfc/moltres)
 - Click the "Fork" button near the upper right corner of the page.
