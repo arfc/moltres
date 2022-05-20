@@ -115,7 +115,9 @@ git push origin branch_name
 
 ## Create a Pull Request
 
-Go back to the [main Moltres repository](https://github.com/arfc/moltres) and create a pull request
+Once you are satisfied with the changes you've made, 
+and you've checked that the tests pass and your documentation is clear, 
+go back to the [main Moltres repository](https://github.com/arfc/moltres) and create a pull request 
 to merge your branch to the Moltres `devel` branch. If you had just pushed your branch to GitHub,
 GitHub will display a prompt asking whether you wish to create a new pull request using that
 branch. Otherwise, simply select your fork and branch from the dropdown list in the new pull
