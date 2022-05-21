@@ -51,8 +51,7 @@ make -j8
 ```
 
 !alert note
-You may also compile a debug version of Moltres by replacing the last line in 
-the code block above with `METHOD=dbg make
+You may also compile a debug version of Moltres by running `METHOD=dbg make
 -j8`. Note that you should replace `8` with the number of processors available
 on your machine.
 
