@@ -72,6 +72,10 @@ understand your changes without having to read code. *Commit early and often* to
 that you can revert to if you break something while implementing your changes. Frequent commits
 also helps to keep your commits short and sweet.
 
+!alert note
+Remember to [compile](installation.md#compile) Moltres again after making changes to the source code to 
+run and test your new build.
+
 If you have been working on your changes for some time, there may have been new updates to Moltres
 implemented by others since the last time you pulled from the `upstream` remote. Merge those
 updates into your local `devel` and working branches by running the following commands.

@@ -33,7 +33,7 @@ git submodule init
 git submodule update
 ```
 
-## 3. Compile and Test Moltres
+## 3. Compile and Test Moltres id=compile
 
 Before proceeding with this step, check that the Conda MOOSE environment is activated in your
 current terminal. This is achieved by running the following command every time you open a new
@@ -55,10 +55,14 @@ You may also compile a debug version of Moltres by running `METHOD=dbg make
 -j8`. Note that you should replace `8` with the number of processors available
 on your machine.
 
+If you encounter any problems with installation, please post on our
+[GitHub Discussions](https://github.com/arfc/moltres/discussions) page along with the full error
+message so that we can help you troubleshoot your installation.
+
 ## 4. Running Moltres Simulations
 
-If you have successfully compiled Moltres, you should have a `moltres-opt` executable in the
-`~\projects\moltres` directory. To run your input file, use the following command:
+If you have successfully completed the previous step, you should have a `moltres-opt` executable in
+the `~\projects\moltres` directory. To run a Moltres input file, use the following command:
 
 ```bash
 ~/projects/moltres/moltres-opt -i input-file.i
