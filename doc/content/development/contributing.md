@@ -74,12 +74,14 @@ also helps to keep your commits short and sweet.
 
 If you have been working on your changes for some time, there may have been new updates to Moltres
 implemented by others since the last time you pulled from the `upstream` remote. Merge those
-updates into your current branch by running the following commands while your current branch is
-checked out.
+updates into your local `devel` and working branches by running the following commands.
 
 ```bash
+git checkout devel
 git fetch upstream
 git merge upstream/devel
+git checkout branch_name
+git merge devel
 ```
 
 !alert tip
