@@ -1,7 +1,7 @@
 # This GitHub Action automatically updates built Doxygen files for Moltres' documentation
 # on `https://arfc.github.io/moltres/` every time a new pull request is merged into devel.
 
-name: Doxygen & Github Pages Action
+name: Doxygen & MooseDocs & Github Pages Action
 
 # Activate on pushes and pull requests into devel
 on:
@@ -16,17 +16,38 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      
-      # Generate Doxygen output files in ./docs directory using Doxyfile in base directory
+
+      # Generate Doxygen html files in ./doc/content/doxygen directory using Doxyfile in
+      # base directory
       - name: Doxygen Action
         uses: mattnotmitt/doxygen-action@v1
         with:
           working-directory: .
       
-      # Merge Doxygen output files in ./docs into gh-pages branch base directory
+      # Install MOOSE Conda environment & build combined MooseDocs/Doxygen html files into
+      # ./doc/html
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          mamba-version: "*"
+          channels: conda-forge,https://conda.software.inl.gov/public
+          activate-environment: moose-env
+      - shell: bash -l {0}
+        run: |
+          conda deactivate
+          conda activate moose-env
+          mamba install moose-tools=2021.07.14 moose-libmesh=2021.07.14
+          conda deactivate
+          conda activate moose-env
+          git submodule init && git submodule update
+          make -j 2
+          cd doc
+          ./moosedocs.py build --destination html
+      
+      # Merge MooseDocs and Doxygen html files in ./doc/html into gh-pages branch base directory
       - name: GitHub Pages action
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
+          publish_dir: ./doc/html
           commit_message: ${{ github.event.head_commit.message }}
+
