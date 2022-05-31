@@ -3,15 +3,11 @@ Content:
         root_dir: ${ROOT_DIR}/doc/content
     moose:
         root_dir: ${MOOSE_DIR}/framework/doc/content
-        content:
-            - js/*
-            - css/*
-            - contrib/**
-            - media/**
-            - templates/stubs/*
 
 Renderer:
     type: MooseDocs.base.MaterializeRenderer
+    extra-css:
+        - css/moltres.css
 
 Extensions:
     MooseDocs.extensions.template:
@@ -20,12 +16,30 @@ Extensions:
         name: Moltres
         repo: https://github.com/arfc/moltres
         menu:
-            Getting Started: getting_started.md
-            Documentation: source/index.md
-            Help: help.md
+            Getting Started:
+                Install Moltres: getting_started/installation.md
+                Tutorials: getting_started/tutorials.md
+            Documentation:
+                Moltres Syntax: syntax/index.md
+                MOOSE Syntax: https://mooseframework.inl.gov/source/index.html
+                Moltres Doxygen: doxygen/classes.html
+                MOOSE Doxygen: https://mooseframework.inl.gov/docs/doxygen/moose/classes.html
+                Contributing: development/contributing.md
+                List of Publications: publications.md
+            Help:
+                Moltres Discussion Forum: https://github.com/arfc/moltres/discussions
+                MOOSE Discussion Forum: https://github.com/idaholab/moose/discussions
             Citing: citing.md
     MooseDocs.extensions.appsyntax:
         executable: ${ROOT_DIR}
-        remove: !include ${MOOSE_DIR}/framework/doc/remove.yml
         includes:
             - include
+        remove: !include ${MOOSE_DIR}/framework/doc/remove.yml
+        unregister: !include ${MOOSE_DIR}/framework/doc/unregister.yml
+    MooseDocs.extensions.acronym:
+        acronyms: !include ${MOOSE_DIR}/framework/doc/acronyms.yml
+    MooseDocs.extensions.common:
+        shortcuts:
+            framework: !include ${MOOSE_DIR}/framework/doc/globals.yml
+    MooseDocs.extensions.bibtex:
+        active: True
