@@ -1,0 +1,780 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>ExplicitTimeIntegrator | Moltres</title><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../contrib/katex/katex.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/katex_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/moltres.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script><script type="text/javascript" src="../../contrib/katex/katex.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down">Moltres</a><a href="https://github.com/arfc/moltres" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="#!" class="dropdown-trigger" data-target="15c18846-d608-47c9-b8a9-cf2eeae8c054" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="34e89aa0-e956-4ded-9844-4e08fedad0ab" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="886d163c-7d31-43b9-880e-4685380a12e1" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#" class="sidenav-trigger" data-target="e2f6c871-653d-4950-b92e-0db83c711992"><i class="material-icons">menu</i></a><ul class="sidenav" id="e2f6c871-653d-4950-b92e-0db83c711992"><li><a href="#!" class="dropdown-trigger" data-target="d042bdd8-e7bd-427b-82d7-e686e2484013" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="e73f9b35-0e8d-4af3-9db3-e98599ed8dfd" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="d0cdf6b2-39ca-40db-b875-1d5c169789b1" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="15c18846-d608-47c9-b8a9-cf2eeae8c054"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="34e89aa0-e956-4ded-9844-4e08fedad0ab"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="886d163c-7d31-43b9-880e-4685380a12e1"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul><ul class="dropdown-content" id="d042bdd8-e7bd-427b-82d7-e686e2484013"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="e73f9b35-0e8d-4af3-9db3-e98599ed8dfd"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="d0cdf6b2-39ca-40db-b875-1d5c169789b1"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="col hide-on-med-and-down l12"><nav class="breadcrumb-nav"><div class="nav-wrapper"><a href=".." class="breadcrumb">source</a><span class="breadcrumb">timeintegrators</span><a href="#" class="breadcrumb">ExplicitTimeIntegrator</a></div></nav></div></div><div class="row"><div class="moose-content col s12 m12 l10"><section id="0c11d23e-c651-4f47-8d8b-f190720c4c31" data-section-level="1" data-section-text="ExplicitTimeIntegrator"><h1 id="explicittimeintegrator">ExplicitTimeIntegrator</h1><section class="scrollspy" id="10307a06-aec7-48a6-82e5-7d946aa697c7" data-section-level="2" data-section-text="Description"><h2 id="description">Description</h2><p><code>ExplicitTimeIntegrator</code> is a base class for explicit time integrators that are implemented without performing any nonlinear solve, which reduces runtime. Unlike explicit time integrators that are not derived from this class, it is not necessary to set <code>implicit</code> to <code>false</code> for all of the non-time residual objects.</p></section><section class="scrollspy" id="86683d6b-cb96-40a1-a666-eed87490959c" data-section-level="2" data-section-text="Methods of Solution"><h2 id="methods-of-solution">Methods of Solution</h2><p>Time integrators deriving from this class have three solve options, provided via the <code>solve_type</code> parameter:</p><ul class="browser-default"><li><p><code>consistent</code>: (the default) A full mass matrix is built and used in a linear solve for the update </p></li><li><p><code>lumped</code>: A &quot;lumped&quot; mass matrix is built, inverted, and applied to the RHS, which is faster but can possibly be less accurate. </p></li><li><p><code>lump_preconditioned</code>: The inversion of the &quot;lumped&quot; mass matrix is used to precondition the <code>consistent</code> solve.</p></li></ul><p>All three methods are solved similarly: a linear solve is performed to obtain a solution update <span class="moose-katex-inline-equation" id="moose-equation-d45893ad-7966-49f9-949a-6cf9f4c62c12"><script>var element = document.getElementById("moose-equation-d45893ad-7966-49f9-949a-6cf9f4c62c12");katex.render("\\delta u", element, {displayMode:false,throwOnError:false});</script></span> that is added to the existing solution.</p><p>Below is some more explanation of each of these <code>solve_type</code> options:</p><section id="f9d8eb72-3635-4d39-ad8b-21cb6e53f93f" data-section-level="3" data-section-text="consistent"><h3><code>consistent</code></h3><p>The <code>consistent</code> option builds a full (&quot;consistent&quot;) &quot;mass matrix&quot; and uses it in a linear solve to get the update.  This is done by calling <code>FEProblem::computeJacobianTag()</code> and specifying the <code>TIME</code> tag which includes all of the <code>TimeKernel</code> derived Kernels and <code>NodalBC</code> derived BoundaryConditions to compute <span class="moose-katex-inline-equation" id="moose-equation-7ded8268-56f5-4152-8541-415555bf3962"><script>var element = document.getElementById("moose-equation-7ded8268-56f5-4152-8541-415555bf3962");katex.render("\\mathbf{M}", element, {displayMode:false,throwOnError:false});</script></span>:</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">    _fe_problem.computeJacobianTag(
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#1b0efede-f936-4642-ae2f-727508c6dd9f">(moose/framework/src/timeintegrators/ActuallyExplicitEuler.C)</a><p>A residual computation is also completed to use as the RHS (<span class="moose-katex-inline-equation" id="moose-equation-d795d9df-a05b-451c-b014-38c9b7e04a99"><script>var element = document.getElementById("moose-equation-d795d9df-a05b-451c-b014-38c9b7e04a99");katex.render("R", element, {displayMode:false,throwOnError:false});</script></span>):</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">  _fe_problem.computeResidual(*_nonlinear_implicit_system-&gt;current_local_solution,
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#d1c29cc9-a968-4e18-bc3f-564226ba8535">(moose/framework/src/timeintegrators/ActuallyExplicitEuler.C)</a><p>Finally, the following linear system is solved to obtain the solution update <span class="moose-katex-inline-equation" id="moose-equation-4891795b-36e7-4592-9403-b379d7653f4e"><script>var element = document.getElementById("moose-equation-4891795b-36e7-4592-9403-b379d7653f4e");katex.render("\\delta u", element, {displayMode:false,throwOnError:false});</script></span> using the default linear solver from libMesh (usually PETSc, including the application of any command-line parameters specified):</p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-e19fd35d-4bf8-4087-a931-157dcfdec08f"></span><script>var element = document.getElementById("moose-equation-e19fd35d-4bf8-4087-a931-157dcfdec08f");katex.render("\\mathbf{M} \\delta u = -R", element, {displayMode:true,throwOnError:false});</script></span></p></section><section id="d1633fdf-7a57-4812-a7ee-b3d34010bcdc" data-section-level="3" data-section-text="lumped"><h3><code>lumped</code></h3><p>The <code>lumped</code> option creates a &quot;lumped&quot; mass matrix to use in the solve.  A lumped mass matrix is a diagonal matrix where the diagonal is the sum of all elements on the row from the original matrix. Here, to achieve the lumping, a matrix-vector product is performed between the consistent mass matrix and a vector of all ones.</p><p>The inverse of a diagonal matrix is simply the reciprocal of each diagonal entry. Then the matrix-vector product of the &quot;inverse&quot; lumped diagonal matrix is applied by simply doing a pointwise multiplication with the RHS.</p><p>Thus the <code>lumped</code> option does not actually solve a system of linear equations, allowing it be much faster. However, the lumping of the mass matrix may lead to unacceptable phase errors.</p></section><section id="46265290-84a4-4334-87f9-a2ff719d96a3" data-section-level="3" data-section-text="lump_preconditioned"><h3><code>lump_preconditioned</code></h3><p>This option is the combination of the other two options: the consistent mass matrix is used in the linear system, but the linear solve is preconditioned using the lumped mass matrix. This compromise retains the accuracy of the <code>consistent</code> option while benefiting from some of the speedup offered by the <code>lumped</code> option.</p><p>The lumped mass matrix preconditioner is applied with the class, <code>LumpedPreconditioner</code>:</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">
+#pragma once
+
+// MOOSE includes
+#include &quot;NonlinearSystem.h&quot;
+#include &quot;FEProblem.h&quot;
+#include &quot;PetscSupport.h&quot;
+
+// libMesh includes
+#include &quot;libmesh/sparse_matrix.h&quot;
+#include &quot;libmesh/nonlinear_solver.h&quot;
+#include &quot;libmesh/preconditioner.h&quot;
+
+// Forward declarations
+class LumpedPreconditioner;
+
+/**
+ * Class to that applies the lumped mass matrix preconditioner
+ * in the ExplicitTimeIntegrator
+ */
+class LumpedPreconditioner : public Preconditioner&lt;Real&gt;
+{
+public:
+  LumpedPreconditioner(const NumericVector&lt;Real&gt; &amp; diag_inverse)
+    : Preconditioner(diag_inverse.comm()), _diag_inverse(diag_inverse)
+  {
+  }
+
+  virtual void init() override
+  {
+    // No more initialization needed here
+    _is_initialized = true;
+  }
+
+  virtual void apply(const NumericVector&lt;Real&gt; &amp; x, NumericVector&lt;Real&gt; &amp; y) override
+  {
+    y.pointwise_mult(_diag_inverse, x);
+  }
+
+protected:
+  /// The inverse of the diagonal of the lumped matrix
+  const NumericVector&lt;Real&gt; &amp; _diag_inverse;
+};
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#55c8d561-8dba-4b9e-ad92-96a99f182917">(moose/framework/include/timeintegrators/LumpedPreconditioner.h)</a><p>This object simply applies the inverse of the diagonal, lumped mass-matrix as the preconditioner for the linear solve, which is very efficient. Note that when this option is applied you shouldn&#x27;t specify any other preconditioners using command-line syntax or they will override this option.</p></section></section><section class="scrollspy" id="90519413-f959-4180-919b-d1bdee6a866d" data-section-level="2" data-section-text="Additional Details"><h2 id="additional-details">Additional Details</h2><p>Some notes on some of the implementation details of this class follow.</p><section id="d31f27d2-77fd-4c99-9d7b-b00177b9f624" data-section-level="3" data-section-text="Update Form"><h3 id="update-form">Update Form</h3><p>Note that even though we&#x27;re doing an explicit solve we are currently doing it in &quot;update form&quot; similar to a single step Newton solve.  This gives us good parity with the rest of MOOSE.  We may want to change this in the future to make better use of the fact that the mass-matrix can be constant for a wider class of problems if we remove <code>dt</code> from it.</p></section><section id="481224dc-2cce-471a-9737-455e0a69dbca" data-section-level="3" data-section-text="_ones"><h3><code>_ones</code></h3><p>To get the sum of each row of the mass matrix for &quot;lumping&quot; purposes a vector consisting of all <code>1</code>s is used in a matrix-vector product:</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">      mass_matrix.vector_mult(_mass_matrix_diag, *_ones);
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#a33e52c6-4f1e-451c-9379-adcb1152d861">(moose/framework/src/timeintegrators/ExplicitTimeIntegrator.C)</a><p>This is actually the very same way <code>MatGetRowSum</code> is implemented in PETSc; however, doing it manually cuts down on vector creation/destruction and a few other book-keeping operations.</p><p>In the future this could be changed to use <code>MatGetRowSum</code> if a specialization for <code>MPI_Aij</code> format is created.</p></section><section id="9f1463e8-e51e-4dcf-a006-62035e63481a" data-section-level="3" data-section-text="Time"><h3 id="time">Time</h3><p>Time in an explicit solve must be handled carefully. When evaluating the weak form (the integral parts) of the residual, time needs to be set to be the &quot;old&quot; time (the time we are solving &quot;from&quot;):</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">  _fe_problem.time() = _fe_problem.timeOld();
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#b4109129-e230-4017-94a6-7c057fe4650a">(moose/framework/src/timeintegrators/ActuallyExplicitEuler.C)</a><p>However, <code>DirichletBC</code> derived boundary conditions need to use the <em></em>final** time, since the strong constraints they represent use the final time and are not affected by the time integrator. To achieve this, time is reset to the <code>_current_time</code> after the weak form residual evaluation and before <code>NodalBC</code> boundary condition application, which makes <code>postResidual()</code> the correct place to reset time for this purpose:</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">  _fe_problem.time() = _current_time;
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#4fe757a8-7486-4d2e-942a-0997b2aa4935">(moose/framework/src/timeintegrators/ActuallyExplicitEuler.C)</a><p>After <code>postResidual()</code> the <code>NodalBC</code> BCs are applied with the time at the final time for the step.</p></section><section id="dcff6768-7361-4226-9480-107af63d8394" data-section-level="3" data-section-text="meshChanged()"><h3><code>meshChanged()</code></h3><p>When the mesh changes the linear solver needs to be destroyed and recreated. This is done by simply building a new one and setting it up again.  This happens automatically just by &quot;overwriting&quot; the <code>std::unique_ptr</code> to the LinearSolver.</p></section><section id="d094f6bb-5128-4246-8200-197c433a1a4e" data-section-level="3" data-section-text="Relevant Executioner solver options"><h3 id="relevant-executioner-solver-options">Relevant Executioner solver options</h3><p>You can ignore this section if using <code>solve_type = lumped</code>. No <a href="../executioners/Executioner.html">Executioner</a> parameters are relevant to you in that case. However, for <code>consistent</code> or <code>lump_preconditioned</code> solve types, the <code>l_tol</code> and <code>l_max_its</code> parameters are used in the solution process. Nonlinear executioner options are not relevant. When using PETSc as the default solver package, <code>pc</code> and <code>ksp</code> options from the <code>petsc_options*</code> parameters will be used while <code>snes</code> options will be ignored. </p></section></section></section><div class="moose-modal modal" id="1b0efede-f936-4642-ae2f-727508c6dd9f"><div class="modal-content"><h4>(moose/framework/src/timeintegrators/ActuallyExplicitEuler.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+// MOOSE includes
+#include &quot;ActuallyExplicitEuler.h&quot;
+#include &quot;NonlinearSystem.h&quot;
+#include &quot;FEProblem.h&quot;
+
+// libMesh includes
+#include &quot;libmesh/nonlinear_solver.h&quot;
+
+registerMooseObject(&quot;MooseApp&quot;, ActuallyExplicitEuler);
+
+defineLegacyParams(ActuallyExplicitEuler);
+
+InputParameters
+ActuallyExplicitEuler::validParams()
+{
+  InputParameters params = ExplicitTimeIntegrator::validParams();
+
+  params.addClassDescription(
+      &quot;Implementation of Explicit/Forward Euler without invoking any of the nonlinear solver&quot;);
+
+  params.addParam&lt;bool&gt;(&quot;use_constant_mass&quot;,
+                        false,
+                        &quot;If set to true, will only compute the mass matrix in the first time step, &quot;
+                        &quot;and keep using it throughout the simulation.&quot;);
+
+  return params;
+}
+
+ActuallyExplicitEuler::ActuallyExplicitEuler(const InputParameters &amp; parameters)
+  : ExplicitTimeIntegrator(parameters), _constant_mass(getParam&lt;bool&gt;(&quot;use_constant_mass&quot;))
+{
+}
+
+void
+ActuallyExplicitEuler::computeTimeDerivatives()
+{
+  if (!_sys.solutionUDot())
+    mooseError(&quot;ActuallyExplicitEuler: Time derivative of solution (`u_dot`) is not stored. Please &quot;
+               &quot;set uDotRequested() to true in FEProblemBase before requesting `u_dot`.&quot;);
+
+  NumericVector&lt;Number&gt; &amp; u_dot = *_sys.solutionUDot();
+  u_dot = *_solution;
+  computeTimeDerivativeHelper(u_dot, _solution_old);
+  u_dot.close();
+
+  _du_dot_du = 1.0 / _dt;
+}
+
+void
+ActuallyExplicitEuler::computeADTimeDerivatives(DualReal &amp; ad_u_dot,
+                                                const dof_id_type &amp; dof,
+                                                DualReal &amp; /*ad_u_dotdot*/) const
+{
+  computeTimeDerivativeHelper(ad_u_dot, _solution_old(dof));
+}
+
+void
+ActuallyExplicitEuler::solve()
+{
+  // Reset iteration counts
+  _n_nonlinear_iterations = 0;
+  _n_linear_iterations = 0;
+
+  _current_time = _fe_problem.time();
+
+  // Set time to the time at which to evaluate the residual
+  _fe_problem.time() = _fe_problem.timeOld();
+  _nonlinear_implicit_system-&gt;update();
+
+  // Compute the residual
+  _explicit_residual.zero();
+  _fe_problem.computeResidual(*_nonlinear_implicit_system-&gt;current_local_solution,
+                              _explicit_residual);
+
+  // Move the residual to the RHS
+  _explicit_residual *= -1.0;
+
+  // Compute the mass matrix
+  auto &amp; mass_matrix = _nonlinear_implicit_system-&gt;get_system_matrix();
+  if (!_constant_mass || (_constant_mass &amp;&amp; _t_step == 1))
+    _fe_problem.computeJacobianTag(
+        *_nonlinear_implicit_system-&gt;current_local_solution, mass_matrix, _Ke_time_tag);
+
+  // Perform the linear solve
+  bool converged = performExplicitSolve(mass_matrix);
+
+  // Update the solution
+  *_nonlinear_implicit_system-&gt;solution = _nl.solutionOld();
+  *_nonlinear_implicit_system-&gt;solution += _solution_update;
+
+  // Enforce contraints on the solution
+  DofMap &amp; dof_map = _nonlinear_implicit_system-&gt;get_dof_map();
+  dof_map.enforce_constraints_exactly(*_nonlinear_implicit_system,
+                                      _nonlinear_implicit_system-&gt;solution.get());
+  _nonlinear_implicit_system-&gt;update();
+
+  _nl.setSolution(*_nonlinear_implicit_system-&gt;current_local_solution);
+
+  _nonlinear_implicit_system-&gt;nonlinear_solver-&gt;converged = converged;
+}
+
+void
+ActuallyExplicitEuler::postResidual(NumericVector&lt;Number&gt; &amp; residual)
+{
+  residual += _Re_time;
+  residual += _Re_non_time;
+  residual.close();
+
+  // Reset time to the time at which to evaluate nodal BCs, which comes next
+  _fe_problem.time() = _current_time;
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="d1c29cc9-a968-4e18-bc3f-564226ba8535"><div class="modal-content"><h4>(moose/framework/src/timeintegrators/ActuallyExplicitEuler.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+// MOOSE includes
+#include &quot;ActuallyExplicitEuler.h&quot;
+#include &quot;NonlinearSystem.h&quot;
+#include &quot;FEProblem.h&quot;
+
+// libMesh includes
+#include &quot;libmesh/nonlinear_solver.h&quot;
+
+registerMooseObject(&quot;MooseApp&quot;, ActuallyExplicitEuler);
+
+defineLegacyParams(ActuallyExplicitEuler);
+
+InputParameters
+ActuallyExplicitEuler::validParams()
+{
+  InputParameters params = ExplicitTimeIntegrator::validParams();
+
+  params.addClassDescription(
+      &quot;Implementation of Explicit/Forward Euler without invoking any of the nonlinear solver&quot;);
+
+  params.addParam&lt;bool&gt;(&quot;use_constant_mass&quot;,
+                        false,
+                        &quot;If set to true, will only compute the mass matrix in the first time step, &quot;
+                        &quot;and keep using it throughout the simulation.&quot;);
+
+  return params;
+}
+
+ActuallyExplicitEuler::ActuallyExplicitEuler(const InputParameters &amp; parameters)
+  : ExplicitTimeIntegrator(parameters), _constant_mass(getParam&lt;bool&gt;(&quot;use_constant_mass&quot;))
+{
+}
+
+void
+ActuallyExplicitEuler::computeTimeDerivatives()
+{
+  if (!_sys.solutionUDot())
+    mooseError(&quot;ActuallyExplicitEuler: Time derivative of solution (`u_dot`) is not stored. Please &quot;
+               &quot;set uDotRequested() to true in FEProblemBase before requesting `u_dot`.&quot;);
+
+  NumericVector&lt;Number&gt; &amp; u_dot = *_sys.solutionUDot();
+  u_dot = *_solution;
+  computeTimeDerivativeHelper(u_dot, _solution_old);
+  u_dot.close();
+
+  _du_dot_du = 1.0 / _dt;
+}
+
+void
+ActuallyExplicitEuler::computeADTimeDerivatives(DualReal &amp; ad_u_dot,
+                                                const dof_id_type &amp; dof,
+                                                DualReal &amp; /*ad_u_dotdot*/) const
+{
+  computeTimeDerivativeHelper(ad_u_dot, _solution_old(dof));
+}
+
+void
+ActuallyExplicitEuler::solve()
+{
+  // Reset iteration counts
+  _n_nonlinear_iterations = 0;
+  _n_linear_iterations = 0;
+
+  _current_time = _fe_problem.time();
+
+  // Set time to the time at which to evaluate the residual
+  _fe_problem.time() = _fe_problem.timeOld();
+  _nonlinear_implicit_system-&gt;update();
+
+  // Compute the residual
+  _explicit_residual.zero();
+  _fe_problem.computeResidual(*_nonlinear_implicit_system-&gt;current_local_solution,
+                              _explicit_residual);
+
+  // Move the residual to the RHS
+  _explicit_residual *= -1.0;
+
+  // Compute the mass matrix
+  auto &amp; mass_matrix = _nonlinear_implicit_system-&gt;get_system_matrix();
+  if (!_constant_mass || (_constant_mass &amp;&amp; _t_step == 1))
+    _fe_problem.computeJacobianTag(
+        *_nonlinear_implicit_system-&gt;current_local_solution, mass_matrix, _Ke_time_tag);
+
+  // Perform the linear solve
+  bool converged = performExplicitSolve(mass_matrix);
+
+  // Update the solution
+  *_nonlinear_implicit_system-&gt;solution = _nl.solutionOld();
+  *_nonlinear_implicit_system-&gt;solution += _solution_update;
+
+  // Enforce contraints on the solution
+  DofMap &amp; dof_map = _nonlinear_implicit_system-&gt;get_dof_map();
+  dof_map.enforce_constraints_exactly(*_nonlinear_implicit_system,
+                                      _nonlinear_implicit_system-&gt;solution.get());
+  _nonlinear_implicit_system-&gt;update();
+
+  _nl.setSolution(*_nonlinear_implicit_system-&gt;current_local_solution);
+
+  _nonlinear_implicit_system-&gt;nonlinear_solver-&gt;converged = converged;
+}
+
+void
+ActuallyExplicitEuler::postResidual(NumericVector&lt;Number&gt; &amp; residual)
+{
+  residual += _Re_time;
+  residual += _Re_non_time;
+  residual.close();
+
+  // Reset time to the time at which to evaluate nodal BCs, which comes next
+  _fe_problem.time() = _current_time;
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="55c8d561-8dba-4b9e-ad92-96a99f182917"><div class="modal-content"><h4>(moose/framework/include/timeintegrators/LumpedPreconditioner.h)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#pragma once
+
+// MOOSE includes
+#include &quot;NonlinearSystem.h&quot;
+#include &quot;FEProblem.h&quot;
+#include &quot;PetscSupport.h&quot;
+
+// libMesh includes
+#include &quot;libmesh/sparse_matrix.h&quot;
+#include &quot;libmesh/nonlinear_solver.h&quot;
+#include &quot;libmesh/preconditioner.h&quot;
+
+// Forward declarations
+class LumpedPreconditioner;
+
+/**
+ * Class to that applies the lumped mass matrix preconditioner
+ * in the ExplicitTimeIntegrator
+ */
+class LumpedPreconditioner : public Preconditioner&lt;Real&gt;
+{
+public:
+  LumpedPreconditioner(const NumericVector&lt;Real&gt; &amp; diag_inverse)
+    : Preconditioner(diag_inverse.comm()), _diag_inverse(diag_inverse)
+  {
+  }
+
+  virtual void init() override
+  {
+    // No more initialization needed here
+    _is_initialized = true;
+  }
+
+  virtual void apply(const NumericVector&lt;Real&gt; &amp; x, NumericVector&lt;Real&gt; &amp; y) override
+  {
+    y.pointwise_mult(_diag_inverse, x);
+  }
+
+protected:
+  /// The inverse of the diagonal of the lumped matrix
+  const NumericVector&lt;Real&gt; &amp; _diag_inverse;
+};
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="a33e52c6-4f1e-451c-9379-adcb1152d861"><div class="modal-content"><h4>(moose/framework/src/timeintegrators/ExplicitTimeIntegrator.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+// MOOSE includes
+#include &quot;ExplicitTimeIntegrator.h&quot;
+#include &quot;NonlinearSystem.h&quot;
+#include &quot;FEProblem.h&quot;
+#include &quot;PetscSupport.h&quot;
+
+// libMesh includes
+#include &quot;libmesh/enum_convergence_flags.h&quot;
+
+defineLegacyParams(ExplicitTimeIntegrator);
+
+InputParameters
+ExplicitTimeIntegrator::validParams()
+{
+  InputParameters params = TimeIntegrator::validParams();
+
+  MooseEnum solve_type(&quot;consistent lumped lump_preconditioned&quot;, &quot;consistent&quot;);
+
+  params.addParam&lt;MooseEnum&gt;(
+      &quot;solve_type&quot;,
+      solve_type,
+      &quot;The way to solve the system.  A &#x27;consistent&#x27; solve uses the full mass matrix and actually &quot;
+      &quot;needs to use a linear solver to solve the problem.  &#x27;lumped&#x27; uses a lumped mass matrix with &quot;
+      &quot;a simple inversion - incredibly fast but may be less accurate.  &#x27;lump_preconditioned&#x27; uses &quot;
+      &quot;the lumped mass matrix as a preconditioner for the &#x27;consistent&#x27; solve&quot;);
+
+  return params;
+}
+
+ExplicitTimeIntegrator::ExplicitTimeIntegrator(const InputParameters &amp; parameters)
+  : TimeIntegrator(parameters),
+    MeshChangedInterface(parameters),
+
+    _solve_type(getParam&lt;MooseEnum&gt;(&quot;solve_type&quot;)),
+    _explicit_residual(_nl.addVector(&quot;explicit_residual&quot;, false, PARALLEL)),
+    _solution_update(_nl.addVector(&quot;solution_update&quot;, true, PARALLEL)),
+    _mass_matrix_diag(_nl.addVector(&quot;mass_matrix_diag&quot;, false, PARALLEL))
+{
+  _Ke_time_tag = _fe_problem.getMatrixTagID(&quot;TIME&quot;);
+
+  // This effectively changes the default solve_type to LINEAR instead of PJFNK,
+  // so that it is valid to not supply solve_type in the Executioner block:
+  _fe_problem.solverParams()._type = Moose::ST_LINEAR;
+
+  if (_solve_type == LUMPED || _solve_type == LUMP_PRECONDITIONED)
+    _ones = &amp;_nl.addVector(&quot;ones&quot;, false, PARALLEL);
+}
+
+void
+ExplicitTimeIntegrator::initialSetup()
+{
+  meshChanged();
+}
+
+void
+ExplicitTimeIntegrator::init()
+{
+  if (_fe_problem.solverParams()._type != Moose::ST_LINEAR)
+    mooseError(
+        &quot;The chosen time integrator requires &#x27;solve_type = LINEAR&#x27; in the Executioner block.&quot;);
+}
+
+void
+ExplicitTimeIntegrator::preSolve()
+{
+}
+
+void
+ExplicitTimeIntegrator::meshChanged()
+{
+  // Can only be done after the system is initialized
+  if (_solve_type == LUMPED || _solve_type == LUMP_PRECONDITIONED)
+    *_ones = 1.;
+
+  if (_solve_type == CONSISTENT || _solve_type == LUMP_PRECONDITIONED)
+    _linear_solver = LinearSolver&lt;Number&gt;::build(comm());
+
+  if (_solve_type == LUMP_PRECONDITIONED)
+  {
+    _preconditioner = libmesh_make_unique&lt;LumpedPreconditioner&gt;(_mass_matrix_diag);
+    _linear_solver-&gt;attach_preconditioner(_preconditioner.get());
+    _linear_solver-&gt;init();
+  }
+
+  if (_solve_type == CONSISTENT || _solve_type == LUMP_PRECONDITIONED)
+    Moose::PetscSupport::setLinearSolverDefaults(_fe_problem, *_linear_solver);
+}
+
+bool
+ExplicitTimeIntegrator::performExplicitSolve(SparseMatrix&lt;Number&gt; &amp; mass_matrix)
+{
+  bool converged = false;
+
+  switch (_solve_type)
+  {
+    case CONSISTENT:
+    {
+      converged = solveLinearSystem(mass_matrix);
+
+      break;
+    }
+    case LUMPED:
+    {
+      // Computes the sum of each row (lumping)
+      // Note: This is actually how PETSc does it
+      // It&#x27;s not &quot;perfectly optimal&quot; - but it will be fast (and universal)
+      mass_matrix.vector_mult(_mass_matrix_diag, *_ones);
+
+      // &quot;Invert&quot; the diagonal mass matrix
+      _mass_matrix_diag.reciprocal();
+
+      // Multiply the inversion by the RHS
+      _solution_update.pointwise_mult(_mass_matrix_diag, _explicit_residual);
+
+      // Check for convergence by seeing if there is a nan or inf
+      auto sum = _solution_update.sum();
+      converged = std::isfinite(sum);
+
+      // The linear iteration count remains zero
+      _n_linear_iterations = 0;
+
+      break;
+    }
+    case LUMP_PRECONDITIONED:
+    {
+      mass_matrix.vector_mult(_mass_matrix_diag, *_ones);
+      _mass_matrix_diag.reciprocal();
+
+      converged = solveLinearSystem(mass_matrix);
+
+      break;
+    }
+    default:
+      mooseError(&quot;Unknown solve_type in ExplicitTimeIntegrator.&quot;);
+  }
+
+  return converged;
+}
+
+bool
+ExplicitTimeIntegrator::solveLinearSystem(SparseMatrix&lt;Number&gt; &amp; mass_matrix)
+{
+  auto &amp; es = _fe_problem.es();
+
+  const auto num_its_and_final_tol =
+      _linear_solver-&gt;solve(mass_matrix,
+                            _solution_update,
+                            _explicit_residual,
+                            es.parameters.get&lt;Real&gt;(&quot;linear solver tolerance&quot;),
+                            es.parameters.get&lt;unsigned int&gt;(&quot;linear solver maximum iterations&quot;));
+
+  _n_linear_iterations += num_its_and_final_tol.first;
+
+  const bool converged = checkLinearConvergence();
+
+  return converged;
+}
+
+bool
+ExplicitTimeIntegrator::checkLinearConvergence()
+{
+  auto reason = _linear_solver-&gt;get_converged_reason();
+
+  switch (reason)
+  {
+    case CONVERGED_RTOL_NORMAL:
+    case CONVERGED_ATOL_NORMAL:
+    case CONVERGED_RTOL:
+    case CONVERGED_ATOL:
+    case CONVERGED_ITS:
+    case CONVERGED_CG_NEG_CURVE:
+    case CONVERGED_CG_CONSTRAINED:
+    case CONVERGED_STEP_LENGTH:
+    case CONVERGED_HAPPY_BREAKDOWN:
+      return true;
+    case DIVERGED_NULL:
+    case DIVERGED_ITS:
+    case DIVERGED_DTOL:
+    case DIVERGED_BREAKDOWN:
+    case DIVERGED_BREAKDOWN_BICG:
+    case DIVERGED_NONSYMMETRIC:
+    case DIVERGED_INDEFINITE_PC:
+    case DIVERGED_NAN:
+    case DIVERGED_INDEFINITE_MAT:
+    case CONVERGED_ITERATING:
+    case DIVERGED_PCSETUP_FAILED:
+      return false;
+    default:
+      mooseError(&quot;Unknown convergence reason in ExplicitTimeIntegrator.&quot;);
+  }
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="b4109129-e230-4017-94a6-7c057fe4650a"><div class="modal-content"><h4>(moose/framework/src/timeintegrators/ActuallyExplicitEuler.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+// MOOSE includes
+#include &quot;ActuallyExplicitEuler.h&quot;
+#include &quot;NonlinearSystem.h&quot;
+#include &quot;FEProblem.h&quot;
+
+// libMesh includes
+#include &quot;libmesh/nonlinear_solver.h&quot;
+
+registerMooseObject(&quot;MooseApp&quot;, ActuallyExplicitEuler);
+
+defineLegacyParams(ActuallyExplicitEuler);
+
+InputParameters
+ActuallyExplicitEuler::validParams()
+{
+  InputParameters params = ExplicitTimeIntegrator::validParams();
+
+  params.addClassDescription(
+      &quot;Implementation of Explicit/Forward Euler without invoking any of the nonlinear solver&quot;);
+
+  params.addParam&lt;bool&gt;(&quot;use_constant_mass&quot;,
+                        false,
+                        &quot;If set to true, will only compute the mass matrix in the first time step, &quot;
+                        &quot;and keep using it throughout the simulation.&quot;);
+
+  return params;
+}
+
+ActuallyExplicitEuler::ActuallyExplicitEuler(const InputParameters &amp; parameters)
+  : ExplicitTimeIntegrator(parameters), _constant_mass(getParam&lt;bool&gt;(&quot;use_constant_mass&quot;))
+{
+}
+
+void
+ActuallyExplicitEuler::computeTimeDerivatives()
+{
+  if (!_sys.solutionUDot())
+    mooseError(&quot;ActuallyExplicitEuler: Time derivative of solution (`u_dot`) is not stored. Please &quot;
+               &quot;set uDotRequested() to true in FEProblemBase before requesting `u_dot`.&quot;);
+
+  NumericVector&lt;Number&gt; &amp; u_dot = *_sys.solutionUDot();
+  u_dot = *_solution;
+  computeTimeDerivativeHelper(u_dot, _solution_old);
+  u_dot.close();
+
+  _du_dot_du = 1.0 / _dt;
+}
+
+void
+ActuallyExplicitEuler::computeADTimeDerivatives(DualReal &amp; ad_u_dot,
+                                                const dof_id_type &amp; dof,
+                                                DualReal &amp; /*ad_u_dotdot*/) const
+{
+  computeTimeDerivativeHelper(ad_u_dot, _solution_old(dof));
+}
+
+void
+ActuallyExplicitEuler::solve()
+{
+  // Reset iteration counts
+  _n_nonlinear_iterations = 0;
+  _n_linear_iterations = 0;
+
+  _current_time = _fe_problem.time();
+
+  // Set time to the time at which to evaluate the residual
+  _fe_problem.time() = _fe_problem.timeOld();
+  _nonlinear_implicit_system-&gt;update();
+
+  // Compute the residual
+  _explicit_residual.zero();
+  _fe_problem.computeResidual(*_nonlinear_implicit_system-&gt;current_local_solution,
+                              _explicit_residual);
+
+  // Move the residual to the RHS
+  _explicit_residual *= -1.0;
+
+  // Compute the mass matrix
+  auto &amp; mass_matrix = _nonlinear_implicit_system-&gt;get_system_matrix();
+  if (!_constant_mass || (_constant_mass &amp;&amp; _t_step == 1))
+    _fe_problem.computeJacobianTag(
+        *_nonlinear_implicit_system-&gt;current_local_solution, mass_matrix, _Ke_time_tag);
+
+  // Perform the linear solve
+  bool converged = performExplicitSolve(mass_matrix);
+
+  // Update the solution
+  *_nonlinear_implicit_system-&gt;solution = _nl.solutionOld();
+  *_nonlinear_implicit_system-&gt;solution += _solution_update;
+
+  // Enforce contraints on the solution
+  DofMap &amp; dof_map = _nonlinear_implicit_system-&gt;get_dof_map();
+  dof_map.enforce_constraints_exactly(*_nonlinear_implicit_system,
+                                      _nonlinear_implicit_system-&gt;solution.get());
+  _nonlinear_implicit_system-&gt;update();
+
+  _nl.setSolution(*_nonlinear_implicit_system-&gt;current_local_solution);
+
+  _nonlinear_implicit_system-&gt;nonlinear_solver-&gt;converged = converged;
+}
+
+void
+ActuallyExplicitEuler::postResidual(NumericVector&lt;Number&gt; &amp; residual)
+{
+  residual += _Re_time;
+  residual += _Re_non_time;
+  residual.close();
+
+  // Reset time to the time at which to evaluate nodal BCs, which comes next
+  _fe_problem.time() = _current_time;
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="4fe757a8-7486-4d2e-942a-0997b2aa4935"><div class="modal-content"><h4>(moose/framework/src/timeintegrators/ActuallyExplicitEuler.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+// MOOSE includes
+#include &quot;ActuallyExplicitEuler.h&quot;
+#include &quot;NonlinearSystem.h&quot;
+#include &quot;FEProblem.h&quot;
+
+// libMesh includes
+#include &quot;libmesh/nonlinear_solver.h&quot;
+
+registerMooseObject(&quot;MooseApp&quot;, ActuallyExplicitEuler);
+
+defineLegacyParams(ActuallyExplicitEuler);
+
+InputParameters
+ActuallyExplicitEuler::validParams()
+{
+  InputParameters params = ExplicitTimeIntegrator::validParams();
+
+  params.addClassDescription(
+      &quot;Implementation of Explicit/Forward Euler without invoking any of the nonlinear solver&quot;);
+
+  params.addParam&lt;bool&gt;(&quot;use_constant_mass&quot;,
+                        false,
+                        &quot;If set to true, will only compute the mass matrix in the first time step, &quot;
+                        &quot;and keep using it throughout the simulation.&quot;);
+
+  return params;
+}
+
+ActuallyExplicitEuler::ActuallyExplicitEuler(const InputParameters &amp; parameters)
+  : ExplicitTimeIntegrator(parameters), _constant_mass(getParam&lt;bool&gt;(&quot;use_constant_mass&quot;))
+{
+}
+
+void
+ActuallyExplicitEuler::computeTimeDerivatives()
+{
+  if (!_sys.solutionUDot())
+    mooseError(&quot;ActuallyExplicitEuler: Time derivative of solution (`u_dot`) is not stored. Please &quot;
+               &quot;set uDotRequested() to true in FEProblemBase before requesting `u_dot`.&quot;);
+
+  NumericVector&lt;Number&gt; &amp; u_dot = *_sys.solutionUDot();
+  u_dot = *_solution;
+  computeTimeDerivativeHelper(u_dot, _solution_old);
+  u_dot.close();
+
+  _du_dot_du = 1.0 / _dt;
+}
+
+void
+ActuallyExplicitEuler::computeADTimeDerivatives(DualReal &amp; ad_u_dot,
+                                                const dof_id_type &amp; dof,
+                                                DualReal &amp; /*ad_u_dotdot*/) const
+{
+  computeTimeDerivativeHelper(ad_u_dot, _solution_old(dof));
+}
+
+void
+ActuallyExplicitEuler::solve()
+{
+  // Reset iteration counts
+  _n_nonlinear_iterations = 0;
+  _n_linear_iterations = 0;
+
+  _current_time = _fe_problem.time();
+
+  // Set time to the time at which to evaluate the residual
+  _fe_problem.time() = _fe_problem.timeOld();
+  _nonlinear_implicit_system-&gt;update();
+
+  // Compute the residual
+  _explicit_residual.zero();
+  _fe_problem.computeResidual(*_nonlinear_implicit_system-&gt;current_local_solution,
+                              _explicit_residual);
+
+  // Move the residual to the RHS
+  _explicit_residual *= -1.0;
+
+  // Compute the mass matrix
+  auto &amp; mass_matrix = _nonlinear_implicit_system-&gt;get_system_matrix();
+  if (!_constant_mass || (_constant_mass &amp;&amp; _t_step == 1))
+    _fe_problem.computeJacobianTag(
+        *_nonlinear_implicit_system-&gt;current_local_solution, mass_matrix, _Ke_time_tag);
+
+  // Perform the linear solve
+  bool converged = performExplicitSolve(mass_matrix);
+
+  // Update the solution
+  *_nonlinear_implicit_system-&gt;solution = _nl.solutionOld();
+  *_nonlinear_implicit_system-&gt;solution += _solution_update;
+
+  // Enforce contraints on the solution
+  DofMap &amp; dof_map = _nonlinear_implicit_system-&gt;get_dof_map();
+  dof_map.enforce_constraints_exactly(*_nonlinear_implicit_system,
+                                      _nonlinear_implicit_system-&gt;solution.get());
+  _nonlinear_implicit_system-&gt;update();
+
+  _nl.setSolution(*_nonlinear_implicit_system-&gt;current_local_solution);
+
+  _nonlinear_implicit_system-&gt;nonlinear_solver-&gt;converged = converged;
+}
+
+void
+ActuallyExplicitEuler::postResidual(NumericVector&lt;Number&gt; &amp; residual)
+{
+  residual += _Re_time;
+  residual += _Re_non_time;
+  residual.close();
+
+  // Reset time to the time at which to evaluate nodal BCs, which comes next
+  _fe_problem.time() = _current_time;
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div><div class="col hide-on-med-and-down l2"><div class="toc-wrapper pin-top"><ul class="section table-of-contents"><li><a href="#10307a06-aec7-48a6-82e5-7d946aa697c7" class="tooltipped" data-position="left" data-tooltip="Description">Description</a></li><li><a href="#86683d6b-cb96-40a1-a666-eed87490959c" class="tooltipped" data-position="left" data-tooltip="Methods of Solution">Methods of Solution</a></li><li><a href="#90519413-f959-4180-919b-d1bdee6a866d" class="tooltipped" data-position="left" data-tooltip="Additional Details">Additional Details</a></li></ul></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>

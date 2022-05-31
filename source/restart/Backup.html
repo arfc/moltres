@@ -1,0 +1,945 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>Backup | Moltres</title><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/moltres.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down">Moltres</a><a href="https://github.com/arfc/moltres" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="#!" class="dropdown-trigger" data-target="fd70bca1-4d1e-444a-9c04-89079429146e" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="6adc95d0-c982-4cb2-918c-e0d248e51b45" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="b707c0e7-d634-4a90-9c8d-79c4ad0b06ee" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#" class="sidenav-trigger" data-target="90c26f6b-a955-4989-b756-f70f06265ab4"><i class="material-icons">menu</i></a><ul class="sidenav" id="90c26f6b-a955-4989-b756-f70f06265ab4"><li><a href="#!" class="dropdown-trigger" data-target="b5f72669-3aa0-4261-a474-bc2b455d988e" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="61762089-0d5e-4a3b-9264-6c63c6592de1" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="2c181f3d-aff9-4c97-b43c-e1518a37f362" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="fd70bca1-4d1e-444a-9c04-89079429146e"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="6adc95d0-c982-4cb2-918c-e0d248e51b45"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="b707c0e7-d634-4a90-9c8d-79c4ad0b06ee"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul><ul class="dropdown-content" id="b5f72669-3aa0-4261-a474-bc2b455d988e"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="61762089-0d5e-4a3b-9264-6c63c6592de1"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="2c181f3d-aff9-4c97-b43c-e1518a37f362"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="col hide-on-med-and-down l12"><nav class="breadcrumb-nav"><div class="nav-wrapper"><a href=".." class="breadcrumb">source</a><span class="breadcrumb">restart</span><a href="#" class="breadcrumb">Backup</a></div></nav></div></div><div class="row"><div class="moose-content col s12 m12 l10"><section id="95c9323d-47fc-4cdb-9ed3-fb3cdafd4252" data-section-level="1" data-section-text="Backup"><h1 id="backup">Backup</h1><p>The Backup object is a simply a <code>struct</code> for holding binary blob &quot;checkpoint&quot; data. The object contains a stream for holding global simulation state data along with a separate vector for holding individual thread state for each thread in the simulation. The Backup object is part of the larger Restart/Recovery system in MOOSE.</p><p>The Backup object contains the serialized data from MOOSE&#x27;s <code>dataLoad/dataStore</code> routines found in <a class="moose-source-filename tooltipped modal-trigger" href="#a22c3790-abe0-4e98-b17a-71b453435e06">DataIO.h</a>. </p></section><div class="moose-modal modal" id="a22c3790-abe0-4e98-b17a-71b453435e06"><div class="modal-content"><h4>(../../../../../DataIO.h)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#pragma once
+
+// MOOSE includes
+#include &quot;DualReal.h&quot;
+#include &quot;MooseTypes.h&quot;
+#include &quot;HashMap.h&quot;
+#include &quot;MooseError.h&quot;
+#include &quot;Backup.h&quot;
+#include &quot;RankTwoTensor.h&quot;
+#include &quot;RankThreeTensor.h&quot;
+#include &quot;RankFourTensor.h&quot;
+#include &quot;ColumnMajorMatrix.h&quot;
+
+#include &quot;libmesh/auto_ptr.h&quot; // libmesh_make_unique
+#include &quot;libmesh/parallel.h&quot;
+#include &quot;libmesh/parameters.h&quot;
+
+#ifdef LIBMESH_HAVE_CXX11_TYPE_TRAITS
+#include &lt;type_traits&gt;
+#endif
+
+// C++ includes
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;list&gt;
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;unordered_map&gt;
+#include &lt;memory&gt;
+
+namespace libMesh
+{
+template &lt;typename T&gt;
+class NumericVector;
+template &lt;typename T&gt;
+class DenseMatrix;
+template &lt;typename T&gt;
+class DenseVector;
+template &lt;typename T&gt;
+class VectorValue;
+template &lt;typename T&gt;
+class TensorValue;
+class Elem;
+class Point;
+}
+
+/**
+ * Scalar helper routine
+ */
+template &lt;typename P&gt;
+inline void storeHelper(std::ostream &amp; stream, P &amp; data, void * context);
+
+/**
+ * Vector helper routine
+ */
+template &lt;typename P&gt;
+inline void storeHelper(std::ostream &amp; stream, std::vector&lt;P&gt; &amp; data, void * context);
+
+/**
+ * Shared pointer helper routine
+ */
+template &lt;typename P&gt;
+inline void storeHelper(std::ostream &amp; stream, std::shared_ptr&lt;P&gt; &amp; data, void * context);
+
+/**
+ * Unique pointer helper routine
+ */
+template &lt;typename P&gt;
+inline void storeHelper(std::ostream &amp; stream, std::unique_ptr&lt;P&gt; &amp; data, void * context);
+
+/**
+ * Set helper routine
+ */
+template &lt;typename P&gt;
+inline void storeHelper(std::ostream &amp; stream, std::set&lt;P&gt; &amp; data, void * context);
+
+/**
+ * Map helper routine
+ */
+template &lt;typename P, typename Q&gt;
+inline void storeHelper(std::ostream &amp; stream, std::map&lt;P, Q&gt; &amp; data, void * context);
+
+/**
+ * Unordered_map helper routine
+ */
+template &lt;typename P, typename Q&gt;
+inline void storeHelper(std::ostream &amp; stream, std::unordered_map&lt;P, Q&gt; &amp; data, void * context);
+
+/**
+ * HashMap helper routine
+ */
+template &lt;typename P, typename Q&gt;
+inline void storeHelper(std::ostream &amp; stream, HashMap&lt;P, Q&gt; &amp; data, void * context);
+
+/**
+ * Scalar helper routine
+ */
+template &lt;typename P&gt;
+inline void loadHelper(std::istream &amp; stream, P &amp; data, void * context);
+
+/**
+ * Vector helper routine
+ */
+template &lt;typename P&gt;
+inline void loadHelper(std::istream &amp; stream, std::vector&lt;P&gt; &amp; data, void * context);
+
+/**
+ * Shared Pointer helper routine
+ */
+template &lt;typename P&gt;
+inline void loadHelper(std::istream &amp; stream, std::shared_ptr&lt;P&gt; &amp; data, void * context);
+
+/**
+ * Unique Pointer helper routine
+ */
+template &lt;typename P&gt;
+inline void loadHelper(std::istream &amp; stream, std::unique_ptr&lt;P&gt; &amp; data, void * context);
+
+/**
+ * Set helper routine
+ */
+template &lt;typename P&gt;
+inline void loadHelper(std::istream &amp; stream, std::set&lt;P&gt; &amp; data, void * context);
+
+/**
+ * Map helper routine
+ */
+template &lt;typename P, typename Q&gt;
+inline void loadHelper(std::istream &amp; stream, std::map&lt;P, Q&gt; &amp; data, void * context);
+
+/**
+ * Unordered_map helper routine
+ */
+template &lt;typename P, typename Q&gt;
+inline void loadHelper(std::istream &amp; stream, std::unordered_map&lt;P, Q&gt; &amp; data, void * context);
+
+/**
+ * Hashmap helper routine
+ */
+template &lt;typename P, typename Q&gt;
+inline void loadHelper(std::istream &amp; stream, HashMap&lt;P, Q&gt; &amp; data, void * context);
+
+template &lt;typename T&gt;
+inline void dataStore(std::ostream &amp; stream, T &amp; v, void * /*context*/);
+
+// DO NOT MODIFY THE NEXT LINE - It is used by MOOSEDocs
+// *************** Global Store Declarations *****************
+template &lt;typename T&gt;
+inline void
+dataStore(std::ostream &amp; stream, T &amp; v, void * /*context*/)
+{
+#ifdef LIBMESH_HAVE_CXX11_TYPE_TRAITS
+  static_assert(std::is_polymorphic&lt;T&gt;::value == false,
+                &quot;Cannot serialize a class that has virtual &quot;
+                &quot;members!\nWrite a custom dataStore() &quot;
+                &quot;template specialization!\n\n&quot;);
+  static_assert(std::is_trivially_copyable&lt;T&gt;::value,
+                &quot;Cannot serialize a class that is not trivially copyable!\nWrite a custom &quot;
+                &quot;dataStore() template specialization!\n\n&quot;);
+#endif
+
+  // Moose::out&lt;&lt;&quot;Generic dataStore&quot;&lt;&lt;std::endl;
+  stream.write((char *)&amp;v, sizeof(v));
+}
+
+template &lt;typename T&gt;
+inline void
+dataStore(std::ostream &amp; /*stream*/, T *&amp; /*v*/, void * /*context*/)
+{
+  mooseError(&quot;Attempting to store a raw pointer type: \&quot;&quot;,
+             demangle(typeid(T).name()),
+             &quot; *\&quot; as restartable data!\nWrite a custom dataStore() template specialization!\n\n&quot;);
+}
+
+void dataStore(std::ostream &amp; stream, Point &amp; p, void * context);
+
+template &lt;typename T, typename U&gt;
+inline void
+dataStore(std::ostream &amp; stream, std::pair&lt;T, U&gt; &amp; p, void * context)
+{
+  storeHelper(stream, p.first, context);
+  storeHelper(stream, p.second, context);
+}
+
+template &lt;typename T&gt;
+inline void
+dataStore(std::ostream &amp; stream, std::vector&lt;T&gt; &amp; v, void * context)
+{
+  // First store the size of the vector
+  unsigned int size = v.size();
+  stream.write((char *)&amp;size, sizeof(size));
+
+  for (unsigned int i = 0; i &lt; size; i++)
+    storeHelper(stream, v[i], context);
+}
+
+template &lt;typename T&gt;
+inline void
+dataStore(std::ostream &amp; stream, std::shared_ptr&lt;T&gt; &amp; v, void * context)
+{
+  T * tmp = v.get();
+
+  storeHelper(stream, tmp, context);
+}
+
+template &lt;typename T&gt;
+inline void
+dataStore(std::ostream &amp; stream, std::unique_ptr&lt;T&gt; &amp; v, void * context)
+{
+  T * tmp = v.get();
+
+  storeHelper(stream, tmp, context);
+}
+
+template &lt;typename T&gt;
+inline void
+dataStore(std::ostream &amp; stream, std::set&lt;T&gt; &amp; s, void * context)
+{
+  // First store the size of the set
+  unsigned int size = s.size();
+  stream.write((char *)&amp;size, sizeof(size));
+
+  typename std::set&lt;T&gt;::iterator it = s.begin();
+  typename std::set&lt;T&gt;::iterator end = s.end();
+
+  for (; it != end; ++it)
+  {
+    T &amp; x = const_cast&lt;T &amp;&gt;(*it);
+    storeHelper(stream, x, context);
+  }
+}
+
+template &lt;typename T&gt;
+inline void
+dataStore(std::ostream &amp; stream, std::list&lt;T&gt; &amp; l, void * context)
+{
+  // First store the size of the set
+  unsigned int size = l.size();
+  stream.write((char *)&amp;size, sizeof(size));
+
+  typename std::list&lt;T&gt;::iterator it = l.begin();
+  typename std::list&lt;T&gt;::iterator end = l.end();
+
+  for (; it != end; ++it)
+  {
+    T &amp; x = const_cast&lt;T &amp;&gt;(*it);
+    storeHelper(stream, x, context);
+  }
+}
+
+template &lt;typename T&gt;
+inline void
+dataStore(std::ostream &amp; stream, std::deque&lt;T&gt; &amp; l, void * context)
+{
+  // First store the size of the container
+  unsigned int size = l.size();
+  stream.write((char *)&amp;size, sizeof(size));
+
+  typename std::deque&lt;T&gt;::iterator it = l.begin();
+  typename std::deque&lt;T&gt;::iterator end = l.end();
+
+  for (; it != end; ++it)
+  {
+    T &amp; x = const_cast&lt;T &amp;&gt;(*it);
+    storeHelper(stream, x, context);
+  }
+}
+
+template &lt;typename T, typename U&gt;
+inline void
+dataStore(std::ostream &amp; stream, std::map&lt;T, U&gt; &amp; m, void * context)
+{
+  // First store the size of the map
+  unsigned int size = m.size();
+  stream.write((char *)&amp;size, sizeof(size));
+
+  typename std::map&lt;T, U&gt;::iterator it = m.begin();
+  typename std::map&lt;T, U&gt;::iterator end = m.end();
+
+  for (; it != end; ++it)
+  {
+    T &amp; key = const_cast&lt;T &amp;&gt;(it-&gt;first);
+
+    storeHelper(stream, key, context);
+
+    storeHelper(stream, it-&gt;second, context);
+  }
+}
+
+template &lt;typename T, typename U&gt;
+inline void
+dataStore(std::ostream &amp; stream, std::unordered_map&lt;T, U&gt; &amp; m, void * context)
+{
+  // First store the size of the map
+  unsigned int size = m.size();
+  stream.write((char *)&amp;size, sizeof(size));
+
+  typename std::unordered_map&lt;T, U&gt;::iterator it = m.begin();
+  typename std::unordered_map&lt;T, U&gt;::iterator end = m.end();
+
+  for (; it != end; ++it)
+  {
+    T &amp; key = const_cast&lt;T &amp;&gt;(it-&gt;first);
+
+    storeHelper(stream, key, context);
+
+    storeHelper(stream, it-&gt;second, context);
+  }
+}
+
+template &lt;typename T, typename U&gt;
+inline void
+dataStore(std::ostream &amp; stream, HashMap&lt;T, U&gt; &amp; m, void * context)
+{
+  // First store the size of the map
+  unsigned int size = m.size();
+  stream.write((char *)&amp;size, sizeof(size));
+
+  typename HashMap&lt;T, U&gt;::iterator it = m.begin();
+  typename HashMap&lt;T, U&gt;::iterator end = m.end();
+
+  for (; it != end; ++it)
+  {
+    T &amp; key = const_cast&lt;T &amp;&gt;(it-&gt;first);
+
+    storeHelper(stream, key, context);
+
+    storeHelper(stream, it-&gt;second, context);
+  }
+}
+
+// Specializations (defined in .C)
+template &lt;&gt;
+void dataStore(std::ostream &amp; stream, Real &amp; v, void * context);
+template &lt;&gt;
+void dataStore(std::ostream &amp; stream, std::string &amp; v, void * context);
+template &lt;&gt;
+void dataStore(std::ostream &amp; stream, bool &amp; v, void * context);
+// Vectors of bools are special
+// https://en.wikipedia.org/w/index.php?title=Sequence_container_(C%2B%2B)&amp;oldid=767869909#Specialization_for_bool
+template &lt;&gt;
+void dataStore(std::ostream &amp; stream, std::vector&lt;bool&gt; &amp; v, void * context);
+template &lt;&gt;
+void dataStore(std::ostream &amp; stream, const Elem *&amp; e, void * context);
+template &lt;&gt;
+void dataStore(std::ostream &amp; stream, const Node *&amp; n, void * context);
+template &lt;&gt;
+void dataStore(std::ostream &amp; stream, Elem *&amp; e, void * context);
+template &lt;&gt;
+void dataStore(std::ostream &amp; stream, Node *&amp; n, void * context);
+template &lt;&gt;
+void dataStore(std::ostream &amp; stream, std::stringstream &amp; s, void * context);
+template &lt;&gt;
+void dataStore(std::ostream &amp; stream, std::stringstream *&amp; s, void * context);
+template &lt;&gt;
+void dataStore(std::ostream &amp; stream, DualReal &amp; dn, void * context);
+template &lt;&gt;
+void dataStore(std::ostream &amp; stream, RealEigenVector &amp; v, void * context);
+template &lt;&gt;
+void dataStore(std::ostream &amp; stream, RealEigenMatrix &amp; v, void * context);
+template &lt;&gt;
+void dataStore(std::ostream &amp; stream, libMesh::Parameters &amp; p, void * context);
+
+template &lt;std::size_t N&gt;
+inline void
+dataStore(std::ostream &amp; stream, DualReal (&amp;dn)[N], void * context)
+{
+  for (std::size_t i = 0; i &lt; N; ++i)
+    dataStore(stream, dn[i], context);
+}
+
+template &lt;typename T&gt;
+void
+dataStore(std::ostream &amp; stream, NumericVector&lt;T&gt; &amp; v, void * context)
+{
+  v.close();
+
+  numeric_index_type size = v.local_size();
+
+  for (numeric_index_type i = v.first_local_index(); i &lt; v.first_local_index() + size; i++)
+  {
+    T r = v(i);
+    dataStore(stream, r, context);
+  }
+}
+
+template &lt;&gt;
+void dataStore(std::ostream &amp; stream, Vec &amp; v, void * context);
+
+template &lt;typename T&gt;
+void
+dataStore(std::ostream &amp; stream, DenseVector&lt;T&gt; &amp; v, void * context)
+{
+  unsigned int m = v.size();
+  stream.write((char *)&amp;m, sizeof(m));
+  for (unsigned int i = 0; i &lt; v.size(); i++)
+  {
+    T r = v(i);
+    dataStore(stream, r, context);
+  }
+}
+
+template &lt;typename T&gt;
+void dataStore(std::ostream &amp; stream, TensorValue&lt;T&gt; &amp; v, void * context);
+
+template &lt;typename T&gt;
+void dataStore(std::ostream &amp; stream, DenseMatrix&lt;T&gt; &amp; v, void * context);
+
+template &lt;typename T&gt;
+void dataStore(std::ostream &amp; stream, VectorValue&lt;T&gt; &amp; v, void * context);
+
+template &lt;typename T&gt;
+void
+dataStore(std::ostream &amp; stream, RankTwoTensorTempl&lt;T&gt; &amp; rtt, void * context)
+{
+  dataStore(stream, rtt._coords, context);
+}
+
+template &lt;typename T&gt;
+void
+dataStore(std::ostream &amp; stream, RankThreeTensorTempl&lt;T&gt; &amp; rtt, void * context)
+{
+  dataStore(stream, rtt._vals, context);
+}
+
+template &lt;typename T&gt;
+void
+dataStore(std::ostream &amp; stream, RankFourTensorTempl&lt;T&gt; &amp; rft, void * context)
+{
+  dataStore(stream, rft._vals, context);
+}
+
+template &lt;typename T&gt;
+void
+dataStore(std::ostream &amp; stream, ColumnMajorMatrixTempl&lt;T&gt; &amp; cmm, void * context)
+{
+  dataStore(stream, cmm._values, context);
+}
+
+// DO NOT MODIFY THE NEXT LINE - It is used by MOOSEDocs
+// *************** Global Load Declarations *****************
+template &lt;typename T&gt;
+inline void
+dataLoad(std::istream &amp; stream, T &amp; v, void * /*context*/)
+{
+  stream.read((char *)&amp;v, sizeof(v));
+}
+
+template &lt;typename T&gt;
+void
+dataLoad(std::istream &amp; /*stream*/, T *&amp; /*v*/, void * /*context*/)
+{
+  mooseError(&quot;Attempting to load a raw pointer type: \&quot;&quot;,
+             demangle(typeid(T).name()),
+             &quot; *\&quot; as restartable data!\nWrite a custom dataLoad() template specialization!\n\n&quot;);
+}
+
+template &lt;typename T, typename U&gt;
+inline void
+dataLoad(std::istream &amp; stream, std::pair&lt;T, U&gt; &amp; p, void * context)
+{
+  loadHelper(stream, p.first, context);
+  loadHelper(stream, p.second, context);
+}
+
+template &lt;typename T&gt;
+inline void
+dataLoad(std::istream &amp; stream, std::vector&lt;T&gt; &amp; v, void * context)
+{
+  // First read the size of the vector
+  unsigned int size = 0;
+  stream.read((char *)&amp;size, sizeof(size));
+
+  v.resize(size);
+
+  for (unsigned int i = 0; i &lt; size; i++)
+    loadHelper(stream, v[i], context);
+}
+
+template &lt;typename T&gt;
+inline void
+dataLoad(std::istream &amp; stream, std::shared_ptr&lt;T&gt; &amp; v, void * context)
+{
+  T * tmp = v.get();
+
+  loadHelper(stream, tmp, context);
+}
+
+template &lt;typename T&gt;
+inline void
+dataLoad(std::istream &amp; stream, std::unique_ptr&lt;T&gt; &amp; v, void * context)
+{
+  T * tmp = v.get();
+
+  loadHelper(stream, tmp, context);
+}
+
+template &lt;typename T&gt;
+inline void
+dataLoad(std::istream &amp; stream, std::set&lt;T&gt; &amp; s, void * context)
+{
+  // First read the size of the set
+  unsigned int size = 0;
+  stream.read((char *)&amp;size, sizeof(size));
+
+  for (unsigned int i = 0; i &lt; size; i++)
+  {
+    T data;
+    loadHelper(stream, data, context);
+    s.insert(std::move(data));
+  }
+}
+
+template &lt;typename T&gt;
+inline void
+dataLoad(std::istream &amp; stream, std::list&lt;T&gt; &amp; l, void * context)
+{
+  // First read the size of the set
+  unsigned int size = 0;
+  stream.read((char *)&amp;size, sizeof(size));
+
+  for (unsigned int i = 0; i &lt; size; i++)
+  {
+    T data;
+    loadHelper(stream, data, context);
+    l.push_back(std::move(data));
+  }
+}
+
+template &lt;typename T&gt;
+inline void
+dataLoad(std::istream &amp; stream, std::deque&lt;T&gt; &amp; l, void * context)
+{
+  // First read the size of the container
+  unsigned int size = 0;
+  stream.read((char *)&amp;size, sizeof(size));
+
+  for (unsigned int i = 0; i &lt; size; i++)
+  {
+    T data;
+    loadHelper(stream, data, context);
+    l.push_back(std::move(data));
+  }
+}
+
+template &lt;typename T, typename U&gt;
+inline void
+dataLoad(std::istream &amp; stream, std::map&lt;T, U&gt; &amp; m, void * context)
+{
+  m.clear();
+
+  // First read the size of the map
+  unsigned int size = 0;
+  stream.read((char *)&amp;size, sizeof(size));
+
+  for (unsigned int i = 0; i &lt; size; i++)
+  {
+    T key;
+    loadHelper(stream, key, context);
+
+    U &amp; value = m[key];
+    loadHelper(stream, value, context);
+  }
+}
+
+template &lt;typename T, typename U&gt;
+inline void
+dataLoad(std::istream &amp; stream, std::unordered_map&lt;T, U&gt; &amp; m, void * context)
+{
+  m.clear();
+
+  // First read the size of the map
+  unsigned int size = 0;
+  stream.read((char *)&amp;size, sizeof(size));
+
+  for (unsigned int i = 0; i &lt; size; i++)
+  {
+    T key;
+    loadHelper(stream, key, context);
+
+    U &amp; value = m[key];
+    loadHelper(stream, value, context);
+  }
+}
+
+template &lt;typename T, typename U&gt;
+inline void
+dataLoad(std::istream &amp; stream, HashMap&lt;T, U&gt; &amp; m, void * context)
+{
+  // First read the size of the map
+  unsigned int size = 0;
+  stream.read((char *)&amp;size, sizeof(size));
+
+  for (unsigned int i = 0; i &lt; size; i++)
+  {
+    T key;
+    loadHelper(stream, key, context);
+
+    U &amp; value = m[key];
+    loadHelper(stream, value, context);
+  }
+}
+
+// Specializations (defined in .C)
+template &lt;&gt;
+void dataLoad(std::istream &amp; stream, Real &amp; v, void * /*context*/);
+template &lt;&gt;
+void dataLoad(std::istream &amp; stream, std::string &amp; v, void * /*context*/);
+template &lt;&gt;
+void dataLoad(std::istream &amp; stream, bool &amp; v, void * /*context*/);
+// Vectors of bools are special
+// https://en.wikipedia.org/w/index.php?title=Sequence_container_(C%2B%2B)&amp;oldid=767869909#Specialization_for_bool
+template &lt;&gt;
+void dataLoad(std::istream &amp; stream, std::vector&lt;bool&gt; &amp; v, void * /*context*/);
+template &lt;&gt;
+void dataLoad(std::istream &amp; stream, const Elem *&amp; e, void * context);
+template &lt;&gt;
+void dataLoad(std::istream &amp; stream, const Node *&amp; e, void * context);
+template &lt;&gt;
+void dataLoad(std::istream &amp; stream, Elem *&amp; e, void * context);
+template &lt;&gt;
+void dataLoad(std::istream &amp; stream, Node *&amp; e, void * context);
+template &lt;&gt;
+void dataLoad(std::istream &amp; stream, std::stringstream &amp; s, void * context);
+template &lt;&gt;
+void dataLoad(std::istream &amp; stream, std::stringstream *&amp; s, void * context);
+template &lt;&gt;
+void dataLoad(std::istream &amp; stream, DualReal &amp; dn, void * context);
+template &lt;&gt;
+void dataLoad(std::istream &amp; stream, RealEigenVector &amp; v, void * context);
+template &lt;&gt;
+void dataLoad(std::istream &amp; stream, RealEigenMatrix &amp; v, void * context);
+template &lt;&gt;
+void dataLoad(std::istream &amp; stream, libMesh::Parameters &amp; p, void * context);
+
+template &lt;std::size_t N&gt;
+inline void
+dataLoad(std::istream &amp; stream, DualReal (&amp;dn)[N], void * context)
+{
+  for (std::size_t i = 0; i &lt; N; ++i)
+    dataLoad(stream, dn[i], context);
+}
+
+template &lt;typename T&gt;
+void
+dataLoad(std::istream &amp; stream, NumericVector&lt;T&gt; &amp; v, void * context)
+{
+  numeric_index_type size = v.local_size();
+  for (numeric_index_type i = v.first_local_index(); i &lt; v.first_local_index() + size; i++)
+  {
+    T r = 0;
+    dataLoad(stream, r, context);
+    v.set(i, r);
+  }
+  v.close();
+}
+
+template &lt;&gt;
+void dataLoad(std::istream &amp; stream, Vec &amp; v, void * context);
+
+template &lt;typename T&gt;
+void
+dataLoad(std::istream &amp; stream, DenseVector&lt;T&gt; &amp; v, void * context)
+{
+  unsigned int n = 0;
+  stream.read((char *)&amp;n, sizeof(n));
+  v.resize(n);
+  for (unsigned int i = 0; i &lt; n; i++)
+  {
+    T r = 0;
+    dataLoad(stream, r, context);
+    v(i) = r;
+  }
+}
+
+template &lt;typename T&gt;
+void dataLoad(std::istream &amp; stream, TensorValue&lt;T&gt; &amp; v, void * context);
+
+template &lt;typename T&gt;
+void dataLoad(std::istream &amp; stream, DenseMatrix&lt;T&gt; &amp; v, void * context);
+
+template &lt;typename T&gt;
+void dataLoad(std::istream &amp; stream, VectorValue&lt;T&gt; &amp; v, void * context);
+
+template &lt;typename T&gt;
+void
+dataLoad(std::istream &amp; stream, RankTwoTensorTempl&lt;T&gt; &amp; rtt, void * context)
+{
+  dataLoad(stream, rtt._coords, context);
+}
+
+template &lt;typename T&gt;
+void
+dataLoad(std::istream &amp; stream, RankThreeTensorTempl&lt;T&gt; &amp; rtt, void * context)
+{
+  dataLoad(stream, rtt._vals, context);
+}
+
+template &lt;typename T&gt;
+void
+dataLoad(std::istream &amp; stream, RankFourTensorTempl&lt;T&gt; &amp; rft, void * context)
+{
+  dataLoad(stream, rft._vals, context);
+}
+
+template &lt;typename T&gt;
+void
+dataLoad(std::istream &amp; stream, ColumnMajorMatrixTempl&lt;T&gt; &amp; cmm, void * context)
+{
+  dataLoad(stream, cmm._values, context);
+}
+
+// Scalar Helper Function
+template &lt;typename P&gt;
+inline void
+storeHelper(std::ostream &amp; stream, P &amp; data, void * context)
+{
+  dataStore(stream, data, context);
+}
+
+// Vector Helper Function
+template &lt;typename P&gt;
+inline void
+storeHelper(std::ostream &amp; stream, std::vector&lt;P&gt; &amp; data, void * context)
+{
+  dataStore(stream, data, context);
+}
+
+// std::shared_ptr Helper Function
+template &lt;typename P&gt;
+inline void
+storeHelper(std::ostream &amp; stream, std::shared_ptr&lt;P&gt; &amp; data, void * context)
+{
+  dataStore(stream, data, context);
+}
+
+// std::unique Helper Function
+template &lt;typename P&gt;
+inline void
+storeHelper(std::ostream &amp; stream, std::unique_ptr&lt;P&gt; &amp; data, void * context)
+{
+  dataStore(stream, data, context);
+}
+
+// Set Helper Function
+template &lt;typename P&gt;
+inline void
+storeHelper(std::ostream &amp; stream, std::set&lt;P&gt; &amp; data, void * context)
+{
+  dataStore(stream, data, context);
+}
+
+// Map Helper Function
+template &lt;typename P, typename Q&gt;
+inline void
+storeHelper(std::ostream &amp; stream, std::map&lt;P, Q&gt; &amp; data, void * context)
+{
+  dataStore(stream, data, context);
+}
+
+// Unordered_map Helper Function
+template &lt;typename P, typename Q&gt;
+inline void
+storeHelper(std::ostream &amp; stream, std::unordered_map&lt;P, Q&gt; &amp; data, void * context)
+{
+  dataStore(stream, data, context);
+}
+
+// HashMap Helper Function
+template &lt;typename P, typename Q&gt;
+inline void
+storeHelper(std::ostream &amp; stream, HashMap&lt;P, Q&gt; &amp; data, void * context)
+{
+  dataStore(stream, data, context);
+}
+
+// Scalar Helper Function
+template &lt;typename P&gt;
+inline void
+loadHelper(std::istream &amp; stream, P &amp; data, void * context)
+{
+  dataLoad(stream, data, context);
+}
+
+// Vector Helper Function
+template &lt;typename P&gt;
+inline void
+loadHelper(std::istream &amp; stream, std::vector&lt;P&gt; &amp; data, void * context)
+{
+  dataLoad(stream, data, context);
+}
+
+// std::shared_ptr Helper Function
+template &lt;typename P&gt;
+inline void
+loadHelper(std::istream &amp; stream, std::shared_ptr&lt;P&gt; &amp; data, void * context)
+{
+  dataLoad(stream, data, context);
+}
+
+// Unique Pointer Helper Function
+template &lt;typename P&gt;
+inline void
+loadHelper(std::istream &amp; stream, std::unique_ptr&lt;P&gt; &amp; data, void * context)
+{
+  dataLoad(stream, data, context);
+}
+
+// Set Helper Function
+template &lt;typename P&gt;
+inline void
+loadHelper(std::istream &amp; stream, std::set&lt;P&gt; &amp; data, void * context)
+{
+  dataLoad(stream, data, context);
+}
+
+// Map Helper Function
+template &lt;typename P, typename Q&gt;
+inline void
+loadHelper(std::istream &amp; stream, std::map&lt;P, Q&gt; &amp; data, void * context)
+{
+  dataLoad(stream, data, context);
+}
+
+// Unordered_map Helper Function
+template &lt;typename P, typename Q&gt;
+inline void
+loadHelper(std::istream &amp; stream, std::unordered_map&lt;P, Q&gt; &amp; data, void * context)
+{
+  dataLoad(stream, data, context);
+}
+
+// HashMap Helper Function
+template &lt;typename P, typename Q&gt;
+inline void
+loadHelper(std::istream &amp; stream, HashMap&lt;P, Q&gt; &amp; data, void * context)
+{
+  dataLoad(stream, data, context);
+}
+
+// Specializations for Backup type
+template &lt;&gt;
+inline void
+dataStore(std::ostream &amp; stream, Backup *&amp; backup, void * context)
+{
+  dataStore(stream, backup-&gt;_system_data, context);
+
+  for (unsigned int i = 0; i &lt; backup-&gt;_restartable_data.size(); i++)
+    dataStore(stream, backup-&gt;_restartable_data[i], context);
+}
+
+template &lt;&gt;
+inline void
+dataLoad(std::istream &amp; stream, Backup *&amp; backup, void * context)
+{
+  dataLoad(stream, backup-&gt;_system_data, context);
+
+  for (unsigned int i = 0; i &lt; backup-&gt;_restartable_data.size(); i++)
+    dataLoad(stream, backup-&gt;_restartable_data[i], context);
+}
+
+void dataLoad(std::istream &amp; stream, Point &amp; p, void * context);
+
+#ifndef TIMPI_HAVE_STRING_PACKING
+/**
+ * The following methods are specializations for using the libMesh::Parallel::packed_range_*
+ * routines
+ * for std::strings. These are here because the dataLoad/dataStore routines create raw string
+ * buffers that can be communicated in a standard way using packed ranges.
+ */
+namespace libMesh
+{
+namespace Parallel
+{
+template &lt;typename T&gt;
+class Packing&lt;std::basic_string&lt;T&gt;&gt;
+{
+public:
+  static const unsigned int size_bytes = 4;
+
+  typedef T buffer_type;
+
+  static unsigned int get_string_len(typename std::vector&lt;T&gt;::const_iterator in)
+  {
+    unsigned int string_len = reinterpret_cast&lt;const unsigned char &amp;&gt;(in[size_bytes - 1]);
+    for (signed int i = size_bytes - 2; i &gt;= 0; --i)
+    {
+      string_len *= 256;
+      string_len += reinterpret_cast&lt;const unsigned char &amp;&gt;(in[i]);
+    }
+    return string_len;
+  }
+
+  static unsigned int packed_size(typename std::vector&lt;T&gt;::const_iterator in)
+  {
+    return get_string_len(in) + size_bytes;
+  }
+
+  static unsigned int packable_size(const std::basic_string&lt;T&gt; &amp; s, const void *)
+  {
+    return s.size() + size_bytes;
+  }
+
+  template &lt;typename Iter&gt;
+  static void pack(const std::basic_string&lt;T&gt; &amp; b, Iter data_out, const void *)
+  {
+    unsigned int string_len = b.size();
+    for (unsigned int i = 0; i != size_bytes; ++i)
+    {
+      *data_out++ = (string_len % 256);
+      string_len /= 256;
+    }
+
+    std::copy(b.begin(), b.end(), data_out);
+  }
+
+  static std::basic_string&lt;T&gt; unpack(typename std::vector&lt;T&gt;::const_iterator in, void *)
+  {
+    unsigned int string_len = get_string_len(in);
+
+    std::ostringstream oss;
+    for (unsigned int i = 0; i &lt; string_len; ++i)
+      oss &lt;&lt; reinterpret_cast&lt;const unsigned char &amp;&gt;(in[i + size_bytes]);
+
+    in += size_bytes + string_len;
+
+    return oss.str();
+  }
+};
+
+} // namespace Parallel
+
+} // namespace libMesh
+
+#endif
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div><div class="col hide-on-med-and-down l2"><div class="toc-wrapper pin-top"><ul class="section table-of-contents"></ul></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>

@@ -1,0 +1,617 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>Materials System | Moltres</title><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../contrib/katex/katex.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/katex_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/moltres.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script><script type="text/javascript" src="../../contrib/katex/katex.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down">Moltres</a><a href="https://github.com/arfc/moltres" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="#!" class="dropdown-trigger" data-target="bbd31b28-8b24-4ac5-acf4-9341ae483c0e" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="31607961-f5ba-4647-9080-4f26711c1933" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="de54f2c2-7f79-4f52-ac36-c8b9a329c940" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#" class="sidenav-trigger" data-target="a3b4b403-3b60-4ea1-b8e7-5e27560d31a0"><i class="material-icons">menu</i></a><ul class="sidenav" id="a3b4b403-3b60-4ea1-b8e7-5e27560d31a0"><li><a href="#!" class="dropdown-trigger" data-target="f897412b-bd99-4441-96c5-7eee558f6074" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="01d36807-1d4a-4085-9334-a83b206834c6" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="119eb672-dbd9-4c0a-986f-59e420888c71" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="bbd31b28-8b24-4ac5-acf4-9341ae483c0e"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="31607961-f5ba-4647-9080-4f26711c1933"><li><a href="../index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="de54f2c2-7f79-4f52-ac36-c8b9a329c940"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul><ul class="dropdown-content" id="f897412b-bd99-4441-96c5-7eee558f6074"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="01d36807-1d4a-4085-9334-a83b206834c6"><li><a href="../index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="119eb672-dbd9-4c0a-986f-59e420888c71"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="col hide-on-med-and-down l12"><nav class="breadcrumb-nav"><div class="nav-wrapper"><a href=".." class="breadcrumb">syntax</a><a href="." class="breadcrumb">Materials</a></div></nav></div></div><div class="row"><div class="moose-content col s12 m12 l10"><section id="b8b4ef9c-aed1-4148-9f74-6e0b339439cc" data-section-level="1" data-section-text="Materials System"><h1 id="materials-system">Materials System</h1><p>The material system is the primary mechanism for defining spatially varying properties. The system allows properties to be defined in a single object (a <code>Material</code>) and shared among the many other systems such as the <a href="../Kernels/index.html">Kernel</a> or <a href="../BCs/index.html">BoundaryCondition</a> systems. Material objects are designed to directly couple to solution variables as well as other materials and therefore allow for capturing the true nonlinear behavior of the equations.</p><p>The material system relies on a producer/consumer relationship: <code>Material</code> objects <strong>produce</strong> properties and other objects (including materials) <strong>consume</strong> these properties.</p><p>The properties are produced on demand, thus the computed values are always up to date. For example, a property that relies on a solution variable (e.g., thermal conductivity as function of temperature) will be computed with the current temperature during the solve iterations, so the properties are tightly coupled.</p><p>The material system supports the use of automatic differentiation for property calculations, as such there are two approaches for producing and consuming properties: with and without automatic differentiation. The following sections detail the producing and consuming properties using the two approaches. To further understand automatic differentiation, please refer to the <a href="../../automatic_differentiation/index.html">Automatic Differentiation</a> page for more information.</p><p>The proceeding sections briefly describe the different aspects of a <code>Material</code> object for producing and computing the properties as well as how other objects consume the properties. For an example of how a <code>Material</code> object is created and used please refer to ex08_materials.md.</p><section class="scrollspy" id="6ab9d14c-f98e-43ae-b0a5-2cea6e689829" data-section-level="2" data-section-text="Producing / Computing Properties"><h2 id="producing-computing-properties">Producing/Computing Properties</h2><p>Properties must be produced by a <code>Material</code> object by declaring the property with one of two methods:</p><ol class="browser-default" start="1"><li><p><code>declareProperty&lt;TYPE&gt;(&quot;property_name&quot;)</code> declares a property with a name &quot;property_name&quot; to be computed by the <code>Material</code> object. </p></li><li><p><code>declareADProperty&lt;TYPE&gt;</code> declares a property with a name &quot;property_name&quot; to be computed by the <code>Material</code> object that will include automatic differentiation.</p></li></ol><p>The <code>TYPE</code> is any valid C++ type such an <code>int</code> or <code>Real</code> or <code>std::vector&lt;Real&gt;</code>. The properties must then be computed within the <code>computeQpProperties</code> method defined within the object.</p><p>The property name is an arbitrary name of the property, this name should be set such that it corresponds to the value be computed (e.g., &quot;diffusivity&quot;). The name provided here is the same name that will be used for consuming the property. More information on names is provided in <a href="index.html#property-names">Property Names</a> section below.</p><p>For example, consider a simulation that requires a diffusivity term. In the <code>Material</code> object header a property is declared (in the C++ since) as follows.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">  MaterialProperty&lt;Real&gt; &amp; _diffusivity;
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#2f7695ba-bb38-4ac1-b833-610d42e6d776">(moose/examples/ex08_materials/include/materials/ExampleMaterial.h)</a><p>All properties will either be a <code>MaterialProperty&lt;TYPE&gt;</code> or <code>ADMaterialProperty&lt;TYPE&gt;</code> and must be a non-const reference. Again, the <code>TYPE</code> can be any C++ type. In this example, a scalar <code>Real</code> number is being used.</p><p>In the source file the reference is initialized in the initialization list using the aforementioned declare functions as follows. This declares the property (in the material property sense) to be computed.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">    _diffusivity(declareProperty&lt;Real&gt;(&quot;diffusivity&quot;)),
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#540ea576-3f75-48be-b094-5828fe5448fc">(moose/examples/ex08_materials/src/materials/ExampleMaterial.C)</a><p>The final step for producing a property is to compute the value. The computation occurs within a <code>Material</code> object <code>computeQpProperties</code> method. As the method name suggests, the purpose of the method is to compute the values of properties at a quadrature point. This method is a virtual method that must be overridden. To do this, in the header the virtual method is declared (again in the C++ sense).</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">  virtual void computeQpProperties() override;
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#6605a54d-67e1-4400-a193-766266854df2">(moose/examples/ex08_materials/include/materials/ExampleMaterial.h)</a><p>In the source file the method is defined. For the current example this definition computes the &quot;diffusivity&quot; as well another term, refer to ex08_materials.md.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">ExampleMaterial::computeQpProperties()
+{
+  // Diffusivity is the value of the interpolated piece-wise function described by the user
+  _diffusivity[_qp] = _piecewise_func.sample(_q_point[_qp](2));
+
+  // Convection velocity is set equal to the gradient of the variable set by the user.
+  _convection_velocity[_qp] = _diffusion_gradient[_qp];
+}
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#4ce56564-2843-4847-ba5c-36a65ef2e0d4">(moose/examples/ex08_materials/src/materials/ExampleMaterial.C)</a><p>The purpose of the content of this method is to assign values for the properties at a quadrature point. Recall that &quot;_diffusivity&quot; is a reference to a <code>MaterialProperty</code> type. The <code>MaterialProperty</code> type is a container that stores the values of a property for each quadrature point. Therefore, this container must be indexed by <code>_qp</code> to compute the value for a specific quadrature point.</p></section><section class="scrollspy" id="22bb3777-570f-4f05-9f78-a1349cda02f9" data-section-level="2" data-section-text="Consuming Properties"><h2 id="consuming-properties">Consuming Properties</h2><p>Objects that require material properties consume them using one of two functions</p><ol class="browser-default" start="1"><li><p><code>getMaterialProperty&lt;TYPE&gt;(&quot;property_name&quot;)</code> retrieves a property with a name &quot;property_name&quot; to be consumed by the object. </p></li><li><p><code>getADMaterialProperty&lt;TYPE&gt;</code> retrieves a property with a name &quot;property_name&quot; to be consumed by the object that will include automatic differentiation.</p></li></ol><p>For an object to consume a property the same basic procedure is followed. First in the consuming objects header file a <code>MaterialProperty</code> with the correct type (e.g., <code>Real</code> for the diffusivity example) is declared (in the C++ sense) as follows. Notice, that the member variable is a <strong>const</strong> reference. The const is important. Consuming objects cannot modify a property, it only uses the property so it is marked to be constant.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">  const MaterialProperty&lt;Real&gt; &amp; _diffusivity;
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#d6ed6e03-9471-4583-b628-d734bbdd8506">(moose/examples/ex08_materials/include/kernels/ExampleDiffusion.h)</a><p>In the source file the reference is initialized in the initialization list using the aforementioned get methods. This method initializes the <code>_diffusivity</code> member variable to reference the desired value of the property as computed by the material object.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">  : Diffusion(parameters), _diffusivity(getMaterialProperty&lt;Real&gt;(&quot;diffusivity&quot;))
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#6f616a3a-c7c4-45a2-a037-bd909f347895">(moose/examples/ex08_materials/src/kernels/ExampleDiffusion.C)</a><p>The name used in the get method, &quot;diffusivity&quot;, in this case is not arbitrary. This name corresponds with the name used to declare the property in the material object.</p><div class="card moose-alert moose-alert-note"><div class="card-title moose-alert-title"><i class="material-icons moose-inline-icon">comment</i><span class="moose-alert-title-brand">note:</span>The declare/get calls must correspond</div><div class="card-content"><div class="moose-alert-content"><p><p>If a material property is declared for automatic differentiation (AD) using <code>declareADProperty</code> then it <strong>must</strong> be consumed with the <code>getADMaterialProperty</code>. The same is true for non-automatic differentiation; properties declared with <code>declareProperty</code> <strong>must</strong> be consumed with the <code>getMaterialProperty</code> method.</p></p></div></div></div></section><section class="scrollspy" id="f16a04f3-dbff-4233-a422-cc29205be16d" data-section-level="2" data-section-text="Property Names"><h2 id="property-names">Property Names</h2><p>When creating a Material object and declaring the properties that shall be computed, it is often desirable to allow for the property name to be changed via the input file. This may be accomplished by adding an input parameter for assigning the name. For example, considering the example above the following code snippet adds an input parameter, &quot;diffusivity_name&quot;, that allows the input file to set the name of the diffusivity property, but by default the name remains &quot;diffusivity&quot;.</p><pre class="moose-pre"><code class="language-c++">
+params.addParam&lt;MaterialPropertyName&gt;(&quot;diffusivity_name&quot;, &quot;diffusivity&quot;,
+                                      &quot;The name of the diffusivity material property.&quot;);
+</code></pre><p>In the material object, the declare function is simply changed to use the parameter name rather than string by itself. By default a property will be declared with the name &quot;diffusivity&quot;.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">    _diffusivity_name(declareProperty&lt;Real&gt;(&quot;diffusivity_name&quot;)),
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#bbff2074-2a01-46c6-a148-da77ebb757d9">(moose/examples/ex08_materials/src/materials/ExampleMaterial.C)</a><p>However, if the user wants to alter this name to something else, such as &quot;not_diffusivity&quot; then the input parameter &quot;diffusivity_name&quot; is simply added to the input file block for the material.</p><pre class="moose-pre"><code class="language-text">
+[Materials]
+  [example]
+    type = ExampleMaterial
+    diffusivity_name = not_diffusivity
+  []
+[]
+</code></pre><p>On the consumer side, the get method will now be required to use the name &quot;not_diffusivity&quot; to retrieve the property. Consuming objects can also use the same procedure to allow for custom property names by adding a parameter and using the parameter name in the get method in the same fashion.</p></section><section class="scrollspy" id="fd943bc9-82e8-4025-8a42-510f93e11c75" data-section-level="2" data-section-text="Default Material Properties"><h2 id="default-material-properties">Default Material Properties</h2><p>The <code>MaterialPropertyName</code> input parameter also provides the ability to set default values for scalar (<code>Real</code>) properties. In the above example, the input file can use number or parsed function (see <a href="../../source/functions/MooseParsedFunction.html">ParsedFunction</a>) to define a the property value. For example, the input snippet above could set a constant value.</p><pre class="moose-pre"><code class="language-text">
+[Materials]
+  [example]
+    type = ExampleMaterial
+    diffusivity_name = 12345
+  []
+[]
+</code></pre></section><section class="scrollspy" id="782235c7-20f6-4455-adf7-d7703e590c13" data-section-level="2" data-section-text="Stateful Material Properties"><h2 id="stateful-material-properties">Stateful Material Properties</h2><p>In general properties are computed on demand and not stored. However, in some cases values of material properties from a previous timestep may be required. To access properties two methods exist:</p><ul class="browser-default"><li><p><code>getMaterialPropertyOld&lt;TYPE&gt;</code> returns a reference to the property from the previous timestep. </p></li><li><p><code>getMaterialPropertyOlder&lt;TYPE&gt;</code> returns a reference to the property from two timesteps before the current.</p></li></ul><p>This is often referred to as a &quot;state&quot; variable, in MOOSE we refer to them as &quot;stateful material properties.&quot; As stated, material properties are usually computed on demand.</p><div class="card moose-alert moose-alert-warning"><div class="card-title moose-alert-title"><i class="material-icons moose-inline-icon">warning</i><span class="moose-alert-title-brand">warning:</span>Stateful properties will increase memory use</div><div class="card-content"><div class="moose-alert-content"><p><p>When a stateful property is requested through one of the above methods this is no longer the case. When it is computed the value is also stored for every quadrature point on every element. As such, stateful properties can become memory intensive, especially if the property being stored is a vector or tensor value.</p></p></div></div></div></section><section class="scrollspy" id="92141bb7-fa2a-4c7b-9347-448eceb4dad8" data-section-level="2" data-section-text="Material Property Output"><h2 id="material-property-output">Material Property Output</h2><p>Output of <code>Material</code> properties is enabled by setting the &quot;outputs&quot; parameter. The following example creates two additional variables called &quot;mat1&quot; and &quot;mat2&quot; that will show up in the output file.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[Materials]
+  [block_1]
+    type = OutputTestMaterial
+    block = 1
+    output_properties = &#x27;real_property tensor_property&#x27;
+    outputs = exodus
+    variable = u
+  []
+  [block_2]
+    type = OutputTestMaterial
+    block = 2
+    output_properties = &#x27;vector_property tensor_property&#x27;
+    outputs = exodus
+    variable = u
+  []
+[]
+
+[Outputs]
+  exodus = true
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#e89eb0db-dfea-4eb0-9dae-3368a01da77e">(moose/test/tests/materials/output/output_block.i)</a><p><code>Material</code> properties can be of arbitrary (C++) type, but not all types can be output. The following table lists the types of properties that are available for automatic output.</p><div form="['left', 'left', 'left']" recursive class="moose-table-div"><table><thead><tr><th style=";text-align:left">Type</th><th style=";text-align:left">AuxKernel</th><th style=";text-align:left">Variable Name(s)</th></tr></thead><tbody><tr><td style=";text-align:left">Real</td><td style=";text-align:left"><code>MaterialRealAux</code></td><td style=";text-align:left">prop</td></tr></tbody><tbody><tr><td style=";text-align:left">RealVectorValue</td><td style=";text-align:left"><code>MaterialRealVectorValueAux</code></td><td style=";text-align:left">prop_1, prop_2, and prop_3</td></tr></tbody><tbody><tr><td style=";text-align:left">RealTensorValue</td><td style=";text-align:left"><code>MaterialRealTensorValueAux</code></td><td style=";text-align:left">prop_11, prop_12, prop_13, prop_21, etc.</td></tr></tbody></table></div></section><section class="scrollspy" id="e1e059cf-3baa-454d-8f92-f45713053a3a" data-section-level="2" data-section-text="Material sorting"><h2 id="material-sorting">Material sorting</h2><p>Materials are sorted such that one material may consume a property produced by another material and know that the consumed property will be up-to-date, e.g. the producer material will execute before the consumer material. If a cyclic dependency is detected between two materials, then MOOSE will produce an error.</p></section><section class="scrollspy" id="30abcdc3-d3c1-4cd6-b1fd-6ab057a42c1d" data-section-level="2" data-section-text="Advanced Topics"><h2 id="advanced-topics">Advanced Topics</h2><section id="25345bee-c81e-4a0a-9cff-00b8ec4de856" data-section-level="3" data-section-text="Evaluation of Material Properties on Element Faces"><h3 id="evaluation-of-material-properties-on-element-faces">Evaluation of Material Properties on Element Faces</h3><p>MOOSE creates three copies of a <em>non-boundary restricted</em> material for evaluations on quadrature points of elements, element faces on both the current element side and the neighboring element side. The name of the element interior material is the material name from the input file, while the name of the element face material is the material name appended with <code>_face</code> and the name of the neighbor face material is the material name appended with <code>_neighbor</code>. The element material can be identified in a material with its member variable <code>_bnd=false</code>. The other two copies have <code>_bnd=true</code>. The element face material and neighbor face material differentiate with each other by the value of another member variable <code>_neighbor</code>. If a material declares multiple material properties and some of them are not needed on element faces, users can switch off their declaration and evaluation based on member variable <code>_bnd</code>.</p></section><section id="cac54ac9-9bf6-4aa4-888f-66cb4a30f975" data-section-level="3" data-section-text="Interface Material Objects"><h3 id="interface-material-objects">Interface Material Objects</h3><p>MOOSE allows a material to be defined on an internal boundary of a mesh with a specific material type <code>InterfaceMaterial</code>. Material properties declared in interface materials are available on both sides of the boundary. Interface materials allows users to evaluate the properties on element faces based on quantities on both sides of the element face. Interface materials are often used along with <a href="../InterfaceKernels/index.html">InterfaceKernel</a>.</p></section><section id="36e2bc10-e24e-43d0-970e-8ec29c35f66e" data-section-level="3" data-section-text="Discrete Material Objects"><h3 id="discrete-material-objects">Discrete Material Objects</h3><p>A &quot;<a href="http://www.dictionary.com/browse/discrete">Discrete</a>&quot; <code>Material</code> is an object that may be detached from MOOSE and computed explicitly from other objects. An object inheriting from <a href="http://www.mooseframework.org/docs/doxygen/moose/classMaterialPropertyInterface.html">MaterialPropertyInterface</a> may explicitly call the compute methods of a <code>Material</code> object via the <code>getMaterial</code> method.</p><p>The following should be considered when computing <code>Material</code> properties explicitly.</p><ul class="browser-default"><li><p>It is possible to disable the automatic computation of a <code>Material</code> object by MOOSE by setting the <code>compute=false</code> parameter. </p></li><li><p>When <code>compute=false</code> is set the compute method (<code>computeQpProperties</code>) is <strong>not</strong> called by MOOSE, instead it must be called explicitly in your application using the <code>computeProperties</code> method that accepts a quadrature point index. </p></li><li><p>When <code>compute=false</code> an additional method should be defined, <code>resetQpProperties</code>, which sets the properties to a safe value (e.g., 0) for later calls to the compute method. Not doing this can lead to erroneous material properties values.</p></li></ul><p>The original intent for this functionality was to enable to ability for material properties to be computed via iteration by another object, as in the following example. First, consider define a material (<code>RecomputeMaterial</code>) that computes the value of a function and its derivative.</p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-91f9ee59-5044-4fda-b416-188cbf36bd83"></span><script>var element = document.getElementById("moose-equation-91f9ee59-5044-4fda-b416-188cbf36bd83");katex.render("f(p) = p^2v", element, {displayMode:true,throwOnError:false});</script></span><p>and</p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-6b6458e6-f8d5-40af-8873-71e24f23babe"></span><script>var element = document.getElementById("moose-equation-6b6458e6-f8d5-40af-8873-71e24f23babe");katex.render("f'(p) = 2pv,", element, {displayMode:true,throwOnError:false});</script></span><p>where v is known value and not a function of p. The following is the compute portion of this object.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">void
+RecomputeMaterial::computeQpProperties()
+{
+  Real x = _p[_qp];
+  _f[_qp] = x * x - _constant;
+  _f_prime[_qp] = 2 * x;
+}
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#1e2c473c-fe26-4e50-a55d-a1371dffe816">(moose/test/src/materials/RecomputeMaterial.C)</a><p>Second, define another material (<code>NewtonMaterial</code>) that computes the value of <span class="moose-katex-inline-equation" id="moose-equation-01e42924-d581-4e82-9986-413b27acbc07"><script>var element = document.getElementById("moose-equation-01e42924-d581-4e82-9986-413b27acbc07");katex.render("p: f(p)=0", element, {displayMode:false,throwOnError:false});</script></span> using Newton iterations. This material declares a material property (<code>_p</code>) which is what is solved for by iterating on the material properties containing <code>f</code> and <code>f&#x27;</code> from <code>RecomputeMaterial</code>. The <code>_discrete</code> member is a reference to a <code>Material</code> object retrieved with <code>getMaterial</code>.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">// MOOSEDOCS_START
+void
+NewtonMaterial::computeQpProperties()
+{
+  _p[_qp] = 0.5; // initial guess
+
+  // Newton iteration for find p
+  for (unsigned int i = 0; i &lt; _max_iterations; ++i)
+  {
+    _discrete.computePropertiesAtQp(_qp);
+    _p[_qp] -= _f[_qp] / _f_prime[_qp];
+    if (std::abs(_f[_qp]) &lt; _tol)
+      break;
+  }
+}
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#db0fe218-6026-4a13-b786-953ddcbb734a">(moose/test/src/materials/NewtonMaterial.C)</a><p>To create and use a &quot;Discrete&quot; <code>Material</code> use the following to guide the process.</p><ol class="browser-default" start="1"><li><p>Create a <code>Material</code> object by, in typical MOOSE fashion, inheriting from the <code>Material</code> object in your own application. </p></li><li><p>In your input file, set <code>compute=false</code> for this new object. </p></li><li><p>From within another object (e.g., another Material) that inherits from <code>MaterialPropertyInterface</code> call the <code>getMaterial</code> method. Note, this method returns a reference to a <code>Material</code> object, be sure to include <code>&amp;</code> when calling or declaring the variable. </p></li><li><p>When needed, call the <code>computeProperties</code> method of the <code>Material</code> being sure to provide the current quadrature point index to the method (<code>_qp</code> in most cases).</p></li></ol></section></section><section class="scrollspy" id="694cfe1d-cffa-4df1-9f38-8edb1b4e7d0e" data-section-level="2" data-section-text="Available Objects"><h2 id="available-objects">Available Objects</h2><ul class="moose-syntax-list collection with-header"><li class="collection-header">Moose App</li><li class="collection-item"><a href="../../source/materials/DerivativeParsedMaterial.html">ADDerivativeParsedMaterial</a>Parsed Function Material with automatic derivatives.</li><li class="collection-item"><a href="../../source/materials/DerivativeSumMaterial.html">ADDerivativeSumMaterial</a>Meta-material to sum up multiple derivative materials</li><li class="collection-item"><a href="../../source/materials/GenericConstantMaterial.html">ADGenericConstantMaterial</a>Declares material properties based on names and values prescribed by input parameters.</li><li class="collection-item"><a href="../../source/materials/GenericConstantRankTwoTensor.html">ADGenericConstantRankTwoTensor</a>Object for declaring a constant rank two tensor as a material property.</li><li class="collection-item"><a href="../../source/materials/GenericConstantVectorMaterial.html">ADGenericConstantVectorMaterial</a>Declares material properties based on names and vector values prescribed by input parameters.</li><li class="collection-item"><a href="../../source/materials/GenericFunctionMaterial.html">ADGenericFunctionMaterial</a>Material object for declaring properties that are populated by evaluation of Function object.</li><li class="collection-item"><a href="../../source/materials/GenericFunctionRankTwoTensor.html">ADGenericFunctionRankTwoTensor</a>Material object for defining rank two tensor properties using functions.</li><li class="collection-item"><a href="../../source/materials/ParsedMaterial.html">ADParsedMaterial</a>Parsed Function Material.</li><li class="collection-item"><a href="../../source/materials/ADPiecewiseLinearInterpolationMaterial.html">ADPiecewiseLinearInterpolationMaterial</a>Compute a property using a piecewise linear interpolation to define its dependence on a variable</li><li class="collection-item"><a href="../../source/materials/DerivativeParsedMaterial.html">DerivativeParsedMaterial</a>Parsed Function Material with automatic derivatives.</li><li class="collection-item"><a href="../../source/materials/DerivativeSumMaterial.html">DerivativeSumMaterial</a>Meta-material to sum up multiple derivative materials</li><li class="collection-item"><a href="../../source/materials/FVPropValPerSubdomainMaterial.html">FVADPropValPerSubdomainMaterial</a>Computes a property value on a per-subdomain basis</li><li class="collection-item"><a href="../../source/materials/FVPropValPerSubdomainMaterial.html">FVPropValPerSubdomainMaterial</a>Computes a property value on a per-subdomain basis</li><li class="collection-item"><a href="../../source/materials/GenericConstant2DArray.html">GenericConstant2DArray</a>A material evaluating one material property in type of RealEigenMatrix</li><li class="collection-item"><a href="../../source/materials/GenericConstantArray.html">GenericConstantArray</a>A material evaluating one material property in type of RealEigenVector</li><li class="collection-item"><a href="../../source/materials/GenericConstantMaterial.html">GenericConstantMaterial</a>Declares material properties based on names and values prescribed by input parameters.</li><li class="collection-item"><a href="../../source/materials/GenericConstantRankTwoTensor.html">GenericConstantRankTwoTensor</a>Object for declaring a constant rank two tensor as a material property.</li><li class="collection-item"><a href="../../source/materials/GenericConstantVectorMaterial.html">GenericConstantVectorMaterial</a>Declares material properties based on names and vector values prescribed by input parameters.</li><li class="collection-item"><a href="../../source/materials/GenericFunctionMaterial.html">GenericFunctionMaterial</a>Material object for declaring properties that are populated by evaluation of Function object.</li><li class="collection-item"><a href="../../source/materials/GenericFunctionRankTwoTensor.html">GenericFunctionRankTwoTensor</a>Material object for defining rank two tensor properties using functions.</li><li class="collection-item"><a href="../../source/materials/MaterialConverter.html">MaterialConverter</a>Converts regular material properties to AD properties and visa versa</li><li class="collection-item"><a href="../../source/materials/ParsedMaterial.html">ParsedMaterial</a>Parsed Function Material.</li><li class="collection-item"><a href="../../source/materials/PiecewiseLinearInterpolationMaterial.html">PiecewiseLinearInterpolationMaterial</a>Compute a property using a piecewise linear interpolation to define its dependence on a variable</li><li class="collection-item"><a href="../../source/materials/MaterialConverter.html">RankFourTensorMaterialConverter</a>Converts regular material properties to AD properties and visa versa</li><li class="collection-item"><a href="../../source/materials/MaterialConverter.html">RankTwoTensorMaterialConverter</a>Converts regular material properties to AD properties and visa versa</li><li class="collection-header">Phase Field App</li><li class="collection-item">ADConstantAnisotropicMobilityProvide a constant mobility tensor value</li><li class="collection-item">ADGBEvolutionComputes necessary material properties for the isotropic grain growth model</li><li class="collection-item">ADInterfaceOrientationMaterial2D interfacial anisotropy</li><li class="collection-item">ADMathFreeEnergyMaterial that implements the math free energy and its derivatives:  <span class="moose-katex-inline-equation" id="moose-equation-5249a092-020d-4c85-a114-cb0e687926f3"><script>var element = document.getElementById("moose-equation-5249a092-020d-4c85-a114-cb0e687926f3");katex.render("F = 1/4(1 + c)^2(1 - c)^2", element, {displayMode:false,throwOnError:false});</script></span></li><li class="collection-item">AsymmetricCrossTermBarrierFunctionMaterialFree energy contribution asymmetric across interfaces between arbitrary pairs of phases.</li><li class="collection-item">BarrierFunctionMaterialHelper material to provide <span class="moose-katex-inline-equation" id="moose-equation-51317ae0-c409-4a09-a7a4-b637a52f0b42"><script>var element = document.getElementById("moose-equation-51317ae0-c409-4a09-a7a4-b637a52f0b42");katex.render("g(\\eta)", element, {displayMode:false,throwOnError:false});</script></span> and its derivative in a polynomial. SIMPLE: <span class="moose-katex-inline-equation" id="moose-equation-46718a07-b1b0-4ac6-aac3-413e9c4840d7"><script>var element = document.getElementById("moose-equation-46718a07-b1b0-4ac6-aac3-413e9c4840d7");katex.render("\\eta^2(1-\\eta)^2", element, {displayMode:false,throwOnError:false});</script></span> LOW: <span class="moose-katex-inline-equation" id="moose-equation-ef449574-c549-48da-b1ad-44c57cd1f629"><script>var element = document.getElementById("moose-equation-ef449574-c549-48da-b1ad-44c57cd1f629");katex.render("\\eta(1-\\eta)", element, {displayMode:false,throwOnError:false});</script></span> HIGH: <span class="moose-katex-inline-equation" id="moose-equation-4bf78ded-0af9-4e7d-bd87-76cf82d43347"><script>var element = document.getElementById("moose-equation-4bf78ded-0af9-4e7d-bd87-76cf82d43347");katex.render("\\eta^2(1-\\eta^2)^2", element, {displayMode:false,throwOnError:false});</script></span></li><li class="collection-item">CompositeMobilityTensorAssemble a mobility tensor from multiple tensor contributions weighted by material properties</li><li class="collection-item">ComputePolycrystalElasticityTensorCompute an evolving elasticity tensor coupled to a grain growth phase field model.</li><li class="collection-item">ConstantAnisotropicMobilityProvide a constant mobility tensor value</li><li class="collection-item">CoupledValueFunctionFreeEnergyCompute a free energy from a lookup function</li><li class="collection-item">CrossTermBarrierFunctionMaterialFree energy contribution symmetric across interfaces between arbitrary pairs of phases.</li><li class="collection-item">DeformedGrainMaterial</li><li class="collection-item">DerivativeMultiPhaseMaterialTwo phase material that combines n phase materials using a switching function with and n non-conserved order parameters (to be used with SwitchingFunctionConstraint*).</li><li class="collection-item">DerivativeTwoPhaseMaterialTwo phase material that combines two single phase materials using a switching function.</li><li class="collection-item">DiscreteNucleationFree energy contribution for nucleating discrete particles</li><li class="collection-item">ElasticEnergyMaterialFree energy material for the elastic energy contributions.</li><li class="collection-item">ExternalForceDensityMaterialProviding external applied force density to grains</li><li class="collection-item">ForceDensityMaterialCalculating the force density acting on a grain</li><li class="collection-item">GBAnisotropy</li><li class="collection-item">GBDependentAnisotropicTensorCompute anisotropic rank two tensor based on GB phase variable</li><li class="collection-item">GBDependentDiffusivityCompute diffusivity rank two tensor based on GB phase variable</li><li class="collection-item">GBEvolutionComputes necessary material properties for the isotropic grain growth model</li><li class="collection-item">GBWidthAnisotropy</li><li class="collection-item">GrainAdvectionVelocityCalculation the advection velocity of grain due to rigid body translation and rotation</li><li class="collection-item">GrandPotentialInterfaceCalculate Grand Potential interface parameters for a specified interfacial free energy and width</li><li class="collection-item">GrandPotentialSinteringMaterialIncludes switching and thermodynamic properties for the grand potential sintering model</li><li class="collection-item">GrandPotentialTensorMaterialDiffusion and mobility parameters for grand potential model governing equations. Uses a tensor diffusivity</li><li class="collection-item">IdealGasFreeEnergyFree energy of an ideal gas.</li><li class="collection-item">InterfaceOrientationMaterial2D interfacial anisotropy</li><li class="collection-item">InterfaceOrientationMultiphaseMaterialThis Material accounts for the the orientation dependence of interfacial energy for multi-phase multi-order parameter phase-field model.</li><li class="collection-item">KKSXeVacSolidMaterialKKS Solid phase free energy for Xe,Vac in UO2.  Fm(cmg,cmv)</li><li class="collection-item">MathEBFreeEnergyMaterial that implements the math free energy using the expression builder and automatic differentiation</li><li class="collection-item">MathFreeEnergyMaterial that implements the math free energy and its derivatives:  <span class="moose-katex-inline-equation" id="moose-equation-ca68c3a0-d4a1-43bc-a5b1-58a56eddcef6"><script>var element = document.getElementById("moose-equation-ca68c3a0-d4a1-43bc-a5b1-58a56eddcef6");katex.render("F = 1/4(1 + c)^2(1 - c)^2", element, {displayMode:false,throwOnError:false});</script></span></li><li class="collection-item">MixedSwitchingFunctionMaterialHelper material to provide h(eta) and its derivative in one of two polynomial forms. MIX234 and MIX246</li><li class="collection-item">MultiBarrierFunctionMaterialDouble well phase transformation barrier free energy contribution.</li><li class="collection-item">PFCRFFMaterial</li><li class="collection-item">PFCTradMaterialPolynomial coefficients for a phase field crystal correlation function</li><li class="collection-item">PFParamsPolyFreeEnergyPhase field parameters for polynomial free energy for single component systems</li><li class="collection-item">PhaseNormalTensorCalculate normal tensor of a phase based on gradient</li><li class="collection-item">PolycrystalDiffusivityTensorBaseGenerates a diffusion tensor to distinguish between the bulk, grain boundaries, and surfaces</li><li class="collection-item">PolynomialFreeEnergyPolynomial free energy for single component systems</li><li class="collection-item">RegularSolutionFreeEnergyMaterial that implements the free energy of a regular solution</li><li class="collection-item">StrainGradDispDerivativesProvide the constant derivatives of strain w.r.t. the displacement gradient components.</li><li class="collection-item">SwitchingFunction3PhaseMaterialMaterial for switching function that prevents formation of a third phase at a two-phase interface: <span class="moose-katex-inline-equation" id="moose-equation-cc077449-49b7-4e24-802d-917aa4f5f58d"><script>var element = document.getElementById("moose-equation-cc077449-49b7-4e24-802d-917aa4f5f58d");katex.render("h_i = \\eta_i^2/4 [15 (1-\\eta_i) [1 + \\eta_i - (\\eta_k - \\eta_j)^2] + \\eta_i (9\\eta_i^2 - 5)]", element, {displayMode:false,throwOnError:false});</script></span></li><li class="collection-item">SwitchingFunctionMaterialHelper material to provide <span class="moose-katex-inline-equation" id="moose-equation-21d0e453-e59e-4f5e-8319-5f5fd12f4215"><script>var element = document.getElementById("moose-equation-21d0e453-e59e-4f5e-8319-5f5fd12f4215");katex.render("h(\\eta)", element, {displayMode:false,throwOnError:false});</script></span> and its derivative in one of two polynomial forms. SIMPLE: <span class="moose-katex-inline-equation" id="moose-equation-bf3cf7c0-204e-4cab-b67c-a23766c2a0dc"><script>var element = document.getElementById("moose-equation-bf3cf7c0-204e-4cab-b67c-a23766c2a0dc");katex.render("3\\eta^2-2\\eta^3", element, {displayMode:false,throwOnError:false});</script></span> HIGH: <span class="moose-katex-inline-equation" id="moose-equation-06e6b2fa-f6c0-4a4f-a43c-c667f3a26046"><script>var element = document.getElementById("moose-equation-06e6b2fa-f6c0-4a4f-a43c-c667f3a26046");katex.render("\\eta^3(6\\eta^2-15\\eta+10)", element, {displayMode:false,throwOnError:false});</script></span></li><li class="collection-item">SwitchingFunctionMultiPhaseMaterialCalculates the switching function for a given phase for a multi-phase, multi-order parameter model</li><li class="collection-item">ThirdPhaseSuppressionMaterialFree Energy contribution that penalizes more than two order parameters being non-zero</li><li class="collection-item">TimeStepMaterialProvide various time stepping quantities as material properties.</li><li class="collection-item">VanDerWaalsFreeEnergyFree energy of a Van der Waals gas.</li><li class="collection-item">VariableGradientMaterialCompute the norm of the gradient of a variable</li><li class="collection-header">Moltres App</li><li class="collection-item"><a href="../../source/materials/CammiFuel.html">CammiFuel</a>Declares material properties based on names and values prescribed by input parameters.</li><li class="collection-item"><a href="../../source/materials/CammiModerator.html">CammiModerator</a>Declares material properties based on names and values prescribed by input parameters.</li><li class="collection-item"><a href="../../source/materials/GenericMoltresMaterial.html">GenericMoltresMaterial</a>Declares material properties based on names and values prescribed by input parameters.</li><li class="collection-item"><a href="../../source/materials/GraphiteTwoGrpXSFunctionMaterial.html">GraphiteTwoGrpXSFunctionMaterial</a>Declares material properties based on names and values prescribed by input parameters.</li><li class="collection-item"><a href="../../source/materials/MoltresJsonMaterial.html">MoltresJsonMaterial</a>Declares material properties based on names and values prescribed by input parameters.</li><li class="collection-item"><a href="../../source/materials/MsreFuelTwoGrpXSFunctionMaterial.html">MsreFuelTwoGrpXSFunctionMaterial</a>Declares material properties based on names and values prescribed by input parameters.</li><li class="collection-item"><a href="../../source/materials/NuclearMaterial.html">NuclearMaterial</a>Declares material properties based on names and values prescribed by input parameters.</li><li class="collection-item"><a href="../../source/materials/Nusselt.html">Nusselt</a></li><li class="collection-item"><a href="../../source/materials/RoddedMaterial.html">RoddedMaterial</a>Declares material properties based on names and values prescribed by input parameters.</li><li class="collection-header">Fluid Properties App</li><li class="collection-item">ADSaturationPressureMaterialComputes saturation pressure at some temperature.</li><li class="collection-item">ADSaturationTemperatureMaterialComputes saturation temperature at some pressure</li><li class="collection-item">ADSurfaceTensionMaterialComputes surface tension at some temperature</li><li class="collection-item">FluidPropertiesMaterialComputes fluid properties using (u, v) formulation</li><li class="collection-item">FluidPropertiesMaterialPTFluid properties using the (pressure, temperature) formulation</li><li class="collection-item">SaturationPressureMaterialComputes saturation pressure at some temperature.</li><li class="collection-item">SodiumPropertiesMaterialMaterial properties for liquid sodium sampled from SodiumProperties.</li><li class="collection-header">Rdg App</li><li class="collection-item">AEFVMaterialA material kernel for the advection equation using a cell-centered finite volume method.</li><li class="collection-header">Tensor Mechanics App</li><li class="collection-item">ADAbruptSofteningSoftening model with an abrupt stress release upon cracking. This class relies on automatic differentiation and is intended to be used with ADComputeSmearedCrackingStress.</li><li class="collection-item">ADCombinedScalarDamageScalar damage model which is computed as a function of multiple scalar damage models</li><li class="collection-item">ADComputeAxisymmetricRZFiniteStrainCompute a strain increment for finite strains under axisymmetric assumptions.</li><li class="collection-item">ADComputeAxisymmetricRZIncrementalStrainCompute a strain increment and rotation increment for finite strains under axisymmetric assumptions.</li><li class="collection-item">ADComputeAxisymmetricRZSmallStrainCompute a small strain in an Axisymmetric geometry</li><li class="collection-item">ADComputeDamageStressCompute stress for damaged elastic materials in conjunction with a damage model.</li><li class="collection-item">ADComputeDilatationThermalExpansionFunctionEigenstrainComputes eigenstrain due to thermal expansion using a function that describes the total dilatation as a function of temperature</li><li class="collection-item">ADComputeEigenstrainComputes a constant Eigenstrain</li><li class="collection-item">ADComputeElasticityTensorCompute an elasticity tensor.</li><li class="collection-item">ADComputeFiniteShellStrainCompute a large strain increment for the shell.</li><li class="collection-item">ADComputeFiniteStrainCompute a strain increment and rotation increment for finite strains.</li><li class="collection-item">ADComputeFiniteStrainElasticStressCompute stress using elasticity for finite strains</li><li class="collection-item">ADComputeGreenLagrangeStrainCompute a Green-Lagrange strain.</li><li class="collection-item">ADComputeIncrementalShellStrainCompute a small strain increment for the shell.</li><li class="collection-item">ADComputeIncrementalSmallStrainCompute a strain increment and rotation increment for small strains.</li><li class="collection-item">ADComputeInstantaneousThermalExpansionFunctionEigenstrainComputes eigenstrain due to thermal expansion using a function that describes the instantaneous thermal expansion as a function of temperature</li><li class="collection-item">ADComputeIsotropicElasticityTensorCompute a constant isotropic elasticity tensor.</li><li class="collection-item">ADComputeIsotropicElasticityTensorShellCompute a plane stress isotropic elasticity tensor.</li><li class="collection-item">ADComputeLinearElasticStressCompute stress using elasticity for small strains</li><li class="collection-item">ADComputeMeanThermalExpansionFunctionEigenstrainComputes eigenstrain due to thermal expansion using a function that describes the mean thermal expansion as a function of temperature</li><li class="collection-item">ADComputeMultipleInelasticStressCompute state (stress and internal parameters such as plastic strains and internal parameters) using an iterative process.  Combinations of creep models and plastic models may be used.</li><li class="collection-item">ADComputeMultiplePorousInelasticStressCompute state (stress and internal parameters such as plastic strains and internal parameters) using an iterative process. A porosity material property is defined and is calculated from the trace of inelastic strain increment.</li><li class="collection-item">ADComputePlaneFiniteStrainCompute strain increment and rotation increment for finite strain under 2D planar assumptions.</li><li class="collection-item">ADComputePlaneIncrementalStrainCompute strain increment for small strain under 2D planar assumptions.</li><li class="collection-item">ADComputePlaneSmallStrainCompute a small strain under generalized plane strain assumptions where the out of plane strain is generally nonzero.</li><li class="collection-item">ADComputeRSphericalFiniteStrainCompute a strain increment and rotation increment for finite strains in 1D spherical symmetry problems.</li><li class="collection-item">ADComputeRSphericalIncrementalStrainCompute a strain increment for incremental strains in 1D spherical symmetry problems.</li><li class="collection-item">ADComputeRSphericalSmallStrainCompute a small strain 1D spherical symmetry case.</li><li class="collection-item">ADComputeShellStressCompute in-plane stress using elasticity for shell</li><li class="collection-item">ADComputeSmallStrainCompute a small strain.</li><li class="collection-item">ADComputeSmearedCrackingStressCompute stress using a fixed smeared cracking model. Uses automatic differentiation</li><li class="collection-item">ADComputeStrainIncrementBasedStressCompute stress after subtracting inelastic strain increments</li><li class="collection-item">ADComputeThermalExpansionEigenstrainComputes eigenstrain due to thermal expansion with a constant coefficient</li><li class="collection-item">ADComputeVariableIsotropicElasticityTensorCompute an isotropic elasticity tensor for elastic constants that change as a function of material properties</li><li class="collection-item">ADExponentialSofteningSoftening model with an exponential softening response upon cracking. This class is intended to be used with ADComputeSmearedCrackingStress and relies on automatic differentiation.</li><li class="collection-item">ADHillCreepStressUpdateThis class uses the stress update material in a generalized radial return anisotropic power law creep model.  This class can be used in conjunction with other creep and plasticity materials for more complex simulations.</li><li class="collection-item">ADHillElastoPlasticityStressUpdateThis class uses the stress update material in a radial return isotropic power law creep model.  This class can be used in conjunction with other creep and plasticity materials for more complex simulations.</li><li class="collection-item">ADHillPlasticityStressUpdateThis class uses the stress update material in a radial return isotropic power law creep model.  This class can be used in conjunction with other creep and plasticity materials for more complex simulations.</li><li class="collection-item">ADIsotropicPlasticityStressUpdateThis class uses the discrete material in a radial return isotropic plasticity model.  This class is one of the basic radial return constitutive models, yet it can be used in conjunction with other creep and plasticity materials for more complex simulations.</li><li class="collection-item">ADIsotropicPowerLawHardeningStressUpdateThis class uses the discrete material in a radial return isotropic plasticity power law hardening model, solving for the yield stress as the intersection of the power law relation curve and Hooke&#x27;s law.  This class can be used in conjunction with other creep and plasticity materials for more complex simulations.</li><li class="collection-item">ADPorosityFromStrainPorosity calculation from the inelastic strain.</li><li class="collection-item">ADPowerLawCreepStressUpdateThis class uses the stress update material in a radial return isotropic power law creep model. This class can be used in conjunction with other creep and plasticity materials for more complex simulations.</li><li class="collection-item">ADPowerLawSofteningSoftening model with an abrupt stress release upon cracking. This class is intended to be used with ADComputeSmearedCrackingStress and relies on automatic differentiation.</li><li class="collection-item">ADRankTwoCartesianComponentAccess a component of a RankTwoTensor</li><li class="collection-item">ADRankTwoCylindricalComponentCompute components of a rank-2 tensor in a cylindrical coordinate system</li><li class="collection-item">ADRankTwoDirectionalComponentCompute a Direction scalar property of a RankTwoTensor</li><li class="collection-item">ADRankTwoInvariantCompute a invariant property of a RankTwoTensor</li><li class="collection-item">ADScalarMaterialDamageScalar damage model for which the damage is prescribed by another material</li><li class="collection-item">ADStrainEnergyRateDensityComputes the strain energy density rate using a combination of the elastic and inelastic components of the strain increment, which is a valid assumption for monotonic behavior.</li><li class="collection-item">ADTemperatureDependentHardeningStressUpdateComputes the stress as a function of temperature and plastic strain from user-supplied hardening functions. This class can be used in conjunction with other creep and plasticity materials for more complex simulations</li><li class="collection-item">ADViscoplasticityStressUpdateThis material computes the non-linear homogenized gauge stress in order to compute the viscoplastic responce due to creep in porous materials. This material must be used in conjunction with ADComputeMultiplePorousInelasticStress</li><li class="collection-item">AbaqusUMATStressCoupling material to use Abaqus UMAT models in MOOSE</li><li class="collection-item">AbruptSofteningSoftening model with an abrupt stress release upon cracking. This class is intended to be used with ComputeSmearedCrackingStress.</li><li class="collection-item">BiLinearMixedModeTractionMixed mode bilinear traction separation law.</li><li class="collection-item">CZMComputeDisplacementJumpSmallStrainCompute the total displacement jump across a czm interface in local coordinates for the Small Strain kinematic formulation</li><li class="collection-item">CZMComputeDisplacementJumpTotalLagrangianCompute the displacement jump increment across a czm interface in local coordinates for the Total Lagrangian kinematic formulation</li><li class="collection-item">CZMComputeGlobalTractionSmallStrainComputes the czm traction in global coordinates for a small strain kinematic formulation</li><li class="collection-item">CZMComputeGlobalTractionTotalLagrangianCompute the equilibrium traction (PK1) and its derivatives for the Total Lagrangian formulation.</li><li class="collection-item">CZMRealVectorCartesianComponentAccess a component of a RealVectorValue defined on a cohesive zone</li><li class="collection-item">CZMRealVectorScalarCompute the normal or tangent component of a vector quantity defined on a cohesive interface.</li><li class="collection-item">CappedDruckerPragerCosseratStressUpdateCapped Drucker-Prager plasticity stress calculator for the Cosserat situation where the host medium (ie, the limit where all Cosserat effects are zero) is isotropic.  Note that the return-map flow rule uses an isotropic elasticity tensor built with the &#x27;host&#x27; properties defined by the user.</li><li class="collection-item">CappedDruckerPragerStressUpdateCapped Drucker-Prager plasticity stress calculator</li><li class="collection-item">CappedMohrCoulombCosseratStressUpdateCapped Mohr-Coulomb plasticity stress calculator for the Cosserat situation where the host medium (ie, the limit where all Cosserat effects are zero) is isotropic.  Note that the return-map flow rule uses an isotropic elasticity tensor built with the &#x27;host&#x27; properties defined by the user.</li><li class="collection-item">CappedMohrCoulombStressUpdateNonassociative, smoothed, Mohr-Coulomb plasticity capped with tensile (Rankine) and compressive caps, with hardening/softening</li><li class="collection-item">CappedWeakInclinedPlaneStressUpdateCapped weak inclined plane plasticity stress calculator</li><li class="collection-item">CappedWeakPlaneCosseratStressUpdateCapped weak-plane plasticity Cosserat stress calculator</li><li class="collection-item">CappedWeakPlaneStressUpdateCapped weak-plane plasticity stress calculator</li><li class="collection-item">CombinedScalarDamageScalar damage model which is computed as a function of multiple scalar damage models</li><li class="collection-item">CompositeEigenstrainAssemble an Eigenstrain tensor from multiple tensor contributions weighted by material properties</li><li class="collection-item">CompositeElasticityTensorAssemble an elasticity tensor from multiple tensor contributions weighted by material properties</li><li class="collection-item">ComputeAxisymmetric1DFiniteStrainCompute a strain increment and rotation increment for finite strains in an axisymmetric 1D problem</li><li class="collection-item">ComputeAxisymmetric1DIncrementalStrainCompute strain increment for small strains in an axisymmetric 1D problem</li><li class="collection-item">ComputeAxisymmetric1DSmallStrainCompute a small strain in an Axisymmetric 1D problem</li><li class="collection-item">ComputeAxisymmetricRZFiniteStrainCompute a strain increment for finite strains under axisymmetric assumptions.</li><li class="collection-item">ComputeAxisymmetricRZIncrementalStrainCompute a strain increment and rotation increment for small strains under axisymmetric assumptions.</li><li class="collection-item">ComputeAxisymmetricRZSmallStrainCompute a small strain in an Axisymmetric geometry</li><li class="collection-item">ComputeBeamResultantsCompute forces and moments using elasticity</li><li class="collection-item">ComputeConcentrationDependentElasticityTensorCompute concentration dependent elasticity tensor.</li><li class="collection-item">ComputeCosseratElasticityTensorCompute Cosserat elasticity and flexural bending rigidity tensors</li><li class="collection-item">ComputeCosseratIncrementalSmallStrainCompute incremental small Cosserat strains</li><li class="collection-item">ComputeCosseratLinearElasticStressCompute Cosserat stress and couple-stress elasticity for small strains</li><li class="collection-item">ComputeCosseratSmallStrainCompute small Cosserat strains</li><li class="collection-item">ComputeCrackedStressComputes energy and modifies the stress for phase field fracture</li><li class="collection-item">ComputeCrystalPlasticityThermalEigenstrain</li><li class="collection-item">ComputeDamageStressCompute stress for damaged elastic materials in conjunction with a damage model.</li><li class="collection-item">ComputeDeformGradBasedStressComputes stress based on Lagrangian strain</li><li class="collection-item">ComputeDilatationThermalExpansionFunctionEigenstrainComputes eigenstrain due to thermal expansion using a function that describes the total dilatation as a function of temperature</li><li class="collection-item">ComputeEigenstrainComputes a constant Eigenstrain</li><li class="collection-item">ComputeEigenstrainBeamFromVariableComputes an eigenstrain from a set of variables</li><li class="collection-item">ComputeEigenstrainFromInitialStressComputes an eigenstrain from an initial stress</li><li class="collection-item">ComputeElasticityBeamComputes the equivalent of the elasticity tensor for the beam element, which are vectors of material translational and flexural stiffness.</li><li class="collection-item">ComputeElasticityTensorCompute an elasticity tensor.</li><li class="collection-item">ComputeElasticityTensorCPCompute an elasticity tensor for crystal plasticity.</li><li class="collection-item">ComputeElasticityTensorConstantRotationCPCompute an elasticity tensor for crystal plasticity, formulated in the reference frame, with constant Euler angles.</li><li class="collection-item">ComputeExtraStressConstantComputes a constant extra stress that is added to the stress calculated by the constitutive model</li><li class="collection-item">ComputeExtraStressVDWGasComputes a hydrostatic stress corresponding to the pressure of a van der Waals gas that is added as an extra_stress to the stress computed by the constitutive model</li><li class="collection-item">ComputeFiniteBeamStrainCompute a rotation increment for finite rotations of the beam and computes the small/large strain increments in the current rotated configuration of the beam.</li><li class="collection-item">ComputeFiniteStrainCompute a strain increment and rotation increment for finite strains.</li><li class="collection-item">ComputeFiniteStrainElasticStressCompute stress using elasticity for finite strains</li><li class="collection-item">ComputeGlobalStrainMaterial for storing the global strain values from the scalar variable</li><li class="collection-item">ComputeIncrementalBeamStrainCompute a infinitesimal/large strain increment for the beam.</li><li class="collection-item">ComputeIncrementalSmallStrainCompute a strain increment and rotation increment for small strains.</li><li class="collection-item">ComputeInstantaneousThermalExpansionFunctionEigenstrainComputes eigenstrain due to thermal expansion using a function that describes the instantaneous thermal expansion as a function of temperature</li><li class="collection-item">ComputeInterfaceStressStress in the plane of an interface defined by the gradient of an order parameter</li><li class="collection-item">ComputeIsotropicElasticityTensorCompute a constant isotropic elasticity tensor.</li><li class="collection-item">ComputeLayeredCosseratElasticityTensorComputes Cosserat elasticity and flexural bending rigidity tensors relevant for simulations with layered materials.  The layering direction is assumed to be perpendicular to the &#x27;z&#x27; direction.</li><li class="collection-item">ComputeLinearElasticPFFractureStressComputes the stress and free energy derivatives for the phase field fracture model, with small strain</li><li class="collection-item">ComputeLinearElasticStressCompute stress using elasticity for small strains</li><li class="collection-item">ComputeLinearViscoelasticStressDivides total strain into elastic + creep + eigenstrains</li><li class="collection-item">ComputeMeanThermalExpansionFunctionEigenstrainComputes eigenstrain due to thermal expansion using a function that describes the mean thermal expansion as a function of temperature</li><li class="collection-item">ComputeMultiPlasticityStressMaterial for multi-surface finite-strain plasticity</li><li class="collection-item">ComputeMultipleCrystalPlasticityStressCrystal Plasticity base class: handles the Newton iteration over the stress residual and calculates the Jacobian based on constitutive laws from multiple material classes that are inherited from CrystalPlasticityStressUpdateBase</li><li class="collection-item">ComputeMultipleInelasticCosseratStressCompute state (stress and other quantities such as plastic strains and internal parameters) using an iterative process, as well as Cosserat versions of these quantities.  Only elasticity is currently implemented for the Cosserat versions.Combinations of creep models and plastic models may be used</li><li class="collection-item">ComputeMultipleInelasticStressCompute state (stress and internal parameters such as plastic strains and internal parameters) using an iterative process.  Combinations of creep models and plastic models may be used.</li><li class="collection-item">ComputePlaneFiniteStrainCompute strain increment and rotation increment for finite strain under 2D planar assumptions.</li><li class="collection-item">ComputePlaneIncrementalStrainCompute strain increment for small strain under 2D planar assumptions.</li><li class="collection-item">ComputePlaneSmallStrainCompute a small strain under generalized plane strain assumptions where the out of plane strain is generally nonzero.</li><li class="collection-item">ComputePlasticHeatEnergyPlastic heat energy density = stress * plastic_strain_rate</li><li class="collection-item">ComputeRSphericalFiniteStrainCompute a strain increment and rotation increment for finite strains in 1D spherical symmetry problems.</li><li class="collection-item">ComputeRSphericalIncrementalStrainCompute a strain increment for incremental strains in 1D spherical symmetry problems.</li><li class="collection-item">ComputeRSphericalSmallStrainCompute a small strain 1D spherical symmetry case.</li><li class="collection-item">ComputeReducedOrderEigenstrainaccepts eigenstrains and computes a reduced order eigenstrain for consistency in the order of strain and eigenstrains.</li><li class="collection-item">ComputeSmallStrainCompute a small strain.</li><li class="collection-item">ComputeSmearedCrackingStressCompute stress using a fixed smeared cracking model</li><li class="collection-item">ComputeStrainIncrementBasedStressCompute stress after subtracting inelastic strain increments</li><li class="collection-item">ComputeSurfaceTensionKKSSurface tension of an interface defined by the gradient of an order parameter</li><li class="collection-item">ComputeThermalExpansionEigenstrainComputes eigenstrain due to thermal expansion with a constant coefficient</li><li class="collection-item">ComputeThermalExpansionEigenstrainBeamComputes eigenstrain due to thermal expansion with a constant coefficient</li><li class="collection-item">ComputeVariableBaseEigenStrainComputes Eigenstrain based on material property tensor base</li><li class="collection-item">ComputeVariableEigenstrainComputes an Eigenstrain and its derivatives that is a function of multiple variables, where the prefactor is defined in a derivative material</li><li class="collection-item">ComputeVariableIsotropicElasticityTensorCompute an isotropic elasticity tensor for elastic constants that change as a function of material properties</li><li class="collection-item">ComputeVolumetricDeformGradComputes volumetric deformation gradient and adjusts the total deformation gradient</li><li class="collection-item">ComputeVolumetricEigenstrainComputes an eigenstrain that is defined by a set of scalar material properties that summed together define the volumetric change.  This also computes the derivatives of that eigenstrain with respect to a supplied set of variable dependencies.</li><li class="collection-item">CrystalPlasticityKalidindiUpdateKalidindi version of homogeneous crystal plasticity.</li><li class="collection-item">EshelbyTensorComputes the Eshelby tensor as a function of strain energy density and the first Piola-Kirchhoff stress</li><li class="collection-item">ExponentialSofteningSoftening model with an exponential softening response upon cracking. This class is intended to be used with ComputeSmearedCrackingStress.</li><li class="collection-item">FiniteStrainCPSlipRateResCrystal Plasticity base class: FCC system with power law flow rule implemented</li><li class="collection-item">FiniteStrainCrystalPlasticityCrystal Plasticity base class: FCC system with power law flow rule implemented</li><li class="collection-item">FiniteStrainHyperElasticViscoPlasticMaterial class for hyper-elastic viscoplatic flow: Can handle multiple flow models defined by flowratemodel type user objects</li><li class="collection-item">FiniteStrainPlasticMaterialAssociative J2 plasticity with isotropic hardening.</li><li class="collection-item">FiniteStrainUObasedCPUserObject based Crystal Plasticity system.</li><li class="collection-item">FluxBasedStrainIncrementCompute strain increment based on flux</li><li class="collection-item">GBRelaxationStrainIncrementCompute strain increment based on lattice relaxation at GB</li><li class="collection-item">GeneralizedKelvinVoigtModelGeneralized Kelvin-Voigt model composed of a serial assembly of unit Kelvin-Voigt modules</li><li class="collection-item">GeneralizedMaxwellModelGeneralized Maxwell model composed of a parallel assembly of unit Maxwell modules</li><li class="collection-item">HillConstantsBuild and rotate the Hill Tensor. It can be used with other Hill plasticity and creep materials.</li><li class="collection-item">HyperElasticPhaseFieldIsoDamageComputes damaged stress and energy in the intermediate configuration assuming isotropy</li><li class="collection-item">HyperbolicViscoplasticityStressUpdateThis class uses the discrete material for a hyperbolic sine viscoplasticity model in which the effective plastic strain is solved for using a creep approach.</li><li class="collection-item">InclusionProperties</li><li class="collection-item">IsotropicPlasticityStressUpdateThis class uses the discrete material in a radial return isotropic plasticity model.  This class is one of the basic radial return constitutive models, yet it can be used in conjunction with other creep and plasticity materials for more complex simulations.</li><li class="collection-item">IsotropicPowerLawHardeningStressUpdateThis class uses the discrete material in a radial return isotropic plasticity power law hardening model, solving for the yield stress as the intersection of the power law relation curve and Hooke&#x27;s law.  This class can be used in conjunction with other creep and plasticity materials for more complex simulations.</li><li class="collection-item">LinearElasticTrussComputes the linear elastic strain for a truss element</li><li class="collection-item">LinearViscoelasticStressUpdateCalculates an admissible state (stress that lies on or within the yield surface, plastic strains, internal parameters, etc).  This class is intended to be a parent class for classes with specific constitutive models.</li><li class="collection-item">MultiPhaseStressMaterialCompute a global stress form multiple phase stresses</li><li class="collection-item">PlasticTrussComputes the stress and strain for a truss element with plastic behavior defined by either linear hardening or a user-defined hardening function.</li><li class="collection-item">PorosityFromStrainPorosity calculation from the inelastic strain.</li><li class="collection-item">PowerLawCreepStressUpdateThis class uses the stress update material in a radial return isotropic power law creep model.  This class can be used in conjunction with other creep and plasticity materials for more complex simulations.</li><li class="collection-item">PowerLawSofteningSoftening model with an abrupt stress release upon cracking. This class is intended to be used with ComputeSmearedCrackingStress.</li><li class="collection-item">PureElasticTractionSeparationPure elastic traction separation law.</li><li class="collection-item">RankTwoCartesianComponentAccess a component of a RankTwoTensor</li><li class="collection-item">RankTwoCylindricalComponentCompute components of a rank-2 tensor in a cylindrical coordinate system</li><li class="collection-item">RankTwoDirectionalComponentCompute a Direction scalar property of a RankTwoTensor</li><li class="collection-item">RankTwoInvariantCompute a invariant property of a RankTwoTensor</li><li class="collection-item">SalehaniIrani3DCTraction3D Coupled (3DC) cohesive law of Salehani and Irani with no damage</li><li class="collection-item">ScalarMaterialDamageScalar damage model for which the damage is prescribed by another material</li><li class="collection-item">StrainEnergyDensityComputes the strain energy density using a combination of the elastic and inelastic components of the strain increment, which is a valid assumption for monotonic behavior.</li><li class="collection-item">StrainEnergyRateDensityComputes the strain energy density rate using a combination of the elastic and inelastic components of the strain increment, which is a valid assumption for monotonic behavior.</li><li class="collection-item">StressBasedChemicalPotentialChemical potential from stress</li><li class="collection-item">SumTensorIncrementsCompute tensor property by summing tensor increments</li><li class="collection-item">TemperatureDependentHardeningStressUpdateComputes the stress as a function of temperature and plastic strain from user-supplied hardening functions. This class can be used in conjunction with other creep and plasticity materials for more complex simulations</li><li class="collection-item">TensileStressUpdateAssociative, smoothed, tensile (Rankine) plasticity with hardening/softening</li><li class="collection-item">ThermalFractureIntegralCalculates summation of the derivative of the eigenstrains with respect to temperature.</li><li class="collection-item">TwoPhaseStressMaterialCompute a global stress in a two phase model</li><li class="collection-item">VolumeDeformGradCorrectedStressTransforms stress with volumetric term from previous configuration to this configuration</li><li class="collection-header">Heat Conduction App</li><li class="collection-item">ADAnisoHeatConductionMaterialGeneral-purpose material model for anisotropic heat conduction</li><li class="collection-item">ADElectricalConductivityCalculates resistivity and electrical conductivity as a function of temperature, using copper for parameter defaults.</li><li class="collection-item">ADHeatConductionMaterialGeneral-purpose material model for heat conduction</li><li class="collection-item">AnisoHeatConductionMaterialGeneral-purpose material model for anisotropic heat conduction</li><li class="collection-item">ElectricalConductivityCalculates resistivity and electrical conductivity as a function of temperature, using copper for parameter defaults.</li><li class="collection-item">FunctionPathEllipsoidHeatSourceDouble ellipsoid volumetric source heat with function path.</li><li class="collection-item">GapConductance</li><li class="collection-item">GapConductanceConstantMaterial to compute a constant, prescribed gap conductance</li><li class="collection-item">HeatConductionMaterialGeneral-purpose material model for heat conduction</li><li class="collection-item">SemiconductorLinearConductivityCalculates electrical conductivity of a semiconductor from temperature</li><li class="collection-item">SideSetHeatTransferMaterialThis material constructs the necessary coefficients and properties for SideSetHeatTransferKernel.</li><li class="collection-header">Navier Stokes App</li><li class="collection-item">AirAir.</li><li class="collection-item">ConservedVarValuesMaterialProvides access to variables for a conserved variable set of density, total fluid energy, and momentum</li><li class="collection-item">GeneralFluidPropsComputes fluid properties using a (P, T) formulation</li><li class="collection-item">INSAD3EqnThis material computes properties needed for stabilized formulations of the mass, momentum, and energy equations.</li><li class="collection-item">INSADMaterialThis is the material class used to compute some of the strong residuals for the INS equations.</li><li class="collection-item">INSADStabilized3EqnThis is the material class used to compute the stabilization parameter tau for momentum and tau_energy for the energy equation.</li><li class="collection-item">INSADTauMaterialThis is the material class used to compute the stabilization parameter tau.</li><li class="collection-item">INSFVMaterialThis is the material class used to compute advected quantities for the finite-volume implementation of the Navier-Stokes equations.</li><li class="collection-item">MixingLengthTurbulentViscosityMaterialComputes the material corresponding to the total viscositycomprising the mixing length model turbulent total_viscosityand the molecular viscosity.</li><li class="collection-item">PorousConservedVarMaterialProvides access to variables for a conserved variable set of density, total fluid energy, and momentum</li><li class="collection-item">PorousMixedVarMaterialProvides access to variables for a primitive variable set of pressure, temperature, and superficial velocity</li><li class="collection-item">PorousPrimitiveVarMaterialProvides access to variables for a primitive variable set of pressure, temperature, and superficial velocity</li><li class="collection-item">SoundspeedMatComputes the speed of sound</li></ul></section><section class="scrollspy" id="e3e43a2f-5e81-401c-aae0-fd23f4c89656" data-section-level="2" data-section-text="Available Actions"><h2 id="available-actions">Available Actions</h2><ul class="moose-syntax-list collection with-header"><li class="collection-header">Moose App</li><li class="collection-item"><a href="../../source/actions/AddMaterialAction.html">AddMaterialAction</a>Add a Material object to the simulation.</li></ul></section></section><div class="moose-modal modal" id="2f7695ba-bb38-4ac1-b833-610d42e6d776"><div class="modal-content"><h4>(moose/examples/ex08_materials/include/materials/ExampleMaterial.h)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#pragma once
+
+#include &quot;Material.h&quot;
+#include &quot;LinearInterpolation.h&quot;
+
+class ExampleMaterial;
+
+template &lt;&gt;
+InputParameters validParams&lt;ExampleMaterial&gt;();
+
+class ExampleMaterial : public Material
+{
+public:
+  ExampleMaterial(const InputParameters &amp; parameters);
+
+protected:
+  virtual void computeQpProperties() override;
+
+private:
+  /// member variable to hold the computed diffusivity coefficient
+  MaterialProperty&lt;Real&gt; &amp; _diffusivity;
+  /// member variable to hold the computed convection velocity gradient term
+  MaterialProperty&lt;RealGradient&gt; &amp; _convection_velocity;
+
+  /// A place to store the coupled variable gradient for calculating the convection velocity
+  /// property.
+  const VariableGradient &amp; _diffusion_gradient;
+
+  /// A helper object for performaing linear interpolations on tabulated data for calculating the
+  /// diffusivity property.
+  LinearInterpolation _piecewise_func;
+};
+
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="540ea576-3f75-48be-b094-5828fe5448fc"><div class="modal-content"><h4>(moose/examples/ex08_materials/src/materials/ExampleMaterial.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include &quot;ExampleMaterial.h&quot;
+
+registerMooseObject(&quot;ExampleApp&quot;, ExampleMaterial);
+
+template &lt;&gt;
+InputParameters
+validParams&lt;ExampleMaterial&gt;()
+{
+  InputParameters params = validParams&lt;Material&gt;();
+
+  // Allow users to specify vectors defining the points of a piecewise function formed via linear
+  // interpolation.
+  params.addRequiredParam&lt;std::vector&lt;Real&gt;&gt;(
+      &quot;independent_vals&quot;,
+      &quot;The vector of z-coordinate values for a piecewise function&#x27;s independent variable&quot;);
+  params.addRequiredParam&lt;std::vector&lt;Real&gt;&gt;(
+      &quot;dependent_vals&quot;, &quot;The vector of diffusivity values for a piecewise function&#x27;s dependent&quot;);
+
+  // Allow the user to specify which independent variable&#x27;s gradient to use for calculating the
+  // convection velocity property:
+  params.addCoupledVar(
+      &quot;diffusion_gradient&quot;,
+      &quot;The gradient of this variable will be used to compute a velocity vector property.&quot;);
+
+  return params;
+}
+
+ExampleMaterial::ExampleMaterial(const InputParameters &amp; parameters)
+  : Material(parameters),
+    // Declare that this material is going to provide a Real value typed
+    // material property named &quot;diffusivity&quot; that Kernels and other objects can use.
+    // This property is &quot;bound&quot; to the class&#x27;s &quot;_diffusivity&quot; member.
+    _diffusivity(declareProperty&lt;Real&gt;(&quot;diffusivity&quot;)),
+
+    // Also declare a second &quot;convection_velocity&quot; RealGradient value typed property.
+    _convection_velocity(declareProperty&lt;RealGradient&gt;(&quot;convection_velocity&quot;)),
+
+    // Get the reference to the variable coupled into this Material.
+    _diffusion_gradient(isCoupled(&quot;diffusion_gradient&quot;) ? coupledGradient(&quot;diffusion_gradient&quot;)
+                                                        : _grad_zero),
+
+    // Initialize our piecewise function helper with the user-specified interpolation points.
+    _piecewise_func(getParam&lt;std::vector&lt;Real&gt;&gt;(&quot;independent_vals&quot;),
+                    getParam&lt;std::vector&lt;Real&gt;&gt;(&quot;dependent_vals&quot;))
+{
+}
+
+void
+ExampleMaterial::computeQpProperties()
+{
+  // Diffusivity is the value of the interpolated piece-wise function described by the user
+  _diffusivity[_qp] = _piecewise_func.sample(_q_point[_qp](2));
+
+  // Convection velocity is set equal to the gradient of the variable set by the user.
+  _convection_velocity[_qp] = _diffusion_gradient[_qp];
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="6605a54d-67e1-4400-a193-766266854df2"><div class="modal-content"><h4>(moose/examples/ex08_materials/include/materials/ExampleMaterial.h)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#pragma once
+
+#include &quot;Material.h&quot;
+#include &quot;LinearInterpolation.h&quot;
+
+class ExampleMaterial;
+
+template &lt;&gt;
+InputParameters validParams&lt;ExampleMaterial&gt;();
+
+class ExampleMaterial : public Material
+{
+public:
+  ExampleMaterial(const InputParameters &amp; parameters);
+
+protected:
+  virtual void computeQpProperties() override;
+
+private:
+  /// member variable to hold the computed diffusivity coefficient
+  MaterialProperty&lt;Real&gt; &amp; _diffusivity;
+  /// member variable to hold the computed convection velocity gradient term
+  MaterialProperty&lt;RealGradient&gt; &amp; _convection_velocity;
+
+  /// A place to store the coupled variable gradient for calculating the convection velocity
+  /// property.
+  const VariableGradient &amp; _diffusion_gradient;
+
+  /// A helper object for performaing linear interpolations on tabulated data for calculating the
+  /// diffusivity property.
+  LinearInterpolation _piecewise_func;
+};
+
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="4ce56564-2843-4847-ba5c-36a65ef2e0d4"><div class="modal-content"><h4>(moose/examples/ex08_materials/src/materials/ExampleMaterial.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include &quot;ExampleMaterial.h&quot;
+
+registerMooseObject(&quot;ExampleApp&quot;, ExampleMaterial);
+
+template &lt;&gt;
+InputParameters
+validParams&lt;ExampleMaterial&gt;()
+{
+  InputParameters params = validParams&lt;Material&gt;();
+
+  // Allow users to specify vectors defining the points of a piecewise function formed via linear
+  // interpolation.
+  params.addRequiredParam&lt;std::vector&lt;Real&gt;&gt;(
+      &quot;independent_vals&quot;,
+      &quot;The vector of z-coordinate values for a piecewise function&#x27;s independent variable&quot;);
+  params.addRequiredParam&lt;std::vector&lt;Real&gt;&gt;(
+      &quot;dependent_vals&quot;, &quot;The vector of diffusivity values for a piecewise function&#x27;s dependent&quot;);
+
+  // Allow the user to specify which independent variable&#x27;s gradient to use for calculating the
+  // convection velocity property:
+  params.addCoupledVar(
+      &quot;diffusion_gradient&quot;,
+      &quot;The gradient of this variable will be used to compute a velocity vector property.&quot;);
+
+  return params;
+}
+
+ExampleMaterial::ExampleMaterial(const InputParameters &amp; parameters)
+  : Material(parameters),
+    // Declare that this material is going to provide a Real value typed
+    // material property named &quot;diffusivity&quot; that Kernels and other objects can use.
+    // This property is &quot;bound&quot; to the class&#x27;s &quot;_diffusivity&quot; member.
+    _diffusivity(declareProperty&lt;Real&gt;(&quot;diffusivity&quot;)),
+
+    // Also declare a second &quot;convection_velocity&quot; RealGradient value typed property.
+    _convection_velocity(declareProperty&lt;RealGradient&gt;(&quot;convection_velocity&quot;)),
+
+    // Get the reference to the variable coupled into this Material.
+    _diffusion_gradient(isCoupled(&quot;diffusion_gradient&quot;) ? coupledGradient(&quot;diffusion_gradient&quot;)
+                                                        : _grad_zero),
+
+    // Initialize our piecewise function helper with the user-specified interpolation points.
+    _piecewise_func(getParam&lt;std::vector&lt;Real&gt;&gt;(&quot;independent_vals&quot;),
+                    getParam&lt;std::vector&lt;Real&gt;&gt;(&quot;dependent_vals&quot;))
+{
+}
+
+void
+ExampleMaterial::computeQpProperties()
+{
+  // Diffusivity is the value of the interpolated piece-wise function described by the user
+  _diffusivity[_qp] = _piecewise_func.sample(_q_point[_qp](2));
+
+  // Convection velocity is set equal to the gradient of the variable set by the user.
+  _convection_velocity[_qp] = _diffusion_gradient[_qp];
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="d6ed6e03-9471-4583-b628-d734bbdd8506"><div class="modal-content"><h4>(moose/examples/ex08_materials/include/kernels/ExampleDiffusion.h)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#pragma once
+
+#include &quot;Diffusion.h&quot;
+
+// Forward Declarations
+class ExampleDiffusion;
+
+/**
+ * validParams returns the parameters that this Kernel accepts / needs
+ * The actual body of the function MUST be in the .C file.
+ */
+template &lt;&gt;
+InputParameters validParams&lt;ExampleDiffusion&gt;();
+
+class ExampleDiffusion : public Diffusion
+{
+public:
+  ExampleDiffusion(const InputParameters &amp; parameters);
+
+protected:
+  virtual Real computeQpResidual() override;
+  virtual Real computeQpJacobian() override;
+
+  /**
+   * This MooseArray will hold the reference we need to our
+   * material property from the Material class
+   */
+  const MaterialProperty&lt;Real&gt; &amp; _diffusivity;
+};
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="6f616a3a-c7c4-45a2-a037-bd909f347895"><div class="modal-content"><h4>(moose/examples/ex08_materials/src/kernels/ExampleDiffusion.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include &quot;ExampleDiffusion.h&quot;
+
+/**
+ * This function defines the valid parameters for
+ * this Kernel and their default values
+ */
+registerMooseObject(&quot;ExampleApp&quot;, ExampleDiffusion);
+
+template &lt;&gt;
+InputParameters
+validParams&lt;ExampleDiffusion&gt;()
+{
+  InputParameters params = validParams&lt;Diffusion&gt;();
+  return params;
+}
+
+ExampleDiffusion::ExampleDiffusion(const InputParameters &amp; parameters)
+  : Diffusion(parameters), _diffusivity(getMaterialProperty&lt;Real&gt;(&quot;diffusivity&quot;))
+{
+}
+
+Real
+ExampleDiffusion::computeQpResidual()
+{
+  // Reusing the Diffusion Kernel&#x27;s residual calculation
+  return _diffusivity[_qp] * Diffusion::computeQpResidual();
+}
+
+Real
+ExampleDiffusion::computeQpJacobian()
+{
+  // Reusing the Diffusion Kernel&#x27;s jacobian calculation
+  return _diffusivity[_qp] * Diffusion::computeQpJacobian();
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="bbff2074-2a01-46c6-a148-da77ebb757d9"><div class="modal-content"><h4>(moose/examples/ex08_materials/src/materials/ExampleMaterial.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include &quot;ExampleMaterial.h&quot;
+
+registerMooseObject(&quot;ExampleApp&quot;, ExampleMaterial);
+
+template &lt;&gt;
+InputParameters
+validParams&lt;ExampleMaterial&gt;()
+{
+  InputParameters params = validParams&lt;Material&gt;();
+
+  // Allow users to specify vectors defining the points of a piecewise function formed via linear
+  // interpolation.
+  params.addRequiredParam&lt;std::vector&lt;Real&gt;&gt;(
+      &quot;independent_vals&quot;,
+      &quot;The vector of z-coordinate values for a piecewise function&#x27;s independent variable&quot;);
+  params.addRequiredParam&lt;std::vector&lt;Real&gt;&gt;(
+      &quot;dependent_vals&quot;, &quot;The vector of diffusivity values for a piecewise function&#x27;s dependent&quot;);
+
+  // Allow the user to specify which independent variable&#x27;s gradient to use for calculating the
+  // convection velocity property:
+  params.addCoupledVar(
+      &quot;diffusion_gradient&quot;,
+      &quot;The gradient of this variable will be used to compute a velocity vector property.&quot;);
+
+  return params;
+}
+
+ExampleMaterial::ExampleMaterial(const InputParameters &amp; parameters)
+  : Material(parameters),
+    // Declare that this material is going to provide a Real value typed
+    // material property named &quot;diffusivity&quot; that Kernels and other objects can use.
+    // This property is &quot;bound&quot; to the class&#x27;s &quot;_diffusivity&quot; member.
+    _diffusivity(declareProperty&lt;Real&gt;(&quot;diffusivity&quot;)),
+
+    // Also declare a second &quot;convection_velocity&quot; RealGradient value typed property.
+    _convection_velocity(declareProperty&lt;RealGradient&gt;(&quot;convection_velocity&quot;)),
+
+    // Get the reference to the variable coupled into this Material.
+    _diffusion_gradient(isCoupled(&quot;diffusion_gradient&quot;) ? coupledGradient(&quot;diffusion_gradient&quot;)
+                                                        : _grad_zero),
+
+    // Initialize our piecewise function helper with the user-specified interpolation points.
+    _piecewise_func(getParam&lt;std::vector&lt;Real&gt;&gt;(&quot;independent_vals&quot;),
+                    getParam&lt;std::vector&lt;Real&gt;&gt;(&quot;dependent_vals&quot;))
+{
+}
+
+void
+ExampleMaterial::computeQpProperties()
+{
+  // Diffusivity is the value of the interpolated piece-wise function described by the user
+  _diffusivity[_qp] = _piecewise_func.sample(_q_point[_qp](2));
+
+  // Convection velocity is set equal to the gradient of the variable set by the user.
+  _convection_velocity[_qp] = _diffusion_gradient[_qp];
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="e89eb0db-dfea-4eb0-9dae-3368a01da77e"><div class="modal-content"><h4>(moose/test/tests/materials/output/output_block.i)</h4><pre class="moose-pre"><code class="language-text">[Mesh]
+  type = FileMesh
+  file = rectangle.e
+  dim = 2
+  uniform_refine = 1
+[]
+
+[Variables]
+  [u]
+  []
+[]
+
+[Kernels]
+  [diff]
+    type = CoefDiffusion
+    variable = u
+    coef = 0.5
+  []
+  [time]
+    type = TimeDerivative
+    variable = u
+  []
+[]
+
+[BCs]
+  [left]
+    type = DirichletBC
+    variable = u
+    boundary = 1
+    value = 0
+  []
+  [right]
+    type = DirichletBC
+    variable = u
+    boundary = 2
+    value = 2
+  []
+[]
+
+[Materials]
+  [block_1]
+    type = OutputTestMaterial
+    block = 1
+    output_properties = &#x27;real_property tensor_property&#x27;
+    outputs = exodus
+    variable = u
+  []
+  [block_2]
+    type = OutputTestMaterial
+    block = 2
+    output_properties = &#x27;vector_property tensor_property&#x27;
+    outputs = exodus
+    variable = u
+  []
+[]
+
+[Executioner]
+  type = Transient
+  num_steps = 5
+  dt = 0.1
+  solve_type = PJFNK
+  petsc_options_iname = &#x27;-pc_type -pc_hypre_type&#x27;
+  petsc_options_value = &#x27;hypre boomeramg&#x27;
+[]
+
+[Outputs]
+  exodus = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="1e2c473c-fe26-4e50-a55d-a1371dffe816"><div class="modal-content"><h4>(moose/test/src/materials/RecomputeMaterial.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+// MOOSE includes
+#include &quot;RecomputeMaterial.h&quot;
+
+registerMooseObject(&quot;MooseTestApp&quot;, RecomputeMaterial);
+
+InputParameters
+RecomputeMaterial::validParams()
+{
+  InputParameters params = Material::validParams();
+  params.addRequiredParam&lt;std::string&gt;(&quot;f_name&quot;,
+                                       &quot;The name of the property that holds the value to &quot;
+                                       &quot;of the function for which the root is being &quot;
+                                       &quot;computed&quot;);
+  params.addRequiredParam&lt;std::string&gt;(
+      &quot;f_prime_name&quot;,
+      &quot;The name of the property that holds the value to of the derivative of the function&quot;);
+  params.addRequiredParam&lt;std::string&gt;(&quot;p_name&quot;,
+                                       &quot;The name of the independant variable for the function&quot;);
+  params.addParam&lt;Real&gt;(&quot;constant&quot;, 0, &quot;The constant to add to the f equation.&quot;);
+  return params;
+}
+
+RecomputeMaterial::RecomputeMaterial(const InputParameters &amp; parameters)
+  : Material(parameters),
+    _f(declareProperty&lt;Real&gt;(getParam&lt;std::string&gt;(&quot;f_name&quot;))),
+    _f_prime(declareProperty&lt;Real&gt;(getParam&lt;std::string&gt;(&quot;f_prime_name&quot;))),
+    _p(getMaterialProperty&lt;Real&gt;(getParam&lt;std::string&gt;(&quot;p_name&quot;))),
+    _constant(getParam&lt;Real&gt;(&quot;constant&quot;))
+{
+}
+
+void
+RecomputeMaterial::resetQpProperties()
+{
+  _f[_qp] = 84;
+  _f_prime[_qp] = 42;
+}
+
+// MOOSEDOCS_START
+void
+RecomputeMaterial::computeQpProperties()
+{
+  Real x = _p[_qp];
+  _f[_qp] = x * x - _constant;
+  _f_prime[_qp] = 2 * x;
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="db0fe218-6026-4a13-b786-953ddcbb734a"><div class="modal-content"><h4>(moose/test/src/materials/NewtonMaterial.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+// MOOSE includes
+#include &quot;NewtonMaterial.h&quot;
+#include &quot;Material.h&quot;
+
+registerMooseObject(&quot;MooseTestApp&quot;, NewtonMaterial);
+
+InputParameters
+NewtonMaterial::validParams()
+{
+  InputParameters params = Material::validParams();
+  params.addRequiredParam&lt;std::string&gt;(&quot;f_name&quot;,
+                                       &quot;The name of the property that holds the value of &quot;
+                                       &quot;the function for which the root is being &quot;
+                                       &quot;computed&quot;);
+  params.addRequiredParam&lt;std::string&gt;(
+      &quot;f_prime_name&quot;,
+      &quot;The name of the property that holds the value to of the derivative of the function&quot;);
+  params.addRequiredParam&lt;std::string&gt;(&quot;p_name&quot;,
+                                       &quot;The name of the independent variable for the function&quot;);
+  params.addParam&lt;Real&gt;(&quot;tol&quot;, 1e-12, &quot;Newton solution tolerance.&quot;);
+  params.addParam&lt;unsigned int&gt;(&quot;max_iterations&quot;, 42, &quot;The maximum number of Newton iterations.&quot;);
+  params.addRequiredParam&lt;MaterialName&gt;(&quot;material&quot;, &quot;The material object to recompute.&quot;);
+  return params;
+}
+
+NewtonMaterial::NewtonMaterial(const InputParameters &amp; parameters)
+  : Material(parameters),
+    _tol(getParam&lt;Real&gt;(&quot;tol&quot;)),
+    _f(getMaterialProperty&lt;Real&gt;(getParam&lt;std::string&gt;(&quot;f_name&quot;))),
+    _f_prime(getMaterialProperty&lt;Real&gt;(getParam&lt;std::string&gt;(&quot;f_prime_name&quot;))),
+    _p(declareProperty&lt;Real&gt;(getParam&lt;std::string&gt;(&quot;p_name&quot;))),
+    _max_iterations(getParam&lt;unsigned int&gt;(&quot;max_iterations&quot;)),
+    _discrete(getMaterial(&quot;material&quot;))
+{
+}
+
+// MOOSEDOCS_START
+void
+NewtonMaterial::computeQpProperties()
+{
+  _p[_qp] = 0.5; // initial guess
+
+  // Newton iteration for find p
+  for (unsigned int i = 0; i &lt; _max_iterations; ++i)
+  {
+    _discrete.computePropertiesAtQp(_qp);
+    _p[_qp] -= _f[_qp] / _f_prime[_qp];
+    if (std::abs(_f[_qp]) &lt; _tol)
+      break;
+  }
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div><div class="col hide-on-med-and-down l2"><div class="toc-wrapper pin-top"><ul class="section table-of-contents"><li><a href="#6ab9d14c-f98e-43ae-b0a5-2cea6e689829" class="tooltipped" data-position="left" data-tooltip="Producing / Computing Properties">Producing / Computing Properties</a></li><li><a href="#22bb3777-570f-4f05-9f78-a1349cda02f9" class="tooltipped" data-position="left" data-tooltip="Consuming Properties">Consuming Properties</a></li><li><a href="#f16a04f3-dbff-4233-a422-cc29205be16d" class="tooltipped" data-position="left" data-tooltip="Property Names">Property Names</a></li><li><a href="#fd943bc9-82e8-4025-8a42-510f93e11c75" class="tooltipped" data-position="left" data-tooltip="Default Material Properties">Default Material Properties</a></li><li><a href="#782235c7-20f6-4455-adf7-d7703e590c13" class="tooltipped" data-position="left" data-tooltip="Stateful Material Properties">Stateful Material Properties</a></li><li><a href="#92141bb7-fa2a-4c7b-9347-448eceb4dad8" class="tooltipped" data-position="left" data-tooltip="Material Property Output">Material Property Output</a></li><li><a href="#e1e059cf-3baa-454d-8f92-f45713053a3a" class="tooltipped" data-position="left" data-tooltip="Material sorting">Material sorting</a></li><li><a href="#30abcdc3-d3c1-4cd6-b1fd-6ab057a42c1d" class="tooltipped" data-position="left" data-tooltip="Advanced Topics">Advanced Topics</a></li><li><a href="#694cfe1d-cffa-4df1-9f38-8edb1b4e7d0e" class="tooltipped" data-position="left" data-tooltip="Available Objects">Available Objects</a></li><li><a href="#e3e43a2f-5e81-401c-aae0-fd23f4c89656" class="tooltipped" data-position="left" data-tooltip="Available Actions">Available Actions</a></li></ul></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>

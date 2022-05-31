@@ -1,0 +1,1729 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>Reporter System | Moltres</title><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/moltres.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down">Moltres</a><a href="https://github.com/arfc/moltres" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="#!" class="dropdown-trigger" data-target="5cebec34-066b-4700-a1cd-18ba947424ef" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="ee66597e-24d4-4166-9a94-8ba1ea1ec4e7" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="276e3f46-e8b7-4a91-9f43-66e8a0c2f836" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#" class="sidenav-trigger" data-target="7054dcb4-69dc-451c-9258-0419526a2d23"><i class="material-icons">menu</i></a><ul class="sidenav" id="7054dcb4-69dc-451c-9258-0419526a2d23"><li><a href="#!" class="dropdown-trigger" data-target="503c7407-fb53-4f8f-8aad-4d0d174a36b4" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="afc6c155-661e-4088-a03d-ecfe2fa7114c" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="dd5a7136-e912-4ac9-b002-c05815c13027" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="5cebec34-066b-4700-a1cd-18ba947424ef"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="ee66597e-24d4-4166-9a94-8ba1ea1ec4e7"><li><a href="../index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="276e3f46-e8b7-4a91-9f43-66e8a0c2f836"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul><ul class="dropdown-content" id="503c7407-fb53-4f8f-8aad-4d0d174a36b4"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="afc6c155-661e-4088-a03d-ecfe2fa7114c"><li><a href="../index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="dd5a7136-e912-4ac9-b002-c05815c13027"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="col hide-on-med-and-down l12"><nav class="breadcrumb-nav"><div class="nav-wrapper"><a href=".." class="breadcrumb">syntax</a><a href="." class="breadcrumb">Reporters</a></div></nav></div></div><div class="row"><div class="moose-content col s12 m12 l10"><section id="0e705907-d28a-4708-9691-6aee2464d2eb" data-section-level="1" data-section-text="Reporter System"><h1 id="reporter-system">Reporter System</h1><p>A Reporter object in MOOSE is a C++ object that computes a single value with an arbitrary type. The value computed is some sort of aggregation of data from a simulation. For example, the <a href="../../source/reporters/MeshInfo.html">MeshInfo</a> object reports various quantities regarding the mesh such as the number of nodes, elements, and degrees-of-freedom.</p><p>The system relies on a producer/consumer relationship. The Reporter object produces any number of aggregation values and other objects consume these values.</p><section class="scrollspy" id="f68faf41-eda4-4dc6-9cee-540a68359529" data-section-level="2" data-section-text="Producer ( Reporter objects )"><h2 id="producer-reporter-objects">Producer (Reporter objects)</h2><p>The Reporter system builds from MOOSE&#x27;s <a href="../UserObjects/index.html">UserObject</a> system. Each Reporter contains the full interface of a UserObject but is also expected to declare one or more values that to be produced by the Reporter object. Generally, there are no restrictions on the supported types for the Reporter values. All values declared are automatically registered as restartable. For complex types data serialization routines might be needed, see <a href="index.html#reporter-value-types">Reporter Value Types</a>.</p><p>Values to be computed are stored via a reference to the desired type, for example:</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">int &amp; _int;
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#5e08cfb6-2dd9-4c9e-b6cf-28394e918122">(moose/test/include/reporters/TestReporter.h)</a><p>The references are initialized using the <code>declareValue</code> and <code>declareValueByName</code> methods. It is possible to indicate how the value is to be computed, with respect to parallelism, by setting the calculation mode, see <a href="index.html#reporter-modes">Reporter Context and Modes</a> for more information. The <code>declareValue</code> method works in conjunction with the <code>validParams</code> function to allow the input file to dictate the name of the data being produced. To use this method first define an input parameter for the data name.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">&quot;int_name&quot;, &quot;int&quot;, &quot;The name of the interger data&quot;);
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#88cda074-32ce-4179-bcf3-a277fd82c4bb">(moose/test/src/reporters/TestReporter.C)</a><p>Then initialize the previously created reference by providing the input parameter name. In this example the initial value is also supplied.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">_int(declareValue&lt;int&gt;(&quot;int_name&quot;, 1980)),
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#ced00819-b7c4-4b31-a765-93eea8ef6b28">(moose/test/src/reporters/TestReporter.C)</a><p>The <code>declareValueByName</code> method works in the same manner except it does not query the parameter system for the name, it uses the name supplied to specifying the name directly. As such, this name cannot be modified without recompiling .</p><p>The calculation of the value(s) occurs by overriding the <code>execute</code> method and updating the values for references.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">void
+TestDeclareReporter::execute()
+{
+  _int += 1;
+  _real = 1.2345;
+  _vector = {1, 1.1, 1.2};
+  _string = &quot;string&quot;;
+
+  if (processor_id() == 0)
+    _bcast_value = 42;
+
+  _gather_value.resize(1, processor_id());
+
+  if (_distributed_vector)
+  {
+    _distributed_vector-&gt;resize(_vector.size());
+    (*_distributed_vector)[0] = processor_id();
+    for (unsigned int i = 1; i &lt; _distributed_vector-&gt;size(); ++i)
+      (*_distributed_vector)[i] = (*_distributed_vector)[i - 1] * 10;
+  }
+}
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#20ece9d9-f6cf-4b9a-a863-bd9da2ff07e1">(moose/test/src/reporters/TestReporter.C)</a></section><section class="scrollspy" id="e8f2af57-8a37-43ba-bd8f-1cc6f31ed2e5" data-section-level="2" data-section-text="Consumer ( other objects )"><h2 id="consumer-other-objects">Consumer (other objects)</h2><p>Any object that inherits from the <code>ReporterInterface</code> may consume a value produced by a Reporter. Values are retrieved in a similar fashion as declared, but use a constant reference. For example, values to be consumed should create a reference in the class definition.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">const std::vector&lt;Real&gt; &amp; _vector;
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#7667adea-8dbb-4a99-a356-cd4afb0bcf1d">(moose/test/include/reporters/TestReporter.h)</a><p>In the class declaration the <code>getReporterValue</code> method is used to initialize the reference.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">_vector(getReporterValue&lt;std::vector&lt;Real&gt;&gt;(&quot;vector_reporter&quot;)),
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#dfd61adc-0952-4b67-96a6-77d0ed40ada6">(moose/test/src/reporters/TestReporter.C)</a><p>The <code>getReporterValue</code> method automatically checks for an input parameter by the given name and the name specified in the parameter will be used. To retrieve a Reporter value directly by name use the <code>getReporterValueByName</code> method.</p><p>The get methods accept a <code>ReporterName</code> object, which is simply the combination of the name of the producing Reporter object and the name of the reporter value. It is possible to request a <code>ReporterName</code> in the <code>validParams</code> function of the consumer. For example, in the <code>validParams</code> function a parameter with a type of <code>ReporterName</code> is specified.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">  params.addRequiredParam&lt;ReporterName&gt;(&quot;int_reporter&quot;, &quot;&#x27;int&#x27; reporter name&quot;);
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#aa193f7d-aad4-44bd-aa2e-1730726694f9">(moose/test/src/reporters/TestReporter.C)</a><p>Then in the initialization list a reference to the desired value is initialized by supplying the name of the parameter containing the <code>ReporterValue</code>.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">    _int(getReporterValue&lt;int&gt;(&quot;int_reporter&quot;)),
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#e9e8c978-2d29-4ea1-abc5-1c2032f4ac1c">(moose/test/src/reporters/TestReporter.C)</a><p>In the input file, the ReporterName is provide as follows where &quot;a&quot; is the name of the producer Reporter object in the <code>[Reporters]</code> block of the input file that is producing data with the name &quot;int&quot;, which is the name given to the data within the <code>declareValue</code> metho of that object.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-text">    int_reporter = a/int
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#e497c79b-e67c-437f-8ff4-546c39db97f1">(moose/test/tests/reporters/base/base.i)</a></section><section class="scrollspy" id="0d49f10b-e8b5-4431-8e16-8c5ffc54197f" data-section-level="2" data-section-text="Reporter Value Types"><h2 id="reporter-value-types">Reporter Value Types</h2><p>As stated above, Reporter values may be of an type. This includes arbitrary classes or structs. However, the types must have an associated <code>dataLoad</code> and <code>dataStore</code> function specialization, please refer to <a href="../../source/restart/DataIO.html">DataIO</a> for more information on these functions.</p></section><section class="scrollspy" id="5b4f9892-6392-4e89-bd57-94c4283f3cba" data-section-level="2" data-section-text="Reporter Output"><h2 id="reporter-output">Reporter Output</h2><p>Reporter values are outputted in two forms <span>comma-separated values (CSV)</span> or <span class="tooltipped" data-tooltip="JavaScript Object Notation" data-position="top" data-delay="50">JSON</span> files. <span class="tooltipped" data-tooltip="comma-separated values" data-position="top" data-delay="50">CSV</span> output is limited to Reporter values with a type of <code>Real</code> or <code>std::vector&lt;Real&gt;</code>. <span class="tooltipped" data-tooltip="JavaScript Object Notation" data-position="top" data-delay="50">JSON</span> output will work for arbitrary types, if the type has a <code>to_json</code> function, see <a href="../../source/outputs/JSONOutput.html">JSON</a> for more details.</p></section><section class="scrollspy" id="94e20274-2557-4332-954b-c2da389f609e" data-section-level="2" data-section-text="Reporter Context and Modes"><h2 id="reporter-modes">Reporter Context and Modes</h2><p>Reporter values use a context system for performing parallel operations automatically. The default context allows Reporter values to be produced and consumed in various modes. Depending on the mode produced/consumed parallel operations will be performed automatically. The following modes exist for the default context.</p><ul class="browser-default"><li><p><strong>REPORTER_MODE_ROOT</strong>: Values exist only on the root processor. </p></li><li><p><strong>REPORTER_MODE_REPLICATED</strong>: Values exist and are identical on all processors. </p></li><li><p><strong>REPORTER_MODE_DISTRIBUTED</strong>: Values exist and are different across processors.</p></li></ul><p>Values can be computed or consumed in any of the prescribed modes. When consumed the mode of production is checked against the mode consumption. <a href="#producer-consumer-modes">Table 1</a> details the actions taken by the various possible modes of production and consumption for a Reporter value.</p><div class="card moose-float"><div class="card-content"><p class="moose-caption"><span class="moose-caption-heading">Table 1: </span><span class="moose-caption-text">Default operations for the default context that occur for Reporter values depending                on the modes of production and consumption. The prefix <code>REPORTER_MODE_</code> is omitted                for clarity.</span></p><div form="['left', 'left', 'left']" recursive class="moose-table-div"><table><thead><tr><th style=";text-align:left">Producer Mode</th><th style=";text-align:left">Consumer Mode</th><th style=";text-align:left">Operation</th></tr></thead><tbody><tr><td style=";text-align:left">ROOT</td><td style=";text-align:left">ROOT</td><td style=";text-align:left">Do nothing</td></tr></tbody><tbody><tr><td style=";text-align:left">REPLICATED</td><td style=";text-align:left">ROOT</td><td style=";text-align:left">Do nothing</td></tr></tbody><tbody><tr><td style=";text-align:left">REPLICATED</td><td style=";text-align:left">REPLICATED</td><td style=";text-align:left">Do nothing</td></tr></tbody><tbody><tr><td style=";text-align:left">DISTRIBUTED</td><td style=";text-align:left">DISTRIBUTED</td><td style=";text-align:left">Do nothing</td></tr></tbody><tbody><tr><td style=";text-align:left">ROOT</td><td style=";text-align:left">REPLICATED</td><td style=";text-align:left">MPI Broadcast</td></tr></tbody><tbody><tr><td style=";text-align:left">ROOT</td><td style=";text-align:left">DISTRIBUTED</td><td style=";text-align:left">Error</td></tr></tbody><tbody><tr><td style=";text-align:left">REPLICATED</td><td style=";text-align:left">DISTRIBUTED</td><td style=";text-align:left">Error</td></tr></tbody><tbody><tr><td style=";text-align:left">DISTRIBUTED</td><td style=";text-align:left">ROOT</td><td style=";text-align:left">Error</td></tr></tbody><tbody><tr><td style=";text-align:left">DISTRIBUTED</td><td style=";text-align:left">REPLICATED</td><td style=";text-align:left">Error</td></tr></tbody></table></div></div></div><p>The <code>declareValue</code> and <code>declareValueByName</code> methods allow for non-default context to be defined. For example, the following line declares a Reporter value to use the gather context object. A list of available contexts follows the code snippet.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">_gather_value(declareValueByName&lt;std::vector&lt;dof_id_type&gt;, ReporterGatherContext&gt;(&quot;gather&quot;)), </code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#c1d96d34-d857-4330-bf80-ce6ada11c148">(moose/test/src/reporters/TestReporter.C)</a><p><code>ReporterBroadcastContext</code><br>Automatically performs an MPI scatter of a specified value on the root processor to all processors.</p><p><code>ReporterScatterContext</code><br>Automatically performs an MPI scatter of a vector of data on the root processor to all processors.</p><p><code>ReporterGatherContext</code><br>Automatically performs an MPI gather to a vector of data on the root processor from all processors.</p></section><section class="scrollspy" id="46506c7e-f692-482f-b6e2-6b4fd4f16551" data-section-level="2" data-section-text="Reporter Debug Output"><h2 id="reporter-debug-output">Reporter Debug Output</h2><p>The <a href="../../source/outputs/ReporterDebugOutput.html">ReporterDebugOutput</a> output can be added to output to screen all of the Reporter values that were declared and requested, along with their types, producers, contexts, consumers, and consumer modes. This debug output can also be enabled with the <code>Debug/show_reporters</code> parameter.</p></section><section class="scrollspy" id="80497bea-f3ee-4319-b79f-48948c7d61da" data-section-level="2" data-section-text="Available Objects"><h2 id="available-objects">Available Objects</h2><ul class="moose-syntax-list collection with-header"><li class="collection-header">Moose App</li><li class="collection-item"><a href="../../source/reporters/AccumulateReporter.html">AccumulateReporter</a>Reporter the accumulates the value of a inputted reporter value over time into a vector reporter value of the same type.</li><li class="collection-item"><a href="../../source/reporters/ConstantReporter.html">ConstantReporter</a>Reporter with constant values to be accessed by other objects, can be modified using transfers.</li><li class="collection-item"><a href="../../source/reporters/IterationInfo.html">IterationInfo</a>Report the time and iteration information for the simulation.</li><li class="collection-item"><a href="../../source/reporters/MeshInfo.html">MeshInfo</a>Report the time and iteration information for the simulation.</li></ul></section><section class="scrollspy" id="e487cbbd-681a-4c81-89f5-18890c64ae98" data-section-level="2" data-section-text="Available Actions"><h2 id="available-actions">Available Actions</h2><ul class="moose-syntax-list collection with-header"><li class="collection-header">Moose App</li><li class="collection-item"><a href="../../source/actions/AddReporterAction.html">AddReporterAction</a>Add a Reporter object to the simulation.</li></ul></section></section><div class="moose-modal modal" id="5e08cfb6-2dd9-4c9e-b6cf-28394e918122"><div class="modal-content"><h4>(moose/test/include/reporters/TestReporter.h)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#pragma once
+
+#include &quot;GeneralReporter.h&quot;
+
+class TestDeclareReporter : public GeneralReporter
+{
+public:
+  static InputParameters validParams();
+  TestDeclareReporter(const InputParameters &amp; parameters);
+  virtual void initialize() override {}
+  virtual void finalize() override {}
+  virtual void execute() override;
+
+protected:
+  int &amp; _int; // MooseDocs:producer
+  Real &amp; _real;
+  std::vector&lt;Real&gt; &amp; _vector;
+  std::string &amp; _string;
+  Real &amp; _bcast_value;
+
+  std::vector&lt;dof_id_type&gt; _values_to_scatter;
+  dof_id_type &amp; _scatter_value;
+
+  std::vector&lt;dof_id_type&gt; _values_to_gather;
+  std::vector&lt;dof_id_type&gt; &amp; _gather_value;
+
+  std::vector&lt;dof_id_type&gt; * _distributed_vector;
+};
+
+class TestGetReporter : public GeneralReporter
+{
+public:
+  static InputParameters validParams();
+  TestGetReporter(const InputParameters &amp; parameters);
+  virtual void initialize() override {}
+  virtual void finalize() override {}
+  virtual void execute() override;
+
+protected:
+  const int &amp; _int;
+  const int &amp; _int_old;
+
+  const Real &amp; _real;
+  const std::vector&lt;Real&gt; &amp; _vector; // MooseDocs:consumer
+  const std::string &amp; _string;
+  const Real &amp; _bcast_value;
+  const dof_id_type &amp; _scatter_value;
+  const std::vector&lt;dof_id_type&gt; &amp; _gather_value;
+};
+
+class TestDeclareInitialSetupReporter : public GeneralReporter
+{
+public:
+  static InputParameters validParams();
+  TestDeclareInitialSetupReporter(const InputParameters &amp; parameters);
+  virtual void initialSetup() override;
+  virtual void initialize() override {}
+  virtual void finalize() override {}
+  virtual void execute() override {}
+};
+
+class TestGetReporterDeclaredInInitialSetupReporter : public GeneralReporter
+{
+public:
+  static InputParameters validParams();
+  TestGetReporterDeclaredInInitialSetupReporter(const InputParameters &amp; parameters);
+  virtual void initialize() override {}
+  virtual void finalize() override {}
+  virtual void execute() override;
+
+protected:
+  const Real &amp; _value_declared_in_initial_setup;
+  Real &amp; _the_value_of_the_reporter;
+};
+
+class TestDeclareErrorsReporter : public GeneralReporter
+{
+public:
+  static InputParameters validParams();
+  TestDeclareErrorsReporter(const InputParameters &amp; parameters);
+  virtual void initialize() override {}
+  virtual void finalize() override {}
+  virtual void execute() override {}
+};
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="88cda074-32ce-4179-bcf3-a277fd82c4bb"><div class="modal-content"><h4>(moose/test/src/reporters/TestReporter.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include &quot;TestReporter.h&quot;
+
+registerMooseObject(&quot;MooseTestApp&quot;, TestDeclareReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestGetReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestDeclareInitialSetupReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestGetReporterDeclaredInInitialSetupReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestDeclareErrorsReporter);
+
+InputParameters
+TestDeclareReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addParam&lt;ReporterValueName&gt;(
+      &quot;int_name&quot;, &quot;int&quot;, &quot;The name of the interger data&quot;); // MooseDocs:data
+  params.addParam&lt;ReporterValueName&gt;(&quot;distributed_vector_name&quot;,
+                                     &quot;Distributed vector reporter to produce.&quot;);
+  return params;
+}
+
+TestDeclareReporter::TestDeclareReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters),
+    _int(declareValue&lt;int&gt;(&quot;int_name&quot;, 1980)), // MooseDocs:producer
+    _real(declareValueByName&lt;Real&gt;(&quot;real&quot;)),
+    _vector(declareValueByName&lt;std::vector&lt;Real&gt;&gt;(&quot;vector&quot;)),
+    _string(declareValueByName&lt;std::string&gt;(&quot;string&quot;)),
+    _bcast_value(declareValueByName&lt;Real, ReporterBroadcastContext&gt;(&quot;broadcast&quot;)),
+    _scatter_value(
+        declareValueByName&lt;dof_id_type, ReporterScatterContext&gt;(&quot;scatter&quot;, _values_to_scatter)),
+    _gather_value(declareValueByName&lt;std::vector&lt;dof_id_type&gt;, ReporterGatherContext&gt;(
+        &quot;gather&quot;)), // MooseDocs:gather
+    _distributed_vector(isParamValid(&quot;distributed_vector_name&quot;)
+                            ? &amp;declareValue&lt;std::vector&lt;dof_id_type&gt;&gt;(&quot;distributed_vector_name&quot;,
+                                                                      REPORTER_MODE_DISTRIBUTED)
+                            : nullptr)
+{
+  if (processor_id() == 0)
+    for (dof_id_type rank = 0; rank &lt; n_processors(); ++rank)
+      _values_to_scatter.push_back(rank);
+}
+
+// MooseDocs:execute_begin
+void
+TestDeclareReporter::execute()
+{
+  _int += 1;
+  _real = 1.2345;
+  _vector = {1, 1.1, 1.2};
+  _string = &quot;string&quot;;
+
+  if (processor_id() == 0)
+    _bcast_value = 42;
+
+  _gather_value.resize(1, processor_id());
+
+  if (_distributed_vector)
+  {
+    _distributed_vector-&gt;resize(_vector.size());
+    (*_distributed_vector)[0] = processor_id();
+    for (unsigned int i = 1; i &lt; _distributed_vector-&gt;size(); ++i)
+      (*_distributed_vector)[i] = (*_distributed_vector)[i - 1] * 10;
+  }
+}
+// MooseDocs:execute_end
+
+InputParameters
+TestGetReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;int_reporter&quot;, &quot;&#x27;int&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;real_reporter&quot;, &quot;&#x27;real&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;vector_reporter&quot;, &quot;&#x27;vector&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;string_reporter&quot;, &quot;&#x27;string&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;broadcast_reporter&quot;, &quot;&#x27;broadcast&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;scatter_reporter&quot;, &quot;&#x27;scatter&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;gather_reporter&quot;, &quot;&#x27;gather&#x27; reporter name&quot;);
+  return params;
+}
+
+TestGetReporter::TestGetReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters),
+    _int(getReporterValue&lt;int&gt;(&quot;int_reporter&quot;)),
+    _int_old(getReporterValue&lt;int&gt;(&quot;int_reporter&quot;, 1)),
+    _real(getReporterValue&lt;Real&gt;(&quot;real_reporter&quot;)),
+    _vector(getReporterValue&lt;std::vector&lt;Real&gt;&gt;(&quot;vector_reporter&quot;)), // MooseDocs:consumer
+    _string(getReporterValue&lt;std::string&gt;(&quot;string_reporter&quot;)),
+    _bcast_value(getReporterValue&lt;Real&gt;(&quot;broadcast_reporter&quot;)),
+    _scatter_value(getReporterValue&lt;dof_id_type&gt;(&quot;scatter_reporter&quot;)),
+    _gather_value(getReporterValue&lt;std::vector&lt;dof_id_type&gt;&gt;(&quot;gather_reporter&quot;))
+{
+}
+
+void
+TestGetReporter::execute()
+{
+  if (_int != 1980 + _t_step)
+    mooseError(&quot;int reporter test failed: &quot;, _int, &quot; != &quot;, 1980 + _t_step);
+  if (_real != 1.2345)
+    mooseError(&quot;Real reporter test failed&quot;);
+  if (_vector != std::vector&lt;Real&gt;({1., 1.1, 1.2}))
+    mooseError(&quot;std::vector&lt;Real&gt; reporter test failed&quot;);
+  if (_string != &quot;string&quot;)
+    mooseError(&quot;std::string reporter test failed&quot;);
+
+  if (_t_step == 0 &amp;&amp; _int_old != 1980)
+    mooseError(&quot;int_old on timestep 0 failed: &quot;, _int_old, &quot; != &quot;, 1980);
+  if (_t_step &gt; 0 &amp;&amp; _int_old != 1980 + (_t_step - 1))
+    mooseError(
+        &quot;int_old on timestep &quot;, _t_step, &quot; failed: &quot;, _int_old, &quot; != &quot;, 1980 + (_t_step - 1));
+
+  if (_bcast_value != 42)
+    mooseError(&quot;Broadcast reporter test failed&quot;);
+
+  if (_scatter_value != processor_id())
+    mooseError(&quot;Scatter reporter test failed&quot;);
+
+  if (processor_id() == 0)
+  {
+    std::vector&lt;dof_id_type&gt; gold;
+    for (dof_id_type id = 0; id &lt; n_processors(); ++id)
+      gold.push_back(id);
+    if (_gather_value != gold)
+      mooseError(&quot;Gather reporter test failed!&quot;);
+  }
+}
+
+InputParameters
+TestDeclareInitialSetupReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;Real&gt;(&quot;value&quot;, &quot;The value to report.&quot;);
+  return params;
+}
+
+TestDeclareInitialSetupReporter::TestDeclareInitialSetupReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters)
+{
+}
+
+void
+TestDeclareInitialSetupReporter::initialSetup()
+{
+  Real &amp; value = declareValueByName&lt;Real&gt;(&quot;value&quot;);
+  value = getParam&lt;Real&gt;(&quot;value&quot;);
+}
+
+InputParameters
+TestGetReporterDeclaredInInitialSetupReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;other_reporter&quot;,
+                                        &quot;The reporter name that was declared in initialSetup&quot;);
+  return params;
+}
+
+TestGetReporterDeclaredInInitialSetupReporter::TestGetReporterDeclaredInInitialSetupReporter(
+    const InputParameters &amp; parameters)
+  : GeneralReporter(parameters),
+    _value_declared_in_initial_setup(getReporterValue&lt;Real&gt;(&quot;other_reporter&quot;)),
+    _the_value_of_the_reporter(declareValueByName&lt;Real&gt;(&quot;other_value&quot;))
+{
+}
+
+void
+TestGetReporterDeclaredInInitialSetupReporter::execute()
+{
+  _the_value_of_the_reporter = _value_declared_in_initial_setup;
+}
+
+InputParameters
+TestDeclareErrorsReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;ReporterValueName&gt;(&quot;value&quot;, &quot;A reporter value name&quot;);
+
+  params.addParam&lt;bool&gt;(&quot;missing_param&quot;, false, &quot;True to test the error for a missing parameter&quot;);
+  params.addParam&lt;bool&gt;(&quot;bad_param&quot;, false, &quot;True to test the error for a bad parameter type&quot;);
+  params.addParam&lt;bool&gt;(&quot;already_declared&quot;, false, &quot;Test declaring a value multiple times&quot;);
+  params.addParam&lt;bool&gt;(&quot;requested_different_type&quot;,
+                        false,
+                        &quot;Test declaring a value that has been requested with a differentt type&quot;);
+
+  return params;
+}
+
+TestDeclareErrorsReporter::TestDeclareErrorsReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters)
+{
+  if (getParam&lt;bool&gt;(&quot;missing_param&quot;))
+    declareValue&lt;int&gt;(&quot;some_missing_parm&quot;);
+  if (getParam&lt;bool&gt;(&quot;bad_param&quot;))
+    declareValue&lt;int&gt;(&quot;bad_param&quot;);
+  if (getParam&lt;bool&gt;(&quot;already_declared&quot;))
+  {
+    declareValueByName&lt;int&gt;(&quot;value_name&quot;);
+    declareValueByName&lt;Real&gt;(&quot;value_name&quot;);
+  }
+  if (getParam&lt;bool&gt;(&quot;requested_different_type&quot;))
+  {
+    getReporterValueByName&lt;int&gt;(name() + &quot;/value_name&quot;);
+    declareValueByName&lt;Real&gt;(&quot;value_name&quot;);
+  }
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="ced00819-b7c4-4b31-a765-93eea8ef6b28"><div class="modal-content"><h4>(moose/test/src/reporters/TestReporter.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include &quot;TestReporter.h&quot;
+
+registerMooseObject(&quot;MooseTestApp&quot;, TestDeclareReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestGetReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestDeclareInitialSetupReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestGetReporterDeclaredInInitialSetupReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestDeclareErrorsReporter);
+
+InputParameters
+TestDeclareReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addParam&lt;ReporterValueName&gt;(
+      &quot;int_name&quot;, &quot;int&quot;, &quot;The name of the interger data&quot;); // MooseDocs:data
+  params.addParam&lt;ReporterValueName&gt;(&quot;distributed_vector_name&quot;,
+                                     &quot;Distributed vector reporter to produce.&quot;);
+  return params;
+}
+
+TestDeclareReporter::TestDeclareReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters),
+    _int(declareValue&lt;int&gt;(&quot;int_name&quot;, 1980)), // MooseDocs:producer
+    _real(declareValueByName&lt;Real&gt;(&quot;real&quot;)),
+    _vector(declareValueByName&lt;std::vector&lt;Real&gt;&gt;(&quot;vector&quot;)),
+    _string(declareValueByName&lt;std::string&gt;(&quot;string&quot;)),
+    _bcast_value(declareValueByName&lt;Real, ReporterBroadcastContext&gt;(&quot;broadcast&quot;)),
+    _scatter_value(
+        declareValueByName&lt;dof_id_type, ReporterScatterContext&gt;(&quot;scatter&quot;, _values_to_scatter)),
+    _gather_value(declareValueByName&lt;std::vector&lt;dof_id_type&gt;, ReporterGatherContext&gt;(
+        &quot;gather&quot;)), // MooseDocs:gather
+    _distributed_vector(isParamValid(&quot;distributed_vector_name&quot;)
+                            ? &amp;declareValue&lt;std::vector&lt;dof_id_type&gt;&gt;(&quot;distributed_vector_name&quot;,
+                                                                      REPORTER_MODE_DISTRIBUTED)
+                            : nullptr)
+{
+  if (processor_id() == 0)
+    for (dof_id_type rank = 0; rank &lt; n_processors(); ++rank)
+      _values_to_scatter.push_back(rank);
+}
+
+// MooseDocs:execute_begin
+void
+TestDeclareReporter::execute()
+{
+  _int += 1;
+  _real = 1.2345;
+  _vector = {1, 1.1, 1.2};
+  _string = &quot;string&quot;;
+
+  if (processor_id() == 0)
+    _bcast_value = 42;
+
+  _gather_value.resize(1, processor_id());
+
+  if (_distributed_vector)
+  {
+    _distributed_vector-&gt;resize(_vector.size());
+    (*_distributed_vector)[0] = processor_id();
+    for (unsigned int i = 1; i &lt; _distributed_vector-&gt;size(); ++i)
+      (*_distributed_vector)[i] = (*_distributed_vector)[i - 1] * 10;
+  }
+}
+// MooseDocs:execute_end
+
+InputParameters
+TestGetReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;int_reporter&quot;, &quot;&#x27;int&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;real_reporter&quot;, &quot;&#x27;real&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;vector_reporter&quot;, &quot;&#x27;vector&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;string_reporter&quot;, &quot;&#x27;string&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;broadcast_reporter&quot;, &quot;&#x27;broadcast&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;scatter_reporter&quot;, &quot;&#x27;scatter&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;gather_reporter&quot;, &quot;&#x27;gather&#x27; reporter name&quot;);
+  return params;
+}
+
+TestGetReporter::TestGetReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters),
+    _int(getReporterValue&lt;int&gt;(&quot;int_reporter&quot;)),
+    _int_old(getReporterValue&lt;int&gt;(&quot;int_reporter&quot;, 1)),
+    _real(getReporterValue&lt;Real&gt;(&quot;real_reporter&quot;)),
+    _vector(getReporterValue&lt;std::vector&lt;Real&gt;&gt;(&quot;vector_reporter&quot;)), // MooseDocs:consumer
+    _string(getReporterValue&lt;std::string&gt;(&quot;string_reporter&quot;)),
+    _bcast_value(getReporterValue&lt;Real&gt;(&quot;broadcast_reporter&quot;)),
+    _scatter_value(getReporterValue&lt;dof_id_type&gt;(&quot;scatter_reporter&quot;)),
+    _gather_value(getReporterValue&lt;std::vector&lt;dof_id_type&gt;&gt;(&quot;gather_reporter&quot;))
+{
+}
+
+void
+TestGetReporter::execute()
+{
+  if (_int != 1980 + _t_step)
+    mooseError(&quot;int reporter test failed: &quot;, _int, &quot; != &quot;, 1980 + _t_step);
+  if (_real != 1.2345)
+    mooseError(&quot;Real reporter test failed&quot;);
+  if (_vector != std::vector&lt;Real&gt;({1., 1.1, 1.2}))
+    mooseError(&quot;std::vector&lt;Real&gt; reporter test failed&quot;);
+  if (_string != &quot;string&quot;)
+    mooseError(&quot;std::string reporter test failed&quot;);
+
+  if (_t_step == 0 &amp;&amp; _int_old != 1980)
+    mooseError(&quot;int_old on timestep 0 failed: &quot;, _int_old, &quot; != &quot;, 1980);
+  if (_t_step &gt; 0 &amp;&amp; _int_old != 1980 + (_t_step - 1))
+    mooseError(
+        &quot;int_old on timestep &quot;, _t_step, &quot; failed: &quot;, _int_old, &quot; != &quot;, 1980 + (_t_step - 1));
+
+  if (_bcast_value != 42)
+    mooseError(&quot;Broadcast reporter test failed&quot;);
+
+  if (_scatter_value != processor_id())
+    mooseError(&quot;Scatter reporter test failed&quot;);
+
+  if (processor_id() == 0)
+  {
+    std::vector&lt;dof_id_type&gt; gold;
+    for (dof_id_type id = 0; id &lt; n_processors(); ++id)
+      gold.push_back(id);
+    if (_gather_value != gold)
+      mooseError(&quot;Gather reporter test failed!&quot;);
+  }
+}
+
+InputParameters
+TestDeclareInitialSetupReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;Real&gt;(&quot;value&quot;, &quot;The value to report.&quot;);
+  return params;
+}
+
+TestDeclareInitialSetupReporter::TestDeclareInitialSetupReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters)
+{
+}
+
+void
+TestDeclareInitialSetupReporter::initialSetup()
+{
+  Real &amp; value = declareValueByName&lt;Real&gt;(&quot;value&quot;);
+  value = getParam&lt;Real&gt;(&quot;value&quot;);
+}
+
+InputParameters
+TestGetReporterDeclaredInInitialSetupReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;other_reporter&quot;,
+                                        &quot;The reporter name that was declared in initialSetup&quot;);
+  return params;
+}
+
+TestGetReporterDeclaredInInitialSetupReporter::TestGetReporterDeclaredInInitialSetupReporter(
+    const InputParameters &amp; parameters)
+  : GeneralReporter(parameters),
+    _value_declared_in_initial_setup(getReporterValue&lt;Real&gt;(&quot;other_reporter&quot;)),
+    _the_value_of_the_reporter(declareValueByName&lt;Real&gt;(&quot;other_value&quot;))
+{
+}
+
+void
+TestGetReporterDeclaredInInitialSetupReporter::execute()
+{
+  _the_value_of_the_reporter = _value_declared_in_initial_setup;
+}
+
+InputParameters
+TestDeclareErrorsReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;ReporterValueName&gt;(&quot;value&quot;, &quot;A reporter value name&quot;);
+
+  params.addParam&lt;bool&gt;(&quot;missing_param&quot;, false, &quot;True to test the error for a missing parameter&quot;);
+  params.addParam&lt;bool&gt;(&quot;bad_param&quot;, false, &quot;True to test the error for a bad parameter type&quot;);
+  params.addParam&lt;bool&gt;(&quot;already_declared&quot;, false, &quot;Test declaring a value multiple times&quot;);
+  params.addParam&lt;bool&gt;(&quot;requested_different_type&quot;,
+                        false,
+                        &quot;Test declaring a value that has been requested with a differentt type&quot;);
+
+  return params;
+}
+
+TestDeclareErrorsReporter::TestDeclareErrorsReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters)
+{
+  if (getParam&lt;bool&gt;(&quot;missing_param&quot;))
+    declareValue&lt;int&gt;(&quot;some_missing_parm&quot;);
+  if (getParam&lt;bool&gt;(&quot;bad_param&quot;))
+    declareValue&lt;int&gt;(&quot;bad_param&quot;);
+  if (getParam&lt;bool&gt;(&quot;already_declared&quot;))
+  {
+    declareValueByName&lt;int&gt;(&quot;value_name&quot;);
+    declareValueByName&lt;Real&gt;(&quot;value_name&quot;);
+  }
+  if (getParam&lt;bool&gt;(&quot;requested_different_type&quot;))
+  {
+    getReporterValueByName&lt;int&gt;(name() + &quot;/value_name&quot;);
+    declareValueByName&lt;Real&gt;(&quot;value_name&quot;);
+  }
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="20ece9d9-f6cf-4b9a-a863-bd9da2ff07e1"><div class="modal-content"><h4>(moose/test/src/reporters/TestReporter.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include &quot;TestReporter.h&quot;
+
+registerMooseObject(&quot;MooseTestApp&quot;, TestDeclareReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestGetReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestDeclareInitialSetupReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestGetReporterDeclaredInInitialSetupReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestDeclareErrorsReporter);
+
+InputParameters
+TestDeclareReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addParam&lt;ReporterValueName&gt;(
+      &quot;int_name&quot;, &quot;int&quot;, &quot;The name of the interger data&quot;); // MooseDocs:data
+  params.addParam&lt;ReporterValueName&gt;(&quot;distributed_vector_name&quot;,
+                                     &quot;Distributed vector reporter to produce.&quot;);
+  return params;
+}
+
+TestDeclareReporter::TestDeclareReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters),
+    _int(declareValue&lt;int&gt;(&quot;int_name&quot;, 1980)), // MooseDocs:producer
+    _real(declareValueByName&lt;Real&gt;(&quot;real&quot;)),
+    _vector(declareValueByName&lt;std::vector&lt;Real&gt;&gt;(&quot;vector&quot;)),
+    _string(declareValueByName&lt;std::string&gt;(&quot;string&quot;)),
+    _bcast_value(declareValueByName&lt;Real, ReporterBroadcastContext&gt;(&quot;broadcast&quot;)),
+    _scatter_value(
+        declareValueByName&lt;dof_id_type, ReporterScatterContext&gt;(&quot;scatter&quot;, _values_to_scatter)),
+    _gather_value(declareValueByName&lt;std::vector&lt;dof_id_type&gt;, ReporterGatherContext&gt;(
+        &quot;gather&quot;)), // MooseDocs:gather
+    _distributed_vector(isParamValid(&quot;distributed_vector_name&quot;)
+                            ? &amp;declareValue&lt;std::vector&lt;dof_id_type&gt;&gt;(&quot;distributed_vector_name&quot;,
+                                                                      REPORTER_MODE_DISTRIBUTED)
+                            : nullptr)
+{
+  if (processor_id() == 0)
+    for (dof_id_type rank = 0; rank &lt; n_processors(); ++rank)
+      _values_to_scatter.push_back(rank);
+}
+
+// MooseDocs:execute_begin
+void
+TestDeclareReporter::execute()
+{
+  _int += 1;
+  _real = 1.2345;
+  _vector = {1, 1.1, 1.2};
+  _string = &quot;string&quot;;
+
+  if (processor_id() == 0)
+    _bcast_value = 42;
+
+  _gather_value.resize(1, processor_id());
+
+  if (_distributed_vector)
+  {
+    _distributed_vector-&gt;resize(_vector.size());
+    (*_distributed_vector)[0] = processor_id();
+    for (unsigned int i = 1; i &lt; _distributed_vector-&gt;size(); ++i)
+      (*_distributed_vector)[i] = (*_distributed_vector)[i - 1] * 10;
+  }
+}
+// MooseDocs:execute_end
+
+InputParameters
+TestGetReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;int_reporter&quot;, &quot;&#x27;int&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;real_reporter&quot;, &quot;&#x27;real&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;vector_reporter&quot;, &quot;&#x27;vector&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;string_reporter&quot;, &quot;&#x27;string&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;broadcast_reporter&quot;, &quot;&#x27;broadcast&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;scatter_reporter&quot;, &quot;&#x27;scatter&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;gather_reporter&quot;, &quot;&#x27;gather&#x27; reporter name&quot;);
+  return params;
+}
+
+TestGetReporter::TestGetReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters),
+    _int(getReporterValue&lt;int&gt;(&quot;int_reporter&quot;)),
+    _int_old(getReporterValue&lt;int&gt;(&quot;int_reporter&quot;, 1)),
+    _real(getReporterValue&lt;Real&gt;(&quot;real_reporter&quot;)),
+    _vector(getReporterValue&lt;std::vector&lt;Real&gt;&gt;(&quot;vector_reporter&quot;)), // MooseDocs:consumer
+    _string(getReporterValue&lt;std::string&gt;(&quot;string_reporter&quot;)),
+    _bcast_value(getReporterValue&lt;Real&gt;(&quot;broadcast_reporter&quot;)),
+    _scatter_value(getReporterValue&lt;dof_id_type&gt;(&quot;scatter_reporter&quot;)),
+    _gather_value(getReporterValue&lt;std::vector&lt;dof_id_type&gt;&gt;(&quot;gather_reporter&quot;))
+{
+}
+
+void
+TestGetReporter::execute()
+{
+  if (_int != 1980 + _t_step)
+    mooseError(&quot;int reporter test failed: &quot;, _int, &quot; != &quot;, 1980 + _t_step);
+  if (_real != 1.2345)
+    mooseError(&quot;Real reporter test failed&quot;);
+  if (_vector != std::vector&lt;Real&gt;({1., 1.1, 1.2}))
+    mooseError(&quot;std::vector&lt;Real&gt; reporter test failed&quot;);
+  if (_string != &quot;string&quot;)
+    mooseError(&quot;std::string reporter test failed&quot;);
+
+  if (_t_step == 0 &amp;&amp; _int_old != 1980)
+    mooseError(&quot;int_old on timestep 0 failed: &quot;, _int_old, &quot; != &quot;, 1980);
+  if (_t_step &gt; 0 &amp;&amp; _int_old != 1980 + (_t_step - 1))
+    mooseError(
+        &quot;int_old on timestep &quot;, _t_step, &quot; failed: &quot;, _int_old, &quot; != &quot;, 1980 + (_t_step - 1));
+
+  if (_bcast_value != 42)
+    mooseError(&quot;Broadcast reporter test failed&quot;);
+
+  if (_scatter_value != processor_id())
+    mooseError(&quot;Scatter reporter test failed&quot;);
+
+  if (processor_id() == 0)
+  {
+    std::vector&lt;dof_id_type&gt; gold;
+    for (dof_id_type id = 0; id &lt; n_processors(); ++id)
+      gold.push_back(id);
+    if (_gather_value != gold)
+      mooseError(&quot;Gather reporter test failed!&quot;);
+  }
+}
+
+InputParameters
+TestDeclareInitialSetupReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;Real&gt;(&quot;value&quot;, &quot;The value to report.&quot;);
+  return params;
+}
+
+TestDeclareInitialSetupReporter::TestDeclareInitialSetupReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters)
+{
+}
+
+void
+TestDeclareInitialSetupReporter::initialSetup()
+{
+  Real &amp; value = declareValueByName&lt;Real&gt;(&quot;value&quot;);
+  value = getParam&lt;Real&gt;(&quot;value&quot;);
+}
+
+InputParameters
+TestGetReporterDeclaredInInitialSetupReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;other_reporter&quot;,
+                                        &quot;The reporter name that was declared in initialSetup&quot;);
+  return params;
+}
+
+TestGetReporterDeclaredInInitialSetupReporter::TestGetReporterDeclaredInInitialSetupReporter(
+    const InputParameters &amp; parameters)
+  : GeneralReporter(parameters),
+    _value_declared_in_initial_setup(getReporterValue&lt;Real&gt;(&quot;other_reporter&quot;)),
+    _the_value_of_the_reporter(declareValueByName&lt;Real&gt;(&quot;other_value&quot;))
+{
+}
+
+void
+TestGetReporterDeclaredInInitialSetupReporter::execute()
+{
+  _the_value_of_the_reporter = _value_declared_in_initial_setup;
+}
+
+InputParameters
+TestDeclareErrorsReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;ReporterValueName&gt;(&quot;value&quot;, &quot;A reporter value name&quot;);
+
+  params.addParam&lt;bool&gt;(&quot;missing_param&quot;, false, &quot;True to test the error for a missing parameter&quot;);
+  params.addParam&lt;bool&gt;(&quot;bad_param&quot;, false, &quot;True to test the error for a bad parameter type&quot;);
+  params.addParam&lt;bool&gt;(&quot;already_declared&quot;, false, &quot;Test declaring a value multiple times&quot;);
+  params.addParam&lt;bool&gt;(&quot;requested_different_type&quot;,
+                        false,
+                        &quot;Test declaring a value that has been requested with a differentt type&quot;);
+
+  return params;
+}
+
+TestDeclareErrorsReporter::TestDeclareErrorsReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters)
+{
+  if (getParam&lt;bool&gt;(&quot;missing_param&quot;))
+    declareValue&lt;int&gt;(&quot;some_missing_parm&quot;);
+  if (getParam&lt;bool&gt;(&quot;bad_param&quot;))
+    declareValue&lt;int&gt;(&quot;bad_param&quot;);
+  if (getParam&lt;bool&gt;(&quot;already_declared&quot;))
+  {
+    declareValueByName&lt;int&gt;(&quot;value_name&quot;);
+    declareValueByName&lt;Real&gt;(&quot;value_name&quot;);
+  }
+  if (getParam&lt;bool&gt;(&quot;requested_different_type&quot;))
+  {
+    getReporterValueByName&lt;int&gt;(name() + &quot;/value_name&quot;);
+    declareValueByName&lt;Real&gt;(&quot;value_name&quot;);
+  }
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="7667adea-8dbb-4a99-a356-cd4afb0bcf1d"><div class="modal-content"><h4>(moose/test/include/reporters/TestReporter.h)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#pragma once
+
+#include &quot;GeneralReporter.h&quot;
+
+class TestDeclareReporter : public GeneralReporter
+{
+public:
+  static InputParameters validParams();
+  TestDeclareReporter(const InputParameters &amp; parameters);
+  virtual void initialize() override {}
+  virtual void finalize() override {}
+  virtual void execute() override;
+
+protected:
+  int &amp; _int; // MooseDocs:producer
+  Real &amp; _real;
+  std::vector&lt;Real&gt; &amp; _vector;
+  std::string &amp; _string;
+  Real &amp; _bcast_value;
+
+  std::vector&lt;dof_id_type&gt; _values_to_scatter;
+  dof_id_type &amp; _scatter_value;
+
+  std::vector&lt;dof_id_type&gt; _values_to_gather;
+  std::vector&lt;dof_id_type&gt; &amp; _gather_value;
+
+  std::vector&lt;dof_id_type&gt; * _distributed_vector;
+};
+
+class TestGetReporter : public GeneralReporter
+{
+public:
+  static InputParameters validParams();
+  TestGetReporter(const InputParameters &amp; parameters);
+  virtual void initialize() override {}
+  virtual void finalize() override {}
+  virtual void execute() override;
+
+protected:
+  const int &amp; _int;
+  const int &amp; _int_old;
+
+  const Real &amp; _real;
+  const std::vector&lt;Real&gt; &amp; _vector; // MooseDocs:consumer
+  const std::string &amp; _string;
+  const Real &amp; _bcast_value;
+  const dof_id_type &amp; _scatter_value;
+  const std::vector&lt;dof_id_type&gt; &amp; _gather_value;
+};
+
+class TestDeclareInitialSetupReporter : public GeneralReporter
+{
+public:
+  static InputParameters validParams();
+  TestDeclareInitialSetupReporter(const InputParameters &amp; parameters);
+  virtual void initialSetup() override;
+  virtual void initialize() override {}
+  virtual void finalize() override {}
+  virtual void execute() override {}
+};
+
+class TestGetReporterDeclaredInInitialSetupReporter : public GeneralReporter
+{
+public:
+  static InputParameters validParams();
+  TestGetReporterDeclaredInInitialSetupReporter(const InputParameters &amp; parameters);
+  virtual void initialize() override {}
+  virtual void finalize() override {}
+  virtual void execute() override;
+
+protected:
+  const Real &amp; _value_declared_in_initial_setup;
+  Real &amp; _the_value_of_the_reporter;
+};
+
+class TestDeclareErrorsReporter : public GeneralReporter
+{
+public:
+  static InputParameters validParams();
+  TestDeclareErrorsReporter(const InputParameters &amp; parameters);
+  virtual void initialize() override {}
+  virtual void finalize() override {}
+  virtual void execute() override {}
+};
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="dfd61adc-0952-4b67-96a6-77d0ed40ada6"><div class="modal-content"><h4>(moose/test/src/reporters/TestReporter.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include &quot;TestReporter.h&quot;
+
+registerMooseObject(&quot;MooseTestApp&quot;, TestDeclareReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestGetReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestDeclareInitialSetupReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestGetReporterDeclaredInInitialSetupReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestDeclareErrorsReporter);
+
+InputParameters
+TestDeclareReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addParam&lt;ReporterValueName&gt;(
+      &quot;int_name&quot;, &quot;int&quot;, &quot;The name of the interger data&quot;); // MooseDocs:data
+  params.addParam&lt;ReporterValueName&gt;(&quot;distributed_vector_name&quot;,
+                                     &quot;Distributed vector reporter to produce.&quot;);
+  return params;
+}
+
+TestDeclareReporter::TestDeclareReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters),
+    _int(declareValue&lt;int&gt;(&quot;int_name&quot;, 1980)), // MooseDocs:producer
+    _real(declareValueByName&lt;Real&gt;(&quot;real&quot;)),
+    _vector(declareValueByName&lt;std::vector&lt;Real&gt;&gt;(&quot;vector&quot;)),
+    _string(declareValueByName&lt;std::string&gt;(&quot;string&quot;)),
+    _bcast_value(declareValueByName&lt;Real, ReporterBroadcastContext&gt;(&quot;broadcast&quot;)),
+    _scatter_value(
+        declareValueByName&lt;dof_id_type, ReporterScatterContext&gt;(&quot;scatter&quot;, _values_to_scatter)),
+    _gather_value(declareValueByName&lt;std::vector&lt;dof_id_type&gt;, ReporterGatherContext&gt;(
+        &quot;gather&quot;)), // MooseDocs:gather
+    _distributed_vector(isParamValid(&quot;distributed_vector_name&quot;)
+                            ? &amp;declareValue&lt;std::vector&lt;dof_id_type&gt;&gt;(&quot;distributed_vector_name&quot;,
+                                                                      REPORTER_MODE_DISTRIBUTED)
+                            : nullptr)
+{
+  if (processor_id() == 0)
+    for (dof_id_type rank = 0; rank &lt; n_processors(); ++rank)
+      _values_to_scatter.push_back(rank);
+}
+
+// MooseDocs:execute_begin
+void
+TestDeclareReporter::execute()
+{
+  _int += 1;
+  _real = 1.2345;
+  _vector = {1, 1.1, 1.2};
+  _string = &quot;string&quot;;
+
+  if (processor_id() == 0)
+    _bcast_value = 42;
+
+  _gather_value.resize(1, processor_id());
+
+  if (_distributed_vector)
+  {
+    _distributed_vector-&gt;resize(_vector.size());
+    (*_distributed_vector)[0] = processor_id();
+    for (unsigned int i = 1; i &lt; _distributed_vector-&gt;size(); ++i)
+      (*_distributed_vector)[i] = (*_distributed_vector)[i - 1] * 10;
+  }
+}
+// MooseDocs:execute_end
+
+InputParameters
+TestGetReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;int_reporter&quot;, &quot;&#x27;int&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;real_reporter&quot;, &quot;&#x27;real&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;vector_reporter&quot;, &quot;&#x27;vector&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;string_reporter&quot;, &quot;&#x27;string&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;broadcast_reporter&quot;, &quot;&#x27;broadcast&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;scatter_reporter&quot;, &quot;&#x27;scatter&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;gather_reporter&quot;, &quot;&#x27;gather&#x27; reporter name&quot;);
+  return params;
+}
+
+TestGetReporter::TestGetReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters),
+    _int(getReporterValue&lt;int&gt;(&quot;int_reporter&quot;)),
+    _int_old(getReporterValue&lt;int&gt;(&quot;int_reporter&quot;, 1)),
+    _real(getReporterValue&lt;Real&gt;(&quot;real_reporter&quot;)),
+    _vector(getReporterValue&lt;std::vector&lt;Real&gt;&gt;(&quot;vector_reporter&quot;)), // MooseDocs:consumer
+    _string(getReporterValue&lt;std::string&gt;(&quot;string_reporter&quot;)),
+    _bcast_value(getReporterValue&lt;Real&gt;(&quot;broadcast_reporter&quot;)),
+    _scatter_value(getReporterValue&lt;dof_id_type&gt;(&quot;scatter_reporter&quot;)),
+    _gather_value(getReporterValue&lt;std::vector&lt;dof_id_type&gt;&gt;(&quot;gather_reporter&quot;))
+{
+}
+
+void
+TestGetReporter::execute()
+{
+  if (_int != 1980 + _t_step)
+    mooseError(&quot;int reporter test failed: &quot;, _int, &quot; != &quot;, 1980 + _t_step);
+  if (_real != 1.2345)
+    mooseError(&quot;Real reporter test failed&quot;);
+  if (_vector != std::vector&lt;Real&gt;({1., 1.1, 1.2}))
+    mooseError(&quot;std::vector&lt;Real&gt; reporter test failed&quot;);
+  if (_string != &quot;string&quot;)
+    mooseError(&quot;std::string reporter test failed&quot;);
+
+  if (_t_step == 0 &amp;&amp; _int_old != 1980)
+    mooseError(&quot;int_old on timestep 0 failed: &quot;, _int_old, &quot; != &quot;, 1980);
+  if (_t_step &gt; 0 &amp;&amp; _int_old != 1980 + (_t_step - 1))
+    mooseError(
+        &quot;int_old on timestep &quot;, _t_step, &quot; failed: &quot;, _int_old, &quot; != &quot;, 1980 + (_t_step - 1));
+
+  if (_bcast_value != 42)
+    mooseError(&quot;Broadcast reporter test failed&quot;);
+
+  if (_scatter_value != processor_id())
+    mooseError(&quot;Scatter reporter test failed&quot;);
+
+  if (processor_id() == 0)
+  {
+    std::vector&lt;dof_id_type&gt; gold;
+    for (dof_id_type id = 0; id &lt; n_processors(); ++id)
+      gold.push_back(id);
+    if (_gather_value != gold)
+      mooseError(&quot;Gather reporter test failed!&quot;);
+  }
+}
+
+InputParameters
+TestDeclareInitialSetupReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;Real&gt;(&quot;value&quot;, &quot;The value to report.&quot;);
+  return params;
+}
+
+TestDeclareInitialSetupReporter::TestDeclareInitialSetupReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters)
+{
+}
+
+void
+TestDeclareInitialSetupReporter::initialSetup()
+{
+  Real &amp; value = declareValueByName&lt;Real&gt;(&quot;value&quot;);
+  value = getParam&lt;Real&gt;(&quot;value&quot;);
+}
+
+InputParameters
+TestGetReporterDeclaredInInitialSetupReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;other_reporter&quot;,
+                                        &quot;The reporter name that was declared in initialSetup&quot;);
+  return params;
+}
+
+TestGetReporterDeclaredInInitialSetupReporter::TestGetReporterDeclaredInInitialSetupReporter(
+    const InputParameters &amp; parameters)
+  : GeneralReporter(parameters),
+    _value_declared_in_initial_setup(getReporterValue&lt;Real&gt;(&quot;other_reporter&quot;)),
+    _the_value_of_the_reporter(declareValueByName&lt;Real&gt;(&quot;other_value&quot;))
+{
+}
+
+void
+TestGetReporterDeclaredInInitialSetupReporter::execute()
+{
+  _the_value_of_the_reporter = _value_declared_in_initial_setup;
+}
+
+InputParameters
+TestDeclareErrorsReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;ReporterValueName&gt;(&quot;value&quot;, &quot;A reporter value name&quot;);
+
+  params.addParam&lt;bool&gt;(&quot;missing_param&quot;, false, &quot;True to test the error for a missing parameter&quot;);
+  params.addParam&lt;bool&gt;(&quot;bad_param&quot;, false, &quot;True to test the error for a bad parameter type&quot;);
+  params.addParam&lt;bool&gt;(&quot;already_declared&quot;, false, &quot;Test declaring a value multiple times&quot;);
+  params.addParam&lt;bool&gt;(&quot;requested_different_type&quot;,
+                        false,
+                        &quot;Test declaring a value that has been requested with a differentt type&quot;);
+
+  return params;
+}
+
+TestDeclareErrorsReporter::TestDeclareErrorsReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters)
+{
+  if (getParam&lt;bool&gt;(&quot;missing_param&quot;))
+    declareValue&lt;int&gt;(&quot;some_missing_parm&quot;);
+  if (getParam&lt;bool&gt;(&quot;bad_param&quot;))
+    declareValue&lt;int&gt;(&quot;bad_param&quot;);
+  if (getParam&lt;bool&gt;(&quot;already_declared&quot;))
+  {
+    declareValueByName&lt;int&gt;(&quot;value_name&quot;);
+    declareValueByName&lt;Real&gt;(&quot;value_name&quot;);
+  }
+  if (getParam&lt;bool&gt;(&quot;requested_different_type&quot;))
+  {
+    getReporterValueByName&lt;int&gt;(name() + &quot;/value_name&quot;);
+    declareValueByName&lt;Real&gt;(&quot;value_name&quot;);
+  }
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="aa193f7d-aad4-44bd-aa2e-1730726694f9"><div class="modal-content"><h4>(moose/test/src/reporters/TestReporter.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include &quot;TestReporter.h&quot;
+
+registerMooseObject(&quot;MooseTestApp&quot;, TestDeclareReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestGetReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestDeclareInitialSetupReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestGetReporterDeclaredInInitialSetupReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestDeclareErrorsReporter);
+
+InputParameters
+TestDeclareReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addParam&lt;ReporterValueName&gt;(
+      &quot;int_name&quot;, &quot;int&quot;, &quot;The name of the interger data&quot;); // MooseDocs:data
+  params.addParam&lt;ReporterValueName&gt;(&quot;distributed_vector_name&quot;,
+                                     &quot;Distributed vector reporter to produce.&quot;);
+  return params;
+}
+
+TestDeclareReporter::TestDeclareReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters),
+    _int(declareValue&lt;int&gt;(&quot;int_name&quot;, 1980)), // MooseDocs:producer
+    _real(declareValueByName&lt;Real&gt;(&quot;real&quot;)),
+    _vector(declareValueByName&lt;std::vector&lt;Real&gt;&gt;(&quot;vector&quot;)),
+    _string(declareValueByName&lt;std::string&gt;(&quot;string&quot;)),
+    _bcast_value(declareValueByName&lt;Real, ReporterBroadcastContext&gt;(&quot;broadcast&quot;)),
+    _scatter_value(
+        declareValueByName&lt;dof_id_type, ReporterScatterContext&gt;(&quot;scatter&quot;, _values_to_scatter)),
+    _gather_value(declareValueByName&lt;std::vector&lt;dof_id_type&gt;, ReporterGatherContext&gt;(
+        &quot;gather&quot;)), // MooseDocs:gather
+    _distributed_vector(isParamValid(&quot;distributed_vector_name&quot;)
+                            ? &amp;declareValue&lt;std::vector&lt;dof_id_type&gt;&gt;(&quot;distributed_vector_name&quot;,
+                                                                      REPORTER_MODE_DISTRIBUTED)
+                            : nullptr)
+{
+  if (processor_id() == 0)
+    for (dof_id_type rank = 0; rank &lt; n_processors(); ++rank)
+      _values_to_scatter.push_back(rank);
+}
+
+// MooseDocs:execute_begin
+void
+TestDeclareReporter::execute()
+{
+  _int += 1;
+  _real = 1.2345;
+  _vector = {1, 1.1, 1.2};
+  _string = &quot;string&quot;;
+
+  if (processor_id() == 0)
+    _bcast_value = 42;
+
+  _gather_value.resize(1, processor_id());
+
+  if (_distributed_vector)
+  {
+    _distributed_vector-&gt;resize(_vector.size());
+    (*_distributed_vector)[0] = processor_id();
+    for (unsigned int i = 1; i &lt; _distributed_vector-&gt;size(); ++i)
+      (*_distributed_vector)[i] = (*_distributed_vector)[i - 1] * 10;
+  }
+}
+// MooseDocs:execute_end
+
+InputParameters
+TestGetReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;int_reporter&quot;, &quot;&#x27;int&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;real_reporter&quot;, &quot;&#x27;real&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;vector_reporter&quot;, &quot;&#x27;vector&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;string_reporter&quot;, &quot;&#x27;string&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;broadcast_reporter&quot;, &quot;&#x27;broadcast&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;scatter_reporter&quot;, &quot;&#x27;scatter&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;gather_reporter&quot;, &quot;&#x27;gather&#x27; reporter name&quot;);
+  return params;
+}
+
+TestGetReporter::TestGetReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters),
+    _int(getReporterValue&lt;int&gt;(&quot;int_reporter&quot;)),
+    _int_old(getReporterValue&lt;int&gt;(&quot;int_reporter&quot;, 1)),
+    _real(getReporterValue&lt;Real&gt;(&quot;real_reporter&quot;)),
+    _vector(getReporterValue&lt;std::vector&lt;Real&gt;&gt;(&quot;vector_reporter&quot;)), // MooseDocs:consumer
+    _string(getReporterValue&lt;std::string&gt;(&quot;string_reporter&quot;)),
+    _bcast_value(getReporterValue&lt;Real&gt;(&quot;broadcast_reporter&quot;)),
+    _scatter_value(getReporterValue&lt;dof_id_type&gt;(&quot;scatter_reporter&quot;)),
+    _gather_value(getReporterValue&lt;std::vector&lt;dof_id_type&gt;&gt;(&quot;gather_reporter&quot;))
+{
+}
+
+void
+TestGetReporter::execute()
+{
+  if (_int != 1980 + _t_step)
+    mooseError(&quot;int reporter test failed: &quot;, _int, &quot; != &quot;, 1980 + _t_step);
+  if (_real != 1.2345)
+    mooseError(&quot;Real reporter test failed&quot;);
+  if (_vector != std::vector&lt;Real&gt;({1., 1.1, 1.2}))
+    mooseError(&quot;std::vector&lt;Real&gt; reporter test failed&quot;);
+  if (_string != &quot;string&quot;)
+    mooseError(&quot;std::string reporter test failed&quot;);
+
+  if (_t_step == 0 &amp;&amp; _int_old != 1980)
+    mooseError(&quot;int_old on timestep 0 failed: &quot;, _int_old, &quot; != &quot;, 1980);
+  if (_t_step &gt; 0 &amp;&amp; _int_old != 1980 + (_t_step - 1))
+    mooseError(
+        &quot;int_old on timestep &quot;, _t_step, &quot; failed: &quot;, _int_old, &quot; != &quot;, 1980 + (_t_step - 1));
+
+  if (_bcast_value != 42)
+    mooseError(&quot;Broadcast reporter test failed&quot;);
+
+  if (_scatter_value != processor_id())
+    mooseError(&quot;Scatter reporter test failed&quot;);
+
+  if (processor_id() == 0)
+  {
+    std::vector&lt;dof_id_type&gt; gold;
+    for (dof_id_type id = 0; id &lt; n_processors(); ++id)
+      gold.push_back(id);
+    if (_gather_value != gold)
+      mooseError(&quot;Gather reporter test failed!&quot;);
+  }
+}
+
+InputParameters
+TestDeclareInitialSetupReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;Real&gt;(&quot;value&quot;, &quot;The value to report.&quot;);
+  return params;
+}
+
+TestDeclareInitialSetupReporter::TestDeclareInitialSetupReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters)
+{
+}
+
+void
+TestDeclareInitialSetupReporter::initialSetup()
+{
+  Real &amp; value = declareValueByName&lt;Real&gt;(&quot;value&quot;);
+  value = getParam&lt;Real&gt;(&quot;value&quot;);
+}
+
+InputParameters
+TestGetReporterDeclaredInInitialSetupReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;other_reporter&quot;,
+                                        &quot;The reporter name that was declared in initialSetup&quot;);
+  return params;
+}
+
+TestGetReporterDeclaredInInitialSetupReporter::TestGetReporterDeclaredInInitialSetupReporter(
+    const InputParameters &amp; parameters)
+  : GeneralReporter(parameters),
+    _value_declared_in_initial_setup(getReporterValue&lt;Real&gt;(&quot;other_reporter&quot;)),
+    _the_value_of_the_reporter(declareValueByName&lt;Real&gt;(&quot;other_value&quot;))
+{
+}
+
+void
+TestGetReporterDeclaredInInitialSetupReporter::execute()
+{
+  _the_value_of_the_reporter = _value_declared_in_initial_setup;
+}
+
+InputParameters
+TestDeclareErrorsReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;ReporterValueName&gt;(&quot;value&quot;, &quot;A reporter value name&quot;);
+
+  params.addParam&lt;bool&gt;(&quot;missing_param&quot;, false, &quot;True to test the error for a missing parameter&quot;);
+  params.addParam&lt;bool&gt;(&quot;bad_param&quot;, false, &quot;True to test the error for a bad parameter type&quot;);
+  params.addParam&lt;bool&gt;(&quot;already_declared&quot;, false, &quot;Test declaring a value multiple times&quot;);
+  params.addParam&lt;bool&gt;(&quot;requested_different_type&quot;,
+                        false,
+                        &quot;Test declaring a value that has been requested with a differentt type&quot;);
+
+  return params;
+}
+
+TestDeclareErrorsReporter::TestDeclareErrorsReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters)
+{
+  if (getParam&lt;bool&gt;(&quot;missing_param&quot;))
+    declareValue&lt;int&gt;(&quot;some_missing_parm&quot;);
+  if (getParam&lt;bool&gt;(&quot;bad_param&quot;))
+    declareValue&lt;int&gt;(&quot;bad_param&quot;);
+  if (getParam&lt;bool&gt;(&quot;already_declared&quot;))
+  {
+    declareValueByName&lt;int&gt;(&quot;value_name&quot;);
+    declareValueByName&lt;Real&gt;(&quot;value_name&quot;);
+  }
+  if (getParam&lt;bool&gt;(&quot;requested_different_type&quot;))
+  {
+    getReporterValueByName&lt;int&gt;(name() + &quot;/value_name&quot;);
+    declareValueByName&lt;Real&gt;(&quot;value_name&quot;);
+  }
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="e9e8c978-2d29-4ea1-abc5-1c2032f4ac1c"><div class="modal-content"><h4>(moose/test/src/reporters/TestReporter.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include &quot;TestReporter.h&quot;
+
+registerMooseObject(&quot;MooseTestApp&quot;, TestDeclareReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestGetReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestDeclareInitialSetupReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestGetReporterDeclaredInInitialSetupReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestDeclareErrorsReporter);
+
+InputParameters
+TestDeclareReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addParam&lt;ReporterValueName&gt;(
+      &quot;int_name&quot;, &quot;int&quot;, &quot;The name of the interger data&quot;); // MooseDocs:data
+  params.addParam&lt;ReporterValueName&gt;(&quot;distributed_vector_name&quot;,
+                                     &quot;Distributed vector reporter to produce.&quot;);
+  return params;
+}
+
+TestDeclareReporter::TestDeclareReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters),
+    _int(declareValue&lt;int&gt;(&quot;int_name&quot;, 1980)), // MooseDocs:producer
+    _real(declareValueByName&lt;Real&gt;(&quot;real&quot;)),
+    _vector(declareValueByName&lt;std::vector&lt;Real&gt;&gt;(&quot;vector&quot;)),
+    _string(declareValueByName&lt;std::string&gt;(&quot;string&quot;)),
+    _bcast_value(declareValueByName&lt;Real, ReporterBroadcastContext&gt;(&quot;broadcast&quot;)),
+    _scatter_value(
+        declareValueByName&lt;dof_id_type, ReporterScatterContext&gt;(&quot;scatter&quot;, _values_to_scatter)),
+    _gather_value(declareValueByName&lt;std::vector&lt;dof_id_type&gt;, ReporterGatherContext&gt;(
+        &quot;gather&quot;)), // MooseDocs:gather
+    _distributed_vector(isParamValid(&quot;distributed_vector_name&quot;)
+                            ? &amp;declareValue&lt;std::vector&lt;dof_id_type&gt;&gt;(&quot;distributed_vector_name&quot;,
+                                                                      REPORTER_MODE_DISTRIBUTED)
+                            : nullptr)
+{
+  if (processor_id() == 0)
+    for (dof_id_type rank = 0; rank &lt; n_processors(); ++rank)
+      _values_to_scatter.push_back(rank);
+}
+
+// MooseDocs:execute_begin
+void
+TestDeclareReporter::execute()
+{
+  _int += 1;
+  _real = 1.2345;
+  _vector = {1, 1.1, 1.2};
+  _string = &quot;string&quot;;
+
+  if (processor_id() == 0)
+    _bcast_value = 42;
+
+  _gather_value.resize(1, processor_id());
+
+  if (_distributed_vector)
+  {
+    _distributed_vector-&gt;resize(_vector.size());
+    (*_distributed_vector)[0] = processor_id();
+    for (unsigned int i = 1; i &lt; _distributed_vector-&gt;size(); ++i)
+      (*_distributed_vector)[i] = (*_distributed_vector)[i - 1] * 10;
+  }
+}
+// MooseDocs:execute_end
+
+InputParameters
+TestGetReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;int_reporter&quot;, &quot;&#x27;int&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;real_reporter&quot;, &quot;&#x27;real&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;vector_reporter&quot;, &quot;&#x27;vector&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;string_reporter&quot;, &quot;&#x27;string&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;broadcast_reporter&quot;, &quot;&#x27;broadcast&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;scatter_reporter&quot;, &quot;&#x27;scatter&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;gather_reporter&quot;, &quot;&#x27;gather&#x27; reporter name&quot;);
+  return params;
+}
+
+TestGetReporter::TestGetReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters),
+    _int(getReporterValue&lt;int&gt;(&quot;int_reporter&quot;)),
+    _int_old(getReporterValue&lt;int&gt;(&quot;int_reporter&quot;, 1)),
+    _real(getReporterValue&lt;Real&gt;(&quot;real_reporter&quot;)),
+    _vector(getReporterValue&lt;std::vector&lt;Real&gt;&gt;(&quot;vector_reporter&quot;)), // MooseDocs:consumer
+    _string(getReporterValue&lt;std::string&gt;(&quot;string_reporter&quot;)),
+    _bcast_value(getReporterValue&lt;Real&gt;(&quot;broadcast_reporter&quot;)),
+    _scatter_value(getReporterValue&lt;dof_id_type&gt;(&quot;scatter_reporter&quot;)),
+    _gather_value(getReporterValue&lt;std::vector&lt;dof_id_type&gt;&gt;(&quot;gather_reporter&quot;))
+{
+}
+
+void
+TestGetReporter::execute()
+{
+  if (_int != 1980 + _t_step)
+    mooseError(&quot;int reporter test failed: &quot;, _int, &quot; != &quot;, 1980 + _t_step);
+  if (_real != 1.2345)
+    mooseError(&quot;Real reporter test failed&quot;);
+  if (_vector != std::vector&lt;Real&gt;({1., 1.1, 1.2}))
+    mooseError(&quot;std::vector&lt;Real&gt; reporter test failed&quot;);
+  if (_string != &quot;string&quot;)
+    mooseError(&quot;std::string reporter test failed&quot;);
+
+  if (_t_step == 0 &amp;&amp; _int_old != 1980)
+    mooseError(&quot;int_old on timestep 0 failed: &quot;, _int_old, &quot; != &quot;, 1980);
+  if (_t_step &gt; 0 &amp;&amp; _int_old != 1980 + (_t_step - 1))
+    mooseError(
+        &quot;int_old on timestep &quot;, _t_step, &quot; failed: &quot;, _int_old, &quot; != &quot;, 1980 + (_t_step - 1));
+
+  if (_bcast_value != 42)
+    mooseError(&quot;Broadcast reporter test failed&quot;);
+
+  if (_scatter_value != processor_id())
+    mooseError(&quot;Scatter reporter test failed&quot;);
+
+  if (processor_id() == 0)
+  {
+    std::vector&lt;dof_id_type&gt; gold;
+    for (dof_id_type id = 0; id &lt; n_processors(); ++id)
+      gold.push_back(id);
+    if (_gather_value != gold)
+      mooseError(&quot;Gather reporter test failed!&quot;);
+  }
+}
+
+InputParameters
+TestDeclareInitialSetupReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;Real&gt;(&quot;value&quot;, &quot;The value to report.&quot;);
+  return params;
+}
+
+TestDeclareInitialSetupReporter::TestDeclareInitialSetupReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters)
+{
+}
+
+void
+TestDeclareInitialSetupReporter::initialSetup()
+{
+  Real &amp; value = declareValueByName&lt;Real&gt;(&quot;value&quot;);
+  value = getParam&lt;Real&gt;(&quot;value&quot;);
+}
+
+InputParameters
+TestGetReporterDeclaredInInitialSetupReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;other_reporter&quot;,
+                                        &quot;The reporter name that was declared in initialSetup&quot;);
+  return params;
+}
+
+TestGetReporterDeclaredInInitialSetupReporter::TestGetReporterDeclaredInInitialSetupReporter(
+    const InputParameters &amp; parameters)
+  : GeneralReporter(parameters),
+    _value_declared_in_initial_setup(getReporterValue&lt;Real&gt;(&quot;other_reporter&quot;)),
+    _the_value_of_the_reporter(declareValueByName&lt;Real&gt;(&quot;other_value&quot;))
+{
+}
+
+void
+TestGetReporterDeclaredInInitialSetupReporter::execute()
+{
+  _the_value_of_the_reporter = _value_declared_in_initial_setup;
+}
+
+InputParameters
+TestDeclareErrorsReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;ReporterValueName&gt;(&quot;value&quot;, &quot;A reporter value name&quot;);
+
+  params.addParam&lt;bool&gt;(&quot;missing_param&quot;, false, &quot;True to test the error for a missing parameter&quot;);
+  params.addParam&lt;bool&gt;(&quot;bad_param&quot;, false, &quot;True to test the error for a bad parameter type&quot;);
+  params.addParam&lt;bool&gt;(&quot;already_declared&quot;, false, &quot;Test declaring a value multiple times&quot;);
+  params.addParam&lt;bool&gt;(&quot;requested_different_type&quot;,
+                        false,
+                        &quot;Test declaring a value that has been requested with a differentt type&quot;);
+
+  return params;
+}
+
+TestDeclareErrorsReporter::TestDeclareErrorsReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters)
+{
+  if (getParam&lt;bool&gt;(&quot;missing_param&quot;))
+    declareValue&lt;int&gt;(&quot;some_missing_parm&quot;);
+  if (getParam&lt;bool&gt;(&quot;bad_param&quot;))
+    declareValue&lt;int&gt;(&quot;bad_param&quot;);
+  if (getParam&lt;bool&gt;(&quot;already_declared&quot;))
+  {
+    declareValueByName&lt;int&gt;(&quot;value_name&quot;);
+    declareValueByName&lt;Real&gt;(&quot;value_name&quot;);
+  }
+  if (getParam&lt;bool&gt;(&quot;requested_different_type&quot;))
+  {
+    getReporterValueByName&lt;int&gt;(name() + &quot;/value_name&quot;);
+    declareValueByName&lt;Real&gt;(&quot;value_name&quot;);
+  }
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="e497c79b-e67c-437f-8ff4-546c39db97f1"><div class="modal-content"><h4>(moose/test/tests/reporters/base/base.i)</h4><pre class="moose-pre"><code class="language-text">[Mesh]
+  type = GeneratedMesh
+  dim = 1
+[]
+
+[Variables/u]
+[]
+
+[Problem]
+  solve = false
+  kernel_coverage_check = false
+[]
+
+[Reporters]
+  [b]
+    type = TestGetReporter
+    int_reporter = a/int
+    real_reporter = a/real
+    vector_reporter = a/vector
+    string_reporter = a/string
+    broadcast_reporter = a/broadcast
+    scatter_reporter = a/scatter
+    gather_reporter = a/gather
+  []
+  [a]
+    type = TestDeclareReporter
+  []
+[]
+
+[Executioner]
+  type = Transient
+  num_steps = 3
+[]
+
+[Outputs]
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="c1d96d34-d857-4330-bf80-ce6ada11c148"><div class="modal-content"><h4>(moose/test/src/reporters/TestReporter.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include &quot;TestReporter.h&quot;
+
+registerMooseObject(&quot;MooseTestApp&quot;, TestDeclareReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestGetReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestDeclareInitialSetupReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestGetReporterDeclaredInInitialSetupReporter);
+registerMooseObject(&quot;MooseTestApp&quot;, TestDeclareErrorsReporter);
+
+InputParameters
+TestDeclareReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addParam&lt;ReporterValueName&gt;(
+      &quot;int_name&quot;, &quot;int&quot;, &quot;The name of the interger data&quot;); // MooseDocs:data
+  params.addParam&lt;ReporterValueName&gt;(&quot;distributed_vector_name&quot;,
+                                     &quot;Distributed vector reporter to produce.&quot;);
+  return params;
+}
+
+TestDeclareReporter::TestDeclareReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters),
+    _int(declareValue&lt;int&gt;(&quot;int_name&quot;, 1980)), // MooseDocs:producer
+    _real(declareValueByName&lt;Real&gt;(&quot;real&quot;)),
+    _vector(declareValueByName&lt;std::vector&lt;Real&gt;&gt;(&quot;vector&quot;)),
+    _string(declareValueByName&lt;std::string&gt;(&quot;string&quot;)),
+    _bcast_value(declareValueByName&lt;Real, ReporterBroadcastContext&gt;(&quot;broadcast&quot;)),
+    _scatter_value(
+        declareValueByName&lt;dof_id_type, ReporterScatterContext&gt;(&quot;scatter&quot;, _values_to_scatter)),
+    _gather_value(declareValueByName&lt;std::vector&lt;dof_id_type&gt;, ReporterGatherContext&gt;(
+        &quot;gather&quot;)), // MooseDocs:gather
+    _distributed_vector(isParamValid(&quot;distributed_vector_name&quot;)
+                            ? &amp;declareValue&lt;std::vector&lt;dof_id_type&gt;&gt;(&quot;distributed_vector_name&quot;,
+                                                                      REPORTER_MODE_DISTRIBUTED)
+                            : nullptr)
+{
+  if (processor_id() == 0)
+    for (dof_id_type rank = 0; rank &lt; n_processors(); ++rank)
+      _values_to_scatter.push_back(rank);
+}
+
+// MooseDocs:execute_begin
+void
+TestDeclareReporter::execute()
+{
+  _int += 1;
+  _real = 1.2345;
+  _vector = {1, 1.1, 1.2};
+  _string = &quot;string&quot;;
+
+  if (processor_id() == 0)
+    _bcast_value = 42;
+
+  _gather_value.resize(1, processor_id());
+
+  if (_distributed_vector)
+  {
+    _distributed_vector-&gt;resize(_vector.size());
+    (*_distributed_vector)[0] = processor_id();
+    for (unsigned int i = 1; i &lt; _distributed_vector-&gt;size(); ++i)
+      (*_distributed_vector)[i] = (*_distributed_vector)[i - 1] * 10;
+  }
+}
+// MooseDocs:execute_end
+
+InputParameters
+TestGetReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;int_reporter&quot;, &quot;&#x27;int&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;real_reporter&quot;, &quot;&#x27;real&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;vector_reporter&quot;, &quot;&#x27;vector&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;string_reporter&quot;, &quot;&#x27;string&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;broadcast_reporter&quot;, &quot;&#x27;broadcast&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;scatter_reporter&quot;, &quot;&#x27;scatter&#x27; reporter name&quot;);
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;gather_reporter&quot;, &quot;&#x27;gather&#x27; reporter name&quot;);
+  return params;
+}
+
+TestGetReporter::TestGetReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters),
+    _int(getReporterValue&lt;int&gt;(&quot;int_reporter&quot;)),
+    _int_old(getReporterValue&lt;int&gt;(&quot;int_reporter&quot;, 1)),
+    _real(getReporterValue&lt;Real&gt;(&quot;real_reporter&quot;)),
+    _vector(getReporterValue&lt;std::vector&lt;Real&gt;&gt;(&quot;vector_reporter&quot;)), // MooseDocs:consumer
+    _string(getReporterValue&lt;std::string&gt;(&quot;string_reporter&quot;)),
+    _bcast_value(getReporterValue&lt;Real&gt;(&quot;broadcast_reporter&quot;)),
+    _scatter_value(getReporterValue&lt;dof_id_type&gt;(&quot;scatter_reporter&quot;)),
+    _gather_value(getReporterValue&lt;std::vector&lt;dof_id_type&gt;&gt;(&quot;gather_reporter&quot;))
+{
+}
+
+void
+TestGetReporter::execute()
+{
+  if (_int != 1980 + _t_step)
+    mooseError(&quot;int reporter test failed: &quot;, _int, &quot; != &quot;, 1980 + _t_step);
+  if (_real != 1.2345)
+    mooseError(&quot;Real reporter test failed&quot;);
+  if (_vector != std::vector&lt;Real&gt;({1., 1.1, 1.2}))
+    mooseError(&quot;std::vector&lt;Real&gt; reporter test failed&quot;);
+  if (_string != &quot;string&quot;)
+    mooseError(&quot;std::string reporter test failed&quot;);
+
+  if (_t_step == 0 &amp;&amp; _int_old != 1980)
+    mooseError(&quot;int_old on timestep 0 failed: &quot;, _int_old, &quot; != &quot;, 1980);
+  if (_t_step &gt; 0 &amp;&amp; _int_old != 1980 + (_t_step - 1))
+    mooseError(
+        &quot;int_old on timestep &quot;, _t_step, &quot; failed: &quot;, _int_old, &quot; != &quot;, 1980 + (_t_step - 1));
+
+  if (_bcast_value != 42)
+    mooseError(&quot;Broadcast reporter test failed&quot;);
+
+  if (_scatter_value != processor_id())
+    mooseError(&quot;Scatter reporter test failed&quot;);
+
+  if (processor_id() == 0)
+  {
+    std::vector&lt;dof_id_type&gt; gold;
+    for (dof_id_type id = 0; id &lt; n_processors(); ++id)
+      gold.push_back(id);
+    if (_gather_value != gold)
+      mooseError(&quot;Gather reporter test failed!&quot;);
+  }
+}
+
+InputParameters
+TestDeclareInitialSetupReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;Real&gt;(&quot;value&quot;, &quot;The value to report.&quot;);
+  return params;
+}
+
+TestDeclareInitialSetupReporter::TestDeclareInitialSetupReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters)
+{
+}
+
+void
+TestDeclareInitialSetupReporter::initialSetup()
+{
+  Real &amp; value = declareValueByName&lt;Real&gt;(&quot;value&quot;);
+  value = getParam&lt;Real&gt;(&quot;value&quot;);
+}
+
+InputParameters
+TestGetReporterDeclaredInInitialSetupReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;ReporterName&gt;(&quot;other_reporter&quot;,
+                                        &quot;The reporter name that was declared in initialSetup&quot;);
+  return params;
+}
+
+TestGetReporterDeclaredInInitialSetupReporter::TestGetReporterDeclaredInInitialSetupReporter(
+    const InputParameters &amp; parameters)
+  : GeneralReporter(parameters),
+    _value_declared_in_initial_setup(getReporterValue&lt;Real&gt;(&quot;other_reporter&quot;)),
+    _the_value_of_the_reporter(declareValueByName&lt;Real&gt;(&quot;other_value&quot;))
+{
+}
+
+void
+TestGetReporterDeclaredInInitialSetupReporter::execute()
+{
+  _the_value_of_the_reporter = _value_declared_in_initial_setup;
+}
+
+InputParameters
+TestDeclareErrorsReporter::validParams()
+{
+  InputParameters params = GeneralReporter::validParams();
+  params.addRequiredParam&lt;ReporterValueName&gt;(&quot;value&quot;, &quot;A reporter value name&quot;);
+
+  params.addParam&lt;bool&gt;(&quot;missing_param&quot;, false, &quot;True to test the error for a missing parameter&quot;);
+  params.addParam&lt;bool&gt;(&quot;bad_param&quot;, false, &quot;True to test the error for a bad parameter type&quot;);
+  params.addParam&lt;bool&gt;(&quot;already_declared&quot;, false, &quot;Test declaring a value multiple times&quot;);
+  params.addParam&lt;bool&gt;(&quot;requested_different_type&quot;,
+                        false,
+                        &quot;Test declaring a value that has been requested with a differentt type&quot;);
+
+  return params;
+}
+
+TestDeclareErrorsReporter::TestDeclareErrorsReporter(const InputParameters &amp; parameters)
+  : GeneralReporter(parameters)
+{
+  if (getParam&lt;bool&gt;(&quot;missing_param&quot;))
+    declareValue&lt;int&gt;(&quot;some_missing_parm&quot;);
+  if (getParam&lt;bool&gt;(&quot;bad_param&quot;))
+    declareValue&lt;int&gt;(&quot;bad_param&quot;);
+  if (getParam&lt;bool&gt;(&quot;already_declared&quot;))
+  {
+    declareValueByName&lt;int&gt;(&quot;value_name&quot;);
+    declareValueByName&lt;Real&gt;(&quot;value_name&quot;);
+  }
+  if (getParam&lt;bool&gt;(&quot;requested_different_type&quot;))
+  {
+    getReporterValueByName&lt;int&gt;(name() + &quot;/value_name&quot;);
+    declareValueByName&lt;Real&gt;(&quot;value_name&quot;);
+  }
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div><div class="col hide-on-med-and-down l2"><div class="toc-wrapper pin-top"><ul class="section table-of-contents"><li><a href="#f68faf41-eda4-4dc6-9cee-540a68359529" class="tooltipped" data-position="left" data-tooltip="Producer ( Reporter objects )">Producer ( Reporter objects )</a></li><li><a href="#e8f2af57-8a37-43ba-bd8f-1cc6f31ed2e5" class="tooltipped" data-position="left" data-tooltip="Consumer ( other objects )">Consumer ( other objects )</a></li><li><a href="#0d49f10b-e8b5-4431-8e16-8c5ffc54197f" class="tooltipped" data-position="left" data-tooltip="Reporter Value Types">Reporter Value Types</a></li><li><a href="#5b4f9892-6392-4e89-bd57-94c4283f3cba" class="tooltipped" data-position="left" data-tooltip="Reporter Output">Reporter Output</a></li><li><a href="#94e20274-2557-4332-954b-c2da389f609e" class="tooltipped" data-position="left" data-tooltip="Reporter Context and Modes">Reporter Context and Modes</a></li><li><a href="#46506c7e-f692-482f-b6e2-6b4fd4f16551" class="tooltipped" data-position="left" data-tooltip="Reporter Debug Output">Reporter Debug Output</a></li><li><a href="#80497bea-f3ee-4319-b79f-48948c7d61da" class="tooltipped" data-position="left" data-tooltip="Available Objects">Available Objects</a></li><li><a href="#e487cbbd-681a-4c81-89f5-18890c64ae98" class="tooltipped" data-position="left" data-tooltip="Available Actions">Available Actions</a></li></ul></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>
