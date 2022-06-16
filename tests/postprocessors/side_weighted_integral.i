@@ -76,7 +76,6 @@
     variable = u
     boundary = 'top'
     weight = v
-    output = 'exodus console'
   [../]
 
   # Test integral of parabola v across top boundary, weighted by u=1
@@ -86,7 +85,6 @@
     variable = v
     boundary = 'top'
     weight = u
-    output = 'exodus console'
   [../]
 
   # Test integral of parabola v across top boundary, weighted by parabola v
@@ -96,7 +94,6 @@
     variable = v
     boundary = 'top'
     weight = v
-    output = 'exodus console'
   [../]
 []
 

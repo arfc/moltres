@@ -183,14 +183,12 @@ ymax=.05
   [./buoyancy_x]
     type = INSBoussinesqBodyForce
     variable = ux
-    dT = deltaT
     component = 0
     temperature = temp
   [../]
   [./buoyancy_y]
     type = INSBoussinesqBodyForce
     variable = uy
-    dT = deltaT
     component = 1
     temperature = temp
   [../]

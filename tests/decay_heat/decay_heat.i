@@ -4,14 +4,12 @@ global_temperature=922
 [GlobalParams]
   num_groups = 2
   num_precursor_groups = 6
-  num_decay_heat_groups = 3
   group_fluxes = '1e9 1e9'
   use_exp_form = false
   decay_heat_fractions = '.01 .01 .01'
   decay_heat_constants = '1 .1 .01'
   temperature = ${global_temperature}
   sss2_input = false
-  transient = false
 [../]
 
 [Mesh]

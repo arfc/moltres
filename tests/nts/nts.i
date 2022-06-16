@@ -45,7 +45,6 @@
 
   bx_norm = 'bnorm'
   k0 = 1.5
-  pfactor = 1e-2
   l_max_its = 100
 
   # solve_type = 'PJFNK'
