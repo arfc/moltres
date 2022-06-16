@@ -7,11 +7,9 @@ flow_velocity=0.5 # cm/s. See MSRE-properties.ods
 [GlobalParams]
   num_groups = 0
   num_precursor_groups = 6
-  use_exp_form = false
   group_fluxes = ''
   temperature = temp
   sss2_input = false
-  pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6'
   # account_delayed = true
 []
 

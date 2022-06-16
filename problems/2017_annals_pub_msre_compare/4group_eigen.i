@@ -1,11 +1,3 @@
-flow_velocity=21.7 # cm/s. See MSRE-properties.ods
-nt_scale=1e13
-ini_temp=922
-diri_temp=922
-gamma_frac=.075
-R=73
-H=162.56
-
 [GlobalParams]
   num_groups = 4
   num_precursor_groups = 6
@@ -15,7 +7,6 @@ H=162.56
   sss2_input = true
   pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6'
   account_delayed = false
-  nt_scale = ${nt_scale}
 []
 
 [Mesh]
@@ -57,7 +48,6 @@ H=162.56
 
   bx_norm = 'bnorm'
   k0 = 1.5
-  pfactor = 1e-2
   l_max_its = 100
 
   solve_type = 'PJFNK'
