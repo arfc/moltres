@@ -7,12 +7,15 @@ Conda packages by following the instructions in the "Install Mambaforge3" and "I
 Packages" section of the MOOSE
 [installation guide](https://mooseframework.inl.gov/getting_started/installation/conda.html). The
 `moose-tools` and `moose-libmesh` Conda package versions which are compatible with the current
-MOOSE Git submodule on this repository are `moose-tools=2021.07.14` and `moose-libmesh=2021.07.14`.
-We cannot guarantee compatibility with the older/newer MOOSE builds and their corresponding Conda
-environments. Run the following command to install the specified package versions:
+MOOSE Git submodule on this repository are `moose-tools=2022.04.18` and `moose-libmesh=2022.06.06`.
+We cannot guarantee compatibility with the older MOOSE builds and their corresponding Conda
+environments. The latest MOOSE Conda environment is usually compatible unless the MOOSE team
+introduces significant changes to the dependencies. We encourage you to post a GitHub issue if you
+encounter compatibility issues so that we can rectify it as soon as possible. Run the following
+command to install the specified package versions:
 
 ```bash
-mamba install moose-tools=2021.07.14 moose-libmesh=2021.07.14
+mamba install moose-tools=2022.04.18 moose-libmesh=2022.06.06
 ```
 
 ## 2. Clone Moltres
