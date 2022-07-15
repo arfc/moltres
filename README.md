@@ -9,7 +9,7 @@ reactors and other advanced reactors.
 
 ## Documentation
 
-Moltres documentation can be found at
+Moltres documentation can be found at [https://arfc.github.io/moltres/](https://arfc.github.io/moltres/) and 
 [https://arfc.github.io/software/moltres](https://arfc.github.io/software/moltres).
 Outlines of the kernels and boundary
 conditions used to construct the Moltres governing equations can be found on the
