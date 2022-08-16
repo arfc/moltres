@@ -98,11 +98,17 @@ for an in-depth guide on Git workflows.
 If you make any changes to the source code which alters functionality, please make
 the corresponding changes to the documentation in `moltres/doc/content/source` for the specific
 class you modified. You may build this website locally to review your documentation
-changes by running the following commands in the `moltres/doc` directory:
+changes by compiling Moltres without the optional MOOSE modules and running the MooseDocs python
+script as follows:
 
 ```bash
+make NAVIER_STOKES:='no' PHASE_FIELD:='no' -j 4
+cd doc
 ./moosedocs.py build --serve
 ```
+
+Remember to recompile Moltres using `make -j 4` afterwards if you intend to run Moltres input
+files.
 
 !alert tip
 Feel free to reach out to anyone in the Moltres development team for help with documentation.
