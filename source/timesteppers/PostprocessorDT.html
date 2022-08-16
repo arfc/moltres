@@ -1,19 +1,264 @@
-<!DOCTYPE html><head><meta charset="UTF-8"><title>PostprocessorDT | Moltres</title><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/moltres.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down">Moltres</a><a href="https://github.com/arfc/moltres" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="#!" class="dropdown-trigger" data-target="9d8d13a0-976c-448f-ba6a-1785f932278b" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="c79deddb-3757-4647-9c1f-53a9a1ff5894" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="118df3f1-3b18-4061-b440-92e3a1146851" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#" class="sidenav-trigger" data-target="f58a2563-dc67-4128-9f42-bd793988e6ac"><i class="material-icons">menu</i></a><ul class="sidenav" id="f58a2563-dc67-4128-9f42-bd793988e6ac"><li><a href="#!" class="dropdown-trigger" data-target="f8d86671-7fe9-4aae-82d8-facee0185317" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="9790593a-0276-4d3d-b841-0b5044081885" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="6f480df7-0e24-4a09-abe6-62921aeceb1d" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="9d8d13a0-976c-448f-ba6a-1785f932278b"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="c79deddb-3757-4647-9c1f-53a9a1ff5894"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="118df3f1-3b18-4061-b440-92e3a1146851"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul><ul class="dropdown-content" id="f8d86671-7fe9-4aae-82d8-facee0185317"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="9790593a-0276-4d3d-b841-0b5044081885"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="6f480df7-0e24-4a09-abe6-62921aeceb1d"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="col hide-on-med-and-down l12"><nav class="breadcrumb-nav"><div class="nav-wrapper"><a href=".." class="breadcrumb">source</a><span class="breadcrumb">timesteppers</span><a href="#" class="breadcrumb">PostprocessorDT</a></div></nav></div></div><div class="row"><div class="moose-content col s12 m12 l10"><section id="cefca87f-9c43-4daa-a633-2cb871d01a11" data-section-level="1" data-section-text="PostprocessorDT"><h1 id="postprocessordt">PostprocessorDT</h1><div class="card moose-alert moose-alert-construction"><div class="card-title moose-alert-title"><i class="material-icons moose-inline-icon">build</i><span class="moose-alert-title-brand">construction:</span>Undocumented Class</div><div class="card-content"><div class="moose-alert-content"><p><p>The PostprocessorDT has not been documented. The content listed below should be used as a starting point for documenting the class, which includes the typical automatic documentation associated with a MooseObject; however, what is contained is ultimately determined by what is necessary to make the documentation clear for users.</p><pre class="moose-pre"><code class="language-markdown">
-# PostprocessorDT
+<!DOCTYPE html><head><meta charset="UTF-8"><title>PostprocessorDT | Moltres</title><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/moltres.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Moltres</a><a href="https://github.com/arfc/moltres" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="#!" class="dropdown-trigger" data-target="e75ba0ed-e18d-488a-941a-08fca5263ba1" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="d4fdd8ae-6ac1-4602-8bb1-e2920fceec6c" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="8dd6a460-d894-475e-84c7-7f4563f875e6" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#" class="sidenav-trigger" data-target="7c54badb-4167-48ca-a679-675252e66249"><i class="material-icons">menu</i></a><ul class="sidenav" id="7c54badb-4167-48ca-a679-675252e66249"><li><a href="#!" class="dropdown-trigger" data-target="f28a5c9d-3ece-405c-9990-ba3d2d7ad6c1" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="ee38b7c4-42fb-4dfd-ba07-02910c68eb92" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="761a1e9d-2f75-4720-8974-167a3b36b94c" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="e75ba0ed-e18d-488a-941a-08fca5263ba1"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="d4fdd8ae-6ac1-4602-8bb1-e2920fceec6c"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="8dd6a460-d894-475e-84c7-7f4563f875e6"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul><ul class="dropdown-content" id="f28a5c9d-3ece-405c-9990-ba3d2d7ad6c1"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="ee38b7c4-42fb-4dfd-ba07-02910c68eb92"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="761a1e9d-2f75-4720-8974-167a3b36b94c"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="col hide-on-med-and-down l12"><nav class="breadcrumb-nav"><div class="nav-wrapper"><a href=".." class="breadcrumb">source</a><span class="breadcrumb">timesteppers</span><a href="#" class="breadcrumb">PostprocessorDT</a></div></nav></div></div><div class="row"><div class="moose-content col s12 m12 l10"><section id="a095ff6b-dcfb-46fa-86ec-6e99bd3f4022" data-section-level="1" data-section-text="PostprocessorDT"><h1 id="postprocessordt">PostprocessorDT</h1><p>Computes timestep based on a Postprocessor value.</p><p>The postprocessor can be computing a global metric, like the Courant Friedrich Levy criterion with the CFLTimeStepSize or the LevelSetCFLCondition postprocessor. In those cases, the postprocessor computes the maximum value of the timestep that should ensure stability. Variations in numerical schemes may impact the accuracy of this postprocessor, so the <code>PostprocessorDT</code> allows for a scaling factor and an offset to modify the time step.</p><p>If the application using the <code>PostprocessorDT</code> is a sub-app, its time step may also be received through a <a href="../transfers/MultiAppPostprocessorTransfer.html">MultiAppPostprocessorTransfer</a> using a <a href="../postprocessors/Receiver.html">Receiver</a> postprocessor.</p><section class="scrollspy" id="439169cd-e1e5-4e1d-9875-ee4d896a15ff" data-section-level="2" data-section-text="Example input syntax"><h2 id="example-input-syntax">Example input syntax</h2><p>In this example, we set the time step to be the maximum value allowable under a CFL criterion for a fluid flow simulation in a shock tube.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[./TimeStepper]
+  type = PostprocessorDT
+  postprocessor = cfl_dt
+[../]
 
-!syntax description /Executioner/TimeStepper/PostprocessorDT
+[Postprocessors]
+  [./cfl_dt]
+    type = ADCFLTimeStepSize
+    c_names = &#x27;sound_speed&#x27;
+    vel_names = &#x27;speed&#x27;
+  [../]
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#3c00cc6b-cc6f-4207-b9eb-bbebfccf90e5">(moose/modules/navier_stokes/test/tests/finite_volume/cns/shock_tube_2D_cavity/hllc_sod_shocktube_2D.i)</a></section><section class="scrollspy" id="262dfc94-626f-4137-bb47-b73f250199d2" data-section-level="2" data-section-text="Input Parameters"><h2 id="input-parameters">Input Parameters</h2><section id="98490d22-94f3-42ab-b2a6-99a3acd427a9" data-section-level="3" data-section-text="Required Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">postprocessor</span><span class="moose-parameter-header-description">The name of the postprocessor that computes the dt</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>PostprocessorName</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of the postprocessor that computes the dt</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Required Parameters</h3></summary></details></section><section id="a36b3ef8-b14a-4584-bca1-c7d58b9c3a8a" data-section-level="3" data-section-text="Optional Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">cutback_factor_at_failure</span><span class="moose-parameter-header-default">0.5</span><span class="moose-parameter-header-description">Factor to apply to timestep if a time step fails to converge.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0.5</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Factor to apply to timestep if a time step fails to converge.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">dt</span><span class="moose-parameter-header-description">Initial value of dt</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Initial value of dt</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">offset</span><span class="moose-parameter-header-default">0</span><span class="moose-parameter-header-description">Add an offset to the supplied postprocessor value.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Add an offset to the supplied postprocessor value.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">reset_dt</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Use when restarting a calculation to force a change in dt.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Use when restarting a calculation to force a change in dt.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">scale</span><span class="moose-parameter-header-default">1</span><span class="moose-parameter-header-description">Multiple scale and supplied postprocessor value.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>1</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Multiple scale and supplied postprocessor value.</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Optional Parameters</h3></summary></details></section><section id="019dd3f5-0fe5-401c-8c52-b097958c665a" data-section-level="3" data-section-text="Advanced Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">control_tags</span><span class="moose-parameter-header-description">Adds user-defined labels for accessing object parameters via control logic.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Adds user-defined labels for accessing object parameters via control logic.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">enable</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Set the enabled status of the MooseObject.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Set the enabled status of the MooseObject.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Advanced Parameters</h3></summary></details></section></section></section><div class="moose-modal modal" id="3c00cc6b-cc6f-4207-b9eb-bbebfccf90e5"><div class="modal-content"><h4>(moose/modules/navier_stokes/test/tests/finite_volume/cns/shock_tube_2D_cavity/hllc_sod_shocktube_2D.i)</h4><pre class="moose-pre"><code class="language-text">rho_left = 1
+E_left = 2.501505578
+u_left = 1e-15
 
-## Overview
+rho_right = 0.125
+E_right = 1.999770935
+u_right = 1e-15
 
-!! Replace these lines with information regarding the PostprocessorDT object.
+x_sep = 35
 
-## Example Input File Syntax
+[GlobalParams]
+  fp = fp
+[]
 
-!! Describe and include an example of how to use the PostprocessorDT object.
+[Mesh]
+  [./cartesian]
+    type = CartesianMeshGenerator
+    dim = 2
+    dx = &#x27;40 20&#x27;
+    ix = &#x27;200 100&#x27;
+    dy = &#x27;1 20  2  20 1&#x27;
+    iy = &#x27;4 100 10 100 4&#x27;
+    subdomain_id = &#x27;0 0
+                    0 1
+                    1 1
+                    0 1
+                    0 0&#x27;
+  [../]
 
-!syntax parameters /Executioner/TimeStepper/PostprocessorDT
+  [./wall]
+    type = SideSetsBetweenSubdomainsGenerator
+    input = cartesian
+    primary_block = 1
+    paired_block = 0
+    new_boundary = &#x27;wall&#x27;
+  [../]
 
-!syntax inputs /Executioner/TimeStepper/PostprocessorDT
+  [./delete]
+    type = BlockDeletionGenerator
+    input = wall
+    block = 0
+  [../]
+[]
 
-!syntax children /Executioner/TimeStepper/PostprocessorDT
-</code></pre></p></div></div></div><p>Computes timestep based on a Postprocessor value.</p><section class="scrollspy" id="9c4b6ab6-7e9b-4a40-9065-4c91ec717bac" data-section-level="2" data-section-text="Input Parameters"><h2 id="input-parameters">Input Parameters</h2><section id="832ffaaa-ae15-4cd6-b490-f3cbc2a13ca7" data-section-level="3" data-section-text="Required Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">postprocessor</span><span class="moose-parameter-header-description">The name of the postprocessor that computes the dt</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>PostprocessorName</p><p class="moose-parameter-description-options"><span>Options:</span></p><p class="moose-parameter-description"><span>Description:</span>The name of the postprocessor that computes the dt</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Required Parameters</h3></summary></details></section><section id="4ff511e1-8b2d-4d79-9f49-b543bd2676ea" data-section-level="3" data-section-text="Optional Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">cutback_factor_at_failure</span><span class="moose-parameter-header-default">0.5</span><span class="moose-parameter-header-description">Factor to apply to timestep if a time step fails to converge.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0.5</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-options"><span>Options:</span></p><p class="moose-parameter-description"><span>Description:</span>Factor to apply to timestep if a time step fails to converge.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">dt</span><span class="moose-parameter-header-description">Initial value of dt</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-options"><span>Options:</span></p><p class="moose-parameter-description"><span>Description:</span>Initial value of dt</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">factor</span><span class="moose-parameter-header-default">0</span><span class="moose-parameter-header-description">Add a factor to the supplied postprocessor value.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-options"><span>Options:</span></p><p class="moose-parameter-description"><span>Description:</span>Add a factor to the supplied postprocessor value.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">reset_dt</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Use when restarting a calculation to force a change in dt.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-options"><span>Options:</span></p><p class="moose-parameter-description"><span>Description:</span>Use when restarting a calculation to force a change in dt.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">scale</span><span class="moose-parameter-header-default">1</span><span class="moose-parameter-header-description">Multiple scale and supplied postprocessor value.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>1</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-options"><span>Options:</span></p><p class="moose-parameter-description"><span>Description:</span>Multiple scale and supplied postprocessor value.</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Optional Parameters</h3></summary></details></section><section id="02b0b50a-3ad7-40d3-b536-d388f6937e57" data-section-level="3" data-section-text="Advanced Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">control_tags</span><span class="moose-parameter-header-description">Adds user-defined labels for accessing object parameters via control logic.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-options"><span>Options:</span></p><p class="moose-parameter-description"><span>Description:</span>Adds user-defined labels for accessing object parameters via control logic.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">enable</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Set the enabled status of the MooseObject.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-options"><span>Options:</span></p><p class="moose-parameter-description"><span>Description:</span>Set the enabled status of the MooseObject.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Advanced Parameters</h3></summary></details></section></section></section></div><div class="col hide-on-med-and-down l2"><div class="toc-wrapper pin-top"><ul class="section table-of-contents"><li><a href="#9c4b6ab6-7e9b-4a40-9065-4c91ec717bac" class="tooltipped" data-position="left" data-tooltip="Input Parameters">Input Parameters</a></li></ul></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>
+[Modules]
+  [./FluidProperties]
+    [./fp]
+      type = IdealGasFluidProperties
+      allow_imperfect_jacobians = true
+    [../]
+  [../]
+[]
+
+[Variables]
+  [./rho]
+    order = CONSTANT
+    family = MONOMIAL
+    fv = true
+  [../]
+  [./rho_u]
+    order = CONSTANT
+    family = MONOMIAL
+    fv = true
+  [../]
+  [./rho_v]
+    order = CONSTANT
+    family = MONOMIAL
+    fv = true
+  [../]
+  [./rho_E]
+    order = CONSTANT
+    family = MONOMIAL
+    fv = true
+  [../]
+[]
+
+[AuxVariables]
+  [./Ma]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+
+  [./p]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+
+  [./v_norm]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+
+  [./temperature]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+[]
+
+[AuxKernels]
+  [./Ma_aux]
+    type = NSMachAux
+    variable = Ma
+    fluid_properties = fp
+    use_material_properties = true
+  [../]
+
+  [./p_aux]
+    type = ADMaterialRealAux
+    variable = p
+    property = pressure
+  [../]
+
+  [./v_norm_aux]
+    type = ADMaterialRealAux
+    variable = v_norm
+    property = speed
+  [../]
+
+  [./temperature_aux]
+    type = ADMaterialRealAux
+    variable = temperature
+    property = T_fluid
+  [../]
+[]
+
+[FVKernels]
+  [./mass_time]
+    type = FVTimeKernel
+    variable = rho
+  [../]
+
+  [./mass_advection]
+    type = CNSFVMassHLLC
+    variable = rho
+  [../]
+
+  [./momentum_x_time]
+    type = FVTimeKernel
+    variable = rho_u
+  [../]
+
+  [./momentum_x_advection]
+    type = CNSFVMomentumHLLC
+    variable = rho_u
+    momentum_component = x
+  [../]
+
+  [./momentum_y_time]
+    type = FVTimeKernel
+    variable = rho_v
+  [../]
+
+  [./momentum_y_advection]
+    type = CNSFVMomentumHLLC
+    variable = rho_v
+    momentum_component = y
+  [../]
+
+  [./fluid_energy_time]
+    type = FVTimeKernel
+    variable = rho_E
+  [../]
+
+  [./fluid_energy_advection]
+    type = CNSFVFluidEnergyHLLC
+    variable = rho_E
+  [../]
+[]
+
+[FVBCs]
+  [./mom_x_pressure]
+    type = CNSFVMomImplicitPressureBC
+    variable = rho_u
+    momentum_component = x
+    boundary = &#x27;left right wall&#x27;
+  [../]
+
+  [./mom_y_pressure]
+    type = CNSFVMomImplicitPressureBC
+    variable = rho_v
+    momentum_component = y
+    boundary = &#x27;wall&#x27;
+  [../]
+[]
+
+[ICs]
+  [./rho_ic]
+    type = FunctionIC
+    variable = rho
+    function = &#x27;if (x &lt; ${x_sep}, ${rho_left}, ${rho_right})&#x27;
+  [../]
+
+  [./rho_u_ic]
+    type = FunctionIC
+    variable = rho_u
+    function = &#x27;if (x &lt; ${x_sep}, ${fparse rho_left * u_left}, ${fparse rho_right * u_right})&#x27;
+  [../]
+
+  [./rho_E_ic]
+    type = FunctionIC
+    variable = rho_E
+    function = &#x27;if (x &lt; ${x_sep}, ${fparse E_left * rho_left}, ${fparse E_right * rho_right})&#x27;
+  [../]
+[]
+
+[Materials]
+  [./var_mat]
+    type = ConservedVarValuesMaterial
+    rho = rho
+    rhou = rho_u
+    rhov = rho_v
+    rho_et = rho_E
+    fp = fp
+  [../]
+  [./sound_speed]
+    type = SoundspeedMat
+    fp = fp
+  [../]
+[]
+
+[Preconditioning]
+  [./smp]
+    type = SMP
+    full = true
+    petsc_options_iname = &#x27;-pc_type&#x27;
+    petsc_options_value = &#x27;lu&#x27;
+  [../]
+[]
+
+[Postprocessors]
+  [./cfl_dt]
+    type = ADCFLTimeStepSize
+    c_names = &#x27;sound_speed&#x27;
+    vel_names = &#x27;speed&#x27;
+  [../]
+[]
+
+[Executioner]
+  type = Transient
+  end_time = 100
+  [TimeIntegrator]
+    type = ExplicitSSPRungeKutta
+    order = 2
+  []
+  l_tol = 1e-8
+
+  [./TimeStepper]
+    type = PostprocessorDT
+    postprocessor = cfl_dt
+  [../]
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div><div class="col hide-on-med-and-down l2"><div class="toc-wrapper pin-top"><ul class="section table-of-contents"><li><a href="#439169cd-e1e5-4e1d-9875-ee4d896a15ff" class="tooltipped" data-position="left" data-tooltip="Example input syntax">Example input syntax</a></li><li><a href="#262dfc94-626f-4137-bb47-b73f250199d2" class="tooltipped" data-position="left" data-tooltip="Input Parameters">Input Parameters</a></li></ul></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>
