@@ -1,10 +1,10 @@
-density = .002  # kg cm-3
-cp = 3075       # J kg-1 K-1, 6.15 / 2.0e-3
-k = .005        # W cm-1 K-1
-gamma = 1       # W cm-3 K-1, Volumetric heat transfer coefficient
-viscosity = .5  # dynamic viscosity
-alpha = 1       # SUPG stabilization parameter
-t_alpha = 2e-4  # K-1, Thermal expansion coefficient
+density = .002 # kg cm-3
+cp = 3075 # J kg-1 K-1, 6.15 / 2.0e-3
+k = .005 # W cm-1 K-1
+gamma = 1 # W cm-3 K-1, Volumetric heat transfer coefficient
+viscosity = .5 # dynamic viscosity
+alpha = 1 # SUPG stabilization parameter
+t_alpha = 2e-4 # K-1, Thermal expansion coefficient
 
 [GlobalParams]
   num_groups = 6
@@ -16,20 +16,20 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
   sss2_input = true
   account_delayed = true
   integrate_p_by_parts = true
-[../]
+[]
 
 [Mesh]
-  [./file_mesh]
+  [file_mesh]
     type = FileMeshGenerator
     file = '../phase-1/full-coupling_out_ntsApp0_exodus.e'
     use_for_exodus_restart = true
-  [../]
-  [./corner_node]
+  []
+  [corner_node]
     type = ExtraNodesetGenerator
     input = file_mesh
     new_boundary = 'pinned_node'
     coord = '200 200'
-  [../]
+  []
 []
 
 [Problem]
@@ -37,18 +37,18 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
 []
 
 [Variables]
-  [./temp]
+  [temp]
     family = LAGRANGE
     order = FIRST
-  [../]
-  [./vel]
+  []
+  [vel]
     family = LAGRANGE_VEC
     order = FIRST
-  [../]
-  [./p]
+  []
+  [p]
     family = LAGRANGE
     order = FIRST
-  [../]
+  []
 []
 
 [Nt]
@@ -57,12 +57,12 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
   create_temperature_var = false
   init_nts_from_file = true
   eigenvalue_scaling = 0.9927821802
-## Use the eigenvalue scaling factor below if running on a 40x40 mesh
-#  eigenvalue_scaling = 0.9926551482
+  ## Use the eigenvalue scaling factor below if running on a 40x40 mesh
+  #  eigenvalue_scaling = 0.9926551482
 []
 
 [Precursors]
-  [./pres]
+  [pres]
     var_name_base = pre
     outlet_boundaries = ''
     constant_velocity_values = false
@@ -73,331 +73,331 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
     order = CONSTANT
     loop_precursors = false
     transient = true
-  [../]
+  []
 []
 
 [AuxVariables]
-  [./vel_x]
+  [vel_x]
     family = LAGRANGE
     order = FIRST
-  [../]
-  [./vel_y]
+  []
+  [vel_y]
     family = LAGRANGE
     order = FIRST
-  [../]
-  [./heat]
+  []
+  [heat]
     family = MONOMIAL
     order = FIRST
-  [../]
+  []
 []
 
 [Kernels]
-  [./mass]
+  [mass]
     type = INSADMass
     variable = p
-  [../]
-  [./mass_pspg]
+  []
+  [mass_pspg]
     type = INSADMassPSPG
     variable = p
-  [../]
-  [./momentum_time]
+  []
+  [momentum_time]
     type = INSADMomentumTimeDerivative
     variable = vel
-  [../]
-  [./momentum_advection]
+  []
+  [momentum_advection]
     type = INSADMomentumAdvection
     variable = vel
-  [../]
-  [./momentum_viscous]
+  []
+  [momentum_viscous]
     type = INSADMomentumViscous
     variable = vel
-  [../]
-  [./momentum_pressure]
+  []
+  [momentum_pressure]
     type = INSADMomentumPressure
     variable = vel
     p = p
-  [../]
-  [./momentum_supg]
+  []
+  [momentum_supg]
     type = INSADMomentumSUPG
     variable = vel
     velocity = vel
-  [../]
-  [./buoyancy]
+  []
+  [buoyancy]
     type = INSADBoussinesqBodyForce
     variable = vel
     # gravity vector, cm s-2
     gravity = '0 -981 0'
     alpha_name = 't_alpha'
     ref_temp = 'temp_ref'
-  [../]
-  [./gravity]
+  []
+  [gravity]
     type = INSADGravityForce
     variable = vel
     # gravity vector, cm s-2
     gravity = '0 -981 0'
-  [../]
+  []
 
-  [./temp_time]
+  [temp_time]
     type = INSADHeatConductionTimeDerivative
     variable = temp
-  [../]
-  [./temp_source]
+  []
+  [temp_source]
     type = INSADEnergySource
     variable = temp
     source_variable = heat
-  [../]
-  [./temp_advection]
+  []
+  [temp_advection]
     type = INSADEnergyAdvection
     variable = temp
-  [../]
-  [./temp_conduction]
+  []
+  [temp_conduction]
     type = ADHeatConduction
     variable = temp
     thermal_conductivity = 'k'
-  [../]
-  [./temp_supg]
+  []
+  [temp_supg]
     type = INSADEnergySUPG
     variable = temp
     velocity = vel
-  [../]
-  [./temp_sink]
+  []
+  [temp_sink]
     type = ConvectiveHeatExchanger
     variable = temp
     htc = ${gamma}
     tref = 900
-  [../]
+  []
 []
 
 [AuxKernels]
-  [./vel_x]
+  [vel_x]
     type = VectorVariableComponentAux
     variable = vel_x
     vector_variable = vel
     component = 'x'
-  [../]
-  [./vel_y]
+  []
+  [vel_y]
     type = VectorVariableComponentAux
     variable = vel_y
     vector_variable = vel
     component = 'y'
-  [../]
-  [./heat_source]
+  []
+  [heat_source]
     type = FissionHeatSourceTransientAux
     variable = heat
-  [../]
+  []
 []
 
 [UserObjects]
-  [./initial_th]
+  [initial_th]
     type = SolutionUserObject
     mesh = '../phase-1/full-coupling_exodus.e'
     system_variables = 'vel_x vel_y p temp'
     timestep = LATEST
     execute_on = INITIAL
-  [../]
-  [./initial_pre]
+  []
+  [initial_pre]
     type = SolutionUserObject
     mesh = '../phase-1/full-coupling_out_ntsApp0_exodus.e'
     system_variables = 'pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8 heat'
     timestep = LATEST
     execute_on = INITIAL
-  [../]
+  []
 []
 
 [Controls]
-  [./func_control]
+  [func_control]
     type = RealFunctionControl
     parameter = 'Kernels/temp_sink/htc'
     function = func_alpha
     execute_on = 'initial timestep_begin'
-  [../]
+  []
 []
 
 [Functions]
-  [./func_alpha]
+  [func_alpha]
     type = ParsedFunction
-    value = '1 + 0.1 * sin(2*pi*t*.025)'  # Perturbation frequency = 0.025Hz
-  [../]
-  [./pre1f]
+    value = '1 + 0.1 * sin(2*pi*t*.025)' # Perturbation frequency = 0.025Hz
+  []
+  [pre1f]
     type = SolutionFunction
     from_variable = pre1
     solution = initial_pre
     scale_factor = 7.61666e+17
-  [../]
-  [./pre2f]
+  []
+  [pre2f]
     type = SolutionFunction
     from_variable = pre2
     solution = initial_pre
     scale_factor = 7.61666e+17
-  [../]
-  [./pre3f]
+  []
+  [pre3f]
     type = SolutionFunction
     from_variable = pre3
     solution = initial_pre
     scale_factor = 7.61666e+17
-  [../]
-  [./pre4f]
+  []
+  [pre4f]
     type = SolutionFunction
     from_variable = pre4
     solution = initial_pre
     scale_factor = 7.61666e+17
-  [../]
-  [./pre5f]
+  []
+  [pre5f]
     type = SolutionFunction
     from_variable = pre5
     solution = initial_pre
     scale_factor = 7.61666e+17
-  [../]
-  [./pre6f]
+  []
+  [pre6f]
     type = SolutionFunction
     from_variable = pre6
     solution = initial_pre
     scale_factor = 7.61666e+17
-  [../]
-  [./pre7f]
+  []
+  [pre7f]
     type = SolutionFunction
     from_variable = pre7
     solution = initial_pre
     scale_factor = 7.61666e+17
-  [../]
-  [./pre8f]
+  []
+  [pre8f]
     type = SolutionFunction
     from_variable = pre8
     solution = initial_pre
     scale_factor = 7.61666e+17
-  [../]
-  [./velxf]
+  []
+  [velxf]
     type = SolutionFunction
     from_variable = vel_x
     solution = initial_th
-  [../]
-  [./velyf]
+  []
+  [velyf]
     type = SolutionFunction
     from_variable = vel_y
     solution = initial_th
-  [../]
-  [./pf]
+  []
+  [pf]
     type = SolutionFunction
     from_variable = p
     solution = initial_th
-  [../]
-  [./tempf]
+  []
+  [tempf]
     type = SolutionFunction
     from_variable = temp
     solution = initial_th
-  [../]
-  [./heatf]
+  []
+  [heatf]
     type = SolutionFunction
     from_variable = heat
     solution = initial_pre
-  [../]
+  []
 []
 
 [ICs]
-  [./vel_ic]
+  [vel_ic]
     type = VectorFunctionIC
     variable = vel
     function_x = velxf
     function_y = velyf
-  [../]
-  [./pre1_ic]
+  []
+  [pre1_ic]
     type = FunctionIC
     variable = pre1
     function = pre1f
-  [../]
-  [./pre2_ic]
+  []
+  [pre2_ic]
     type = FunctionIC
     variable = pre2
     function = pre2f
-  [../]
-  [./pre3_ic]
+  []
+  [pre3_ic]
     type = FunctionIC
     variable = pre3
     function = pre3f
-  [../]
-  [./pre4_ic]
+  []
+  [pre4_ic]
     type = FunctionIC
     variable = pre4
     function = pre4f
-  [../]
-  [./pre5_ic]
+  []
+  [pre5_ic]
     type = FunctionIC
     variable = pre5
     function = pre5f
-  [../]
-  [./pre6_ic]
+  []
+  [pre6_ic]
     type = FunctionIC
     variable = pre6
     function = pre6f
-  [../]
-  [./pre7_ic]
+  []
+  [pre7_ic]
     type = FunctionIC
     variable = pre7
     function = pre7f
-  [../]
-  [./pre8_ic]
+  []
+  [pre8_ic]
     type = FunctionIC
     variable = pre8
     function = pre8f
-  [../]
-  [./p_ic]
+  []
+  [p_ic]
     type = FunctionIC
     variable = p
     function = pf
-  [../]
-  [./temp_ic]
+  []
+  [temp_ic]
     type = FunctionIC
     variable = temp
     function = tempf
-  [../]
-  [./heat_ic]
+  []
+  [heat_ic]
     type = FunctionIC
     variable = heat
     function = heatf
-  [../]
+  []
 []
 
 [BCs]
-  [./no_slip]
+  [no_slip]
     type = VectorDirichletBC
     variable = vel
     boundary = 'bottom left right'
     values = '0 0 0'
-  [../]
-  [./lid]
+  []
+  [lid]
     type = VectorDirichletBC
     variable = vel
     boundary = 'top'
     values = '50 0 0'
-  [../]
-  [./pressure_pin]
+  []
+  [pressure_pin]
     type = DirichletBC
     variable = p
     boundary = 'pinned_node'
     value = 0
-  [../]
+  []
 []
 
 [Materials]
-  [./fuel]
+  [fuel]
     type = GenericMoltresMaterial
     property_tables_root = '../../../property_file_dir/cnrs-benchmark/benchmark_'
     interp_type = 'linear'
     prop_names = 'temp_ref'
     prop_values = '900'
-  [../]
-  [./ad_mat]
+  []
+  [ad_mat]
     type = ADGenericConstantMaterial
     prop_names = 'k rho cp mu t_alpha'
     prop_values = '${k} ${density} ${cp} ${viscosity} ${t_alpha}'
-  [../]
-  [./ins_temp]
+  []
+  [ins_temp]
     type = INSADStabilized3Eqn
     alpha = ${alpha}
     velocity = vel
     pressure = p
     temperature = temp
-  [../]
+  []
 []
 
 [Executioner]
@@ -426,45 +426,47 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
-  [../]
+  []
 []
 
 [Postprocessors]
-  [./memory]
+  [memory]
     type = MemoryUsage
     execute_on = 'INITIAL TIMESTEP_END'
-  [../]
-  [./tot_fissions]
+  []
+  [tot_fissions]
     type = ElmIntegTotFissPostprocessor
     execute_on = linear
-  [../]
-  [./powernorm]
+  []
+  [powernorm]
     type = ElmIntegTotFissHeatPostprocessor
     execute_on = linear
-  [../]
-  [./group1norm]
+  []
+  [group1norm]
     type = ElementIntegralVariablePostprocessor
     variable = group1
     execute_on = linear
-  [../]
-  [./group1max]
-    type = NodalMaxValue
+  []
+  [group1max]
+    type = NodalExtremeValue
+    value_type = max
     variable = group1
     execute_on = timestep_end
-  [../]
-  [./group2norm]
+  []
+  [group2norm]
     type = ElementIntegralVariablePostprocessor
     variable = group2
     execute_on = linear
-  [../]
-  [./group2max]
-    type = NodalMaxValue
+  []
+  [group2max]
+    type = NodalExtremeValue
+    value_type = max
     variable = group2
     execute_on = timestep_end
-  [../]
+  []
 []
 
 [VectorPostprocessors]
@@ -472,19 +474,19 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
 
 [Outputs]
   perf_graph = true
-  [./exodus]
+  [exodus]
     type = Exodus
     interval = 20
-  [../]
-  [./csv]
+  []
+  [csv]
     type = CSV
     append_restart = true
-  [../]
-  [./checkpoint]
+  []
+  [checkpoint]
     type = Checkpoint
     num_files = 3
     interval = 20
-  [../]
+  []
 []
 
 [Debug]

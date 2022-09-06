@@ -1,4 +1,4 @@
-global_temperature=922
+global_temperature = 922
 
 [GlobalParams]
   num_groups = 1
@@ -6,7 +6,7 @@ global_temperature=922
   use_exp_form = false
   group_fluxes = 'group1'
   temperature = ${global_temperature}
-[../]
+[]
 
 [Mesh]
   type = GeneratedMesh
@@ -15,32 +15,32 @@ global_temperature=922
   ymax = 80
   nx = 100
   ny = 100
-[../]
+[]
 
 [Variables]
-  [./group1]
+  [group1]
     order = FIRST
     family = LAGRANGE
-  [../]
+  []
 []
 
 [Kernels]
   # Neutronics
-  [./diff_group1]
+  [diff_group1]
     type = GroupDiffusion
     variable = group1
     group_number = 1
-  [../]
-  [./sigma_r_group1]
+  []
+  [sigma_r_group1]
     type = SigmaR
     variable = group1
     group_number = 1
-  [../]
-  [./fission_source_group1]
+  []
+  [fission_source_group1]
     type = CoupledFissionEigenKernel
     variable = group1
     group_number = 1
-  [../]
+  []
 []
 
 # [BCs]
@@ -52,13 +52,13 @@ global_temperature=922
 # []
 
 [Materials]
-  [./homo_reactor]
+  [homo_reactor]
     type = GenericMoltresMaterial
     block = 0
     property_tables_root = '../property_file_dir/inf_crit_small_'
     interp_type = 'none'
     temperature = ${global_temperature}
-  [../]
+  []
 []
 
 [Executioner]
@@ -67,7 +67,6 @@ global_temperature=922
   # source_abs_tol = 1e-12
   # source_rel_tol = 1e-8
   # output_after_power_iterations = true
-
 
   type = InversePowerMethod
   max_power_iterations = 50
@@ -86,45 +85,46 @@ global_temperature=922
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
-  [../]
+  []
 []
 
 [Postprocessors]
-  [./bnorm]
+  [bnorm]
     type = ElmIntegTotFissNtsPostprocessor
     group_fluxes = 'group1'
     execute_on = linear
-  [../]
-  [./tot_fissions]
+  []
+  [tot_fissions]
     type = ElmIntegTotFissPostprocessor
     execute_on = linear
-  [../]
-  [./group1norm]
+  []
+  [group1norm]
     type = ElementIntegralVariablePostprocessor
     variable = group1
     execute_on = linear
-  [../]
-  [./group1max]
-    type = NodalMaxValue
+  []
+  [group1max]
+    type = NodalExtremeValue
+    value_type = max
     variable = group1
     execute_on = timestep_end
-  [../]
-  [./group1diff]
+  []
+  [group1diff]
     type = ElementL2Diff
     variable = group1
     execute_on = 'linear timestep_end'
     use_displaced_mesh = false
-  [../]
+  []
 []
 
 [Outputs]
-  [./out]
+  [out]
     type = Exodus
     execute_on = 'timestep_end'
-  [../]
+  []
 []
 
 [Debug]

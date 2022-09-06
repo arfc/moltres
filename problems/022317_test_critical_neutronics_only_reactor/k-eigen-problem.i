@@ -1,4 +1,4 @@
-global_temperature=922
+global_temperature = 922
 
 [GlobalParams]
   num_groups = 2
@@ -6,96 +6,96 @@ global_temperature=922
   use_exp_form = true
   group_fluxes = 'group1 group2'
   temperature = ${global_temperature}
-[../]
+[]
 
 [Mesh]
   file = 'cylinder_rad_57.msh'
-[../]
+[]
 
 [Variables]
-  [./group1]
+  [group1]
     order = FIRST
     family = LAGRANGE
-  [../]
-  [./group2]
+  []
+  [group2]
     order = FIRST
     family = LAGRANGE
-  [../]
+  []
 []
 
 [Kernels]
   # Neutronics
-  [./diff_group1]
+  [diff_group1]
     type = GroupDiffusion
     variable = group1
     group_number = 1
-  [../]
-  [./diff_group2]
+  []
+  [diff_group2]
     type = GroupDiffusion
     variable = group2
     group_number = 2
-  [../]
-  [./sigma_r_group1]
+  []
+  [sigma_r_group1]
     type = SigmaR
     variable = group1
     group_number = 1
-  [../]
-  [./sigma_r_group2]
+  []
+  [sigma_r_group2]
     type = SigmaR
     variable = group2
     group_number = 2
-  [../]
-  [./inscatter_group1]
+  []
+  [inscatter_group1]
     type = InScatter
     variable = group1
     group_number = 1
     num_groups = 2
     group_fluxes = 'group1 group2'
-  [../]
-  [./inscatter_group2]
+  []
+  [inscatter_group2]
     type = InScatter
     variable = group2
     group_number = 2
     num_groups = 2
     group_fluxes = 'group1 group2'
-  [../]
-  [./fission_source_group1]
+  []
+  [fission_source_group1]
     type = CoupledFissionEigenKernel
     variable = group1
     group_number = 1
     num_groups = 2
     group_fluxes = 'group1 group2'
-  [../]
-  [./fission_source_group2]
+  []
+  [fission_source_group2]
     type = CoupledFissionEigenKernel
     variable = group2
     group_number = 2
     num_groups = 2
     group_fluxes = 'group1 group2'
-  [../]
+  []
 []
 
 [BCs]
-  [./vacuum1]
+  [vacuum1]
     type = VacuumConcBC
     boundary = 'boundaries'
     variable = group1
-  [../]
-  [./vacuum2]
+  []
+  [vacuum2]
     type = VacuumConcBC
     boundary = 'boundaries'
     variable = group2
-  [../]
+  []
 []
 
 [Materials]
-  [./homo_reactor]
+  [homo_reactor]
     type = GenericMoltresMaterial
     block = 'reactor'
     property_tables_root = '../property_file_dir/msre_homogeneous_critical_question_mark_'
     interp_type = 'spline'
     temperature = ${global_temperature}
-  [../]
+  []
 []
 
 [Executioner]
@@ -104,7 +104,6 @@ global_temperature=922
   # source_abs_tol = 1e-12
   # source_rel_tol = 1e-8
   # output_after_power_iterations = true
-
 
   type = InversePowerMethod
   max_power_iterations = 50
@@ -123,55 +122,57 @@ global_temperature=922
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     # full = true
-  [../]
+  []
 []
 
 [Postprocessors]
-  [./bnorm]
+  [bnorm]
     type = ElmIntegTotFissNtsPostprocessor
     group_fluxes = 'group1 group2'
     execute_on = linear
-  [../]
-  [./tot_fissions]
+  []
+  [tot_fissions]
     type = ElmIntegTotFissPostprocessor
     execute_on = linear
-  [../]
-  [./group1norm]
+  []
+  [group1norm]
     type = ElementIntegralVariablePostprocessor
     variable = group1
     execute_on = linear
-  [../]
-  [./group2norm]
+  []
+  [group2norm]
     type = ElementIntegralVariablePostprocessor
     variable = group2
     execute_on = linear
-  [../]
-  [./group1max]
-    type = NodalMaxValue
+  []
+  [group1max]
+    type = NodalExtremeValue
+    value_type = max
     variable = group1
     execute_on = timestep_end
-  [../]
-  [./group2max]
-    type = NodalMaxValue
+  []
+  [group2max]
+    type = NodalExtremeValue
+    value_type = max
     variable = group2
     execute_on = timestep_end
-  [../]
-  [./group1diff]
+  []
+  [group1diff]
     type = ElementL2Diff
     variable = group1
     execute_on = 'linear timestep_end'
     use_displaced_mesh = false
-  [../]
+  []
 []
 
 [Outputs]
-  [./out]
+  [out]
     type = Exodus
     execute_on = 'timestep_end'
-  [../]
+  []
 []
 
 [Debug]

@@ -151,7 +151,8 @@ diri_temp=922
     execute_on = linear
   [../]
   [./group1max]
-    type = NodalMaxValue
+    type = NodalExtremeValue
+    value_type = max
     variable = group1
     execute_on = timestep_end
   [../]
@@ -167,7 +168,8 @@ diri_temp=922
     execute_on = linear
   [../]
   [./group2max]
-    type = NodalMaxValue
+    type = NodalExtremeValue
+    value_type = max
     variable = group2
     execute_on = timestep_end
   [../]
