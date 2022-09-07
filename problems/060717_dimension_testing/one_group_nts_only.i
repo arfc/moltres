@@ -17,62 +17,62 @@
 []
 
 [Variables]
-  [./group1]
+  [group1]
     order = FIRST
     family = LAGRANGE
     initial_condition = 1
-  [../]
+  []
 []
 
 [Kernels]
   # Neutronics
-  [./time_group1]
+  [time_group1]
     type = NtTimeDerivative
     variable = group1
     group_number = 1
-  [../]
-  [./diff_group1]
+  []
+  [diff_group1]
     type = GroupDiffusion
     variable = group1
     group_number = 1
-  [../]
-  [./sigma_r_group1]
+  []
+  [sigma_r_group1]
     type = SigmaR
     variable = group1
     group_number = 1
-  [../]
-  [./fission_source_group1]
+  []
+  [fission_source_group1]
     type = CoupledFissionEigenKernel
     variable = group1
     group_number = 1
-  [../]
+  []
 []
 
 [BCs]
-  [./vacuum_group1]
+  [vacuum_group1]
     type = VacuumConcBC
     boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
     variable = group1
-  [../]
+  []
 []
 
 [Materials]
-  [./fuel]
+  [fuel]
     type = GenericMoltresMaterial
     property_tables_root = '../property_file_dir/newt_one_group_msre_fuel_'
     interp_type = 'spline'
     block = 'fuel'
     prop_names = 'k cp'
     prop_values = '.0553 1967' # Robertson MSRE technical report @ 922 K
-  [../]
-  [./moder]
+  []
+  [moder]
     type = GenericMoltresMaterial
     property_tables_root = '../property_file_dir/newt_one_group_msre_mod_'
     interp_type = 'spline'
     prop_names = 'k cp'
     prop_values = '.312 1760' # Cammi 2011 at 908 K
     block = 'moder'
-  [../]
+  []
 []
 
 [Executioner]
@@ -93,49 +93,50 @@
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
-  [../]
+  []
 []
 
 [Postprocessors]
-  [./bnorm]
+  [bnorm]
     type = ElmIntegTotFissNtsPostprocessor
     execute_on = linear
-  [../]
-  [./tot_fissions]
+  []
+  [tot_fissions]
     type = ElmIntegTotFissPostprocessor
     execute_on = linear
-  [../]
-  [./group1norm]
+  []
+  [group1norm]
     type = ElementIntegralVariablePostprocessor
     variable = group1
     execute_on = linear
-  [../]
-  [./group1max]
-    type = NodalMaxValue
+  []
+  [group1max]
+    type = NodalExtremeValue
+    value_type = max
     variable = group1
     execute_on = timestep_end
-  [../]
-  [./group1diff]
+  []
+  [group1diff]
     type = ElementL2Diff
     variable = group1
     execute_on = 'linear timestep_end'
     use_displaced_mesh = false
-  [../]
+  []
 []
 
 [Outputs]
   perf_graph = true
   print_linear_residuals = true
   file_base = ''
-  [./exodus]
+  [exodus]
     type = Exodus
-  [../]
-  [./csv]
+  []
+  [csv]
     type = CSV
-  [../]
+  []
 []
 
 [Debug]

@@ -1,4 +1,4 @@
-flow_velocity=147 # Cammi 147 cm/s
+flow_velocity = 147 # Cammi 147 cm/s
 
 [GlobalParams]
   num_groups = 2
@@ -6,7 +6,7 @@ flow_velocity=147 # Cammi 147 cm/s
   group_fluxes = 'group1 group2'
   # MSRE full power = 10 MW; core volume 90 ft3
   power = 200000
-[../]
+[]
 
 [Mesh]
   type = GeneratedMesh
@@ -15,34 +15,34 @@ flow_velocity=147 # Cammi 147 cm/s
   ny = 2
   block_id = 0
   block_name = 'fuel'
-[../]
+[]
 
 [MeshModifiers]
-  [./mod]
+  [mod]
     type = SubdomainBoundingBox
     bottom_left = '0.5 0 0'
     top_right = '1 1 0'
     block_id = 1
     block_name = 'moder'
-  [../]
+  []
 []
 
 [Variables]
   # [./pre1]
   # [../]
-  [./group1]
+  [group1]
     order = FIRST
     family = LAGRANGE
-  [../]
-  [./group2]
+  []
+  [group2]
     order = FIRST
     family = LAGRANGE
-  [../]
-  [./temp]
+  []
+  [temp]
     order = FIRST
     family = LAGRANGE
     scaling = 1e-3
-  [../]
+  []
 []
 
 [Kernels]
@@ -57,69 +57,69 @@ flow_velocity=147 # Cammi 147 cm/s
   #   grou_number = 2
   #   variable = group2
   # [../]
-  [./diff_group1]
+  [diff_group1]
     type = GroupDiffusion
     variable = group1
     group_number = 1
     temperature = temp
-  [../]
-  [./diff_group2]
+  []
+  [diff_group2]
     type = GroupDiffusion
     variable = group2
     group_number = 2
     temperature = temp
-  [../]
-  [./sigma_r_group1]
+  []
+  [sigma_r_group1]
     type = SigmaR
     variable = group1
     group_number = 1
     temperature = temp
-  [../]
-  [./sigma_r_group2]
+  []
+  [sigma_r_group2]
     type = SigmaR
     variable = group2
     group_number = 2
     temperature = temp
-  [../]
-  [./inscatter_group1]
+  []
+  [inscatter_group1]
     type = InScatter
     variable = group1
     group_number = 1
     num_groups = 2
     group_fluxes = 'group1 group2'
     temperature = temp
-  [../]
-  [./inscatter_group2]
+  []
+  [inscatter_group2]
     type = InScatter
     variable = group2
     group_number = 2
     num_groups = 2
     group_fluxes = 'group1 group2'
     temperature = temp
-  [../]
-  [./fission_source_group1]
+  []
+  [fission_source_group1]
     type = CoupledFissionEigenKernel
     variable = group1
     group_number = 1
     num_groups = 2
     group_fluxes = 'group1 group2'
     temperature = temp
-  [../]
-  [./fission_source_group2]
+  []
+  [fission_source_group2]
     type = CoupledFissionEigenKernel
     variable = group2
     group_number = 2
     num_groups = 2
     group_fluxes = 'group1 group2'
     temperature = temp
-  [../]
+  []
   # [./fission_source_group1]
   #   type = CoupledFissionKernel
   #   variable = group1
   #   group_number = 1
   #   num_groups = 2
   #   group_fluxes = 'group1 group2'
-    # temperature = temp
+  # temperature = temp
   # [../]
   # [./fission_source_group2]
   #   type = CoupledFissionKernel
@@ -127,7 +127,7 @@ flow_velocity=147 # Cammi 147 cm/s
   #   group_number = 2
   #   num_groups = 2
   #   group_fluxes = 'group1 group2'
-    # temperature = temp
+  # temperature = temp
   # [../]
 
   # Temperature
@@ -136,7 +136,7 @@ flow_velocity=147 # Cammi 147 cm/s
   #   variable = temp
   #   prop_name = 'k'
   # [../]
-  [./temp_flow_fuel]
+  [temp_flow_fuel]
     block = 'fuel'
     type = MatINSTemperatureRZ
     variable = temp
@@ -144,22 +144,22 @@ flow_velocity=147 # Cammi 147 cm/s
     k = 'k'
     cp = 'cp'
     uz = ${flow_velocity}
-  [../]
-  [./temp_flow_moder]
+  []
+  [temp_flow_moder]
     block = 'moder'
     type = MatINSTemperatureRZ
     variable = temp
     rho = 'rho'
     k = 'k'
     cp = 'cp'
-  [../]
-  [./temp_source]
+  []
+  [temp_source]
     type = FissionHeatSource
     tot_fissions = tot_fissions
     variable = temp
-  [../]
+  []
 
-#   # Delayed neutron precursors
+  #   # Delayed neutron precursors
   # [./pre1_source]
   #   type = PrecursorSource
   #   variable = pre1
@@ -186,10 +186,10 @@ flow_velocity=147 # Cammi 147 cm/s
 []
 
 [AuxVariables]
-  [./Qf]
+  [Qf]
     family = MONOMIAL
     order = CONSTANT
-  [../]
+  []
   # [./diffus_temp]
   #   family = MONOMIAL
   #   order = CONSTANT
@@ -210,14 +210,14 @@ flow_velocity=147 # Cammi 147 cm/s
   #   family = LAGRANGE
   #   order = FIRST
   # [../]
-[../]
+[]
 
 [AuxKernels]
-  [./Qf]
+  [Qf]
     type = FissionHeatSourceAux
     variable = Qf
     tot_fissions = tot_fissions
-  [../]
+  []
   # [./diffus_temp]
   #   type = MatDiffusionAux
   #   variable = diffus_temp
@@ -227,7 +227,7 @@ flow_velocity=147 # Cammi 147 cm/s
 []
 
 [Materials]
-  [./fuel]
+  [fuel]
     type = GenericMoltresMaterial
     block = 'fuel'
     property_tables_root = 'msr2g_enrU_mod_953_fuel_interp_'
@@ -236,8 +236,8 @@ flow_velocity=147 # Cammi 147 cm/s
     prop_names = 'k rho cp'
     prop_values = '.0123 3.327e-3 1357' # Cammi 2011 at 908 K
     temperature = temp
-  [../]
-  [./moder]
+  []
+  [moder]
     type = GenericMoltresMaterial
     block = 'moder'
     property_tables_root = 'msr2g_enrU_fuel_922_mod_interp_'
@@ -246,38 +246,38 @@ flow_velocity=147 # Cammi 147 cm/s
     prop_names = 'k rho cp'
     prop_values = '.312 1.843e-3 1760' # Cammi 2011 at 908 K
     temperature = temp
-  [../]
+  []
 []
 
 [BCs]
-  [./temp_inlet]
+  [temp_inlet]
     boundary = 'bottom'
     type = DirichletBC
     variable = temp
     value = 900
-  [../]
-  [./temp_outlet]
+  []
+  [temp_outlet]
     boundary = 'top'
     type = MatINSTemperatureNoBCBC
     variable = temp
     k = 'k'
-  [../]
-  [./group1_vacuum]
+  []
+  [group1_vacuum]
     type = VacuumBC
     variable = group1
     boundary = 'top bottom'
-  [../]
-  [./group2_vacuum]
+  []
+  [group2_vacuum]
     type = VacuumBC
     variable = group2
     boundary = 'top bottom'
-  [../]
+  []
 []
 
 [Problem]
   type = FEProblem
   coord_type = RZ
-[../]
+[]
 
 [Executioner]
   type = NonlinearEigen
@@ -307,55 +307,57 @@ flow_velocity=147 # Cammi 147 cm/s
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
-  [../]
+  []
 []
 
 [Postprocessors]
-  [./bnorm]
+  [bnorm]
     type = ElmIntegTotFissNtsPostprocessor
     group_fluxes = 'group1 group2'
     execute_on = linear
-  [../]
-  [./tot_fissions]
+  []
+  [tot_fissions]
     type = ElmIntegTotFissPostprocessor
     execute_on = linear
-  [../]
-  [./group1norm]
+  []
+  [group1norm]
     type = ElementIntegralVariablePostprocessor
     variable = group1
     execute_on = linear
-  [../]
-  [./group2norm]
+  []
+  [group2norm]
     type = ElementIntegralVariablePostprocessor
     variable = group2
     execute_on = linear
-  [../]
-  [./group1max]
-    type = NodalMaxValue
+  []
+  [group1max]
+    type = NodalExtremeValue
+    value_type = max
     variable = group1
     execute_on = timestep_end
-  [../]
-  [./group2max]
-    type = NodalMaxValue
+  []
+  [group2max]
+    type = NodalExtremeValue
+    value_type = max
     variable = group2
     execute_on = timestep_end
-  [../]
-  [./group1diff]
+  []
+  [group1diff]
     type = ElementL2Diff
     variable = group1
     execute_on = 'linear timestep_end'
     use_displaced_mesh = false
-  [../]
+  []
 []
 
 [Outputs]
-  [./out]
+  [out]
     type = Exodus
     execute_on = 'timestep_end'
-  [../]
+  []
 []
 
 [Debug]
@@ -363,9 +365,9 @@ flow_velocity=147 # Cammi 147 cm/s
 []
 
 [ICs]
-  [./temp_ic]
+  [temp_ic]
     type = ConstantIC
     variable = temp
     value = 900
-  [../]
+  []
 []

@@ -1,17 +1,17 @@
-reactor_height=162.56
+reactor_height = 162.56
 # global_temperature=temp
-global_temperature=922
+global_temperature = 922
 
 [GlobalParams]
   num_groups = 2
   num_precursor_groups = 8
   use_exp_form = false
   group_fluxes = 'group1 group2'
-[../]
+[]
 
 [Mesh]
   file = 'msre_22x22_correct_vol_fraction.msh'
-[../]
+[]
 
 [Nt]
   var_name_base = 'group'
@@ -26,7 +26,7 @@ global_temperature=922
 []
 
 [Materials]
-  [./fuel]
+  [fuel]
     # type = CammiFuel
     type = GenericMoltresMaterial
     block = 'fuel'
@@ -35,8 +35,8 @@ global_temperature=922
     prop_values = '2.146e-3 .0553 1967' # Robertson MSRE technical report @ 922 K
     interp_type = 'spline'
     temperature = ${global_temperature}
-  [../]
-  [./moder]
+  []
+  [moder]
     # type = CammiModerator
     type = GenericMoltresMaterial
     block = 'moder'
@@ -45,7 +45,7 @@ global_temperature=922
     prop_values = '1.843e-3 .312 1760' # Cammi 2011 at 908 K
     interp_type = 'spline'
     temperature = ${global_temperature}
-  [../]
+  []
 []
 
 [Executioner]
@@ -72,10 +72,10 @@ global_temperature=922
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
-  [../]
+  []
 []
 
 [Outputs]
@@ -90,62 +90,64 @@ global_temperature=922
 []
 
 [Functions]
-  [./nt_ic_func]
+  [nt_ic_func]
     type = ParsedFunction
     value = '4/${reactor_height} * y * (1 - y/${reactor_height})'
-  [../]
+  []
 []
 
 [Postprocessors]
-  [./group1_current]
+  [group1_current]
     type = IntegralNewVariablePostprocessor
     variable = group1
     outputs = 'csv console'
-  [../]
-  [./group1_old]
+  []
+  [group1_old]
     type = IntegralOldVariablePostprocessor
     variable = group1
     outputs = 'csv console'
-  [../]
-  [./multiplication]
+  []
+  [multiplication]
     type = DivisionPostprocessor
     value1 = group1_current
     value2 = group1_old
     outputs = 'csv console'
-  [../]
-  [./bnorm]
+  []
+  [bnorm]
     type = ElmIntegTotFissNtsPostprocessor
     group_fluxes = 'group1 group2'
     execute_on = linear
-  [../]
-  [./tot_fissions]
+  []
+  [tot_fissions]
     type = ElmIntegTotFissPostprocessor
     execute_on = linear
-  [../]
-  [./group1norm]
+  []
+  [group1norm]
     type = ElementIntegralVariablePostprocessor
     variable = group1
     execute_on = linear
-  [../]
-  [./group2norm]
+  []
+  [group2norm]
     type = ElementIntegralVariablePostprocessor
     variable = group2
     execute_on = linear
-  [../]
-  [./group1max]
-    type = NodalMaxValue
+  []
+  [group1max]
+    type = NodalExtremeValue
+    value_type = max
     variable = group1
     execute_on = timestep_end
-  [../]
-  [./group2max]
-    type = NodalMaxValue
+  []
+  [group2max]
+    type = NodalExtremeValue
+    value_type = max
     variable = group2
     execute_on = timestep_end
-  [../]
-  [./group1diff]
+  []
+  [group1diff]
     type = ElementL2Diff
     variable = group1
     execute_on = 'linear timestep_end'
     use_displaced_mesh = false
-  [../]
+  []
 []
