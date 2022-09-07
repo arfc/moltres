@@ -7,23 +7,23 @@
   temperature = temp
   sss2_input = true
   account_delayed = true
-[../]
+[]
 
 [Mesh]
-    type = GeneratedMesh
-    dim = 2
+  type = GeneratedMesh
+  dim = 2
 
-    nx = 200
-    ny = 200
-## Use a 40-by-40 mesh instead if running on a desktop/small cluster
-#    nx = 40
-#    ny = 40
+  nx = 200
+  ny = 200
+  ## Use a 40-by-40 mesh instead if running on a desktop/small cluster
+  #    nx = 40
+  #    ny = 40
 
-    xmin = 0
-    xmax = 200
-    ymin = 0
-    ymax = 200
-    elem_type = QUAD4
+  xmin = 0
+  xmax = 200
+  ymin = 0
+  ymax = 200
+  elem_type = QUAD4
 []
 
 [Problem]
@@ -40,7 +40,7 @@
 []
 
 [Precursors]
-  [./pres]
+  [pres]
     var_name_base = pre
     outlet_boundaries = 'bottom'
     constant_velocity_values = false
@@ -53,44 +53,44 @@
     transient = false
     eigen = true
     scaling = 1e3
-  [../]
+  []
 []
 
 [AuxVariables]
-  [./temp]
+  [temp]
     family = LAGRANGE
     order = FIRST
     initial_condition = 900
-  [../]
-  [./vel_x]
+  []
+  [vel_x]
     family = LAGRANGE
     order = FIRST
-  [../]
-  [./vel_y]
+  []
+  [vel_y]
     family = LAGRANGE
     order = FIRST
-  [../]
-  [./heat]
+  []
+  [heat]
     family = MONOMIAL
     order = FIRST
-  [../]
+  []
 []
 
 [AuxKernels]
-  [./heat_source]
+  [heat_source]
     type = FissionHeatSourceAux
     variable = heat
     tot_fission_heat = powernorm
     power = 1e7
-  [../]
+  []
 []
 
 [Materials]
-  [./fuel]
+  [fuel]
     type = GenericMoltresMaterial
     property_tables_root = '../../../property_file_dir/cnrs-benchmark/benchmark_'
     interp_type = 'linear'
-  [../]
+  []
 []
 
 [Executioner]
@@ -102,7 +102,7 @@
   # Change to 2e6, 4e6, 6e6 or 8e6 for different power output
   # at 0.2GW, 0.4GW, 0.6GW or 0.8GW
   normalization = 'powernorm'
-  normal_factor = 1e7           # Watts, 1e9 / 100
+  normal_factor = 1e7 # Watts, 1e9 / 100
 
   xdiff = 'group1diff'
   bx_norm = 'bnorm'
@@ -115,85 +115,87 @@
   petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_gasm_overlap -sub_pc_factor_shift_type -pc_gasm_blocks -sub_pc_factor_mat_solver_type'
   petsc_options_value = 'gasm     lu           200                1                NONZERO                   16              superlu_dist'
 
-## Use the settings below instead if running on a desktop/small cluster
-#  petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type'
-#  petsc_options_value = 'asm      lu           200                1               NONZERO'
+  ## Use the settings below instead if running on a desktop/small cluster
+  #  petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type'
+  #  petsc_options_value = 'asm      lu           200                1               NONZERO'
 
   line_search = none
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
-  [../]
+  []
 []
 
 [Postprocessors]
-  [./bnorm]
+  [bnorm]
     type = ElmIntegTotFissNtsPostprocessor
     execute_on = linear
-  [../]
-  [./tot_fissions]
+  []
+  [tot_fissions]
     type = ElmIntegTotFissPostprocessor
     execute_on = linear
-  [../]
-  [./powernorm]
+  []
+  [powernorm]
     type = ElmIntegTotFissHeatPostprocessor
     execute_on = linear
-  [../]
-  [./group1norm]
+  []
+  [group1norm]
     type = ElementIntegralVariablePostprocessor
     variable = group1
     execute_on = linear
-  [../]
-  [./group1max]
-    type = NodalMaxValue
+  []
+  [group1max]
+    type = NodalExtremeValue
+    value_type = max
     variable = group1
     execute_on = timestep_end
-  [../]
-  [./group1diff]
+  []
+  [group1diff]
     type = ElementL2Diff
     variable = group1
     execute_on = 'linear timestep_end'
     use_displaced_mesh = false
-  [../]
-  [./group2norm]
+  []
+  [group2norm]
     type = ElementIntegralVariablePostprocessor
     variable = group2
     execute_on = linear
-  [../]
-  [./group2max]
-    type = NodalMaxValue
+  []
+  [group2max]
+    type = NodalExtremeValue
+    value_type = max
     variable = group2
     execute_on = timestep_end
-  [../]
-  [./group2diff]
+  []
+  [group2diff]
     type = ElementL2Diff
     variable = group2
     execute_on = 'linear timestep_end'
     use_displaced_mesh = false
-  [../]
+  []
 []
 
 [VectorPostprocessors]
-  [./pre_elemental]
+  [pre_elemental]
     type = ElementValueSampler
     variable = 'pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8'
     sort_by = id
     execute_on = TIMESTEP_END
-  [../]
+  []
 []
 
 [Outputs]
   perf_graph = true
   print_linear_residuals = true
-  [./exodus]
+  [exodus]
     type = Exodus
-  [../]
-  [./csv]
+  []
+  [csv]
     type = CSV
-  [../]
+  []
 []
 
 [Debug]

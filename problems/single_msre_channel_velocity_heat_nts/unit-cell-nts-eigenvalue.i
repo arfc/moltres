@@ -2,7 +2,7 @@
 width = 3.048
 height = 1.016
 length = 162.56
-nt_scale=1e13
+nt_scale = 1e13
 
 [GlobalParams]
   num_groups = 2
@@ -21,20 +21,19 @@ nt_scale=1e13
   file = msre_squares.msh
 []
 
-
 [Variables]
-  [./group1]
+  [group1]
     order = FIRST
     family = LAGRANGE
     # initial_condition = 1
     # scaling = 1e4
-  [../]
-  [./group2]
+  []
+  [group2]
     order = FIRST
     family = LAGRANGE
     # initial_condition = 1
     # scaling = 1e4
-  [../]
+  []
 []
 
 # [Precursors]
@@ -58,50 +57,50 @@ nt_scale=1e13
   #   variable = group1
   #   group_number = 1
   # [../]
-  [./diff_group1]
+  [diff_group1]
     type = GroupDiffusion
     variable = group1
     group_number = 1
-  [../]
-  [./sigma_r_group1]
+  []
+  [sigma_r_group1]
     type = SigmaR
     variable = group1
     group_number = 1
-  [../]
-  [./fission_source_group1]
+  []
+  [fission_source_group1]
     type = CoupledFissionEigenKernel
     variable = group1
     group_number = 1
-  [../]
+  []
   # [./delayed_group1]
   #   type = DelayedNeutronSource
   #   variable = group1
   # [../]
-  [./inscatter_group1]
+  [inscatter_group1]
     type = InScatter
     variable = group1
     group_number = 1
-  [../]
-  [./diff_group2]
+  []
+  [diff_group2]
     type = GroupDiffusion
     variable = group2
     group_number = 2
-  [../]
-  [./sigma_r_group2]
+  []
+  [sigma_r_group2]
     type = SigmaR
     variable = group2
     group_number = 2
-  [../]
-  [./fission_source_group2]
+  []
+  [fission_source_group2]
     type = CoupledFissionEigenKernel
     variable = group2
     group_number = 2
-  [../]
-  [./inscatter_group2]
+  []
+  [inscatter_group2]
     type = InScatter
     variable = group2
     group_number = 2
-  [../]
+  []
   # [./time_group2]
   #   type = NtTimeDerivative
   #   variable = group2
@@ -110,37 +109,37 @@ nt_scale=1e13
 []
 
 [BCs]
-  [./vacuum_group1]
+  [vacuum_group1]
     type = VacuumConcBC
     boundary = 'fuel_bottoms fuel_tops moderator_bottoms moderator_tops'
     # boundary = 'fuel_bottom moderator_bottoms'
     variable = group1
-  [../]
-  [./vacuum_group2]
+  []
+  [vacuum_group2]
     type = VacuumConcBC
     boundary = 'fuel_bottoms fuel_tops moderator_bottoms moderator_tops'
     # boundary = 'fuel_bottom moderator_bottoms'
     variable = group2
-  [../]
+  []
 []
 
 [Materials]
-  [./fuel]
+  [fuel]
     type = GenericMoltresMaterial
     property_tables_root = '../property_file_dir/newt_msre_fuel_'
     interp_type = 'spline'
     block = 'fuel'
     prop_names = 'k cp rho'
     prop_values = '.0553 1967 2.146e-3' # Robertson MSRE technical report @ 922 K
-  [../]
-  [./moder]
+  []
+  [moder]
     type = GenericMoltresMaterial
     property_tables_root = '../property_file_dir/newt_msre_mod_'
     interp_type = 'spline'
     prop_names = 'k cp rho'
     prop_values = '.312 1760 1.86e-3' # Cammi 2011 at 908 K
     block = 'moderator'
-  [../]
+  []
 []
 
 [Debug]
@@ -148,10 +147,10 @@ nt_scale=1e13
 []
 
 [Preconditioning]
-  [./SMP_PJFNK]
+  [SMP_PJFNK]
     type = SMP
     full = true
-  [../]
+  []
 []
 
 [Executioner]
@@ -179,64 +178,66 @@ nt_scale=1e13
 []
 
 [Functions]
-  [./nt_ic]
+  [nt_ic]
     type = ParsedFunction
     value = '10 * sin(pi * z / ${length})'
-  [../]
+  []
 []
 
 [ICs]
-  [./group1]
+  [group1]
     type = FunctionIC
     variable = group1
     function = nt_ic
-  [../]
-  [./group2]
+  []
+  [group2]
     type = FunctionIC
     variable = group2
     function = nt_ic
-  [../]
+  []
 []
 
 [Postprocessors]
-  [./bnorm]
+  [bnorm]
     type = ElmIntegTotFissNtsPostprocessor
     execute_on = linear
-  [../]
-  [./tot_fissions]
+  []
+  [tot_fissions]
     type = ElmIntegTotFissPostprocessor
     execute_on = linear
-  [../]
-  [./group1norm]
+  []
+  [group1norm]
     type = ElementIntegralVariablePostprocessor
     variable = group1
     execute_on = linear
-  [../]
-  [./group1max]
-    type = NodalMaxValue
+  []
+  [group1max]
+    type = NodalExtremeValue
+    value_type = max
     variable = group1
     execute_on = timestep_end
-  [../]
-  [./group1diff]
+  []
+  [group1diff]
     type = ElementL2Diff
     variable = group1
     execute_on = 'linear timestep_end'
     use_displaced_mesh = false
-  [../]
-  [./group2norm]
+  []
+  [group2norm]
     type = ElementIntegralVariablePostprocessor
     variable = group2
     execute_on = linear
-  [../]
-  [./group2max]
-    type = NodalMaxValue
+  []
+  [group2max]
+    type = NodalExtremeValue
+    value_type = max
     variable = group2
     execute_on = timestep_end
-  [../]
-  [./group2diff]
+  []
+  [group2diff]
     type = ElementL2Diff
     variable = group2
     execute_on = 'linear timestep_end'
     use_displaced_mesh = false
-  [../]
+  []
 []

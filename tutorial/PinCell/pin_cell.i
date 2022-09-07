@@ -1,17 +1,17 @@
-global_temperature=600
+global_temperature = 600
 
 [GlobalParams]
-  num_groups =2
+  num_groups = 2
   base_file = 'PinXS.json'
   group_fluxes = ' group1  group2'
   num_precursor_groups = 6
   use_exp_form = false
   temperature = ${global_temperature}
-[../]
+[]
 
 [Mesh]
   file = pin_cell_mesh.e
-[../]
+[]
 
 [Problem]
   type = FEProblem
@@ -27,7 +27,7 @@ global_temperature=600
 []
 
 [Materials]
-  [./F]
+  [F]
     type = MoltresJsonMaterial
     block = '1 2'
     material_key = 'F'
@@ -35,8 +35,8 @@ global_temperature=600
     temperature = 600
     prop_names = ''
     prop_values = ''
-  [../]
-  [./C]
+  []
+  [C]
     type = MoltresJsonMaterial
     block = 3
     material_key = 'C'
@@ -44,8 +44,8 @@ global_temperature=600
     temperature = 600
     prop_names = ''
     prop_values = ''
-  [../]
-  [./W]
+  []
+  [W]
     type = MoltresJsonMaterial
     block = 4
     material_key = 'W'
@@ -53,7 +53,7 @@ global_temperature=600
     temperature = 600
     prop_names = ''
     prop_values = ''
-  [../]
+  []
 []
 
 [Executioner]
@@ -73,58 +73,60 @@ global_temperature=600
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
-  [../]
+  []
 []
 
 [Postprocessors]
-  [./bnorm]
+  [bnorm]
     type = ElmIntegTotFissNtsPostprocessor
     execute_on = linear
-  [../]
-  [./tot_fissions]
+  []
+  [tot_fissions]
     type = ElmIntegTotFissPostprocessor
     execute_on = linear
-  [../]
-  [./group1norm]
+  []
+  [group1norm]
     type = ElementIntegralVariablePostprocessor
     variable = group1
     execute_on = linear
-  [../]
-  [./group1max]
-    type = NodalMaxValue
+  []
+  [group1max]
+    type = NodalExtremeValue
+    value_type = max
     variable = group1
     execute_on = timestep_end
-  [../]
-  [./group1diff]
+  []
+  [group1diff]
     type = ElementL2Diff
     variable = group1
     execute_on = 'linear timestep_end'
     use_displaced_mesh = false
-  [../]
-  [./group2norm]
+  []
+  [group2norm]
     type = ElementIntegralVariablePostprocessor
     variable = group2
     execute_on = linear
-  [../]
-  [./group2max]
-    type = NodalMaxValue
+  []
+  [group2max]
+    type = NodalExtremeValue
+    value_type = max
     variable = group2
     execute_on = timestep_end
-  [../]
-  [./group2diff]
+  []
+  [group2diff]
     type = ElementL2Diff
     variable = group2
     execute_on = 'linear timestep_end'
     use_displaced_mesh = false
-  [../]
+  []
 []
 
 [Outputs]
-  [./out]
+  [out]
     type = Exodus
     execute_on = 'timestep_end'
-  [../]
+  []
 []
