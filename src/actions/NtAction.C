@@ -6,6 +6,7 @@
 #include "Conversion.h"
 #include "FEProblem.h"
 #include "NonlinearSystemBase.h"
+#include "InputParameterWarehouse.h"
 
 registerMooseAction("MoltresApp", NtAction, "add_kernel");
 
@@ -406,7 +407,11 @@ NtAction::act()
 
     if (_current_task == "add_variable")
     {
-      _pars.set<Real>("scaling") =
+      // get the non-const reference to this action's input parameters from the warehouse
+      const auto & params = _app.getInputParameterWarehouse().getInputParameters();
+      InputParameters & pars(*(params.find(uniqueActionName())->second.get()));
+
+      pars.set<Real>("scaling") =
           isParamValid("temp_scaling") ? getParam<Real>("temp_scaling") : 1;
       Real scale_factor = getParam<Real>("scaling");
       FEType fe_type(getParam<bool>("dg_for_temperature") ? FIRST : FIRST,
