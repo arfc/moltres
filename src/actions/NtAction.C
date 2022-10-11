@@ -7,6 +7,9 @@
 #include "FEProblem.h"
 #include "NonlinearSystemBase.h"
 #include "InputParameterWarehouse.h"
+#include "AddVariableAction.h"
+
+#include "libmesh/enum_to_string.h"
 
 registerMooseAction("MoltresApp", NtAction, "add_kernel");
 
@@ -68,10 +71,12 @@ NtAction::validParams()
   params.addRequiredParam<bool>("sss2_input",
                                 "Whether the input follows sss2 form scattering matrices.");
   params.addParam<std::vector<SubdomainName>>("pre_blocks", "The blocks the precursors live on.");
-  params.addParam<Real>("eigenvalue_scaling", 1.0, "Artificial scaling factor for the fission "
-                                                   "source. Primarily introduced to make "
-                                                   "super/sub-critical systems exactly critical "
-                                                   "for the CNRS benchmark.");
+  params.addParam<Real>("eigenvalue_scaling",
+                        1.0,
+                        "Artificial scaling factor for the fission "
+                        "source. Primarily introduced to make "
+                        "super/sub-critical systems exactly critical "
+                        "for the CNRS benchmark.");
   return params;
 }
 
@@ -407,25 +412,17 @@ NtAction::act()
 
     if (_current_task == "add_variable")
     {
-      // get the non-const reference to this action's input parameters from the warehouse
-      const auto & params = _app.getInputParameterWarehouse().getInputParameters();
-      InputParameters & pars(*(params.find(uniqueActionName())->second.get()));
-
-      pars.set<Real>("scaling") =
-          isParamValid("temp_scaling") ? getParam<Real>("temp_scaling") : 1;
-      Real scale_factor = getParam<Real>("scaling");
       FEType fe_type(getParam<bool>("dg_for_temperature") ? FIRST : FIRST,
                      getParam<bool>("dg_for_temperature") ? L2_LAGRANGE : LAGRANGE);
+      const auto variable_type = AddVariableAction::variableType(fe_type);
+      auto params = _factory.getValidParams(variable_type);
 
-      std::set<SubdomainID> blocks = getSubdomainIDs();
-
-      // Block restricted variable
-      if (blocks.empty())
-        _problem->addVariable(temp_var, fe_type, scale_factor);
-
-      // Non-block restricted variable
-      else
-        _problem->addVariable(temp_var, fe_type, scale_factor, &blocks);
+      params.set<MooseEnum>("order") =
+          libMesh::Utility::enum_to_string(fe_type.order.operator Order());
+      params.set<MooseEnum>("family") = libMesh::Utility::enum_to_string(fe_type.family);
+      params.set<std::vector<Real>>("scaling") = {
+          isParamValid("temp_scaling") ? getParam<Real>("temp_scaling") : 1};
+      _problem->addVariable(variable_type, temp_var, params);
     }
   }
 }
