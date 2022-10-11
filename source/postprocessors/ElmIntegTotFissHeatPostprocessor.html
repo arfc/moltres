@@ -1,4 +1,2314 @@
-<!DOCTYPE html><head><meta charset="UTF-8"><title>ElmIntegTotFissHeatPostprocessor | Moltres</title><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/moltres.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Moltres</a><a href="https://github.com/arfc/moltres" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="#!" class="dropdown-trigger" data-target="1d8f3903-393c-4674-9120-7aaa1bbd0e6c" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="f4b73b1b-ca9d-473b-893c-8e0c27a3e940" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="0c89a585-1266-48c6-a745-58e768b4790b" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#" class="sidenav-trigger" data-target="45f0d3e6-d0ff-4567-b799-7a2f0ad0c152"><i class="material-icons">menu</i></a><ul class="sidenav" id="45f0d3e6-d0ff-4567-b799-7a2f0ad0c152"><li><a href="#!" class="dropdown-trigger" data-target="cd512695-f508-4b95-a80f-e25e1ee99ef7" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="197c26f6-a21f-48dd-9eaf-1eec640663ed" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="dc31dfd4-d96b-45e5-ac84-229b5f1dc989" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="1d8f3903-393c-4674-9120-7aaa1bbd0e6c"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="f4b73b1b-ca9d-473b-893c-8e0c27a3e940"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="0c89a585-1266-48c6-a745-58e768b4790b"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul><ul class="dropdown-content" id="cd512695-f508-4b95-a80f-e25e1ee99ef7"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="197c26f6-a21f-48dd-9eaf-1eec640663ed"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="dc31dfd4-d96b-45e5-ac84-229b5f1dc989"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="col hide-on-med-and-down l12"><nav class="breadcrumb-nav"><div class="nav-wrapper"><a href=".." class="breadcrumb">source</a><span class="breadcrumb">postprocessors</span><a href="#" class="breadcrumb">ElmIntegTotFissHeatPostprocessor</a></div></nav></div></div><div class="row"><div class="moose-content col s12 m12 l10"><section id="0652cf4a-8743-488b-9177-4d067e4c73fd" data-section-level="1" data-section-text="ElmIntegTotFissHeatPostprocessor"><h1 id="elmintegtotfissheatpostprocessor">ElmIntegTotFissHeatPostprocessor</h1><div class="card moose-alert moose-alert-construction"><div class="card-title moose-alert-title"><i class="material-icons moose-inline-icon">build</i><span class="moose-alert-title-brand">construction:</span>Undocumented Class</div><div class="card-content"><div class="moose-alert-content"><p>The ElmIntegTotFissHeatPostprocessor has not been documented. The content listed below should be used as a starting point for documenting the class, which includes the typical automatic documentation associated with a MooseObject; however, what is contained is ultimately determined by what is necessary to make the documentation clear for users.</p></div></div></div><p></p><section class="scrollspy" id="7b512a38-6562-4a1a-862d-3da5498b5329" data-section-level="2" data-section-text="Overview"><h2 id="overview">Overview</h2><p></p></section><section class="scrollspy" id="1063acb3-8c47-4ce7-a639-2e20ea23c98c" data-section-level="2" data-section-text="Example Input File Syntax"><h2 id="example-input-file-syntax">Example Input File Syntax</h2><p></p></section><section class="scrollspy" id="2c45a8af-c78c-493f-b294-23fbd14e3fed" data-section-level="2" data-section-text="Input Parameters"><h2 id="input-parameters">Input Parameters</h2><section id="3b1b321a-6af2-416d-b3da-82f0d9b294f0" data-section-level="3" data-section-text="Required Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">group_fluxes</span><span class="moose-parameter-header-description">The group fluxes. MUST be arranged by decreasing energy/increasing group number.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;VariableName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The group fluxes. MUST be arranged by decreasing energy/increasing group number.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">num_groups</span><span class="moose-parameter-header-description">The number of energy groups.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>int</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The number of energy groups.</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Required Parameters</h3></summary></details></section><section id="be91c10f-33f5-4dd7-8cf9-94b47408dd59" data-section-level="3" data-section-text="Optional Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">block</span><span class="moose-parameter-header-description">The list of blocks (ids or names) that this object will be applied</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;SubdomainName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of blocks (ids or names) that this object will be applied</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">execute_on</span><span class="moose-parameter-header-default">TIMESTEP_END</span><span class="moose-parameter-header-description">The list of flag(s) indicating when this object should be executed, the available options include NONE, INITIAL, LINEAR, NONLINEAR, TIMESTEP_END, TIMESTEP_BEGIN, FINAL, CUSTOM, ALWAYS.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>TIMESTEP_END</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>ExecFlagEnum</p><p class="moose-parameter-description-options"><span>Options:</span>NONE, INITIAL, LINEAR, NONLINEAR, TIMESTEP_END, TIMESTEP_BEGIN, FINAL, CUSTOM, ALWAYS, TRANSFER</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of flag(s) indicating when this object should be executed, the available options include NONE, INITIAL, LINEAR, NONLINEAR, TIMESTEP_END, TIMESTEP_BEGIN, FINAL, CUSTOM, ALWAYS.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">nt_scale</span><span class="moose-parameter-header-default">1</span><span class="moose-parameter-header-description">Scaling of the neutron fluxes to aid convergence.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>1</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Scaling of the neutron fluxes to aid convergence.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">prop_getter_suffix</span><span class="moose-parameter-header-description">An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MaterialPropertyName</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_exp_form</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Whether concentrations should be in an expotential/logarithmic format.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether concentrations should be in an expotential/logarithmic format.</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Optional Parameters</h3></summary></details></section><section id="dc290041-04cf-4e20-b5f2-4fd53824d4d5" data-section-level="3" data-section-text="Advanced Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">allow_duplicate_execution_on_initial</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">In the case where this UserObject is depended upon by an initial condition, allow it to be executed twice during the initial setup (once before the IC and again after mesh adaptivity (if applicable).</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>In the case where this UserObject is depended upon by an initial condition, allow it to be executed twice during the initial setup (once before the IC and again after mesh adaptivity (if applicable).</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">control_tags</span><span class="moose-parameter-header-description">Adds user-defined labels for accessing object parameters via control logic.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Adds user-defined labels for accessing object parameters via control logic.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">enable</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Set the enabled status of the MooseObject.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>Yes</p><p class="moose-parameter-description"><span>Description:</span>Set the enabled status of the MooseObject.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">force_postaux</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Forces the UserObject to be executed in POSTAUX</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Forces the UserObject to be executed in POSTAUX</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">force_preaux</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Forces the UserObject to be executed in PREAUX</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Forces the UserObject to be executed in PREAUX</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">force_preic</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Forces the UserObject to be executed in PREIC during initial setup</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Forces the UserObject to be executed in PREIC during initial setup</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">implicit</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Determines whether this object is calculated using an implicit or explicit form</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Determines whether this object is calculated using an implicit or explicit form</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">outputs</span><span class="moose-parameter-header-description">Vector of output names were you would like to restrict the output of variables(s) associated with this object</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;OutputName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Vector of output names were you would like to restrict the output of variables(s) associated with this object</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">seed</span><span class="moose-parameter-header-default">0</span><span class="moose-parameter-header-description">The seed for the master random number generator</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>unsigned int</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The seed for the master random number generator</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_displaced_mesh</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Whether or not this object should use the displaced mesh for computation.  Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether or not this object should use the displaced mesh for computation.  Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Advanced Parameters</h3></summary></details></section></section><section class="scrollspy" id="4bc3053a-ee5b-43d9-979f-db7796d8f3aa" data-section-level="2" data-section-text="Input Files"><h2 id="input-files">Input Files</h2><ul class="moose-list-inputs browser-default"><li><a class="moose-source-filename tooltipped modal-trigger" href="#f637fb01-8968-48e6-b929-ab137ace7ae9">(problems/2021-cnrs-benchmark/phase-2/transient-perturb-2.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#758fef14-241d-47e2-9692-f92f0db0d506">(problems/publication_level_cases/manuBench/manubox.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#caaba07f-8943-4402-8609-df04bad02a91">(problems/2021-cnrs-benchmark/phase-2/transient-perturb-1.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#e86871fe-ada3-4d14-a33a-a29c96f5c9ff">(problems/2021-cnrs-benchmark/phase-2/transient-perturb-6.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#c2f34196-d3c7-4c37-9427-e7b3afa51ccd">(problems/2021-cnrs-benchmark/phase-2/transient-perturb-7.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#35b864f7-37c6-43b7-b6c6-a7d78af379ea">(problems/publication_level_cases/manuBench/manuboxNoStokes.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#0eedd55e-8da3-4bac-ba9b-5c2a11beaa43">(problems/2021-cnrs-benchmark/phase-2/transient-perturb-4.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#11c3fdd1-aa3b-47ab-bb41-a61f617c4c9b">(problems/2021-cnrs-benchmark/phase-2/transient-perturb-5.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#434b1d96-5c63-423a-85ee-9eeb25f46895">(problems/2021-cnrs-benchmark/phase-0/nts.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#d15d6a9b-4f95-4cb7-b109-2c3ed5f22ce8">(problems/2021-cnrs-benchmark/phase-1/power-coupling.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#99cc006a-ebf8-4538-bb24-af44266b3e85">(problems/2021-cnrs-benchmark/phase-1/circ-fuel.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#42d30a1e-7cf4-4a13-a328-a6b878da0ba4">(tests/nts/gen-mesh-one-material.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#c63bb3bb-e337-4125-8d9a-3e2ffa6995cd">(problems/2021-cnrs-benchmark/phase-1/full-coupling-nts.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#a0ac4047-84f4-4101-98b4-c3ab7fafa26e">(problems/2021-cnrs-benchmark/phase-1/buoyancy-nts.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#18ecee0f-54b5-4ab7-aca4-673aa4609b1f">(problems/2021-cnrs-benchmark/phase-2/transient-perturb-3.i)</a></li></ul></section><section class="scrollspy" id="0031cbe3-605e-4b6e-afab-61b3b3e6a799" data-section-level="2" data-section-text="Child Objects"><h2 id="child-objects">Child Objects</h2><ul class="moose-list-children browser-default"><li><a class="moose-source-filename tooltipped modal-trigger" href="#d45cc7f3-5c7c-4f56-b084-49592cd214a7">(include/postprocessors/AverageFissionHeat.h)</a></li></ul></section></section><div class="moose-modal modal" id="f637fb01-8968-48e6-b929-ab137ace7ae9"><div class="modal-content"><h4>(problems/2021-cnrs-benchmark/phase-2/transient-perturb-2.i)</h4><pre class="moose-pre"><code class="language-text">density = .002 # kg cm-3
+<!DOCTYPE html><head><meta charset="UTF-8"><title>ElmIntegTotFissHeatPostprocessor | Moltres</title><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/moltres.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Moltres</a><a href="https://github.com/arfc/moltres" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="#!" class="dropdown-trigger" data-target="c3a18856-c7ef-432d-b676-47a360af0a99" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="d39fe78e-c4d4-48ec-a549-17a9e1588b17" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="22909f50-caa8-4c73-8a8f-215bc1cd102b" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#" class="sidenav-trigger" data-target="90c62d5c-1e7b-4bfa-a592-2cb579c9a5cc"><i class="material-icons">menu</i></a><ul class="sidenav" id="90c62d5c-1e7b-4bfa-a592-2cb579c9a5cc"><li><a href="#!" class="dropdown-trigger" data-target="88a9747a-863a-47d8-a7ef-9caf5af95998" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="02e9ecf3-884f-4040-9c7d-9fb2df15d399" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="fa7055d5-82c2-4a7d-811a-8d4dbcdce99e" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="c3a18856-c7ef-432d-b676-47a360af0a99"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="d39fe78e-c4d4-48ec-a549-17a9e1588b17"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="22909f50-caa8-4c73-8a8f-215bc1cd102b"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul><ul class="dropdown-content" id="88a9747a-863a-47d8-a7ef-9caf5af95998"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="02e9ecf3-884f-4040-9c7d-9fb2df15d399"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="fa7055d5-82c2-4a7d-811a-8d4dbcdce99e"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="col hide-on-med-and-down l12"><nav class="breadcrumb-nav"><div class="nav-wrapper"><a href=".." class="breadcrumb">source</a><span class="breadcrumb">postprocessors</span><a href="#" class="breadcrumb">ElmIntegTotFissHeatPostprocessor</a></div></nav></div></div><div class="row"><div class="moose-content col s12 m12 l10"><section id="d21ab081-e91a-4f2b-86c2-313d9c743374" data-section-level="1" data-section-text="ElmIntegTotFissHeatPostprocessor"><h1 id="elmintegtotfissheatpostprocessor">ElmIntegTotFissHeatPostprocessor</h1><div class="card moose-alert moose-alert-construction"><div class="card-title moose-alert-title"><i class="material-icons moose-inline-icon">build</i><span class="moose-alert-title-brand">construction:</span>Undocumented Class</div><div class="card-content"><div class="moose-alert-content"><p>The ElmIntegTotFissHeatPostprocessor has not been documented. The content listed below should be used as a starting point for documenting the class, which includes the typical automatic documentation associated with a MooseObject; however, what is contained is ultimately determined by what is necessary to make the documentation clear for users.</p></div></div></div><p></p><section class="scrollspy" id="86a02cbd-5025-4830-a1a4-7c458feae1f3" data-section-level="2" data-section-text="Overview"><h2 id="overview">Overview</h2><p></p></section><section class="scrollspy" id="b5855a41-04d9-4090-8cbc-7eef65e595e2" data-section-level="2" data-section-text="Example Input File Syntax"><h2 id="example-input-file-syntax">Example Input File Syntax</h2><p></p></section><section class="scrollspy" id="acc0a142-0ad4-4b57-bca3-8d3ad727e990" data-section-level="2" data-section-text="Input Parameters"><h2 id="input-parameters">Input Parameters</h2><section id="0d08676f-41ed-418f-a98e-4c66b8dbd927" data-section-level="3" data-section-text="Required Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">group_fluxes</span><span class="moose-parameter-header-description">The group fluxes. MUST be arranged by decreasing energy/increasing group number.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;VariableName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The group fluxes. MUST be arranged by decreasing energy/increasing group number.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">num_groups</span><span class="moose-parameter-header-description">The number of energy groups.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>int</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The number of energy groups.</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Required Parameters</h3></summary></details></section><section id="d681bbfb-43b6-4a29-b417-6a79a584667f" data-section-level="3" data-section-text="Optional Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">block</span><span class="moose-parameter-header-description">The list of blocks (ids or names) that this object will be applied</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;SubdomainName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of blocks (ids or names) that this object will be applied</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">execute_on</span><span class="moose-parameter-header-default">TIMESTEP_END</span><span class="moose-parameter-header-description">The list of flag(s) indicating when this object should be executed, the available options include NONE, INITIAL, LINEAR, NONLINEAR, TIMESTEP_END, TIMESTEP_BEGIN, FINAL, CUSTOM, ALWAYS.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>TIMESTEP_END</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>ExecFlagEnum</p><p class="moose-parameter-description-options"><span>Options:</span>NONE, INITIAL, LINEAR, NONLINEAR, TIMESTEP_END, TIMESTEP_BEGIN, FINAL, CUSTOM, ALWAYS, TRANSFER</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of flag(s) indicating when this object should be executed, the available options include NONE, INITIAL, LINEAR, NONLINEAR, TIMESTEP_END, TIMESTEP_BEGIN, FINAL, CUSTOM, ALWAYS.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">nt_scale</span><span class="moose-parameter-header-default">1</span><span class="moose-parameter-header-description">Scaling of the neutron fluxes to aid convergence.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>1</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Scaling of the neutron fluxes to aid convergence.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">prop_getter_suffix</span><span class="moose-parameter-header-description">An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MaterialPropertyName</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_exp_form</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Whether concentrations should be in an expotential/logarithmic format.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether concentrations should be in an expotential/logarithmic format.</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Optional Parameters</h3></summary></details></section><section id="c6e0a4b2-3e57-41a4-9813-3d1e6cfd20d2" data-section-level="3" data-section-text="Advanced Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">allow_duplicate_execution_on_initial</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">In the case where this UserObject is depended upon by an initial condition, allow it to be executed twice during the initial setup (once before the IC and again after mesh adaptivity (if applicable).</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>In the case where this UserObject is depended upon by an initial condition, allow it to be executed twice during the initial setup (once before the IC and again after mesh adaptivity (if applicable).</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">control_tags</span><span class="moose-parameter-header-description">Adds user-defined labels for accessing object parameters via control logic.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Adds user-defined labels for accessing object parameters via control logic.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">enable</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Set the enabled status of the MooseObject.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>Yes</p><p class="moose-parameter-description"><span>Description:</span>Set the enabled status of the MooseObject.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">force_postaux</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Forces the UserObject to be executed in POSTAUX</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Forces the UserObject to be executed in POSTAUX</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">force_preaux</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Forces the UserObject to be executed in PREAUX</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Forces the UserObject to be executed in PREAUX</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">force_preic</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Forces the UserObject to be executed in PREIC during initial setup</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Forces the UserObject to be executed in PREIC during initial setup</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">implicit</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Determines whether this object is calculated using an implicit or explicit form</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Determines whether this object is calculated using an implicit or explicit form</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">outputs</span><span class="moose-parameter-header-description">Vector of output names were you would like to restrict the output of variables(s) associated with this object</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;OutputName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Vector of output names were you would like to restrict the output of variables(s) associated with this object</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">seed</span><span class="moose-parameter-header-default">0</span><span class="moose-parameter-header-description">The seed for the master random number generator</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>unsigned int</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The seed for the master random number generator</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_displaced_mesh</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Whether or not this object should use the displaced mesh for computation.  Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether or not this object should use the displaced mesh for computation.  Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Advanced Parameters</h3></summary></details></section></section><section class="scrollspy" id="8f2a9207-de29-420a-95f0-8fa156cf75fa" data-section-level="2" data-section-text="Input Files"><h2 id="input-files">Input Files</h2><ul class="moose-list-inputs browser-default"><li><a class="moose-source-filename tooltipped modal-trigger" href="#aea73876-64e2-4055-a1c7-07fc67950a05">(problems/2021-cnrs-benchmark/phase-1/power-coupling.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#8e867e31-c9ed-4a91-a997-033692d8b258">(problems/2021-cnrs-benchmark/phase-1/full-coupling-nts.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#46be6346-296d-47ab-bc67-b13b0a3e7ab4">(problems/2021-cnrs-benchmark/phase-2/transient-perturb-4.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#11357691-91ea-4cac-a34c-ec803bc4f3c7">(problems/publication_level_cases/manuBench/manubox.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#7ce69176-aeac-40a8-99fb-a340b60a0ef2">(tests/nts/gen-mesh-one-material.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#a33cb2fd-c5d1-4381-b2df-c982e599a383">(problems/2021-cnrs-benchmark/phase-1/circ-fuel.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#0e13a630-5dcd-470d-9771-b3458739a7b2">(problems/2021-cnrs-benchmark/phase-2/transient-perturb-5.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#0f190b17-bf16-408e-bba3-12ed86bed59b">(problems/2021-cnrs-benchmark/phase-2/transient-perturb-2.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#02757c96-24c2-4fab-8bf2-8228d25c0b78">(problems/publication_level_cases/manuBench/manuboxNoStokes.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#35e825f2-3e7f-4eed-97ee-06146dff79bb">(problems/2021-cnrs-benchmark/phase-2/transient-perturb-6.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#a9997c3c-355a-40d1-a48c-f5b21a94b6ed">(problems/2021-cnrs-benchmark/phase-2/transient-perturb-1.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#b6705e17-26e6-4fa5-bb45-ad7cc524b024">(problems/2021-cnrs-benchmark/phase-2/transient-perturb-7.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#777265a2-57bc-4c43-aae3-1bb62cc22c8c">(problems/2021-cnrs-benchmark/phase-0/nts.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#fbc92c77-8a1c-4637-8068-47f09b7eaf1e">(problems/2021-cnrs-benchmark/phase-1/buoyancy-nts.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#4c029e16-cb82-4bca-86a0-cfb6a612ddb9">(problems/2021-cnrs-benchmark/phase-2/transient-perturb-3.i)</a></li></ul></section><section class="scrollspy" id="b9ea5b47-bb1d-4c1d-8404-d37cd3fc9762" data-section-level="2" data-section-text="Child Objects"><h2 id="child-objects">Child Objects</h2><ul class="moose-list-children browser-default"><li><a class="moose-source-filename tooltipped modal-trigger" href="#02f59bb1-840d-4168-8418-5e75745bf3bb">(include/postprocessors/AverageFissionHeat.h)</a></li></ul></section></section><div class="moose-modal modal" id="aea73876-64e2-4055-a1c7-07fc67950a05"><div class="modal-content"><h4>(problems/2021-cnrs-benchmark/phase-1/power-coupling.i)</h4><pre class="moose-pre"><code class="language-text"># Step 1.2: Power coupling input file
+# Requires velocity fields from Step 0.1
+
+density = .002 # kg cm-3
+cp = 3075 # J kg-1 K-1, 6.15 / 2.0e-3
+k = .005 # W cm-1 K-1
+gamma = 1 # W cm-3 K-1, Volumetric heat transfer coefficient
+viscosity = .5 # dynamic viscosity, mu = nu * rho, kg cm-1 s-1
+alpha = 1 # INS SUPG and PSPG stabilization parameter
+
+[GlobalParams]
+  num_groups = 6
+  num_precursor_groups = 8
+  use_exp_form = false
+  group_fluxes = &#x27;group1 group2 group3 group4 group5 group6&#x27;
+  pre_concs = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8&#x27;
+  temperature = temp
+  sss2_input = true
+  account_delayed = true
+  integrate_p_by_parts = true
+[]
+
+[Mesh]
+  type = GeneratedMesh
+  dim = 2
+
+  nx = 200
+  ny = 200
+  ## Use a 40-by-40 mesh instead if running on a desktop/small cluster
+  #    nx = 40
+  #    ny = 40
+
+  xmin = 0
+  xmax = 200
+  ymin = 0
+  ymax = 200
+  elem_type = QUAD4
+[]
+
+[Problem]
+  type = FEProblem
+[]
+
+[Variables]
+  [temp]
+    family = LAGRANGE
+    order = FIRST
+    scaling = 1e-3
+    initial_condition = 900
+  []
+[]
+
+[Nt]
+  var_name_base = group
+  vacuum_boundaries = &#x27;bottom left right top&#x27;
+  create_temperature_var = false
+  transient = false
+  eigen = true
+  scaling = 1e3
+[]
+
+[Precursors]
+  [pres]
+    var_name_base = pre
+    outlet_boundaries = &#x27;&#x27;
+    constant_velocity_values = false
+    uvel = ux
+    vvel = uy
+    nt_exp_form = false
+    family = MONOMIAL
+    order = CONSTANT
+    loop_precursors = false
+    transient = false
+    eigen = true
+    scaling = 1e3
+  []
+[]
+
+[AuxVariables]
+  [ux]
+    family = LAGRANGE
+    order = FIRST
+  []
+  [uy]
+    family = LAGRANGE
+    order = FIRST
+  []
+  [vel]
+    family = LAGRANGE_VEC
+    order = FIRST
+  []
+  [p]
+    family = LAGRANGE
+    order = FIRST
+  []
+  [heat]
+    family = MONOMIAL
+    order = FIRST
+  []
+[]
+
+[UserObjects]
+  [velocities]
+    type = SolutionUserObject
+    mesh = &#x27;../phase-0/vel-field_exodus.e&#x27;
+    system_variables = &#x27;vel_x vel_y p&#x27;
+    timestep = LATEST
+    execute_on = INITIAL
+  []
+[]
+
+[Kernels]
+  [temp_source]
+    type = INSADEnergySource
+    variable = temp
+    source_variable = heat
+  []
+  [temp_advection]
+    type = INSADEnergyAdvection
+    variable = temp
+  []
+  [temp_conduction]
+    type = ADHeatConduction
+    variable = temp
+    thermal_conductivity = &#x27;ad_k&#x27;
+  []
+  [temp_supg]
+    type = INSADEnergySUPG
+    variable = temp
+    velocity = vel
+  []
+  [temp_sink]
+    type = INSADEnergyAmbientConvection
+    variable = temp
+    alpha = ${gamma}
+    T_ambient = 900
+  []
+[]
+
+[AuxKernels]
+  [ux]
+    type = SolutionAux
+    variable = ux
+    from_variable = vel_x
+    solution = velocities
+  []
+  [uy]
+    type = SolutionAux
+    variable = uy
+    from_variable = vel_y
+    solution = velocities
+  []
+  [p]
+    type = SolutionAux
+    variable = p
+    from_variable = p
+    solution = velocities
+  []
+  [heat_source]
+    type = FissionHeatSourceAux
+    variable = heat
+    tot_fission_heat = powernorm
+    power = 1e7
+  []
+[]
+
+[Functions]
+  [velxf]
+    type = SolutionFunction
+    from_variable = vel_x
+    solution = velocities
+  []
+  [velyf]
+    type = SolutionFunction
+    from_variable = vel_y
+    solution = velocities
+  []
+[]
+
+[ICs]
+  [vel_ic]
+    type = VectorFunctionIC
+    variable = vel
+    function_x = velxf
+    function_y = velyf
+  []
+[]
+
+[Materials]
+  [fuel]
+    type = GenericMoltresMaterial
+    property_tables_root = &#x27;../../../property_file_dir/cnrs-benchmark/benchmark_&#x27;
+    interp_type = &#x27;spline&#x27;
+    prop_names = &#x27;k rho cp&#x27;
+    prop_values = &#x27;${k} ${density} ${cp}&#x27;
+  []
+  [ad_mat]
+    type = ADGenericConstantMaterial
+    prop_names = &#x27;ad_k ad_rho ad_cp ad_mu&#x27;
+    prop_values = &#x27;${k} ${density} ${cp} ${viscosity}&#x27;
+  []
+  [ins_mat]
+    type = INSADStabilized3Eqn
+    k_name = &#x27;ad_k&#x27;
+    rho_name = &#x27;ad_rho&#x27;
+    cp_name = &#x27;ad_cp&#x27;
+    mu_name = &#x27;ad_mu&#x27;
+    alpha = ${alpha}
+    velocity = vel
+    pressure = p
+    temperature = temp
+  []
+[]
+
+[Executioner]
+  type = NonlinearEigen
+  max_power_iterations = 50
+
+  # fission power normalization
+  normalization = &#x27;powernorm&#x27;
+  normal_factor = 1e7 # Watts, 1e9 / 100
+  # Tiberga et al. assumes the depth of their 2D domain is 1m.
+  # Tiberga et al. domain = 2m x 2m x 1m
+  # We divide the total power=1e9W by 100 because our length units are in cm.
+  # Our domain = 2m x 2m x 0.01m
+
+  xdiff = &#x27;group1diff&#x27;
+  bx_norm = &#x27;bnorm&#x27;
+  k0 = 1.00
+  l_max_its = 1000
+  nl_max_its = 5000
+  nl_abs_tol = 1e-6
+
+  free_power_iterations = 4
+
+  solve_type = &#x27;NEWTON&#x27;
+  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
+  petsc_options_iname = &#x27;-pc_type -sub_pc_type -ksp_gmres_restart -pc_gasm_overlap -sub_pc_factor_shift_type -pc_gasm_blocks -sub_pc_factor_mat_solver_type&#x27;
+  petsc_options_value = &#x27;gasm     lu           200                1                NONZERO                   16              superlu_dist&#x27;
+
+  ## Use the settings below instead if running on a desktop/small cluster
+  #  petsc_options_iname = &#x27;-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type&#x27;
+  #  petsc_options_value = &#x27;asm      lu           200                1               NONZERO&#x27;
+
+  line_search = none
+[]
+
+[Preconditioning]
+  [SMP]
+    type = SMP
+    full = true
+  []
+[]
+
+[Postprocessors]
+  [bnorm]
+    type = ElmIntegTotFissNtsPostprocessor
+    execute_on = linear
+  []
+  [tot_fissions]
+    type = ElmIntegTotFissPostprocessor
+    execute_on = linear
+  []
+  [powernorm]
+    type = ElmIntegTotFissHeatPostprocessor
+    execute_on = linear
+  []
+  [group1norm]
+    type = ElementIntegralVariablePostprocessor
+    variable = group1
+    execute_on = linear
+  []
+  [group1max]
+    type = NodalExtremeValue
+    value_type = max
+    variable = group1
+    execute_on = timestep_end
+  []
+  [group1diff]
+    type = ElementL2Diff
+    variable = group1
+    execute_on = &#x27;linear timestep_end&#x27;
+    use_displaced_mesh = false
+  []
+  [group2norm]
+    type = ElementIntegralVariablePostprocessor
+    variable = group2
+    execute_on = linear
+  []
+  [group2max]
+    type = NodalExtremeValue
+    value_type = max
+    variable = group2
+    execute_on = timestep_end
+  []
+  [group2diff]
+    type = ElementL2Diff
+    variable = group2
+    execute_on = &#x27;linear timestep_end&#x27;
+    use_displaced_mesh = false
+  []
+[]
+
+[VectorPostprocessors]
+  [temp_aa]
+    type = LineValueSampler
+    variable = &#x27;temp&#x27;
+    start_point = &#x27;0 100 0&#x27;
+    end_point = &#x27;200 100 0&#x27;
+    num_points = 201
+    sort_by = x
+    execute_on = FINAL
+    outputs = &#x27;csv&#x27;
+  []
+  [temp_bb]
+    type = LineValueSampler
+    variable = &#x27;temp&#x27;
+    start_point = &#x27;100 0 0&#x27;
+    end_point = &#x27;100 200 0&#x27;
+    num_points = 201
+    sort_by = y
+    execute_on = FINAL
+    outputs = &#x27;csv&#x27;
+  []
+  [flux_aa]
+    type = LineValueSampler
+    variable = &#x27;group1 group2 group3 group4 group5 group6&#x27;
+    start_point = &#x27;0 100 0&#x27;
+    end_point = &#x27;200 100 0&#x27;
+    num_points = 201
+    sort_by = x
+    execute_on = FINAL
+    outputs = &#x27;csv&#x27;
+  []
+  [flux_bb]
+    type = LineValueSampler
+    variable = &#x27;group1 group2 group3 group4 group5 group6&#x27;
+    start_point = &#x27;100 0 0&#x27;
+    end_point = &#x27;100 200 0&#x27;
+    num_points = 201
+    sort_by = y
+    execute_on = FINAL
+    outputs = &#x27;csv&#x27;
+  []
+[]
+
+[Outputs]
+  perf_graph = true
+  print_linear_residuals = true
+  [exodus]
+    type = Exodus
+  []
+  [csv]
+    type = CSV
+  []
+[]
+
+[Debug]
+  show_var_residual_norms = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="8e867e31-c9ed-4a91-a997-033692d8b258"><div class="modal-content"><h4>(problems/2021-cnrs-benchmark/phase-1/full-coupling-nts.i)</h4><pre class="moose-pre"><code class="language-text">[GlobalParams]
+  num_groups = 6
+  num_precursor_groups = 8
+  use_exp_form = false
+  group_fluxes = &#x27;group1 group2 group3 group4 group5 group6&#x27;
+  pre_concs = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8&#x27;
+  temperature = temp
+  sss2_input = true
+  account_delayed = true
+[]
+
+[Mesh]
+  type = GeneratedMesh
+  dim = 2
+
+  nx = 200
+  ny = 200
+  ## Use a 40-by-40 mesh instead if running on a desktop/small cluster
+  #    nx = 40
+  #    ny = 40
+
+  xmin = 0
+  xmax = 200
+  ymin = 0
+  ymax = 200
+  elem_type = QUAD4
+[]
+
+[Problem]
+  type = FEProblem
+[]
+
+[Nt]
+  var_name_base = group
+  vacuum_boundaries = &#x27;bottom left right top&#x27;
+  create_temperature_var = false
+  transient = false
+  eigen = true
+  scaling = 1e3
+[]
+
+[Precursors]
+  [pres]
+    var_name_base = pre
+    outlet_boundaries = &#x27;bottom&#x27;
+    constant_velocity_values = false
+    uvel = vel_x
+    vvel = vel_y
+    nt_exp_form = false
+    family = MONOMIAL
+    order = CONSTANT
+    loop_precursors = false
+    transient = false
+    eigen = true
+    scaling = 1e3
+  []
+[]
+
+[AuxVariables]
+  [temp]
+    family = LAGRANGE
+    order = FIRST
+    initial_condition = 900
+  []
+  [vel_x]
+    family = LAGRANGE
+    order = FIRST
+  []
+  [vel_y]
+    family = LAGRANGE
+    order = FIRST
+  []
+  [heat]
+    family = MONOMIAL
+    order = FIRST
+  []
+[]
+
+[AuxKernels]
+  [heat_source]
+    type = FissionHeatSourceAux
+    variable = heat
+    tot_fission_heat = powernorm
+    power = 1e7
+  []
+[]
+
+[Materials]
+  [fuel]
+    type = GenericMoltresMaterial
+    property_tables_root = &#x27;../../../property_file_dir/cnrs-benchmark/benchmark_&#x27;
+    interp_type = &#x27;linear&#x27;
+  []
+[]
+
+[Executioner]
+  type = InversePowerMethod
+  max_power_iterations = 50
+
+  # fission power normalization
+  # 1e7 corresponds to 1 GW / 100cm
+  # Change to 2e6, 4e6, 6e6 or 8e6 for different power output
+  # at 0.2GW, 0.4GW, 0.6GW or 0.8GW
+  normalization = &#x27;powernorm&#x27;
+  normal_factor = 1e7 # Watts, 1e9 / 100
+
+  xdiff = &#x27;group1diff&#x27;
+  bx_norm = &#x27;bnorm&#x27;
+  k0 = 1.00400
+  l_max_its = 100
+  eig_check_tol = 1e-6
+
+  solve_type = &#x27;NEWTON&#x27;
+  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
+  petsc_options_iname = &#x27;-pc_type -sub_pc_type -ksp_gmres_restart -pc_gasm_overlap -sub_pc_factor_shift_type -pc_gasm_blocks -sub_pc_factor_mat_solver_type&#x27;
+  petsc_options_value = &#x27;gasm     lu           200                1                NONZERO                   16              superlu_dist&#x27;
+
+  ## Use the settings below instead if running on a desktop/small cluster
+  #  petsc_options_iname = &#x27;-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type&#x27;
+  #  petsc_options_value = &#x27;asm      lu           200                1               NONZERO&#x27;
+
+  line_search = none
+[]
+
+[Preconditioning]
+  [SMP]
+    type = SMP
+    full = true
+  []
+[]
+
+[Postprocessors]
+  [bnorm]
+    type = ElmIntegTotFissNtsPostprocessor
+    execute_on = linear
+  []
+  [tot_fissions]
+    type = ElmIntegTotFissPostprocessor
+    execute_on = linear
+  []
+  [powernorm]
+    type = ElmIntegTotFissHeatPostprocessor
+    execute_on = linear
+  []
+  [group1norm]
+    type = ElementIntegralVariablePostprocessor
+    variable = group1
+    execute_on = linear
+  []
+  [group1max]
+    type = NodalExtremeValue
+    value_type = max
+    variable = group1
+    execute_on = timestep_end
+  []
+  [group1diff]
+    type = ElementL2Diff
+    variable = group1
+    execute_on = &#x27;linear timestep_end&#x27;
+    use_displaced_mesh = false
+  []
+  [group2norm]
+    type = ElementIntegralVariablePostprocessor
+    variable = group2
+    execute_on = linear
+  []
+  [group2max]
+    type = NodalExtremeValue
+    value_type = max
+    variable = group2
+    execute_on = timestep_end
+  []
+  [group2diff]
+    type = ElementL2Diff
+    variable = group2
+    execute_on = &#x27;linear timestep_end&#x27;
+    use_displaced_mesh = false
+  []
+[]
+
+[VectorPostprocessors]
+  [pre_elemental]
+    type = ElementValueSampler
+    variable = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8&#x27;
+    sort_by = id
+    execute_on = TIMESTEP_END
+  []
+[]
+
+[Outputs]
+  perf_graph = true
+  print_linear_residuals = true
+  [exodus]
+    type = Exodus
+  []
+  [csv]
+    type = CSV
+  []
+[]
+
+[Debug]
+  show_var_residual_norms = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="46be6346-296d-47ab-bc67-b13b0a3e7ab4"><div class="modal-content"><h4>(problems/2021-cnrs-benchmark/phase-2/transient-perturb-4.i)</h4><pre class="moose-pre"><code class="language-text">density = .002 # kg cm-3
+cp = 3075 # J kg-1 K-1, 6.15 / 2.0e-3
+k = .005 # W cm-1 K-1
+gamma = 1 # W cm-3 K-1, Volumetric heat transfer coefficient
+viscosity = .5 # dynamic viscosity
+alpha = 1 # SUPG stabilization parameter
+t_alpha = 2e-4 # K-1, Thermal expansion coefficient
+
+[GlobalParams]
+  num_groups = 6
+  num_precursor_groups = 8
+  use_exp_form = false
+  group_fluxes = &#x27;group1 group2 group3 group4 group5 group6&#x27;
+  pre_concs = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8&#x27;
+  temperature = temp
+  sss2_input = true
+  account_delayed = true
+  integrate_p_by_parts = true
+[]
+
+[Mesh]
+  [file_mesh]
+    type = FileMeshGenerator
+    file = &#x27;../phase-1/full-coupling_out_ntsApp0_exodus.e&#x27;
+    use_for_exodus_restart = true
+  []
+  [corner_node]
+    type = ExtraNodesetGenerator
+    input = file_mesh
+    new_boundary = &#x27;pinned_node&#x27;
+    coord = &#x27;200 200&#x27;
+  []
+[]
+
+[Problem]
+  type = FEProblem
+[]
+
+[Variables]
+  [temp]
+    family = LAGRANGE
+    order = FIRST
+  []
+  [vel]
+    family = LAGRANGE_VEC
+    order = FIRST
+  []
+  [p]
+    family = LAGRANGE
+    order = FIRST
+  []
+[]
+
+[Nt]
+  var_name_base = group
+  vacuum_boundaries = &#x27;bottom left right top&#x27;
+  create_temperature_var = false
+  init_nts_from_file = true
+  eigenvalue_scaling = 0.9927821802
+  ## Use the eigenvalue scaling factor below if running on a 40x40 mesh
+  #  eigenvalue_scaling = 0.9926551482
+[]
+
+[Precursors]
+  [pres]
+    var_name_base = pre
+    outlet_boundaries = &#x27;&#x27;
+    constant_velocity_values = false
+    uvel = vel_x
+    vvel = vel_y
+    nt_exp_form = false
+    family = MONOMIAL
+    order = CONSTANT
+    loop_precursors = false
+    transient = true
+  []
+[]
+
+[AuxVariables]
+  [vel_x]
+    family = LAGRANGE
+    order = FIRST
+  []
+  [vel_y]
+    family = LAGRANGE
+    order = FIRST
+  []
+  [heat]
+    family = MONOMIAL
+    order = FIRST
+  []
+[]
+
+[Kernels]
+  [mass]
+    type = INSADMass
+    variable = p
+  []
+  [mass_pspg]
+    type = INSADMassPSPG
+    variable = p
+  []
+  [momentum_time]
+    type = INSADMomentumTimeDerivative
+    variable = vel
+  []
+  [momentum_advection]
+    type = INSADMomentumAdvection
+    variable = vel
+  []
+  [momentum_viscous]
+    type = INSADMomentumViscous
+    variable = vel
+  []
+  [momentum_pressure]
+    type = INSADMomentumPressure
+    variable = vel
+    p = p
+  []
+  [momentum_supg]
+    type = INSADMomentumSUPG
+    variable = vel
+    velocity = vel
+  []
+  [buoyancy]
+    type = INSADBoussinesqBodyForce
+    variable = vel
+    # gravity vector, cm s-2
+    gravity = &#x27;0 -981 0&#x27;
+    alpha_name = &#x27;t_alpha&#x27;
+    ref_temp = &#x27;temp_ref&#x27;
+  []
+  [gravity]
+    type = INSADGravityForce
+    variable = vel
+    # gravity vector, cm s-2
+    gravity = &#x27;0 -981 0&#x27;
+  []
+
+  [temp_time]
+    type = INSADHeatConductionTimeDerivative
+    variable = temp
+  []
+  [temp_source]
+    type = INSADEnergySource
+    variable = temp
+    source_variable = heat
+  []
+  [temp_advection]
+    type = INSADEnergyAdvection
+    variable = temp
+  []
+  [temp_conduction]
+    type = ADHeatConduction
+    variable = temp
+    thermal_conductivity = &#x27;k&#x27;
+  []
+  [temp_supg]
+    type = INSADEnergySUPG
+    variable = temp
+    velocity = vel
+  []
+  [temp_sink]
+    type = ConvectiveHeatExchanger
+    variable = temp
+    htc = ${gamma}
+    tref = 900
+  []
+[]
+
+[AuxKernels]
+  [vel_x]
+    type = VectorVariableComponentAux
+    variable = vel_x
+    vector_variable = vel
+    component = &#x27;x&#x27;
+  []
+  [vel_y]
+    type = VectorVariableComponentAux
+    variable = vel_y
+    vector_variable = vel
+    component = &#x27;y&#x27;
+  []
+  [heat_source]
+    type = FissionHeatSourceTransientAux
+    variable = heat
+  []
+[]
+
+[UserObjects]
+  [initial_th]
+    type = SolutionUserObject
+    mesh = &#x27;../phase-1/full-coupling_exodus.e&#x27;
+    system_variables = &#x27;vel_x vel_y p temp&#x27;
+    timestep = LATEST
+    execute_on = INITIAL
+  []
+  [initial_pre]
+    type = SolutionUserObject
+    mesh = &#x27;../phase-1/full-coupling_out_ntsApp0_exodus.e&#x27;
+    system_variables = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8 heat&#x27;
+    timestep = LATEST
+    execute_on = INITIAL
+  []
+[]
+
+[Controls]
+  [func_control]
+    type = RealFunctionControl
+    parameter = &#x27;Kernels/temp_sink/htc&#x27;
+    function = func_alpha
+    execute_on = &#x27;initial timestep_begin&#x27;
+  []
+[]
+
+[Functions]
+  [func_alpha]
+    type = ParsedFunction
+    value = &#x27;1 + 0.1 * sin(2*pi*t*.1)&#x27; # Perturbation frequency = 0.1Hz
+  []
+  [pre1f]
+    type = SolutionFunction
+    from_variable = pre1
+    solution = initial_pre
+    scale_factor = 7.61666e+17
+  []
+  [pre2f]
+    type = SolutionFunction
+    from_variable = pre2
+    solution = initial_pre
+    scale_factor = 7.61666e+17
+  []
+  [pre3f]
+    type = SolutionFunction
+    from_variable = pre3
+    solution = initial_pre
+    scale_factor = 7.61666e+17
+  []
+  [pre4f]
+    type = SolutionFunction
+    from_variable = pre4
+    solution = initial_pre
+    scale_factor = 7.61666e+17
+  []
+  [pre5f]
+    type = SolutionFunction
+    from_variable = pre5
+    solution = initial_pre
+    scale_factor = 7.61666e+17
+  []
+  [pre6f]
+    type = SolutionFunction
+    from_variable = pre6
+    solution = initial_pre
+    scale_factor = 7.61666e+17
+  []
+  [pre7f]
+    type = SolutionFunction
+    from_variable = pre7
+    solution = initial_pre
+    scale_factor = 7.61666e+17
+  []
+  [pre8f]
+    type = SolutionFunction
+    from_variable = pre8
+    solution = initial_pre
+    scale_factor = 7.61666e+17
+  []
+  [velxf]
+    type = SolutionFunction
+    from_variable = vel_x
+    solution = initial_th
+  []
+  [velyf]
+    type = SolutionFunction
+    from_variable = vel_y
+    solution = initial_th
+  []
+  [pf]
+    type = SolutionFunction
+    from_variable = p
+    solution = initial_th
+  []
+  [tempf]
+    type = SolutionFunction
+    from_variable = temp
+    solution = initial_th
+  []
+  [heatf]
+    type = SolutionFunction
+    from_variable = heat
+    solution = initial_pre
+  []
+[]
+
+[ICs]
+  [vel_ic]
+    type = VectorFunctionIC
+    variable = vel
+    function_x = velxf
+    function_y = velyf
+  []
+  [pre1_ic]
+    type = FunctionIC
+    variable = pre1
+    function = pre1f
+  []
+  [pre2_ic]
+    type = FunctionIC
+    variable = pre2
+    function = pre2f
+  []
+  [pre3_ic]
+    type = FunctionIC
+    variable = pre3
+    function = pre3f
+  []
+  [pre4_ic]
+    type = FunctionIC
+    variable = pre4
+    function = pre4f
+  []
+  [pre5_ic]
+    type = FunctionIC
+    variable = pre5
+    function = pre5f
+  []
+  [pre6_ic]
+    type = FunctionIC
+    variable = pre6
+    function = pre6f
+  []
+  [pre7_ic]
+    type = FunctionIC
+    variable = pre7
+    function = pre7f
+  []
+  [pre8_ic]
+    type = FunctionIC
+    variable = pre8
+    function = pre8f
+  []
+  [p_ic]
+    type = FunctionIC
+    variable = p
+    function = pf
+  []
+  [temp_ic]
+    type = FunctionIC
+    variable = temp
+    function = tempf
+  []
+  [heat_ic]
+    type = FunctionIC
+    variable = heat
+    function = heatf
+  []
+[]
+
+[BCs]
+  [no_slip]
+    type = VectorDirichletBC
+    variable = vel
+    boundary = &#x27;bottom left right&#x27;
+    values = &#x27;0 0 0&#x27;
+  []
+  [lid]
+    type = VectorDirichletBC
+    variable = vel
+    boundary = &#x27;top&#x27;
+    values = &#x27;50 0 0&#x27;
+  []
+  [pressure_pin]
+    type = DirichletBC
+    variable = p
+    boundary = &#x27;pinned_node&#x27;
+    value = 0
+  []
+[]
+
+[Materials]
+  [fuel]
+    type = GenericMoltresMaterial
+    property_tables_root = &#x27;../../../property_file_dir/cnrs-benchmark/benchmark_&#x27;
+    interp_type = &#x27;linear&#x27;
+    prop_names = &#x27;temp_ref&#x27;
+    prop_values = &#x27;900&#x27;
+  []
+  [ad_mat]
+    type = ADGenericConstantMaterial
+    prop_names = &#x27;k rho cp mu t_alpha&#x27;
+    prop_values = &#x27;${k} ${density} ${cp} ${viscosity} ${t_alpha}&#x27;
+  []
+  [ins_temp]
+    type = INSADStabilized3Eqn
+    alpha = ${alpha}
+    velocity = vel
+    pressure = p
+    temperature = temp
+  []
+[]
+
+[Executioner]
+  type = Transient
+  scheme = bdf2
+  num_steps = 5000
+
+  solve_type = &#x27;NEWTON&#x27;
+  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
+  petsc_options_iname = &#x27;-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type&#x27;
+  petsc_options_value = &#x27;asm     lu           200                1                NONZERO&#x27;
+  line_search = &#x27;none&#x27;
+
+  automatic_scaling = true
+  compute_scaling_once = false
+  resid_vs_jac_scaling_param = 0.1
+  scaling_group_variables = &#x27;group1 group2 group3 group4 group5 group6; pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8; vel; p; temp&#x27;
+
+  nl_abs_tol = 1e-6
+  nl_rel_tol = 1e-6
+  nl_max_its = 25
+  l_max_its = 400
+  l_tol = 1e-4
+
+  dt = 0.05
+[]
+
+[Preconditioning]
+  [SMP]
+    type = SMP
+    full = true
+  []
+[]
+
+[Postprocessors]
+  [memory]
+    type = MemoryUsage
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  []
+  [tot_fissions]
+    type = ElmIntegTotFissPostprocessor
+    execute_on = linear
+  []
+  [powernorm]
+    type = ElmIntegTotFissHeatPostprocessor
+    execute_on = linear
+  []
+  [group1norm]
+    type = ElementIntegralVariablePostprocessor
+    variable = group1
+    execute_on = linear
+  []
+  [group1max]
+    type = NodalExtremeValue
+    value_type = max
+    variable = group1
+    execute_on = timestep_end
+  []
+  [group2norm]
+    type = ElementIntegralVariablePostprocessor
+    variable = group2
+    execute_on = linear
+  []
+  [group2max]
+    type = NodalExtremeValue
+    value_type = max
+    variable = group2
+    execute_on = timestep_end
+  []
+[]
+
+[VectorPostprocessors]
+[]
+
+[Outputs]
+  perf_graph = true
+  [exodus]
+    type = Exodus
+    interval = 20
+  []
+  [csv]
+    type = CSV
+    append_restart = true
+  []
+  [checkpoint]
+    type = Checkpoint
+    num_files = 3
+    interval = 20
+  []
+[]
+
+[Debug]
+  show_var_residual_norms = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="11357691-91ea-4cac-a34c-ec803bc4f3c7"><div class="modal-content"><h4>(problems/publication_level_cases/manuBench/manubox.i)</h4><pre class="moose-pre"><code class="language-text">library_path=/home/gavin/projects/moose/modules/navier_stokes/lib/
+
+[GlobalParams]
+  # neutronics
+  num_groups=6
+  num_precursor_groups=8
+  use_exp_form = false
+  group_fluxes = &#x27;group1 group2 group3 group4 group5 group6&#x27;
+  temperature = temp
+  sss2_input = false
+  pre_concs = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8&#x27;
+  account_delayed = true
+
+  # fluids
+  gravity = &#x27;0 -9.81 0&#x27;
+  pspg = true
+  convective_term = true
+  integrate_p_by_parts = true
+  laplace = true
+  u = vel_x
+  v = vel_y
+  p = p
+  alpha = 1e-6 # stabilisation parameter
+  order = FIRST
+  family = LAGRANGE
+[]
+
+[Mesh]
+  type = GeneratedMesh
+  dim = 2
+  xmin = 0
+  xmax = 1.0
+  ymin = 0
+  ymax = 1.0
+  elem_type = QUAD9
+  nx = 20
+  ny = 20
+[]
+
+[MeshModifiers]
+  [./corner_node]
+    type = AddExtraNodeset
+    new_boundary = &#x27;pinned_node&#x27;
+    nodes = &#x27;0&#x27;
+  [../]
+[]
+
+[Variables]
+
+  # velocities
+  [./vel_x]
+    family = LAGRANGE
+    order = FIRST
+  [../]
+
+  [./vel_y]
+    family = LAGRANGE
+    order = FIRST
+  [../]
+
+  # pressure
+  [./p]
+    family = LAGRANGE
+    order = FIRST
+  [../]
+
+  # temperature
+  [./temp]
+    family = LAGRANGE
+    order = FIRST
+    initial_condition = 900
+    scaling = 1e-4
+  [../]
+[]
+
+# nt -&gt; neutron
+[Nt]
+  var_name_base = group
+  vacuum_boundaries = &#x27;top bottom left right&#x27;
+  create_temperature_var = false
+  eigen = true
+[]
+
+[Precursors]
+  [./preblock]
+    var_name_base = pre
+    # block = &#x27;fuel&#x27;
+    constant_velocity_values = false
+    nt_exp_form = false
+    family = MONOMIAL
+    order = CONSTANT
+    outlet_boundaries = &#x27;&#x27;
+    uvel = vel_x
+    vvel = vel_y
+    transient = false
+  [../]
+[]
+
+[Kernels]
+  # mass
+  [./mass]
+    type = INSMass
+    variable = p
+  [../]
+
+  # x-momentum, space
+  [./x_momentum_space]
+    type = INSMomentumLaplaceForm
+    variable = vel_x
+    component = 0
+  [../]
+
+  # y-momentum, space
+  [./y_momentum_space]
+    type = INSMomentumLaplaceForm
+    variable = vel_y
+    component = 1
+  [../]
+
+  [./tempAdvectionDiffusion]
+    type = INSTemperature
+    variable = temp
+    u = vel_x
+    v = vel_y
+  [../]
+  [./buoyancy_y]
+    type = INSBoussinesqBodyForce
+    variable = vel_y
+    dT = deltaT
+    component = 1
+    temperature = temp
+  [../]
+
+  [./heatRemoval]
+    type = ConvectiveHeatExchanger
+    variable = temp
+    tref = 900.0
+    htc  = 1.0
+  [../]
+[]
+
+[BCs]
+  [./ux_dirichlet]
+    type = DirichletBC
+    boundary = &#x27;left right bottom top&#x27;
+    variable = vel_x
+    value = 0
+  [../]
+  [./uy_dirichlet]
+    type = DirichletBC
+    boundary = &#x27;left right bottom top&#x27;
+    variable = vel_y
+    value = 0
+  [../]
+  [./p_pin]
+    type=DirichletBC
+    boundary = &#x27;pinned_node&#x27;
+    variable = p
+    value = 0
+  [../]
+[]
+
+[Materials]
+  # alpha = coefficient of thermal expansion where rho  = rho0 -alpha * rho0 * delta T
+  # Dr. Aufiero uses nu rather than mu, (kinematic rather than absolute viscosity)
+  # likewise, \rho c_p is given rather than separate \rho, c_p
+  # accordingly, we let \rho = 1 to obtain equivalent results
+  # also, Manu gives a length expansion coefficient. Boussinesq approximations
+  # typically use an expansion coefficient with units 1/K, but for mass instead.
+  # The relation between the two is alpha = -3 beta, if linearized.
+  # Also, had to use Pr = mu * cp / k
+  [./const]
+    type = GenericConstantMaterial
+    prop_names = &#x27;mu     rho alpha   k         cp&#x27;
+    prop_values = &#x27;0.025 1.0 6.0e-4  0.5  6.15e6&#x27;
+  [../]
+
+  [./fuelneutronicproperties]
+    type = GenericMoltresMaterial
+    property_tables_root = &#x27;./groupconstants/&#x27;
+    interp_type = &#x27;none&#x27; # &#x27;spline&#x27;
+  [../]
+[]
+
+[Preconditioning]
+  [./SMP]
+    type = SMP
+    full = true
+    solve_type = &#x27;PJFNK&#x27;
+  [../]
+[]
+
+[Executioner]
+  type = InversePowerMethod
+  max_power_iterations = 50
+
+  # fission power normalization:
+  normalization = powernorm
+  normal_factor = 1e9 # watts
+
+  # power iteration options
+  xdiff = &#x27;group1diff&#x27;
+  bx_norm = &#x27;bnorm&#x27;
+  pfactor = 1e-2
+
+  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason&#x27;
+  petsc_options_iname = &#x27;-pc_type -pc_factor_shift_type&#x27;
+  petsc_options_value = &#x27;lu NONZERO&#x27;
+  line_search = &#x27;none&#x27;
+  nl_rel_tol = 1e-12
+  nl_abs_tol = 1e-13
+  nl_max_its = 6
+  l_tol = 1e-6
+  l_max_its = 500
+[]
+
+[Outputs]
+  [./exodus]
+    type = Exodus
+  [../]
+  [./csv]
+    type = CSV
+  [../]
+[]
+
+[Postprocessors]
+  [./bnorm]
+    type = ElmIntegTotFissNtsPostprocessor
+    execute_on = linear
+  [../]
+  [./group1diff]
+    type = ElementL2Diff
+    variable = group1
+    execute_on = &#x27;linear timestep_end&#x27;
+    use_displaced_mesh = false
+  [../]
+  [./powernorm]
+    type = ElmIntegTotFissHeatPostprocessor
+    execute_on = linear
+  [../]
+[]
+
+[AuxVariables]
+  [./deltaT]
+    type = ConstantDifferenceAux
+    variable = deltaT
+    comparevar = temp
+    constant = 900
+  [../]
+[]
+
+[AuxKernels]
+  [./deltaTCalc]
+    type =  ConstantDifferenceAux
+    variable = deltaT
+    compareVar = temp
+    constant = 900
+  [../]
+[]
+
+[Debug]
+  show_var_residual_norms = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="7ce69176-aeac-40a8-99fb-a340b60a0ef2"><div class="modal-content"><h4>(tests/nts/gen-mesh-one-material.i)</h4><pre class="moose-pre"><code class="language-text">[GlobalParams]
+  num_groups = 2
+  num_precursor_groups = 8
+  temperature = temp
+  group_fluxes = &#x27;group1 group2&#x27;
+  # MSRE full power = 10 MW; core volume 90 ft3
+  power = 10
+  use_exp_form = false
+  sss2_input = false
+  account_delayed = false
+[]
+
+[Mesh]
+  type = GeneratedMesh
+  dim = 2
+  xmax = 6
+  ymax = 6
+  nx = 15
+  ny = 15
+[]
+
+[Variables]
+  [group1]
+    order = FIRST
+    family = LAGRANGE
+  []
+  [group2]
+    order = FIRST
+    family = LAGRANGE
+  []
+  [temp]
+    order = FIRST
+    family = LAGRANGE
+    scaling = 1e-6
+  []
+[]
+
+[Kernels]
+  # Neutronics
+  [diff_group1]
+    type = GroupDiffusion
+    variable = group1
+    group_number = 1
+  []
+  [diff_group2]
+    type = GroupDiffusion
+    variable = group2
+    group_number = 2
+  []
+  [sigma_r_group1]
+    type = SigmaR
+    variable = group1
+    group_number = 1
+  []
+  [sigma_r_group2]
+    type = SigmaR
+    variable = group2
+    group_number = 2
+  []
+  [inscatter_group1]
+    type = InScatter
+    variable = group1
+    group_number = 1
+    num_groups = 2
+    group_fluxes = &#x27;group1 group2&#x27;
+  []
+  [inscatter_group2]
+    type = InScatter
+    variable = group2
+    group_number = 2
+    num_groups = 2
+    group_fluxes = &#x27;group1 group2&#x27;
+  []
+  [fission_source_group1]
+    type = CoupledFissionEigenKernel
+    variable = group1
+    group_number = 1
+    num_groups = 2
+    group_fluxes = &#x27;group1 group2&#x27;
+  []
+  [fission_source_group2]
+    type = CoupledFissionEigenKernel
+    variable = group2
+    group_number = 2
+    num_groups = 2
+    group_fluxes = &#x27;group1 group2&#x27;
+  []
+
+  # Temperature
+  [temp_cond]
+    type = MatDiffusion
+    variable = temp
+    diffusivity = &#x27;k&#x27;
+    save_in = &#x27;diffus_resid tot_resid&#x27;
+  []
+  # [./temp_cond]
+  #   type = HeatConduction
+  #   diffusion_coefficient_name = k
+  #   diffusion_coefficient_dT_name = d_k_d_temp
+  #   use_displaced_mesh = false
+  #   variable = temp
+  # [../]
+  [temp_source]
+    type = FissionHeatSource
+    tot_fission_heat = tot_fission_heat
+    variable = temp
+    save_in = &#x27;src_resid tot_resid&#x27;
+  []
+[]
+
+[AuxVariables]
+  [Qf]
+    family = MONOMIAL
+    order = CONSTANT
+  []
+  [diffus_temp]
+    family = MONOMIAL
+    order = CONSTANT
+  []
+  [diffus_resid]
+    family = LAGRANGE
+    order = FIRST
+  []
+  [src_resid]
+    family = LAGRANGE
+    order = FIRST
+  []
+  [bc_resid]
+    family = LAGRANGE
+    order = FIRST
+  []
+  [tot_resid]
+    family = LAGRANGE
+    order = FIRST
+  []
+[]
+
+[AuxKernels]
+  [Qf]
+    type = FissionHeatSourceAux
+    variable = Qf
+    tot_fission_heat = tot_fission_heat
+  []
+  [diffus_temp]
+    type = MatDiffusionAux
+    variable = diffus_temp
+    diffuse_var = temp
+    prop_name = &#x27;k&#x27;
+  []
+[]
+
+[Materials]
+  [fuel]
+    type = GenericMoltresMaterial
+    block = 0
+    property_tables_root = &#x27;msr2g_enrU_mod_953_fuel_interp_&#x27;
+    prop_names = &#x27;k&#x27;
+    prop_values = &#x27;.0123&#x27; # Cammi 2011 at 908 K
+    interp_type = spline
+  []
+[]
+
+[BCs]
+  [temp]
+    boundary = &#x27;left right top bottom&#x27;
+    type = DirichletBC
+    variable = temp
+    value = 900
+    save_in = &#x27;bc_resid tot_resid&#x27;
+  []
+  # [./temp]
+  #   boundary = boundary
+  #   type = VacuumBC
+  #   variable = temp
+  # [../]
+[]
+
+[Executioner]
+  # type = NonlinearEigen
+  # free_power_iterations = 4
+  # source_abs_tol = 1e-12
+  # source_rel_tol = 1e-8
+  # output_after_power_iterations = true
+
+  type = InversePowerMethod
+  max_power_iterations = 50
+  xdiff = &#x27;group1diff&#x27;
+
+  bx_norm = &#x27;bnorm&#x27;
+  k0 = 1.0
+  pfactor = 1e-2
+  l_max_its = 100
+
+  solve_type = &#x27;PJFNK&#x27;
+  # solve_type = &#x27;NEWTON&#x27;
+  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
+  # petsc_options_iname = &#x27;-pc_type -sub_pc_type&#x27;
+  # petsc_options_value = &#x27;asm lu&#x27;
+[]
+
+[Preconditioning]
+  [SMP]
+    type = SMP
+    # full = true
+  []
+[]
+
+[Postprocessors]
+  [bnorm]
+    type = ElmIntegTotFissNtsPostprocessor
+    group_fluxes = &#x27;group1 group2&#x27;
+    execute_on = linear
+  []
+  [tot_fission_heat]
+    type = ElmIntegTotFissHeatPostprocessor
+    execute_on = linear
+  []
+  [group1norm]
+    type = ElementIntegralVariablePostprocessor
+    variable = group1
+    execute_on = linear
+  []
+  [group2norm]
+    type = ElementIntegralVariablePostprocessor
+    variable = group2
+    execute_on = linear
+  []
+  [group1max]
+    type = NodalExtremeValue
+    value_type = max
+    variable = group1
+    execute_on = timestep_end
+  []
+  [group2max]
+    type = NodalExtremeValue
+    value_type = max
+    variable = group2
+    execute_on = timestep_end
+  []
+  [src_resid_post]
+    type = NodalL2Norm
+    variable = src_resid
+    execute_on = nonlinear
+  []
+  [diffus_resid_post]
+    type = NodalL2Norm
+    variable = diffus_resid
+    execute_on = nonlinear
+  []
+  [bc_resid_post]
+    type = NodalL2Norm
+    variable = bc_resid
+    execute_on = nonlinear
+  []
+  [tot_resid_post]
+    type = NodalL2Norm
+    variable = tot_resid
+    execute_on = nonlinear
+  []
+  [group1diff]
+    type = ElementL2Diff
+    variable = group1
+    execute_on = &#x27;linear timestep_end&#x27;
+    use_displaced_mesh = false
+  []
+[]
+
+[Outputs]
+  [out]
+    type = Exodus
+    execute_on = &#x27;timestep_end&#x27;
+  []
+[]
+
+[Debug]
+  show_var_residual_norms = true
+[]
+
+[ICs]
+  [temp_ic]
+    type = ConstantIC
+    variable = temp
+    value = 900
+  []
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="a33cb2fd-c5d1-4381-b2df-c982e599a383"><div class="modal-content"><h4>(problems/2021-cnrs-benchmark/phase-1/circ-fuel.i)</h4><pre class="moose-pre"><code class="language-text"># Step 1.1: Circulating fuel input file
+# Requires velocity fields from Step 0.1
+
+[GlobalParams]
+  num_groups = 6
+  num_precursor_groups = 8
+  use_exp_form = false
+  group_fluxes = &#x27;group1 group2 group3 group4 group5 group6&#x27;
+  pre_concs = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8&#x27;
+  temperature = 900
+  sss2_input = true
+  account_delayed = true
+[]
+
+[Mesh]
+  type = GeneratedMesh
+  dim = 2
+
+  nx = 200
+  ny = 200
+  ## Use a 40-by-40 mesh instead if running on a desktop/small cluster
+  #    nx = 40
+  #    ny = 40
+
+  xmin = 0
+  xmax = 200
+  ymin = 0
+  ymax = 200
+  elem_type = QUAD4
+[]
+
+[Problem]
+  type = FEProblem
+[]
+
+[Nt]
+  var_name_base = group
+  vacuum_boundaries = &#x27;bottom left right top&#x27;
+  create_temperature_var = false
+  transient = false
+  eigen = true
+[]
+
+[Precursors]
+  [pres]
+    var_name_base = pre
+    outlet_boundaries = &#x27;&#x27;
+    constant_velocity_values = false
+    uvel = ux
+    vvel = uy
+    nt_exp_form = false
+    family = MONOMIAL
+    order = CONSTANT
+    loop_precursors = false
+    transient = false
+  []
+[]
+
+[AuxVariables]
+  [ux]
+    family = LAGRANGE
+    order = FIRST
+  []
+  [uy]
+    family = LAGRANGE
+    order = FIRST
+  []
+[]
+
+[UserObjects]
+  [velocities]
+    type = SolutionUserObject
+    mesh = &#x27;../phase-0/vel-field_exodus.e&#x27;
+    system_variables = &#x27;vel_x vel_y&#x27;
+    timestep = LATEST
+    execute_on = INITIAL
+  []
+[]
+
+[AuxKernels]
+  [ux]
+    type = SolutionAux
+    variable = ux
+    from_variable = vel_x
+    solution = velocities
+  []
+  [uy]
+    type = SolutionAux
+    variable = uy
+    from_variable = vel_y
+    solution = velocities
+  []
+[]
+
+[Materials]
+  [fuel]
+    type = GenericMoltresMaterial
+    property_tables_root = &#x27;../../../property_file_dir/cnrs-benchmark/benchmark_&#x27;
+    interp_type = &#x27;linear&#x27;
+  []
+[]
+
+[Executioner]
+  type = InversePowerMethod
+  max_power_iterations = 50
+
+  # fission power normalization
+  normalization = &#x27;powernorm&#x27;
+  normal_factor = 1e7 # Watts, 1e9 / 100
+  # Tiberga et al. assumes the depth of their 2D domain is 1m.
+  # Tiberga et al. domain = 2m x 2m x 1m
+  # We divide the total power=1e9W by 100 because our length units are in cm.
+  # Our domain = 2m x 2m x 0.01m
+
+  xdiff = &#x27;group1diff&#x27;
+  bx_norm = &#x27;bnorm&#x27;
+  k0 = 1.00400
+  l_max_its = 100
+  eig_check_tol = 1e-7
+
+  solve_type = &#x27;NEWTON&#x27;
+  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
+  petsc_options_iname = &#x27;-pc_type -sub_pc_type -ksp_gmres_restart -pc_gasm_overlap -sub_pc_factor_shift_type -pc_gasm_blocks -sub_pc_factor_mat_solver_type&#x27;
+  petsc_options_value = &#x27;gasm     lu           200                1                NONZERO                   16              superlu_dist&#x27;
+
+  ## Use the settings below instead if running on a desktop/small cluster
+  #  petsc_options_iname = &#x27;-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type&#x27;
+  #  petsc_options_value = &#x27;asm      lu           200                1               NONZERO&#x27;
+
+  line_search = none
+[]
+
+[Preconditioning]
+  [SMP]
+    type = SMP
+    full = true
+  []
+[]
+
+[Postprocessors]
+  [bnorm]
+    type = ElmIntegTotFissNtsPostprocessor
+    execute_on = linear
+  []
+  [tot_fissions]
+    type = ElmIntegTotFissPostprocessor
+    execute_on = linear
+  []
+  [powernorm]
+    type = ElmIntegTotFissHeatPostprocessor
+    execute_on = linear
+  []
+  [group1norm]
+    type = ElementIntegralVariablePostprocessor
+    variable = group1
+    execute_on = linear
+  []
+  [group1max]
+    type = NodalExtremeValue
+    value_type = max
+    variable = group1
+    execute_on = timestep_end
+  []
+  [group1diff]
+    type = ElementL2Diff
+    variable = group1
+    execute_on = &#x27;linear timestep_end&#x27;
+    use_displaced_mesh = false
+  []
+  [group2norm]
+    type = ElementIntegralVariablePostprocessor
+    variable = group2
+    execute_on = linear
+  []
+  [group2max]
+    type = NodalExtremeValue
+    value_type = max
+    variable = group2
+    execute_on = timestep_end
+  []
+  [group2diff]
+    type = ElementL2Diff
+    variable = group2
+    execute_on = &#x27;linear timestep_end&#x27;
+    use_displaced_mesh = false
+  []
+[]
+
+[VectorPostprocessors]
+  [pre_elemental]
+    type = ElementValueSampler
+    variable = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8&#x27;
+    sort_by = id
+    execute_on = FINAL
+  []
+[]
+
+[Outputs]
+  perf_graph = true
+  print_linear_residuals = true
+  [exodus]
+    type = Exodus
+  []
+  [csv]
+    type = CSV
+  []
+[]
+
+[Debug]
+  show_var_residual_norms = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="0e13a630-5dcd-470d-9771-b3458739a7b2"><div class="modal-content"><h4>(problems/2021-cnrs-benchmark/phase-2/transient-perturb-5.i)</h4><pre class="moose-pre"><code class="language-text">density = .002 # kg cm-3
+cp = 3075 # J kg-1 K-1, 6.15 / 2.0e-3
+k = .005 # W cm-1 K-1
+gamma = 1 # W cm-3 K-1, Volumetric heat transfer coefficient
+viscosity = .5 # dynamic viscosity
+alpha = 1 # SUPG stabilization parameter
+t_alpha = 2e-4 # K-1, Thermal expansion coefficient
+
+[GlobalParams]
+  num_groups = 6
+  num_precursor_groups = 8
+  use_exp_form = false
+  group_fluxes = &#x27;group1 group2 group3 group4 group5 group6&#x27;
+  pre_concs = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8&#x27;
+  temperature = temp
+  sss2_input = true
+  account_delayed = true
+  integrate_p_by_parts = true
+[]
+
+[Mesh]
+  [file_mesh]
+    type = FileMeshGenerator
+    file = &#x27;../phase-1/full-coupling_out_ntsApp0_exodus.e&#x27;
+    use_for_exodus_restart = true
+  []
+  [corner_node]
+    type = ExtraNodesetGenerator
+    input = file_mesh
+    new_boundary = &#x27;pinned_node&#x27;
+    coord = &#x27;200 200&#x27;
+  []
+[]
+
+[Problem]
+  type = FEProblem
+[]
+
+[Variables]
+  [temp]
+    family = LAGRANGE
+    order = FIRST
+  []
+  [vel]
+    family = LAGRANGE_VEC
+    order = FIRST
+  []
+  [p]
+    family = LAGRANGE
+    order = FIRST
+  []
+[]
+
+[Nt]
+  var_name_base = group
+  vacuum_boundaries = &#x27;bottom left right top&#x27;
+  create_temperature_var = false
+  init_nts_from_file = true
+  eigenvalue_scaling = 0.9927821802
+  ## Use the eigenvalue scaling factor below if running on a 40x40 mesh
+  #  eigenvalue_scaling = 0.9926551482
+[]
+
+[Precursors]
+  [pres]
+    var_name_base = pre
+    outlet_boundaries = &#x27;&#x27;
+    constant_velocity_values = false
+    uvel = vel_x
+    vvel = vel_y
+    nt_exp_form = false
+    family = MONOMIAL
+    order = CONSTANT
+    loop_precursors = false
+    transient = true
+  []
+[]
+
+[AuxVariables]
+  [vel_x]
+    family = LAGRANGE
+    order = FIRST
+  []
+  [vel_y]
+    family = LAGRANGE
+    order = FIRST
+  []
+  [heat]
+    family = MONOMIAL
+    order = FIRST
+  []
+[]
+
+[Kernels]
+  [mass]
+    type = INSADMass
+    variable = p
+  []
+  [mass_pspg]
+    type = INSADMassPSPG
+    variable = p
+  []
+  [momentum_time]
+    type = INSADMomentumTimeDerivative
+    variable = vel
+  []
+  [momentum_advection]
+    type = INSADMomentumAdvection
+    variable = vel
+  []
+  [momentum_viscous]
+    type = INSADMomentumViscous
+    variable = vel
+  []
+  [momentum_pressure]
+    type = INSADMomentumPressure
+    variable = vel
+    p = p
+  []
+  [momentum_supg]
+    type = INSADMomentumSUPG
+    variable = vel
+    velocity = vel
+  []
+  [buoyancy]
+    type = INSADBoussinesqBodyForce
+    variable = vel
+    # gravity vector, cm s-2
+    gravity = &#x27;0 -981 0&#x27;
+    alpha_name = &#x27;t_alpha&#x27;
+    ref_temp = &#x27;temp_ref&#x27;
+  []
+  [gravity]
+    type = INSADGravityForce
+    variable = vel
+    # gravity vector, cm s-2
+    gravity = &#x27;0 -981 0&#x27;
+  []
+
+  [temp_time]
+    type = INSADHeatConductionTimeDerivative
+    variable = temp
+  []
+  [temp_source]
+    type = INSADEnergySource
+    variable = temp
+    source_variable = heat
+  []
+  [temp_advection]
+    type = INSADEnergyAdvection
+    variable = temp
+  []
+  [temp_conduction]
+    type = ADHeatConduction
+    variable = temp
+    thermal_conductivity = &#x27;k&#x27;
+  []
+  [temp_supg]
+    type = INSADEnergySUPG
+    variable = temp
+    velocity = vel
+  []
+  [temp_sink]
+    type = ConvectiveHeatExchanger
+    variable = temp
+    htc = ${gamma}
+    tref = 900
+  []
+[]
+
+[AuxKernels]
+  [vel_x]
+    type = VectorVariableComponentAux
+    variable = vel_x
+    vector_variable = vel
+    component = &#x27;x&#x27;
+  []
+  [vel_y]
+    type = VectorVariableComponentAux
+    variable = vel_y
+    vector_variable = vel
+    component = &#x27;y&#x27;
+  []
+  [heat_source]
+    type = FissionHeatSourceTransientAux
+    variable = heat
+  []
+[]
+
+[UserObjects]
+  [initial_th]
+    type = SolutionUserObject
+    mesh = &#x27;../phase-1/full-coupling_exodus.e&#x27;
+    system_variables = &#x27;vel_x vel_y p temp&#x27;
+    timestep = LATEST
+    execute_on = INITIAL
+  []
+  [initial_pre]
+    type = SolutionUserObject
+    mesh = &#x27;../phase-1/full-coupling_out_ntsApp0_exodus.e&#x27;
+    system_variables = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8 heat&#x27;
+    timestep = LATEST
+    execute_on = INITIAL
+  []
+[]
+
+[Controls]
+  [func_control]
+    type = RealFunctionControl
+    parameter = &#x27;Kernels/temp_sink/htc&#x27;
+    function = func_alpha
+    execute_on = &#x27;initial timestep_begin&#x27;
+  []
+[]
+
+[Functions]
+  [func_alpha]
+    type = ParsedFunction
+    value = &#x27;1 + 0.1 * sin(2*pi*t*.2)&#x27; # Perturbation frequency = 0.2Hz
+  []
+  [pre1f]
+    type = SolutionFunction
+    from_variable = pre1
+    solution = initial_pre
+    scale_factor = 7.61666e+17
+  []
+  [pre2f]
+    type = SolutionFunction
+    from_variable = pre2
+    solution = initial_pre
+    scale_factor = 7.61666e+17
+  []
+  [pre3f]
+    type = SolutionFunction
+    from_variable = pre3
+    solution = initial_pre
+    scale_factor = 7.61666e+17
+  []
+  [pre4f]
+    type = SolutionFunction
+    from_variable = pre4
+    solution = initial_pre
+    scale_factor = 7.61666e+17
+  []
+  [pre5f]
+    type = SolutionFunction
+    from_variable = pre5
+    solution = initial_pre
+    scale_factor = 7.61666e+17
+  []
+  [pre6f]
+    type = SolutionFunction
+    from_variable = pre6
+    solution = initial_pre
+    scale_factor = 7.61666e+17
+  []
+  [pre7f]
+    type = SolutionFunction
+    from_variable = pre7
+    solution = initial_pre
+    scale_factor = 7.61666e+17
+  []
+  [pre8f]
+    type = SolutionFunction
+    from_variable = pre8
+    solution = initial_pre
+    scale_factor = 7.61666e+17
+  []
+  [velxf]
+    type = SolutionFunction
+    from_variable = vel_x
+    solution = initial_th
+  []
+  [velyf]
+    type = SolutionFunction
+    from_variable = vel_y
+    solution = initial_th
+  []
+  [pf]
+    type = SolutionFunction
+    from_variable = p
+    solution = initial_th
+  []
+  [tempf]
+    type = SolutionFunction
+    from_variable = temp
+    solution = initial_th
+  []
+  [heatf]
+    type = SolutionFunction
+    from_variable = heat
+    solution = initial_pre
+  []
+[]
+
+[ICs]
+  [vel_ic]
+    type = VectorFunctionIC
+    variable = vel
+    function_x = velxf
+    function_y = velyf
+  []
+  [pre1_ic]
+    type = FunctionIC
+    variable = pre1
+    function = pre1f
+  []
+  [pre2_ic]
+    type = FunctionIC
+    variable = pre2
+    function = pre2f
+  []
+  [pre3_ic]
+    type = FunctionIC
+    variable = pre3
+    function = pre3f
+  []
+  [pre4_ic]
+    type = FunctionIC
+    variable = pre4
+    function = pre4f
+  []
+  [pre5_ic]
+    type = FunctionIC
+    variable = pre5
+    function = pre5f
+  []
+  [pre6_ic]
+    type = FunctionIC
+    variable = pre6
+    function = pre6f
+  []
+  [pre7_ic]
+    type = FunctionIC
+    variable = pre7
+    function = pre7f
+  []
+  [pre8_ic]
+    type = FunctionIC
+    variable = pre8
+    function = pre8f
+  []
+  [p_ic]
+    type = FunctionIC
+    variable = p
+    function = pf
+  []
+  [temp_ic]
+    type = FunctionIC
+    variable = temp
+    function = tempf
+  []
+  [heat_ic]
+    type = FunctionIC
+    variable = heat
+    function = heatf
+  []
+[]
+
+[BCs]
+  [no_slip]
+    type = VectorDirichletBC
+    variable = vel
+    boundary = &#x27;bottom left right&#x27;
+    values = &#x27;0 0 0&#x27;
+  []
+  [lid]
+    type = VectorDirichletBC
+    variable = vel
+    boundary = &#x27;top&#x27;
+    values = &#x27;50 0 0&#x27;
+  []
+  [pressure_pin]
+    type = DirichletBC
+    variable = p
+    boundary = &#x27;pinned_node&#x27;
+    value = 0
+  []
+[]
+
+[Materials]
+  [fuel]
+    type = GenericMoltresMaterial
+    property_tables_root = &#x27;../../../property_file_dir/cnrs-benchmark/benchmark_&#x27;
+    interp_type = &#x27;linear&#x27;
+    prop_names = &#x27;temp_ref&#x27;
+    prop_values = &#x27;900&#x27;
+  []
+  [ad_mat]
+    type = ADGenericConstantMaterial
+    prop_names = &#x27;k rho cp mu t_alpha&#x27;
+    prop_values = &#x27;${k} ${density} ${cp} ${viscosity} ${t_alpha}&#x27;
+  []
+  [ins_temp]
+    type = INSADStabilized3Eqn
+    alpha = ${alpha}
+    velocity = vel
+    pressure = p
+    temperature = temp
+  []
+[]
+
+[Executioner]
+  type = Transient
+  scheme = bdf2
+  num_steps = 5000
+
+  solve_type = &#x27;NEWTON&#x27;
+  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
+  petsc_options_iname = &#x27;-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type&#x27;
+  petsc_options_value = &#x27;asm     lu           200                1                NONZERO&#x27;
+  line_search = &#x27;none&#x27;
+
+  automatic_scaling = true
+  compute_scaling_once = false
+  resid_vs_jac_scaling_param = 0.1
+  scaling_group_variables = &#x27;group1 group2 group3 group4 group5 group6; pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8; vel; p; temp&#x27;
+
+  nl_abs_tol = 1e-6
+  nl_rel_tol = 1e-6
+  nl_max_its = 25
+  l_max_its = 400
+  l_tol = 1e-4
+
+  dt = 0.025
+[]
+
+[Preconditioning]
+  [SMP]
+    type = SMP
+    full = true
+  []
+[]
+
+[Postprocessors]
+  [memory]
+    type = MemoryUsage
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  []
+  [tot_fissions]
+    type = ElmIntegTotFissPostprocessor
+    execute_on = linear
+  []
+  [powernorm]
+    type = ElmIntegTotFissHeatPostprocessor
+    execute_on = linear
+  []
+  [group1norm]
+    type = ElementIntegralVariablePostprocessor
+    variable = group1
+    execute_on = linear
+  []
+  [group1max]
+    type = NodalExtremeValue
+    value_type = max
+    variable = group1
+    execute_on = timestep_end
+  []
+  [group2norm]
+    type = ElementIntegralVariablePostprocessor
+    variable = group2
+    execute_on = linear
+  []
+  [group2max]
+    type = NodalExtremeValue
+    value_type = max
+    variable = group2
+    execute_on = timestep_end
+  []
+[]
+
+[VectorPostprocessors]
+[]
+
+[Outputs]
+  perf_graph = true
+  [exodus]
+    type = Exodus
+    interval = 20
+  []
+  [csv]
+    type = CSV
+    append_restart = true
+  []
+  [checkpoint]
+    type = Checkpoint
+    num_files = 3
+    interval = 20
+  []
+[]
+
+[Debug]
+  show_var_residual_norms = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="0f190b17-bf16-408e-bba3-12ed86bed59b"><div class="modal-content"><h4>(problems/2021-cnrs-benchmark/phase-2/transient-perturb-2.i)</h4><pre class="moose-pre"><code class="language-text">density = .002 # kg cm-3
 cp = 3075 # J kg-1 K-1, 6.15 / 2.0e-3
 k = .005 # W cm-1 K-1
 gamma = 1 # W cm-3 K-1, Volumetric heat transfer coefficient
@@ -492,7 +2802,7 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
 [Debug]
   show_var_residual_norms = true
 []
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="758fef14-241d-47e2-9692-f92f0db0d506"><div class="modal-content"><h4>(problems/publication_level_cases/manuBench/manubox.i)</h4><pre class="moose-pre"><code class="language-text">library_path=/home/gavin/projects/moose/modules/navier_stokes/lib/
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="02757c96-24c2-4fab-8bf2-8228d25c0b78"><div class="modal-content"><h4>(problems/publication_level_cases/manuBench/manuboxNoStokes.i)</h4><pre class="moose-pre"><code class="language-text">library_path=/home/gavin/projects/moose/modules/navier_stokes/lib/
 
 [GlobalParams]
   # neutronics
@@ -504,19 +2814,6 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
   sss2_input = false
   pre_concs = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8&#x27;
   account_delayed = true
-
-  # fluids
-  gravity = &#x27;0 -9.81 0&#x27;
-  pspg = true
-  convective_term = true
-  integrate_p_by_parts = true
-  laplace = true
-  u = vel_x
-  v = vel_y
-  p = p
-  alpha = 1e-6 # stabilisation parameter
-  order = FIRST
-  family = LAGRANGE
 []
 
 [Mesh]
@@ -531,33 +2828,7 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
   ny = 20
 []
 
-[MeshModifiers]
-  [./corner_node]
-    type = AddExtraNodeset
-    new_boundary = &#x27;pinned_node&#x27;
-    nodes = &#x27;0&#x27;
-  [../]
-[]
-
 [Variables]
-
-  # velocities
-  [./vel_x]
-    family = LAGRANGE
-    order = FIRST
-  [../]
-
-  [./vel_y]
-    family = LAGRANGE
-    order = FIRST
-  [../]
-
-  # pressure
-  [./p]
-    family = LAGRANGE
-    order = FIRST
-  [../]
-
   # temperature
   [./temp]
     family = LAGRANGE
@@ -573,6 +2844,7 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
   vacuum_boundaries = &#x27;top bottom left right&#x27;
   create_temperature_var = false
   eigen = true
+  scaling = 1e-10
 []
 
 [Precursors]
@@ -584,74 +2856,29 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
     family = MONOMIAL
     order = CONSTANT
     outlet_boundaries = &#x27;&#x27;
-    uvel = vel_x
-    vvel = vel_y
     transient = false
+    u_func = 0.0
+    v_func = 0.0
+    w_func = 0.0
   [../]
 []
 
 [Kernels]
-  # mass
-  [./mass]
-    type = INSMass
-    variable = p
-  [../]
+    [./heating]
+        type = TransientFissionHeatSource
+        variable = temp
+        group_fluxes = &#x27;group1 group2 group3 group4 group5 group6&#x27;
+    [../]
 
-  # x-momentum, space
-  [./x_momentum_space]
-    type = INSMomentumLaplaceForm
-    variable = vel_x
-    component = 0
-  [../]
-
-  # y-momentum, space
-  [./y_momentum_space]
-    type = INSMomentumLaplaceForm
-    variable = vel_y
-    component = 1
-  [../]
-
-  [./tempAdvectionDiffusion]
-    type = INSTemperature
-    variable = temp
-    u = vel_x
-    v = vel_y
-  [../]
-  [./buoyancy_y]
-    type = INSBoussinesqBodyForce
-    variable = vel_y
-    dT = deltaT
-    component = 1
-    temperature = temp
-  [../]
-
-  [./heatRemoval]
-    type = ConvectiveHeatExchanger
-    variable = temp
-    tref = 900.0
-    htc  = 1.0
-  [../]
+    [./heatRemoval]
+      type = ConvectiveHeatExchanger
+      variable = temp
+      tref = 900.0
+      htc  = 1.0
+    [../]
 []
 
 [BCs]
-  [./ux_dirichlet]
-    type = DirichletBC
-    boundary = &#x27;left right bottom top&#x27;
-    variable = vel_x
-    value = 0
-  [../]
-  [./uy_dirichlet]
-    type = DirichletBC
-    boundary = &#x27;left right bottom top&#x27;
-    variable = vel_y
-    value = 0
-  [../]
-  [./p_pin]
-    type=DirichletBC
-    boundary = &#x27;pinned_node&#x27;
-    variable = p
-    value = 0
-  [../]
 []
 
 [Materials]
@@ -700,12 +2927,11 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
   petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason&#x27;
   petsc_options_iname = &#x27;-pc_type -pc_factor_shift_type&#x27;
   petsc_options_value = &#x27;lu NONZERO&#x27;
-  line_search = &#x27;none&#x27;
   nl_rel_tol = 1e-12
   nl_abs_tol = 1e-13
   nl_max_its = 6
   l_tol = 1e-6
-  l_max_its = 500
+  l_max_its = 100
 []
 
 [Outputs]
@@ -755,7 +2981,501 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
 [Debug]
   show_var_residual_norms = true
 []
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="caaba07f-8943-4402-8609-df04bad02a91"><div class="modal-content"><h4>(problems/2021-cnrs-benchmark/phase-2/transient-perturb-1.i)</h4><pre class="moose-pre"><code class="language-text">density = .002 # kg cm-3
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="35e825f2-3e7f-4eed-97ee-06146dff79bb"><div class="modal-content"><h4>(problems/2021-cnrs-benchmark/phase-2/transient-perturb-6.i)</h4><pre class="moose-pre"><code class="language-text">density = .002 # kg cm-3
+cp = 3075 # J kg-1 K-1, 6.15 / 2.0e-3
+k = .005 # W cm-1 K-1
+gamma = 1 # W cm-3 K-1, Volumetric heat transfer coefficient
+viscosity = .5 # dynamic viscosity
+alpha = 1 # SUPG stabilization parameter
+t_alpha = 2e-4 # K-1, Thermal expansion coefficient
+
+[GlobalParams]
+  num_groups = 6
+  num_precursor_groups = 8
+  use_exp_form = false
+  group_fluxes = &#x27;group1 group2 group3 group4 group5 group6&#x27;
+  pre_concs = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8&#x27;
+  temperature = temp
+  sss2_input = true
+  account_delayed = true
+  integrate_p_by_parts = true
+[]
+
+[Mesh]
+  [file_mesh]
+    type = FileMeshGenerator
+    file = &#x27;../phase-1/full-coupling_out_ntsApp0_exodus.e&#x27;
+    use_for_exodus_restart = true
+  []
+  [corner_node]
+    type = ExtraNodesetGenerator
+    input = file_mesh
+    new_boundary = &#x27;pinned_node&#x27;
+    coord = &#x27;200 200&#x27;
+  []
+[]
+
+[Problem]
+  type = FEProblem
+[]
+
+[Variables]
+  [temp]
+    family = LAGRANGE
+    order = FIRST
+  []
+  [vel]
+    family = LAGRANGE_VEC
+    order = FIRST
+  []
+  [p]
+    family = LAGRANGE
+    order = FIRST
+  []
+[]
+
+[Nt]
+  var_name_base = group
+  vacuum_boundaries = &#x27;bottom left right top&#x27;
+  create_temperature_var = false
+  init_nts_from_file = true
+  eigenvalue_scaling = 0.9927821802
+  ## Use the eigenvalue scaling factor below if running on a 40x40 mesh
+  #  eigenvalue_scaling = 0.9926551482
+[]
+
+[Precursors]
+  [pres]
+    var_name_base = pre
+    outlet_boundaries = &#x27;&#x27;
+    constant_velocity_values = false
+    uvel = vel_x
+    vvel = vel_y
+    nt_exp_form = false
+    family = MONOMIAL
+    order = CONSTANT
+    loop_precursors = false
+    transient = true
+  []
+[]
+
+[AuxVariables]
+  [vel_x]
+    family = LAGRANGE
+    order = FIRST
+  []
+  [vel_y]
+    family = LAGRANGE
+    order = FIRST
+  []
+  [heat]
+    family = MONOMIAL
+    order = FIRST
+  []
+[]
+
+[Kernels]
+  [mass]
+    type = INSADMass
+    variable = p
+  []
+  [mass_pspg]
+    type = INSADMassPSPG
+    variable = p
+  []
+  [momentum_time]
+    type = INSADMomentumTimeDerivative
+    variable = vel
+  []
+  [momentum_advection]
+    type = INSADMomentumAdvection
+    variable = vel
+  []
+  [momentum_viscous]
+    type = INSADMomentumViscous
+    variable = vel
+  []
+  [momentum_pressure]
+    type = INSADMomentumPressure
+    variable = vel
+    p = p
+  []
+  [momentum_supg]
+    type = INSADMomentumSUPG
+    variable = vel
+    velocity = vel
+  []
+  [buoyancy]
+    type = INSADBoussinesqBodyForce
+    variable = vel
+    # gravity vector, cm s-2
+    gravity = &#x27;0 -981 0&#x27;
+    alpha_name = &#x27;t_alpha&#x27;
+    ref_temp = &#x27;temp_ref&#x27;
+  []
+  [gravity]
+    type = INSADGravityForce
+    variable = vel
+    # gravity vector, cm s-2
+    gravity = &#x27;0 -981 0&#x27;
+  []
+
+  [temp_time]
+    type = INSADHeatConductionTimeDerivative
+    variable = temp
+  []
+  [temp_source]
+    type = INSADEnergySource
+    variable = temp
+    source_variable = heat
+  []
+  [temp_advection]
+    type = INSADEnergyAdvection
+    variable = temp
+  []
+  [temp_conduction]
+    type = ADHeatConduction
+    variable = temp
+    thermal_conductivity = &#x27;k&#x27;
+  []
+  [temp_supg]
+    type = INSADEnergySUPG
+    variable = temp
+    velocity = vel
+  []
+  [temp_sink]
+    type = ConvectiveHeatExchanger
+    variable = temp
+    htc = ${gamma}
+    tref = 900
+  []
+[]
+
+[AuxKernels]
+  [vel_x]
+    type = VectorVariableComponentAux
+    variable = vel_x
+    vector_variable = vel
+    component = &#x27;x&#x27;
+  []
+  [vel_y]
+    type = VectorVariableComponentAux
+    variable = vel_y
+    vector_variable = vel
+    component = &#x27;y&#x27;
+  []
+  [heat_source]
+    type = FissionHeatSourceTransientAux
+    variable = heat
+  []
+[]
+
+[UserObjects]
+  [initial_th]
+    type = SolutionUserObject
+    mesh = &#x27;../phase-1/full-coupling_exodus.e&#x27;
+    system_variables = &#x27;vel_x vel_y p temp&#x27;
+    timestep = LATEST
+    execute_on = INITIAL
+  []
+  [initial_pre]
+    type = SolutionUserObject
+    mesh = &#x27;../phase-1/full-coupling_out_ntsApp0_exodus.e&#x27;
+    system_variables = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8 heat&#x27;
+    timestep = LATEST
+    execute_on = INITIAL
+  []
+[]
+
+[Controls]
+  [func_control]
+    type = RealFunctionControl
+    parameter = &#x27;Kernels/temp_sink/htc&#x27;
+    function = func_alpha
+    execute_on = &#x27;initial timestep_begin&#x27;
+  []
+[]
+
+[Functions]
+  [func_alpha]
+    type = ParsedFunction
+    value = &#x27;1 + 0.1 * sin(2*pi*t*.4)&#x27; # Perturbation frequency = 0.4Hz
+  []
+  [pre1f]
+    type = SolutionFunction
+    from_variable = pre1
+    solution = initial_pre
+    scale_factor = 7.61666e+17
+  []
+  [pre2f]
+    type = SolutionFunction
+    from_variable = pre2
+    solution = initial_pre
+    scale_factor = 7.61666e+17
+  []
+  [pre3f]
+    type = SolutionFunction
+    from_variable = pre3
+    solution = initial_pre
+    scale_factor = 7.61666e+17
+  []
+  [pre4f]
+    type = SolutionFunction
+    from_variable = pre4
+    solution = initial_pre
+    scale_factor = 7.61666e+17
+  []
+  [pre5f]
+    type = SolutionFunction
+    from_variable = pre5
+    solution = initial_pre
+    scale_factor = 7.61666e+17
+  []
+  [pre6f]
+    type = SolutionFunction
+    from_variable = pre6
+    solution = initial_pre
+    scale_factor = 7.61666e+17
+  []
+  [pre7f]
+    type = SolutionFunction
+    from_variable = pre7
+    solution = initial_pre
+    scale_factor = 7.61666e+17
+  []
+  [pre8f]
+    type = SolutionFunction
+    from_variable = pre8
+    solution = initial_pre
+    scale_factor = 7.61666e+17
+  []
+  [velxf]
+    type = SolutionFunction
+    from_variable = vel_x
+    solution = initial_th
+  []
+  [velyf]
+    type = SolutionFunction
+    from_variable = vel_y
+    solution = initial_th
+  []
+  [pf]
+    type = SolutionFunction
+    from_variable = p
+    solution = initial_th
+  []
+  [tempf]
+    type = SolutionFunction
+    from_variable = temp
+    solution = initial_th
+  []
+  [heatf]
+    type = SolutionFunction
+    from_variable = heat
+    solution = initial_pre
+  []
+[]
+
+[ICs]
+  [vel_ic]
+    type = VectorFunctionIC
+    variable = vel
+    function_x = velxf
+    function_y = velyf
+  []
+  [pre1_ic]
+    type = FunctionIC
+    variable = pre1
+    function = pre1f
+  []
+  [pre2_ic]
+    type = FunctionIC
+    variable = pre2
+    function = pre2f
+  []
+  [pre3_ic]
+    type = FunctionIC
+    variable = pre3
+    function = pre3f
+  []
+  [pre4_ic]
+    type = FunctionIC
+    variable = pre4
+    function = pre4f
+  []
+  [pre5_ic]
+    type = FunctionIC
+    variable = pre5
+    function = pre5f
+  []
+  [pre6_ic]
+    type = FunctionIC
+    variable = pre6
+    function = pre6f
+  []
+  [pre7_ic]
+    type = FunctionIC
+    variable = pre7
+    function = pre7f
+  []
+  [pre8_ic]
+    type = FunctionIC
+    variable = pre8
+    function = pre8f
+  []
+  [p_ic]
+    type = FunctionIC
+    variable = p
+    function = pf
+  []
+  [temp_ic]
+    type = FunctionIC
+    variable = temp
+    function = tempf
+  []
+  [heat_ic]
+    type = FunctionIC
+    variable = heat
+    function = heatf
+  []
+[]
+
+[BCs]
+  [no_slip]
+    type = VectorDirichletBC
+    variable = vel
+    boundary = &#x27;bottom left right&#x27;
+    values = &#x27;0 0 0&#x27;
+  []
+  [lid]
+    type = VectorDirichletBC
+    variable = vel
+    boundary = &#x27;top&#x27;
+    values = &#x27;50 0 0&#x27;
+  []
+  [pressure_pin]
+    type = DirichletBC
+    variable = p
+    boundary = &#x27;pinned_node&#x27;
+    value = 0
+  []
+[]
+
+[Materials]
+  [fuel]
+    type = GenericMoltresMaterial
+    property_tables_root = &#x27;../../../property_file_dir/cnrs-benchmark/benchmark_&#x27;
+    interp_type = &#x27;linear&#x27;
+    prop_names = &#x27;temp_ref&#x27;
+    prop_values = &#x27;900&#x27;
+  []
+  [ad_mat]
+    type = ADGenericConstantMaterial
+    prop_names = &#x27;k rho cp mu t_alpha&#x27;
+    prop_values = &#x27;${k} ${density} ${cp} ${viscosity} ${t_alpha}&#x27;
+  []
+  [ins_temp]
+    type = INSADStabilized3Eqn
+    alpha = ${alpha}
+    velocity = vel
+    pressure = p
+    temperature = temp
+  []
+[]
+
+[Executioner]
+  type = Transient
+  scheme = bdf2
+  num_steps = 5000
+
+  solve_type = &#x27;NEWTON&#x27;
+  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
+  petsc_options_iname = &#x27;-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type&#x27;
+  petsc_options_value = &#x27;asm     lu           200                1                NONZERO&#x27;
+  line_search = &#x27;none&#x27;
+
+  automatic_scaling = true
+  compute_scaling_once = false
+  resid_vs_jac_scaling_param = 0.1
+  scaling_group_variables = &#x27;group1 group2 group3 group4 group5 group6; pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8; vel; p; temp&#x27;
+
+  nl_abs_tol = 1e-6
+  nl_rel_tol = 1e-6
+  nl_max_its = 25
+  l_max_its = 400
+  l_tol = 1e-4
+
+  dt = 0.0125
+[]
+
+[Preconditioning]
+  [SMP]
+    type = SMP
+    full = true
+  []
+[]
+
+[Postprocessors]
+  [memory]
+    type = MemoryUsage
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  []
+  [tot_fissions]
+    type = ElmIntegTotFissPostprocessor
+    execute_on = linear
+  []
+  [powernorm]
+    type = ElmIntegTotFissHeatPostprocessor
+    execute_on = linear
+  []
+  [group1norm]
+    type = ElementIntegralVariablePostprocessor
+    variable = group1
+    execute_on = linear
+  []
+  [group1max]
+    type = NodalExtremeValue
+    value_type = max
+    variable = group1
+    execute_on = timestep_end
+  []
+  [group2norm]
+    type = ElementIntegralVariablePostprocessor
+    variable = group2
+    execute_on = linear
+  []
+  [group2max]
+    type = NodalExtremeValue
+    value_type = max
+    variable = group2
+    execute_on = timestep_end
+  []
+[]
+
+[VectorPostprocessors]
+[]
+
+[Outputs]
+  perf_graph = true
+  [exodus]
+    type = Exodus
+    interval = 20
+  []
+  [csv]
+    type = CSV
+    append_restart = true
+  []
+  [checkpoint]
+    type = Checkpoint
+    num_files = 3
+    interval = 20
+  []
+[]
+
+[Debug]
+  show_var_residual_norms = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="a9997c3c-355a-40d1-a48c-f5b21a94b6ed"><div class="modal-content"><h4>(problems/2021-cnrs-benchmark/phase-2/transient-perturb-1.i)</h4><pre class="moose-pre"><code class="language-text">density = .002 # kg cm-3
 cp = 3075 # J kg-1 K-1, 6.15 / 2.0e-3
 k = .005 # W cm-1 K-1
 gamma = 1 # W cm-3 K-1, Volumetric heat transfer coefficient
@@ -1250,501 +3970,7 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
 [Debug]
   show_var_residual_norms = true
 []
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="e86871fe-ada3-4d14-a33a-a29c96f5c9ff"><div class="modal-content"><h4>(problems/2021-cnrs-benchmark/phase-2/transient-perturb-6.i)</h4><pre class="moose-pre"><code class="language-text">density = .002 # kg cm-3
-cp = 3075 # J kg-1 K-1, 6.15 / 2.0e-3
-k = .005 # W cm-1 K-1
-gamma = 1 # W cm-3 K-1, Volumetric heat transfer coefficient
-viscosity = .5 # dynamic viscosity
-alpha = 1 # SUPG stabilization parameter
-t_alpha = 2e-4 # K-1, Thermal expansion coefficient
-
-[GlobalParams]
-  num_groups = 6
-  num_precursor_groups = 8
-  use_exp_form = false
-  group_fluxes = &#x27;group1 group2 group3 group4 group5 group6&#x27;
-  pre_concs = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8&#x27;
-  temperature = temp
-  sss2_input = true
-  account_delayed = true
-  integrate_p_by_parts = true
-[]
-
-[Mesh]
-  [file_mesh]
-    type = FileMeshGenerator
-    file = &#x27;../phase-1/full-coupling_out_ntsApp0_exodus.e&#x27;
-    use_for_exodus_restart = true
-  []
-  [corner_node]
-    type = ExtraNodesetGenerator
-    input = file_mesh
-    new_boundary = &#x27;pinned_node&#x27;
-    coord = &#x27;200 200&#x27;
-  []
-[]
-
-[Problem]
-  type = FEProblem
-[]
-
-[Variables]
-  [temp]
-    family = LAGRANGE
-    order = FIRST
-  []
-  [vel]
-    family = LAGRANGE_VEC
-    order = FIRST
-  []
-  [p]
-    family = LAGRANGE
-    order = FIRST
-  []
-[]
-
-[Nt]
-  var_name_base = group
-  vacuum_boundaries = &#x27;bottom left right top&#x27;
-  create_temperature_var = false
-  init_nts_from_file = true
-  eigenvalue_scaling = 0.9927821802
-  ## Use the eigenvalue scaling factor below if running on a 40x40 mesh
-  #  eigenvalue_scaling = 0.9926551482
-[]
-
-[Precursors]
-  [pres]
-    var_name_base = pre
-    outlet_boundaries = &#x27;&#x27;
-    constant_velocity_values = false
-    uvel = vel_x
-    vvel = vel_y
-    nt_exp_form = false
-    family = MONOMIAL
-    order = CONSTANT
-    loop_precursors = false
-    transient = true
-  []
-[]
-
-[AuxVariables]
-  [vel_x]
-    family = LAGRANGE
-    order = FIRST
-  []
-  [vel_y]
-    family = LAGRANGE
-    order = FIRST
-  []
-  [heat]
-    family = MONOMIAL
-    order = FIRST
-  []
-[]
-
-[Kernels]
-  [mass]
-    type = INSADMass
-    variable = p
-  []
-  [mass_pspg]
-    type = INSADMassPSPG
-    variable = p
-  []
-  [momentum_time]
-    type = INSADMomentumTimeDerivative
-    variable = vel
-  []
-  [momentum_advection]
-    type = INSADMomentumAdvection
-    variable = vel
-  []
-  [momentum_viscous]
-    type = INSADMomentumViscous
-    variable = vel
-  []
-  [momentum_pressure]
-    type = INSADMomentumPressure
-    variable = vel
-    p = p
-  []
-  [momentum_supg]
-    type = INSADMomentumSUPG
-    variable = vel
-    velocity = vel
-  []
-  [buoyancy]
-    type = INSADBoussinesqBodyForce
-    variable = vel
-    # gravity vector, cm s-2
-    gravity = &#x27;0 -981 0&#x27;
-    alpha_name = &#x27;t_alpha&#x27;
-    ref_temp = &#x27;temp_ref&#x27;
-  []
-  [gravity]
-    type = INSADGravityForce
-    variable = vel
-    # gravity vector, cm s-2
-    gravity = &#x27;0 -981 0&#x27;
-  []
-
-  [temp_time]
-    type = INSADHeatConductionTimeDerivative
-    variable = temp
-  []
-  [temp_source]
-    type = INSADEnergySource
-    variable = temp
-    source_variable = heat
-  []
-  [temp_advection]
-    type = INSADEnergyAdvection
-    variable = temp
-  []
-  [temp_conduction]
-    type = ADHeatConduction
-    variable = temp
-    thermal_conductivity = &#x27;k&#x27;
-  []
-  [temp_supg]
-    type = INSADEnergySUPG
-    variable = temp
-    velocity = vel
-  []
-  [temp_sink]
-    type = ConvectiveHeatExchanger
-    variable = temp
-    htc = ${gamma}
-    tref = 900
-  []
-[]
-
-[AuxKernels]
-  [vel_x]
-    type = VectorVariableComponentAux
-    variable = vel_x
-    vector_variable = vel
-    component = &#x27;x&#x27;
-  []
-  [vel_y]
-    type = VectorVariableComponentAux
-    variable = vel_y
-    vector_variable = vel
-    component = &#x27;y&#x27;
-  []
-  [heat_source]
-    type = FissionHeatSourceTransientAux
-    variable = heat
-  []
-[]
-
-[UserObjects]
-  [initial_th]
-    type = SolutionUserObject
-    mesh = &#x27;../phase-1/full-coupling_exodus.e&#x27;
-    system_variables = &#x27;vel_x vel_y p temp&#x27;
-    timestep = LATEST
-    execute_on = INITIAL
-  []
-  [initial_pre]
-    type = SolutionUserObject
-    mesh = &#x27;../phase-1/full-coupling_out_ntsApp0_exodus.e&#x27;
-    system_variables = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8 heat&#x27;
-    timestep = LATEST
-    execute_on = INITIAL
-  []
-[]
-
-[Controls]
-  [func_control]
-    type = RealFunctionControl
-    parameter = &#x27;Kernels/temp_sink/htc&#x27;
-    function = func_alpha
-    execute_on = &#x27;initial timestep_begin&#x27;
-  []
-[]
-
-[Functions]
-  [func_alpha]
-    type = ParsedFunction
-    value = &#x27;1 + 0.1 * sin(2*pi*t*.4)&#x27; # Perturbation frequency = 0.4Hz
-  []
-  [pre1f]
-    type = SolutionFunction
-    from_variable = pre1
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre2f]
-    type = SolutionFunction
-    from_variable = pre2
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre3f]
-    type = SolutionFunction
-    from_variable = pre3
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre4f]
-    type = SolutionFunction
-    from_variable = pre4
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre5f]
-    type = SolutionFunction
-    from_variable = pre5
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre6f]
-    type = SolutionFunction
-    from_variable = pre6
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre7f]
-    type = SolutionFunction
-    from_variable = pre7
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre8f]
-    type = SolutionFunction
-    from_variable = pre8
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [velxf]
-    type = SolutionFunction
-    from_variable = vel_x
-    solution = initial_th
-  []
-  [velyf]
-    type = SolutionFunction
-    from_variable = vel_y
-    solution = initial_th
-  []
-  [pf]
-    type = SolutionFunction
-    from_variable = p
-    solution = initial_th
-  []
-  [tempf]
-    type = SolutionFunction
-    from_variable = temp
-    solution = initial_th
-  []
-  [heatf]
-    type = SolutionFunction
-    from_variable = heat
-    solution = initial_pre
-  []
-[]
-
-[ICs]
-  [vel_ic]
-    type = VectorFunctionIC
-    variable = vel
-    function_x = velxf
-    function_y = velyf
-  []
-  [pre1_ic]
-    type = FunctionIC
-    variable = pre1
-    function = pre1f
-  []
-  [pre2_ic]
-    type = FunctionIC
-    variable = pre2
-    function = pre2f
-  []
-  [pre3_ic]
-    type = FunctionIC
-    variable = pre3
-    function = pre3f
-  []
-  [pre4_ic]
-    type = FunctionIC
-    variable = pre4
-    function = pre4f
-  []
-  [pre5_ic]
-    type = FunctionIC
-    variable = pre5
-    function = pre5f
-  []
-  [pre6_ic]
-    type = FunctionIC
-    variable = pre6
-    function = pre6f
-  []
-  [pre7_ic]
-    type = FunctionIC
-    variable = pre7
-    function = pre7f
-  []
-  [pre8_ic]
-    type = FunctionIC
-    variable = pre8
-    function = pre8f
-  []
-  [p_ic]
-    type = FunctionIC
-    variable = p
-    function = pf
-  []
-  [temp_ic]
-    type = FunctionIC
-    variable = temp
-    function = tempf
-  []
-  [heat_ic]
-    type = FunctionIC
-    variable = heat
-    function = heatf
-  []
-[]
-
-[BCs]
-  [no_slip]
-    type = VectorDirichletBC
-    variable = vel
-    boundary = &#x27;bottom left right&#x27;
-    values = &#x27;0 0 0&#x27;
-  []
-  [lid]
-    type = VectorDirichletBC
-    variable = vel
-    boundary = &#x27;top&#x27;
-    values = &#x27;50 0 0&#x27;
-  []
-  [pressure_pin]
-    type = DirichletBC
-    variable = p
-    boundary = &#x27;pinned_node&#x27;
-    value = 0
-  []
-[]
-
-[Materials]
-  [fuel]
-    type = GenericMoltresMaterial
-    property_tables_root = &#x27;../../../property_file_dir/cnrs-benchmark/benchmark_&#x27;
-    interp_type = &#x27;linear&#x27;
-    prop_names = &#x27;temp_ref&#x27;
-    prop_values = &#x27;900&#x27;
-  []
-  [ad_mat]
-    type = ADGenericConstantMaterial
-    prop_names = &#x27;k rho cp mu t_alpha&#x27;
-    prop_values = &#x27;${k} ${density} ${cp} ${viscosity} ${t_alpha}&#x27;
-  []
-  [ins_temp]
-    type = INSADStabilized3Eqn
-    alpha = ${alpha}
-    velocity = vel
-    pressure = p
-    temperature = temp
-  []
-[]
-
-[Executioner]
-  type = Transient
-  scheme = bdf2
-  num_steps = 5000
-
-  solve_type = &#x27;NEWTON&#x27;
-  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
-  petsc_options_iname = &#x27;-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type&#x27;
-  petsc_options_value = &#x27;asm     lu           200                1                NONZERO&#x27;
-  line_search = &#x27;none&#x27;
-
-  automatic_scaling = true
-  compute_scaling_once = false
-  resid_vs_jac_scaling_param = 0.1
-  scaling_group_variables = &#x27;group1 group2 group3 group4 group5 group6; pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8; vel; p; temp&#x27;
-
-  nl_abs_tol = 1e-6
-  nl_rel_tol = 1e-6
-  nl_max_its = 25
-  l_max_its = 400
-  l_tol = 1e-4
-
-  dt = 0.0125
-[]
-
-[Preconditioning]
-  [SMP]
-    type = SMP
-    full = true
-  []
-[]
-
-[Postprocessors]
-  [memory]
-    type = MemoryUsage
-    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
-  []
-  [tot_fissions]
-    type = ElmIntegTotFissPostprocessor
-    execute_on = linear
-  []
-  [powernorm]
-    type = ElmIntegTotFissHeatPostprocessor
-    execute_on = linear
-  []
-  [group1norm]
-    type = ElementIntegralVariablePostprocessor
-    variable = group1
-    execute_on = linear
-  []
-  [group1max]
-    type = NodalExtremeValue
-    value_type = max
-    variable = group1
-    execute_on = timestep_end
-  []
-  [group2norm]
-    type = ElementIntegralVariablePostprocessor
-    variable = group2
-    execute_on = linear
-  []
-  [group2max]
-    type = NodalExtremeValue
-    value_type = max
-    variable = group2
-    execute_on = timestep_end
-  []
-[]
-
-[VectorPostprocessors]
-[]
-
-[Outputs]
-  perf_graph = true
-  [exodus]
-    type = Exodus
-    interval = 20
-  []
-  [csv]
-    type = CSV
-    append_restart = true
-  []
-  [checkpoint]
-    type = Checkpoint
-    num_files = 3
-    interval = 20
-  []
-[]
-
-[Debug]
-  show_var_residual_norms = true
-[]
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="c2f34196-d3c7-4c37-9427-e7b3afa51ccd"><div class="modal-content"><h4>(problems/2021-cnrs-benchmark/phase-2/transient-perturb-7.i)</h4><pre class="moose-pre"><code class="language-text">density = .002 # kg cm-3
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="b6705e17-26e6-4fa5-bb45-ad7cc524b024"><div class="modal-content"><h4>(problems/2021-cnrs-benchmark/phase-2/transient-perturb-7.i)</h4><pre class="moose-pre"><code class="language-text">density = .002 # kg cm-3
 cp = 3075 # J kg-1 K-1, 6.15 / 2.0e-3
 k = .005 # W cm-1 K-1
 gamma = 1 # W cm-3 K-1, Volumetric heat transfer coefficient
@@ -2238,1174 +4464,7 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
 [Debug]
   show_var_residual_norms = true
 []
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="35b864f7-37c6-43b7-b6c6-a7d78af379ea"><div class="modal-content"><h4>(problems/publication_level_cases/manuBench/manuboxNoStokes.i)</h4><pre class="moose-pre"><code class="language-text">library_path=/home/gavin/projects/moose/modules/navier_stokes/lib/
-
-[GlobalParams]
-  # neutronics
-  num_groups=6
-  num_precursor_groups=8
-  use_exp_form = false
-  group_fluxes = &#x27;group1 group2 group3 group4 group5 group6&#x27;
-  temperature = temp
-  sss2_input = false
-  pre_concs = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8&#x27;
-  account_delayed = true
-[]
-
-[Mesh]
-  type = GeneratedMesh
-  dim = 2
-  xmin = 0
-  xmax = 1.0
-  ymin = 0
-  ymax = 1.0
-  elem_type = QUAD9
-  nx = 20
-  ny = 20
-[]
-
-[Variables]
-  # temperature
-  [./temp]
-    family = LAGRANGE
-    order = FIRST
-    initial_condition = 900
-    scaling = 1e-4
-  [../]
-[]
-
-# nt -&gt; neutron
-[Nt]
-  var_name_base = group
-  vacuum_boundaries = &#x27;top bottom left right&#x27;
-  create_temperature_var = false
-  eigen = true
-  scaling = 1e-10
-[]
-
-[Precursors]
-  [./preblock]
-    var_name_base = pre
-    # block = &#x27;fuel&#x27;
-    constant_velocity_values = false
-    nt_exp_form = false
-    family = MONOMIAL
-    order = CONSTANT
-    outlet_boundaries = &#x27;&#x27;
-    transient = false
-    u_func = 0.0
-    v_func = 0.0
-    w_func = 0.0
-  [../]
-[]
-
-[Kernels]
-    [./heating]
-        type = TransientFissionHeatSource
-        variable = temp
-        group_fluxes = &#x27;group1 group2 group3 group4 group5 group6&#x27;
-    [../]
-
-    [./heatRemoval]
-      type = ConvectiveHeatExchanger
-      variable = temp
-      tref = 900.0
-      htc  = 1.0
-    [../]
-[]
-
-[BCs]
-[]
-
-[Materials]
-  # alpha = coefficient of thermal expansion where rho  = rho0 -alpha * rho0 * delta T
-  # Dr. Aufiero uses nu rather than mu, (kinematic rather than absolute viscosity)
-  # likewise, \rho c_p is given rather than separate \rho, c_p
-  # accordingly, we let \rho = 1 to obtain equivalent results
-  # also, Manu gives a length expansion coefficient. Boussinesq approximations
-  # typically use an expansion coefficient with units 1/K, but for mass instead.
-  # The relation between the two is alpha = -3 beta, if linearized.
-  # Also, had to use Pr = mu * cp / k
-  [./const]
-    type = GenericConstantMaterial
-    prop_names = &#x27;mu     rho alpha   k         cp&#x27;
-    prop_values = &#x27;0.025 1.0 6.0e-4  0.5  6.15e6&#x27;
-  [../]
-
-  [./fuelneutronicproperties]
-    type = GenericMoltresMaterial
-    property_tables_root = &#x27;./groupconstants/&#x27;
-    interp_type = &#x27;none&#x27; # &#x27;spline&#x27;
-  [../]
-[]
-
-[Preconditioning]
-  [./SMP]
-    type = SMP
-    full = true
-    solve_type = &#x27;PJFNK&#x27;
-  [../]
-[]
-
-[Executioner]
-  type = InversePowerMethod
-  max_power_iterations = 50
-
-  # fission power normalization:
-  normalization = powernorm
-  normal_factor = 1e9 # watts
-
-  # power iteration options
-  xdiff = &#x27;group1diff&#x27;
-  bx_norm = &#x27;bnorm&#x27;
-  pfactor = 1e-2
-
-  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason&#x27;
-  petsc_options_iname = &#x27;-pc_type -pc_factor_shift_type&#x27;
-  petsc_options_value = &#x27;lu NONZERO&#x27;
-  nl_rel_tol = 1e-12
-  nl_abs_tol = 1e-13
-  nl_max_its = 6
-  l_tol = 1e-6
-  l_max_its = 100
-[]
-
-[Outputs]
-  [./exodus]
-    type = Exodus
-  [../]
-  [./csv]
-    type = CSV
-  [../]
-[]
-
-[Postprocessors]
-  [./bnorm]
-    type = ElmIntegTotFissNtsPostprocessor
-    execute_on = linear
-  [../]
-  [./group1diff]
-    type = ElementL2Diff
-    variable = group1
-    execute_on = &#x27;linear timestep_end&#x27;
-    use_displaced_mesh = false
-  [../]
-  [./powernorm]
-    type = ElmIntegTotFissHeatPostprocessor
-    execute_on = linear
-  [../]
-[]
-
-[AuxVariables]
-  [./deltaT]
-    type = ConstantDifferenceAux
-    variable = deltaT
-    comparevar = temp
-    constant = 900
-  [../]
-[]
-
-[AuxKernels]
-  [./deltaTCalc]
-    type =  ConstantDifferenceAux
-    variable = deltaT
-    compareVar = temp
-    constant = 900
-  [../]
-[]
-
-[Debug]
-  show_var_residual_norms = true
-[]
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="0eedd55e-8da3-4bac-ba9b-5c2a11beaa43"><div class="modal-content"><h4>(problems/2021-cnrs-benchmark/phase-2/transient-perturb-4.i)</h4><pre class="moose-pre"><code class="language-text">density = .002 # kg cm-3
-cp = 3075 # J kg-1 K-1, 6.15 / 2.0e-3
-k = .005 # W cm-1 K-1
-gamma = 1 # W cm-3 K-1, Volumetric heat transfer coefficient
-viscosity = .5 # dynamic viscosity
-alpha = 1 # SUPG stabilization parameter
-t_alpha = 2e-4 # K-1, Thermal expansion coefficient
-
-[GlobalParams]
-  num_groups = 6
-  num_precursor_groups = 8
-  use_exp_form = false
-  group_fluxes = &#x27;group1 group2 group3 group4 group5 group6&#x27;
-  pre_concs = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8&#x27;
-  temperature = temp
-  sss2_input = true
-  account_delayed = true
-  integrate_p_by_parts = true
-[]
-
-[Mesh]
-  [file_mesh]
-    type = FileMeshGenerator
-    file = &#x27;../phase-1/full-coupling_out_ntsApp0_exodus.e&#x27;
-    use_for_exodus_restart = true
-  []
-  [corner_node]
-    type = ExtraNodesetGenerator
-    input = file_mesh
-    new_boundary = &#x27;pinned_node&#x27;
-    coord = &#x27;200 200&#x27;
-  []
-[]
-
-[Problem]
-  type = FEProblem
-[]
-
-[Variables]
-  [temp]
-    family = LAGRANGE
-    order = FIRST
-  []
-  [vel]
-    family = LAGRANGE_VEC
-    order = FIRST
-  []
-  [p]
-    family = LAGRANGE
-    order = FIRST
-  []
-[]
-
-[Nt]
-  var_name_base = group
-  vacuum_boundaries = &#x27;bottom left right top&#x27;
-  create_temperature_var = false
-  init_nts_from_file = true
-  eigenvalue_scaling = 0.9927821802
-  ## Use the eigenvalue scaling factor below if running on a 40x40 mesh
-  #  eigenvalue_scaling = 0.9926551482
-[]
-
-[Precursors]
-  [pres]
-    var_name_base = pre
-    outlet_boundaries = &#x27;&#x27;
-    constant_velocity_values = false
-    uvel = vel_x
-    vvel = vel_y
-    nt_exp_form = false
-    family = MONOMIAL
-    order = CONSTANT
-    loop_precursors = false
-    transient = true
-  []
-[]
-
-[AuxVariables]
-  [vel_x]
-    family = LAGRANGE
-    order = FIRST
-  []
-  [vel_y]
-    family = LAGRANGE
-    order = FIRST
-  []
-  [heat]
-    family = MONOMIAL
-    order = FIRST
-  []
-[]
-
-[Kernels]
-  [mass]
-    type = INSADMass
-    variable = p
-  []
-  [mass_pspg]
-    type = INSADMassPSPG
-    variable = p
-  []
-  [momentum_time]
-    type = INSADMomentumTimeDerivative
-    variable = vel
-  []
-  [momentum_advection]
-    type = INSADMomentumAdvection
-    variable = vel
-  []
-  [momentum_viscous]
-    type = INSADMomentumViscous
-    variable = vel
-  []
-  [momentum_pressure]
-    type = INSADMomentumPressure
-    variable = vel
-    p = p
-  []
-  [momentum_supg]
-    type = INSADMomentumSUPG
-    variable = vel
-    velocity = vel
-  []
-  [buoyancy]
-    type = INSADBoussinesqBodyForce
-    variable = vel
-    # gravity vector, cm s-2
-    gravity = &#x27;0 -981 0&#x27;
-    alpha_name = &#x27;t_alpha&#x27;
-    ref_temp = &#x27;temp_ref&#x27;
-  []
-  [gravity]
-    type = INSADGravityForce
-    variable = vel
-    # gravity vector, cm s-2
-    gravity = &#x27;0 -981 0&#x27;
-  []
-
-  [temp_time]
-    type = INSADHeatConductionTimeDerivative
-    variable = temp
-  []
-  [temp_source]
-    type = INSADEnergySource
-    variable = temp
-    source_variable = heat
-  []
-  [temp_advection]
-    type = INSADEnergyAdvection
-    variable = temp
-  []
-  [temp_conduction]
-    type = ADHeatConduction
-    variable = temp
-    thermal_conductivity = &#x27;k&#x27;
-  []
-  [temp_supg]
-    type = INSADEnergySUPG
-    variable = temp
-    velocity = vel
-  []
-  [temp_sink]
-    type = ConvectiveHeatExchanger
-    variable = temp
-    htc = ${gamma}
-    tref = 900
-  []
-[]
-
-[AuxKernels]
-  [vel_x]
-    type = VectorVariableComponentAux
-    variable = vel_x
-    vector_variable = vel
-    component = &#x27;x&#x27;
-  []
-  [vel_y]
-    type = VectorVariableComponentAux
-    variable = vel_y
-    vector_variable = vel
-    component = &#x27;y&#x27;
-  []
-  [heat_source]
-    type = FissionHeatSourceTransientAux
-    variable = heat
-  []
-[]
-
-[UserObjects]
-  [initial_th]
-    type = SolutionUserObject
-    mesh = &#x27;../phase-1/full-coupling_exodus.e&#x27;
-    system_variables = &#x27;vel_x vel_y p temp&#x27;
-    timestep = LATEST
-    execute_on = INITIAL
-  []
-  [initial_pre]
-    type = SolutionUserObject
-    mesh = &#x27;../phase-1/full-coupling_out_ntsApp0_exodus.e&#x27;
-    system_variables = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8 heat&#x27;
-    timestep = LATEST
-    execute_on = INITIAL
-  []
-[]
-
-[Controls]
-  [func_control]
-    type = RealFunctionControl
-    parameter = &#x27;Kernels/temp_sink/htc&#x27;
-    function = func_alpha
-    execute_on = &#x27;initial timestep_begin&#x27;
-  []
-[]
-
-[Functions]
-  [func_alpha]
-    type = ParsedFunction
-    value = &#x27;1 + 0.1 * sin(2*pi*t*.1)&#x27; # Perturbation frequency = 0.1Hz
-  []
-  [pre1f]
-    type = SolutionFunction
-    from_variable = pre1
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre2f]
-    type = SolutionFunction
-    from_variable = pre2
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre3f]
-    type = SolutionFunction
-    from_variable = pre3
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre4f]
-    type = SolutionFunction
-    from_variable = pre4
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre5f]
-    type = SolutionFunction
-    from_variable = pre5
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre6f]
-    type = SolutionFunction
-    from_variable = pre6
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre7f]
-    type = SolutionFunction
-    from_variable = pre7
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre8f]
-    type = SolutionFunction
-    from_variable = pre8
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [velxf]
-    type = SolutionFunction
-    from_variable = vel_x
-    solution = initial_th
-  []
-  [velyf]
-    type = SolutionFunction
-    from_variable = vel_y
-    solution = initial_th
-  []
-  [pf]
-    type = SolutionFunction
-    from_variable = p
-    solution = initial_th
-  []
-  [tempf]
-    type = SolutionFunction
-    from_variable = temp
-    solution = initial_th
-  []
-  [heatf]
-    type = SolutionFunction
-    from_variable = heat
-    solution = initial_pre
-  []
-[]
-
-[ICs]
-  [vel_ic]
-    type = VectorFunctionIC
-    variable = vel
-    function_x = velxf
-    function_y = velyf
-  []
-  [pre1_ic]
-    type = FunctionIC
-    variable = pre1
-    function = pre1f
-  []
-  [pre2_ic]
-    type = FunctionIC
-    variable = pre2
-    function = pre2f
-  []
-  [pre3_ic]
-    type = FunctionIC
-    variable = pre3
-    function = pre3f
-  []
-  [pre4_ic]
-    type = FunctionIC
-    variable = pre4
-    function = pre4f
-  []
-  [pre5_ic]
-    type = FunctionIC
-    variable = pre5
-    function = pre5f
-  []
-  [pre6_ic]
-    type = FunctionIC
-    variable = pre6
-    function = pre6f
-  []
-  [pre7_ic]
-    type = FunctionIC
-    variable = pre7
-    function = pre7f
-  []
-  [pre8_ic]
-    type = FunctionIC
-    variable = pre8
-    function = pre8f
-  []
-  [p_ic]
-    type = FunctionIC
-    variable = p
-    function = pf
-  []
-  [temp_ic]
-    type = FunctionIC
-    variable = temp
-    function = tempf
-  []
-  [heat_ic]
-    type = FunctionIC
-    variable = heat
-    function = heatf
-  []
-[]
-
-[BCs]
-  [no_slip]
-    type = VectorDirichletBC
-    variable = vel
-    boundary = &#x27;bottom left right&#x27;
-    values = &#x27;0 0 0&#x27;
-  []
-  [lid]
-    type = VectorDirichletBC
-    variable = vel
-    boundary = &#x27;top&#x27;
-    values = &#x27;50 0 0&#x27;
-  []
-  [pressure_pin]
-    type = DirichletBC
-    variable = p
-    boundary = &#x27;pinned_node&#x27;
-    value = 0
-  []
-[]
-
-[Materials]
-  [fuel]
-    type = GenericMoltresMaterial
-    property_tables_root = &#x27;../../../property_file_dir/cnrs-benchmark/benchmark_&#x27;
-    interp_type = &#x27;linear&#x27;
-    prop_names = &#x27;temp_ref&#x27;
-    prop_values = &#x27;900&#x27;
-  []
-  [ad_mat]
-    type = ADGenericConstantMaterial
-    prop_names = &#x27;k rho cp mu t_alpha&#x27;
-    prop_values = &#x27;${k} ${density} ${cp} ${viscosity} ${t_alpha}&#x27;
-  []
-  [ins_temp]
-    type = INSADStabilized3Eqn
-    alpha = ${alpha}
-    velocity = vel
-    pressure = p
-    temperature = temp
-  []
-[]
-
-[Executioner]
-  type = Transient
-  scheme = bdf2
-  num_steps = 5000
-
-  solve_type = &#x27;NEWTON&#x27;
-  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
-  petsc_options_iname = &#x27;-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type&#x27;
-  petsc_options_value = &#x27;asm     lu           200                1                NONZERO&#x27;
-  line_search = &#x27;none&#x27;
-
-  automatic_scaling = true
-  compute_scaling_once = false
-  resid_vs_jac_scaling_param = 0.1
-  scaling_group_variables = &#x27;group1 group2 group3 group4 group5 group6; pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8; vel; p; temp&#x27;
-
-  nl_abs_tol = 1e-6
-  nl_rel_tol = 1e-6
-  nl_max_its = 25
-  l_max_its = 400
-  l_tol = 1e-4
-
-  dt = 0.05
-[]
-
-[Preconditioning]
-  [SMP]
-    type = SMP
-    full = true
-  []
-[]
-
-[Postprocessors]
-  [memory]
-    type = MemoryUsage
-    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
-  []
-  [tot_fissions]
-    type = ElmIntegTotFissPostprocessor
-    execute_on = linear
-  []
-  [powernorm]
-    type = ElmIntegTotFissHeatPostprocessor
-    execute_on = linear
-  []
-  [group1norm]
-    type = ElementIntegralVariablePostprocessor
-    variable = group1
-    execute_on = linear
-  []
-  [group1max]
-    type = NodalExtremeValue
-    value_type = max
-    variable = group1
-    execute_on = timestep_end
-  []
-  [group2norm]
-    type = ElementIntegralVariablePostprocessor
-    variable = group2
-    execute_on = linear
-  []
-  [group2max]
-    type = NodalExtremeValue
-    value_type = max
-    variable = group2
-    execute_on = timestep_end
-  []
-[]
-
-[VectorPostprocessors]
-[]
-
-[Outputs]
-  perf_graph = true
-  [exodus]
-    type = Exodus
-    interval = 20
-  []
-  [csv]
-    type = CSV
-    append_restart = true
-  []
-  [checkpoint]
-    type = Checkpoint
-    num_files = 3
-    interval = 20
-  []
-[]
-
-[Debug]
-  show_var_residual_norms = true
-[]
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="11c3fdd1-aa3b-47ab-bb41-a61f617c4c9b"><div class="modal-content"><h4>(problems/2021-cnrs-benchmark/phase-2/transient-perturb-5.i)</h4><pre class="moose-pre"><code class="language-text">density = .002 # kg cm-3
-cp = 3075 # J kg-1 K-1, 6.15 / 2.0e-3
-k = .005 # W cm-1 K-1
-gamma = 1 # W cm-3 K-1, Volumetric heat transfer coefficient
-viscosity = .5 # dynamic viscosity
-alpha = 1 # SUPG stabilization parameter
-t_alpha = 2e-4 # K-1, Thermal expansion coefficient
-
-[GlobalParams]
-  num_groups = 6
-  num_precursor_groups = 8
-  use_exp_form = false
-  group_fluxes = &#x27;group1 group2 group3 group4 group5 group6&#x27;
-  pre_concs = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8&#x27;
-  temperature = temp
-  sss2_input = true
-  account_delayed = true
-  integrate_p_by_parts = true
-[]
-
-[Mesh]
-  [file_mesh]
-    type = FileMeshGenerator
-    file = &#x27;../phase-1/full-coupling_out_ntsApp0_exodus.e&#x27;
-    use_for_exodus_restart = true
-  []
-  [corner_node]
-    type = ExtraNodesetGenerator
-    input = file_mesh
-    new_boundary = &#x27;pinned_node&#x27;
-    coord = &#x27;200 200&#x27;
-  []
-[]
-
-[Problem]
-  type = FEProblem
-[]
-
-[Variables]
-  [temp]
-    family = LAGRANGE
-    order = FIRST
-  []
-  [vel]
-    family = LAGRANGE_VEC
-    order = FIRST
-  []
-  [p]
-    family = LAGRANGE
-    order = FIRST
-  []
-[]
-
-[Nt]
-  var_name_base = group
-  vacuum_boundaries = &#x27;bottom left right top&#x27;
-  create_temperature_var = false
-  init_nts_from_file = true
-  eigenvalue_scaling = 0.9927821802
-  ## Use the eigenvalue scaling factor below if running on a 40x40 mesh
-  #  eigenvalue_scaling = 0.9926551482
-[]
-
-[Precursors]
-  [pres]
-    var_name_base = pre
-    outlet_boundaries = &#x27;&#x27;
-    constant_velocity_values = false
-    uvel = vel_x
-    vvel = vel_y
-    nt_exp_form = false
-    family = MONOMIAL
-    order = CONSTANT
-    loop_precursors = false
-    transient = true
-  []
-[]
-
-[AuxVariables]
-  [vel_x]
-    family = LAGRANGE
-    order = FIRST
-  []
-  [vel_y]
-    family = LAGRANGE
-    order = FIRST
-  []
-  [heat]
-    family = MONOMIAL
-    order = FIRST
-  []
-[]
-
-[Kernels]
-  [mass]
-    type = INSADMass
-    variable = p
-  []
-  [mass_pspg]
-    type = INSADMassPSPG
-    variable = p
-  []
-  [momentum_time]
-    type = INSADMomentumTimeDerivative
-    variable = vel
-  []
-  [momentum_advection]
-    type = INSADMomentumAdvection
-    variable = vel
-  []
-  [momentum_viscous]
-    type = INSADMomentumViscous
-    variable = vel
-  []
-  [momentum_pressure]
-    type = INSADMomentumPressure
-    variable = vel
-    p = p
-  []
-  [momentum_supg]
-    type = INSADMomentumSUPG
-    variable = vel
-    velocity = vel
-  []
-  [buoyancy]
-    type = INSADBoussinesqBodyForce
-    variable = vel
-    # gravity vector, cm s-2
-    gravity = &#x27;0 -981 0&#x27;
-    alpha_name = &#x27;t_alpha&#x27;
-    ref_temp = &#x27;temp_ref&#x27;
-  []
-  [gravity]
-    type = INSADGravityForce
-    variable = vel
-    # gravity vector, cm s-2
-    gravity = &#x27;0 -981 0&#x27;
-  []
-
-  [temp_time]
-    type = INSADHeatConductionTimeDerivative
-    variable = temp
-  []
-  [temp_source]
-    type = INSADEnergySource
-    variable = temp
-    source_variable = heat
-  []
-  [temp_advection]
-    type = INSADEnergyAdvection
-    variable = temp
-  []
-  [temp_conduction]
-    type = ADHeatConduction
-    variable = temp
-    thermal_conductivity = &#x27;k&#x27;
-  []
-  [temp_supg]
-    type = INSADEnergySUPG
-    variable = temp
-    velocity = vel
-  []
-  [temp_sink]
-    type = ConvectiveHeatExchanger
-    variable = temp
-    htc = ${gamma}
-    tref = 900
-  []
-[]
-
-[AuxKernels]
-  [vel_x]
-    type = VectorVariableComponentAux
-    variable = vel_x
-    vector_variable = vel
-    component = &#x27;x&#x27;
-  []
-  [vel_y]
-    type = VectorVariableComponentAux
-    variable = vel_y
-    vector_variable = vel
-    component = &#x27;y&#x27;
-  []
-  [heat_source]
-    type = FissionHeatSourceTransientAux
-    variable = heat
-  []
-[]
-
-[UserObjects]
-  [initial_th]
-    type = SolutionUserObject
-    mesh = &#x27;../phase-1/full-coupling_exodus.e&#x27;
-    system_variables = &#x27;vel_x vel_y p temp&#x27;
-    timestep = LATEST
-    execute_on = INITIAL
-  []
-  [initial_pre]
-    type = SolutionUserObject
-    mesh = &#x27;../phase-1/full-coupling_out_ntsApp0_exodus.e&#x27;
-    system_variables = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8 heat&#x27;
-    timestep = LATEST
-    execute_on = INITIAL
-  []
-[]
-
-[Controls]
-  [func_control]
-    type = RealFunctionControl
-    parameter = &#x27;Kernels/temp_sink/htc&#x27;
-    function = func_alpha
-    execute_on = &#x27;initial timestep_begin&#x27;
-  []
-[]
-
-[Functions]
-  [func_alpha]
-    type = ParsedFunction
-    value = &#x27;1 + 0.1 * sin(2*pi*t*.2)&#x27; # Perturbation frequency = 0.2Hz
-  []
-  [pre1f]
-    type = SolutionFunction
-    from_variable = pre1
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre2f]
-    type = SolutionFunction
-    from_variable = pre2
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre3f]
-    type = SolutionFunction
-    from_variable = pre3
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre4f]
-    type = SolutionFunction
-    from_variable = pre4
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre5f]
-    type = SolutionFunction
-    from_variable = pre5
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre6f]
-    type = SolutionFunction
-    from_variable = pre6
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre7f]
-    type = SolutionFunction
-    from_variable = pre7
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre8f]
-    type = SolutionFunction
-    from_variable = pre8
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [velxf]
-    type = SolutionFunction
-    from_variable = vel_x
-    solution = initial_th
-  []
-  [velyf]
-    type = SolutionFunction
-    from_variable = vel_y
-    solution = initial_th
-  []
-  [pf]
-    type = SolutionFunction
-    from_variable = p
-    solution = initial_th
-  []
-  [tempf]
-    type = SolutionFunction
-    from_variable = temp
-    solution = initial_th
-  []
-  [heatf]
-    type = SolutionFunction
-    from_variable = heat
-    solution = initial_pre
-  []
-[]
-
-[ICs]
-  [vel_ic]
-    type = VectorFunctionIC
-    variable = vel
-    function_x = velxf
-    function_y = velyf
-  []
-  [pre1_ic]
-    type = FunctionIC
-    variable = pre1
-    function = pre1f
-  []
-  [pre2_ic]
-    type = FunctionIC
-    variable = pre2
-    function = pre2f
-  []
-  [pre3_ic]
-    type = FunctionIC
-    variable = pre3
-    function = pre3f
-  []
-  [pre4_ic]
-    type = FunctionIC
-    variable = pre4
-    function = pre4f
-  []
-  [pre5_ic]
-    type = FunctionIC
-    variable = pre5
-    function = pre5f
-  []
-  [pre6_ic]
-    type = FunctionIC
-    variable = pre6
-    function = pre6f
-  []
-  [pre7_ic]
-    type = FunctionIC
-    variable = pre7
-    function = pre7f
-  []
-  [pre8_ic]
-    type = FunctionIC
-    variable = pre8
-    function = pre8f
-  []
-  [p_ic]
-    type = FunctionIC
-    variable = p
-    function = pf
-  []
-  [temp_ic]
-    type = FunctionIC
-    variable = temp
-    function = tempf
-  []
-  [heat_ic]
-    type = FunctionIC
-    variable = heat
-    function = heatf
-  []
-[]
-
-[BCs]
-  [no_slip]
-    type = VectorDirichletBC
-    variable = vel
-    boundary = &#x27;bottom left right&#x27;
-    values = &#x27;0 0 0&#x27;
-  []
-  [lid]
-    type = VectorDirichletBC
-    variable = vel
-    boundary = &#x27;top&#x27;
-    values = &#x27;50 0 0&#x27;
-  []
-  [pressure_pin]
-    type = DirichletBC
-    variable = p
-    boundary = &#x27;pinned_node&#x27;
-    value = 0
-  []
-[]
-
-[Materials]
-  [fuel]
-    type = GenericMoltresMaterial
-    property_tables_root = &#x27;../../../property_file_dir/cnrs-benchmark/benchmark_&#x27;
-    interp_type = &#x27;linear&#x27;
-    prop_names = &#x27;temp_ref&#x27;
-    prop_values = &#x27;900&#x27;
-  []
-  [ad_mat]
-    type = ADGenericConstantMaterial
-    prop_names = &#x27;k rho cp mu t_alpha&#x27;
-    prop_values = &#x27;${k} ${density} ${cp} ${viscosity} ${t_alpha}&#x27;
-  []
-  [ins_temp]
-    type = INSADStabilized3Eqn
-    alpha = ${alpha}
-    velocity = vel
-    pressure = p
-    temperature = temp
-  []
-[]
-
-[Executioner]
-  type = Transient
-  scheme = bdf2
-  num_steps = 5000
-
-  solve_type = &#x27;NEWTON&#x27;
-  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
-  petsc_options_iname = &#x27;-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type&#x27;
-  petsc_options_value = &#x27;asm     lu           200                1                NONZERO&#x27;
-  line_search = &#x27;none&#x27;
-
-  automatic_scaling = true
-  compute_scaling_once = false
-  resid_vs_jac_scaling_param = 0.1
-  scaling_group_variables = &#x27;group1 group2 group3 group4 group5 group6; pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8; vel; p; temp&#x27;
-
-  nl_abs_tol = 1e-6
-  nl_rel_tol = 1e-6
-  nl_max_its = 25
-  l_max_its = 400
-  l_tol = 1e-4
-
-  dt = 0.025
-[]
-
-[Preconditioning]
-  [SMP]
-    type = SMP
-    full = true
-  []
-[]
-
-[Postprocessors]
-  [memory]
-    type = MemoryUsage
-    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
-  []
-  [tot_fissions]
-    type = ElmIntegTotFissPostprocessor
-    execute_on = linear
-  []
-  [powernorm]
-    type = ElmIntegTotFissHeatPostprocessor
-    execute_on = linear
-  []
-  [group1norm]
-    type = ElementIntegralVariablePostprocessor
-    variable = group1
-    execute_on = linear
-  []
-  [group1max]
-    type = NodalExtremeValue
-    value_type = max
-    variable = group1
-    execute_on = timestep_end
-  []
-  [group2norm]
-    type = ElementIntegralVariablePostprocessor
-    variable = group2
-    execute_on = linear
-  []
-  [group2max]
-    type = NodalExtremeValue
-    value_type = max
-    variable = group2
-    execute_on = timestep_end
-  []
-[]
-
-[VectorPostprocessors]
-[]
-
-[Outputs]
-  perf_graph = true
-  [exodus]
-    type = Exodus
-    interval = 20
-  []
-  [csv]
-    type = CSV
-    append_restart = true
-  []
-  [checkpoint]
-    type = Checkpoint
-    num_files = 3
-    interval = 20
-  []
-[]
-
-[Debug]
-  show_var_residual_norms = true
-[]
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="434b1d96-5c63-423a-85ee-9eeb25f46895"><div class="modal-content"><h4>(problems/2021-cnrs-benchmark/phase-0/nts.i)</h4><pre class="moose-pre"><code class="language-text"># Step 0.2: Neutronics input file
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="777265a2-57bc-4c43-aae3-1bb62cc22c8c"><div class="modal-content"><h4>(problems/2021-cnrs-benchmark/phase-0/nts.i)</h4><pre class="moose-pre"><code class="language-text"># Step 0.2: Neutronics input file
 
 [GlobalParams]
   num_groups = 6
@@ -3586,1066 +4645,7 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
 [Debug]
   show_var_residual_norms = true
 []
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="d15d6a9b-4f95-4cb7-b109-2c3ed5f22ce8"><div class="modal-content"><h4>(problems/2021-cnrs-benchmark/phase-1/power-coupling.i)</h4><pre class="moose-pre"><code class="language-text"># Step 1.2: Power coupling input file
-# Requires velocity fields from Step 0.1
-
-density = .002 # kg cm-3
-cp = 3075 # J kg-1 K-1, 6.15 / 2.0e-3
-k = .005 # W cm-1 K-1
-gamma = 1 # W cm-3 K-1, Volumetric heat transfer coefficient
-viscosity = .5 # dynamic viscosity, mu = nu * rho, kg cm-1 s-1
-alpha = 1 # INS SUPG and PSPG stabilization parameter
-
-[GlobalParams]
-  num_groups = 6
-  num_precursor_groups = 8
-  use_exp_form = false
-  group_fluxes = &#x27;group1 group2 group3 group4 group5 group6&#x27;
-  pre_concs = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8&#x27;
-  temperature = temp
-  sss2_input = true
-  account_delayed = true
-  integrate_p_by_parts = true
-[]
-
-[Mesh]
-  type = GeneratedMesh
-  dim = 2
-
-  nx = 200
-  ny = 200
-  ## Use a 40-by-40 mesh instead if running on a desktop/small cluster
-  #    nx = 40
-  #    ny = 40
-
-  xmin = 0
-  xmax = 200
-  ymin = 0
-  ymax = 200
-  elem_type = QUAD4
-[]
-
-[Problem]
-  type = FEProblem
-[]
-
-[Variables]
-  [temp]
-    family = LAGRANGE
-    order = FIRST
-    scaling = 1e-3
-    initial_condition = 900
-  []
-[]
-
-[Nt]
-  var_name_base = group
-  vacuum_boundaries = &#x27;bottom left right top&#x27;
-  create_temperature_var = false
-  transient = false
-  eigen = true
-  scaling = 1e3
-[]
-
-[Precursors]
-  [pres]
-    var_name_base = pre
-    outlet_boundaries = &#x27;&#x27;
-    constant_velocity_values = false
-    uvel = ux
-    vvel = uy
-    nt_exp_form = false
-    family = MONOMIAL
-    order = CONSTANT
-    loop_precursors = false
-    transient = false
-    eigen = true
-    scaling = 1e3
-  []
-[]
-
-[AuxVariables]
-  [ux]
-    family = LAGRANGE
-    order = FIRST
-  []
-  [uy]
-    family = LAGRANGE
-    order = FIRST
-  []
-  [vel]
-    family = LAGRANGE_VEC
-    order = FIRST
-  []
-  [p]
-    family = LAGRANGE
-    order = FIRST
-  []
-  [heat]
-    family = MONOMIAL
-    order = FIRST
-  []
-[]
-
-[UserObjects]
-  [velocities]
-    type = SolutionUserObject
-    mesh = &#x27;../phase-0/vel-field_exodus.e&#x27;
-    system_variables = &#x27;vel_x vel_y p&#x27;
-    timestep = LATEST
-    execute_on = INITIAL
-  []
-[]
-
-[Kernels]
-  [temp_source]
-    type = INSADEnergySource
-    variable = temp
-    source_variable = heat
-  []
-  [temp_advection]
-    type = INSADEnergyAdvection
-    variable = temp
-  []
-  [temp_conduction]
-    type = ADHeatConduction
-    variable = temp
-    thermal_conductivity = &#x27;ad_k&#x27;
-  []
-  [temp_supg]
-    type = INSADEnergySUPG
-    variable = temp
-    velocity = vel
-  []
-  [temp_sink]
-    type = INSADEnergyAmbientConvection
-    variable = temp
-    alpha = ${gamma}
-    T_ambient = 900
-  []
-[]
-
-[AuxKernels]
-  [ux]
-    type = SolutionAux
-    variable = ux
-    from_variable = vel_x
-    solution = velocities
-  []
-  [uy]
-    type = SolutionAux
-    variable = uy
-    from_variable = vel_y
-    solution = velocities
-  []
-  [p]
-    type = SolutionAux
-    variable = p
-    from_variable = p
-    solution = velocities
-  []
-  [heat_source]
-    type = FissionHeatSourceAux
-    variable = heat
-    tot_fission_heat = powernorm
-    power = 1e7
-  []
-[]
-
-[Functions]
-  [velxf]
-    type = SolutionFunction
-    from_variable = vel_x
-    solution = velocities
-  []
-  [velyf]
-    type = SolutionFunction
-    from_variable = vel_y
-    solution = velocities
-  []
-[]
-
-[ICs]
-  [vel_ic]
-    type = VectorFunctionIC
-    variable = vel
-    function_x = velxf
-    function_y = velyf
-  []
-[]
-
-[Materials]
-  [fuel]
-    type = GenericMoltresMaterial
-    property_tables_root = &#x27;../../../property_file_dir/cnrs-benchmark/benchmark_&#x27;
-    interp_type = &#x27;spline&#x27;
-    prop_names = &#x27;k rho cp&#x27;
-    prop_values = &#x27;${k} ${density} ${cp}&#x27;
-  []
-  [ad_mat]
-    type = ADGenericConstantMaterial
-    prop_names = &#x27;ad_k ad_rho ad_cp ad_mu&#x27;
-    prop_values = &#x27;${k} ${density} ${cp} ${viscosity}&#x27;
-  []
-  [ins_mat]
-    type = INSADStabilized3Eqn
-    k_name = &#x27;ad_k&#x27;
-    rho_name = &#x27;ad_rho&#x27;
-    cp_name = &#x27;ad_cp&#x27;
-    mu_name = &#x27;ad_mu&#x27;
-    alpha = ${alpha}
-    velocity = vel
-    pressure = p
-    temperature = temp
-  []
-[]
-
-[Executioner]
-  type = NonlinearEigen
-  max_power_iterations = 50
-
-  # fission power normalization
-  normalization = &#x27;powernorm&#x27;
-  normal_factor = 1e7 # Watts, 1e9 / 100
-  # Tiberga et al. assumes the depth of their 2D domain is 1m.
-  # Tiberga et al. domain = 2m x 2m x 1m
-  # We divide the total power=1e9W by 100 because our length units are in cm.
-  # Our domain = 2m x 2m x 0.01m
-
-  xdiff = &#x27;group1diff&#x27;
-  bx_norm = &#x27;bnorm&#x27;
-  k0 = 1.00
-  l_max_its = 1000
-  nl_max_its = 5000
-  nl_abs_tol = 1e-6
-
-  free_power_iterations = 4
-
-  solve_type = &#x27;NEWTON&#x27;
-  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
-  petsc_options_iname = &#x27;-pc_type -sub_pc_type -ksp_gmres_restart -pc_gasm_overlap -sub_pc_factor_shift_type -pc_gasm_blocks -sub_pc_factor_mat_solver_type&#x27;
-  petsc_options_value = &#x27;gasm     lu           200                1                NONZERO                   16              superlu_dist&#x27;
-
-  ## Use the settings below instead if running on a desktop/small cluster
-  #  petsc_options_iname = &#x27;-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type&#x27;
-  #  petsc_options_value = &#x27;asm      lu           200                1               NONZERO&#x27;
-
-  line_search = none
-[]
-
-[Preconditioning]
-  [SMP]
-    type = SMP
-    full = true
-  []
-[]
-
-[Postprocessors]
-  [bnorm]
-    type = ElmIntegTotFissNtsPostprocessor
-    execute_on = linear
-  []
-  [tot_fissions]
-    type = ElmIntegTotFissPostprocessor
-    execute_on = linear
-  []
-  [powernorm]
-    type = ElmIntegTotFissHeatPostprocessor
-    execute_on = linear
-  []
-  [group1norm]
-    type = ElementIntegralVariablePostprocessor
-    variable = group1
-    execute_on = linear
-  []
-  [group1max]
-    type = NodalExtremeValue
-    value_type = max
-    variable = group1
-    execute_on = timestep_end
-  []
-  [group1diff]
-    type = ElementL2Diff
-    variable = group1
-    execute_on = &#x27;linear timestep_end&#x27;
-    use_displaced_mesh = false
-  []
-  [group2norm]
-    type = ElementIntegralVariablePostprocessor
-    variable = group2
-    execute_on = linear
-  []
-  [group2max]
-    type = NodalExtremeValue
-    value_type = max
-    variable = group2
-    execute_on = timestep_end
-  []
-  [group2diff]
-    type = ElementL2Diff
-    variable = group2
-    execute_on = &#x27;linear timestep_end&#x27;
-    use_displaced_mesh = false
-  []
-[]
-
-[VectorPostprocessors]
-  [temp_aa]
-    type = LineValueSampler
-    variable = &#x27;temp&#x27;
-    start_point = &#x27;0 100 0&#x27;
-    end_point = &#x27;200 100 0&#x27;
-    num_points = 201
-    sort_by = x
-    execute_on = FINAL
-    outputs = &#x27;csv&#x27;
-  []
-  [temp_bb]
-    type = LineValueSampler
-    variable = &#x27;temp&#x27;
-    start_point = &#x27;100 0 0&#x27;
-    end_point = &#x27;100 200 0&#x27;
-    num_points = 201
-    sort_by = y
-    execute_on = FINAL
-    outputs = &#x27;csv&#x27;
-  []
-  [flux_aa]
-    type = LineValueSampler
-    variable = &#x27;group1 group2 group3 group4 group5 group6&#x27;
-    start_point = &#x27;0 100 0&#x27;
-    end_point = &#x27;200 100 0&#x27;
-    num_points = 201
-    sort_by = x
-    execute_on = FINAL
-    outputs = &#x27;csv&#x27;
-  []
-  [flux_bb]
-    type = LineValueSampler
-    variable = &#x27;group1 group2 group3 group4 group5 group6&#x27;
-    start_point = &#x27;100 0 0&#x27;
-    end_point = &#x27;100 200 0&#x27;
-    num_points = 201
-    sort_by = y
-    execute_on = FINAL
-    outputs = &#x27;csv&#x27;
-  []
-[]
-
-[Outputs]
-  perf_graph = true
-  print_linear_residuals = true
-  [exodus]
-    type = Exodus
-  []
-  [csv]
-    type = CSV
-  []
-[]
-
-[Debug]
-  show_var_residual_norms = true
-[]
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="99cc006a-ebf8-4538-bb24-af44266b3e85"><div class="modal-content"><h4>(problems/2021-cnrs-benchmark/phase-1/circ-fuel.i)</h4><pre class="moose-pre"><code class="language-text"># Step 1.1: Circulating fuel input file
-# Requires velocity fields from Step 0.1
-
-[GlobalParams]
-  num_groups = 6
-  num_precursor_groups = 8
-  use_exp_form = false
-  group_fluxes = &#x27;group1 group2 group3 group4 group5 group6&#x27;
-  pre_concs = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8&#x27;
-  temperature = 900
-  sss2_input = true
-  account_delayed = true
-[]
-
-[Mesh]
-  type = GeneratedMesh
-  dim = 2
-
-  nx = 200
-  ny = 200
-  ## Use a 40-by-40 mesh instead if running on a desktop/small cluster
-  #    nx = 40
-  #    ny = 40
-
-  xmin = 0
-  xmax = 200
-  ymin = 0
-  ymax = 200
-  elem_type = QUAD4
-[]
-
-[Problem]
-  type = FEProblem
-[]
-
-[Nt]
-  var_name_base = group
-  vacuum_boundaries = &#x27;bottom left right top&#x27;
-  create_temperature_var = false
-  transient = false
-  eigen = true
-[]
-
-[Precursors]
-  [pres]
-    var_name_base = pre
-    outlet_boundaries = &#x27;&#x27;
-    constant_velocity_values = false
-    uvel = ux
-    vvel = uy
-    nt_exp_form = false
-    family = MONOMIAL
-    order = CONSTANT
-    loop_precursors = false
-    transient = false
-  []
-[]
-
-[AuxVariables]
-  [ux]
-    family = LAGRANGE
-    order = FIRST
-  []
-  [uy]
-    family = LAGRANGE
-    order = FIRST
-  []
-[]
-
-[UserObjects]
-  [velocities]
-    type = SolutionUserObject
-    mesh = &#x27;../phase-0/vel-field_exodus.e&#x27;
-    system_variables = &#x27;vel_x vel_y&#x27;
-    timestep = LATEST
-    execute_on = INITIAL
-  []
-[]
-
-[AuxKernels]
-  [ux]
-    type = SolutionAux
-    variable = ux
-    from_variable = vel_x
-    solution = velocities
-  []
-  [uy]
-    type = SolutionAux
-    variable = uy
-    from_variable = vel_y
-    solution = velocities
-  []
-[]
-
-[Materials]
-  [fuel]
-    type = GenericMoltresMaterial
-    property_tables_root = &#x27;../../../property_file_dir/cnrs-benchmark/benchmark_&#x27;
-    interp_type = &#x27;linear&#x27;
-  []
-[]
-
-[Executioner]
-  type = InversePowerMethod
-  max_power_iterations = 50
-
-  # fission power normalization
-  normalization = &#x27;powernorm&#x27;
-  normal_factor = 1e7 # Watts, 1e9 / 100
-  # Tiberga et al. assumes the depth of their 2D domain is 1m.
-  # Tiberga et al. domain = 2m x 2m x 1m
-  # We divide the total power=1e9W by 100 because our length units are in cm.
-  # Our domain = 2m x 2m x 0.01m
-
-  xdiff = &#x27;group1diff&#x27;
-  bx_norm = &#x27;bnorm&#x27;
-  k0 = 1.00400
-  l_max_its = 100
-  eig_check_tol = 1e-7
-
-  solve_type = &#x27;NEWTON&#x27;
-  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
-  petsc_options_iname = &#x27;-pc_type -sub_pc_type -ksp_gmres_restart -pc_gasm_overlap -sub_pc_factor_shift_type -pc_gasm_blocks -sub_pc_factor_mat_solver_type&#x27;
-  petsc_options_value = &#x27;gasm     lu           200                1                NONZERO                   16              superlu_dist&#x27;
-
-  ## Use the settings below instead if running on a desktop/small cluster
-  #  petsc_options_iname = &#x27;-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type&#x27;
-  #  petsc_options_value = &#x27;asm      lu           200                1               NONZERO&#x27;
-
-  line_search = none
-[]
-
-[Preconditioning]
-  [SMP]
-    type = SMP
-    full = true
-  []
-[]
-
-[Postprocessors]
-  [bnorm]
-    type = ElmIntegTotFissNtsPostprocessor
-    execute_on = linear
-  []
-  [tot_fissions]
-    type = ElmIntegTotFissPostprocessor
-    execute_on = linear
-  []
-  [powernorm]
-    type = ElmIntegTotFissHeatPostprocessor
-    execute_on = linear
-  []
-  [group1norm]
-    type = ElementIntegralVariablePostprocessor
-    variable = group1
-    execute_on = linear
-  []
-  [group1max]
-    type = NodalExtremeValue
-    value_type = max
-    variable = group1
-    execute_on = timestep_end
-  []
-  [group1diff]
-    type = ElementL2Diff
-    variable = group1
-    execute_on = &#x27;linear timestep_end&#x27;
-    use_displaced_mesh = false
-  []
-  [group2norm]
-    type = ElementIntegralVariablePostprocessor
-    variable = group2
-    execute_on = linear
-  []
-  [group2max]
-    type = NodalExtremeValue
-    value_type = max
-    variable = group2
-    execute_on = timestep_end
-  []
-  [group2diff]
-    type = ElementL2Diff
-    variable = group2
-    execute_on = &#x27;linear timestep_end&#x27;
-    use_displaced_mesh = false
-  []
-[]
-
-[VectorPostprocessors]
-  [pre_elemental]
-    type = ElementValueSampler
-    variable = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8&#x27;
-    sort_by = id
-    execute_on = FINAL
-  []
-[]
-
-[Outputs]
-  perf_graph = true
-  print_linear_residuals = true
-  [exodus]
-    type = Exodus
-  []
-  [csv]
-    type = CSV
-  []
-[]
-
-[Debug]
-  show_var_residual_norms = true
-[]
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="42d30a1e-7cf4-4a13-a328-a6b878da0ba4"><div class="modal-content"><h4>(tests/nts/gen-mesh-one-material.i)</h4><pre class="moose-pre"><code class="language-text">[GlobalParams]
-  num_groups = 2
-  num_precursor_groups = 8
-  temperature = temp
-  group_fluxes = &#x27;group1 group2&#x27;
-  # MSRE full power = 10 MW; core volume 90 ft3
-  power = 10
-  use_exp_form = false
-  sss2_input = false
-  account_delayed = false
-[]
-
-[Mesh]
-  type = GeneratedMesh
-  dim = 2
-  xmax = 6
-  ymax = 6
-  nx = 15
-  ny = 15
-[]
-
-[Variables]
-  [group1]
-    order = FIRST
-    family = LAGRANGE
-  []
-  [group2]
-    order = FIRST
-    family = LAGRANGE
-  []
-  [temp]
-    order = FIRST
-    family = LAGRANGE
-    scaling = 1e-6
-  []
-[]
-
-[Kernels]
-  # Neutronics
-  [diff_group1]
-    type = GroupDiffusion
-    variable = group1
-    group_number = 1
-  []
-  [diff_group2]
-    type = GroupDiffusion
-    variable = group2
-    group_number = 2
-  []
-  [sigma_r_group1]
-    type = SigmaR
-    variable = group1
-    group_number = 1
-  []
-  [sigma_r_group2]
-    type = SigmaR
-    variable = group2
-    group_number = 2
-  []
-  [inscatter_group1]
-    type = InScatter
-    variable = group1
-    group_number = 1
-    num_groups = 2
-    group_fluxes = &#x27;group1 group2&#x27;
-  []
-  [inscatter_group2]
-    type = InScatter
-    variable = group2
-    group_number = 2
-    num_groups = 2
-    group_fluxes = &#x27;group1 group2&#x27;
-  []
-  [fission_source_group1]
-    type = CoupledFissionEigenKernel
-    variable = group1
-    group_number = 1
-    num_groups = 2
-    group_fluxes = &#x27;group1 group2&#x27;
-  []
-  [fission_source_group2]
-    type = CoupledFissionEigenKernel
-    variable = group2
-    group_number = 2
-    num_groups = 2
-    group_fluxes = &#x27;group1 group2&#x27;
-  []
-
-  # Temperature
-  [temp_cond]
-    type = MatDiffusion
-    variable = temp
-    diffusivity = &#x27;k&#x27;
-    save_in = &#x27;diffus_resid tot_resid&#x27;
-  []
-  # [./temp_cond]
-  #   type = HeatConduction
-  #   diffusion_coefficient_name = k
-  #   diffusion_coefficient_dT_name = d_k_d_temp
-  #   use_displaced_mesh = false
-  #   variable = temp
-  # [../]
-  [temp_source]
-    type = FissionHeatSource
-    tot_fission_heat = tot_fission_heat
-    variable = temp
-    save_in = &#x27;src_resid tot_resid&#x27;
-  []
-[]
-
-[AuxVariables]
-  [Qf]
-    family = MONOMIAL
-    order = CONSTANT
-  []
-  [diffus_temp]
-    family = MONOMIAL
-    order = CONSTANT
-  []
-  [diffus_resid]
-    family = LAGRANGE
-    order = FIRST
-  []
-  [src_resid]
-    family = LAGRANGE
-    order = FIRST
-  []
-  [bc_resid]
-    family = LAGRANGE
-    order = FIRST
-  []
-  [tot_resid]
-    family = LAGRANGE
-    order = FIRST
-  []
-[]
-
-[AuxKernels]
-  [Qf]
-    type = FissionHeatSourceAux
-    variable = Qf
-    tot_fission_heat = tot_fission_heat
-  []
-  [diffus_temp]
-    type = MatDiffusionAux
-    variable = diffus_temp
-    diffuse_var = temp
-    prop_name = &#x27;k&#x27;
-  []
-[]
-
-[Materials]
-  [fuel]
-    type = GenericMoltresMaterial
-    block = 0
-    property_tables_root = &#x27;msr2g_enrU_mod_953_fuel_interp_&#x27;
-    prop_names = &#x27;k&#x27;
-    prop_values = &#x27;.0123&#x27; # Cammi 2011 at 908 K
-    interp_type = spline
-  []
-[]
-
-[BCs]
-  [temp]
-    boundary = &#x27;left right top bottom&#x27;
-    type = DirichletBC
-    variable = temp
-    value = 900
-    save_in = &#x27;bc_resid tot_resid&#x27;
-  []
-  # [./temp]
-  #   boundary = boundary
-  #   type = VacuumBC
-  #   variable = temp
-  # [../]
-[]
-
-[Executioner]
-  # type = NonlinearEigen
-  # free_power_iterations = 4
-  # source_abs_tol = 1e-12
-  # source_rel_tol = 1e-8
-  # output_after_power_iterations = true
-
-  type = InversePowerMethod
-  max_power_iterations = 50
-  xdiff = &#x27;group1diff&#x27;
-
-  bx_norm = &#x27;bnorm&#x27;
-  k0 = 1.0
-  pfactor = 1e-2
-  l_max_its = 100
-
-  solve_type = &#x27;PJFNK&#x27;
-  # solve_type = &#x27;NEWTON&#x27;
-  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
-  # petsc_options_iname = &#x27;-pc_type -sub_pc_type&#x27;
-  # petsc_options_value = &#x27;asm lu&#x27;
-[]
-
-[Preconditioning]
-  [SMP]
-    type = SMP
-    # full = true
-  []
-[]
-
-[Postprocessors]
-  [bnorm]
-    type = ElmIntegTotFissNtsPostprocessor
-    group_fluxes = &#x27;group1 group2&#x27;
-    execute_on = linear
-  []
-  [tot_fission_heat]
-    type = ElmIntegTotFissHeatPostprocessor
-    execute_on = linear
-  []
-  [group1norm]
-    type = ElementIntegralVariablePostprocessor
-    variable = group1
-    execute_on = linear
-  []
-  [group2norm]
-    type = ElementIntegralVariablePostprocessor
-    variable = group2
-    execute_on = linear
-  []
-  [group1max]
-    type = NodalExtremeValue
-    value_type = max
-    variable = group1
-    execute_on = timestep_end
-  []
-  [group2max]
-    type = NodalExtremeValue
-    value_type = max
-    variable = group2
-    execute_on = timestep_end
-  []
-  [src_resid_post]
-    type = NodalL2Norm
-    variable = src_resid
-    execute_on = nonlinear
-  []
-  [diffus_resid_post]
-    type = NodalL2Norm
-    variable = diffus_resid
-    execute_on = nonlinear
-  []
-  [bc_resid_post]
-    type = NodalL2Norm
-    variable = bc_resid
-    execute_on = nonlinear
-  []
-  [tot_resid_post]
-    type = NodalL2Norm
-    variable = tot_resid
-    execute_on = nonlinear
-  []
-  [group1diff]
-    type = ElementL2Diff
-    variable = group1
-    execute_on = &#x27;linear timestep_end&#x27;
-    use_displaced_mesh = false
-  []
-[]
-
-[Outputs]
-  [out]
-    type = Exodus
-    execute_on = &#x27;timestep_end&#x27;
-  []
-[]
-
-[Debug]
-  show_var_residual_norms = true
-[]
-
-[ICs]
-  [temp_ic]
-    type = ConstantIC
-    variable = temp
-    value = 900
-  []
-[]
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="c63bb3bb-e337-4125-8d9a-3e2ffa6995cd"><div class="modal-content"><h4>(problems/2021-cnrs-benchmark/phase-1/full-coupling-nts.i)</h4><pre class="moose-pre"><code class="language-text">[GlobalParams]
-  num_groups = 6
-  num_precursor_groups = 8
-  use_exp_form = false
-  group_fluxes = &#x27;group1 group2 group3 group4 group5 group6&#x27;
-  pre_concs = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8&#x27;
-  temperature = temp
-  sss2_input = true
-  account_delayed = true
-[]
-
-[Mesh]
-  type = GeneratedMesh
-  dim = 2
-
-  nx = 200
-  ny = 200
-  ## Use a 40-by-40 mesh instead if running on a desktop/small cluster
-  #    nx = 40
-  #    ny = 40
-
-  xmin = 0
-  xmax = 200
-  ymin = 0
-  ymax = 200
-  elem_type = QUAD4
-[]
-
-[Problem]
-  type = FEProblem
-[]
-
-[Nt]
-  var_name_base = group
-  vacuum_boundaries = &#x27;bottom left right top&#x27;
-  create_temperature_var = false
-  transient = false
-  eigen = true
-  scaling = 1e3
-[]
-
-[Precursors]
-  [pres]
-    var_name_base = pre
-    outlet_boundaries = &#x27;bottom&#x27;
-    constant_velocity_values = false
-    uvel = vel_x
-    vvel = vel_y
-    nt_exp_form = false
-    family = MONOMIAL
-    order = CONSTANT
-    loop_precursors = false
-    transient = false
-    eigen = true
-    scaling = 1e3
-  []
-[]
-
-[AuxVariables]
-  [temp]
-    family = LAGRANGE
-    order = FIRST
-    initial_condition = 900
-  []
-  [vel_x]
-    family = LAGRANGE
-    order = FIRST
-  []
-  [vel_y]
-    family = LAGRANGE
-    order = FIRST
-  []
-  [heat]
-    family = MONOMIAL
-    order = FIRST
-  []
-[]
-
-[AuxKernels]
-  [heat_source]
-    type = FissionHeatSourceAux
-    variable = heat
-    tot_fission_heat = powernorm
-    power = 1e7
-  []
-[]
-
-[Materials]
-  [fuel]
-    type = GenericMoltresMaterial
-    property_tables_root = &#x27;../../../property_file_dir/cnrs-benchmark/benchmark_&#x27;
-    interp_type = &#x27;linear&#x27;
-  []
-[]
-
-[Executioner]
-  type = InversePowerMethod
-  max_power_iterations = 50
-
-  # fission power normalization
-  # 1e7 corresponds to 1 GW / 100cm
-  # Change to 2e6, 4e6, 6e6 or 8e6 for different power output
-  # at 0.2GW, 0.4GW, 0.6GW or 0.8GW
-  normalization = &#x27;powernorm&#x27;
-  normal_factor = 1e7 # Watts, 1e9 / 100
-
-  xdiff = &#x27;group1diff&#x27;
-  bx_norm = &#x27;bnorm&#x27;
-  k0 = 1.00400
-  l_max_its = 100
-  eig_check_tol = 1e-6
-
-  solve_type = &#x27;NEWTON&#x27;
-  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
-  petsc_options_iname = &#x27;-pc_type -sub_pc_type -ksp_gmres_restart -pc_gasm_overlap -sub_pc_factor_shift_type -pc_gasm_blocks -sub_pc_factor_mat_solver_type&#x27;
-  petsc_options_value = &#x27;gasm     lu           200                1                NONZERO                   16              superlu_dist&#x27;
-
-  ## Use the settings below instead if running on a desktop/small cluster
-  #  petsc_options_iname = &#x27;-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type&#x27;
-  #  petsc_options_value = &#x27;asm      lu           200                1               NONZERO&#x27;
-
-  line_search = none
-[]
-
-[Preconditioning]
-  [SMP]
-    type = SMP
-    full = true
-  []
-[]
-
-[Postprocessors]
-  [bnorm]
-    type = ElmIntegTotFissNtsPostprocessor
-    execute_on = linear
-  []
-  [tot_fissions]
-    type = ElmIntegTotFissPostprocessor
-    execute_on = linear
-  []
-  [powernorm]
-    type = ElmIntegTotFissHeatPostprocessor
-    execute_on = linear
-  []
-  [group1norm]
-    type = ElementIntegralVariablePostprocessor
-    variable = group1
-    execute_on = linear
-  []
-  [group1max]
-    type = NodalExtremeValue
-    value_type = max
-    variable = group1
-    execute_on = timestep_end
-  []
-  [group1diff]
-    type = ElementL2Diff
-    variable = group1
-    execute_on = &#x27;linear timestep_end&#x27;
-    use_displaced_mesh = false
-  []
-  [group2norm]
-    type = ElementIntegralVariablePostprocessor
-    variable = group2
-    execute_on = linear
-  []
-  [group2max]
-    type = NodalExtremeValue
-    value_type = max
-    variable = group2
-    execute_on = timestep_end
-  []
-  [group2diff]
-    type = ElementL2Diff
-    variable = group2
-    execute_on = &#x27;linear timestep_end&#x27;
-    use_displaced_mesh = false
-  []
-[]
-
-[VectorPostprocessors]
-  [pre_elemental]
-    type = ElementValueSampler
-    variable = &#x27;pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8&#x27;
-    sort_by = id
-    execute_on = TIMESTEP_END
-  []
-[]
-
-[Outputs]
-  perf_graph = true
-  print_linear_residuals = true
-  [exodus]
-    type = Exodus
-  []
-  [csv]
-    type = CSV
-  []
-[]
-
-[Debug]
-  show_var_residual_norms = true
-[]
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="a0ac4047-84f4-4101-98b4-c3ab7fafa26e"><div class="modal-content"><h4>(problems/2021-cnrs-benchmark/phase-1/buoyancy-nts.i)</h4><pre class="moose-pre"><code class="language-text">[GlobalParams]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="fbc92c77-8a1c-4637-8068-47f09b7eaf1e"><div class="modal-content"><h4>(problems/2021-cnrs-benchmark/phase-1/buoyancy-nts.i)</h4><pre class="moose-pre"><code class="language-text">[GlobalParams]
   num_groups = 6
   num_precursor_groups = 8
   use_exp_form = false
@@ -4845,7 +4845,7 @@ alpha = 1 # INS SUPG and PSPG stabilization parameter
 [Debug]
   show_var_residual_norms = true
 []
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="18ecee0f-54b5-4ab7-aca4-673aa4609b1f"><div class="modal-content"><h4>(problems/2021-cnrs-benchmark/phase-2/transient-perturb-3.i)</h4><pre class="moose-pre"><code class="language-text">density = .002 # kg cm-3
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="4c029e16-cb82-4bca-86a0-cfb6a612ddb9"><div class="modal-content"><h4>(problems/2021-cnrs-benchmark/phase-2/transient-perturb-3.i)</h4><pre class="moose-pre"><code class="language-text">density = .002 # kg cm-3
 cp = 3075 # J kg-1 K-1, 6.15 / 2.0e-3
 k = .005 # W cm-1 K-1
 gamma = 1 # W cm-3 K-1, Volumetric heat transfer coefficient
@@ -5339,7 +5339,7 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
 [Debug]
   show_var_residual_norms = true
 []
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="d45cc7f3-5c7c-4f56-b084-49592cd214a7"><div class="modal-content"><h4>(include/postprocessors/AverageFissionHeat.h)</h4><pre class="moose-pre"><code class="language-cpp">#pragma once
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="02f59bb1-840d-4168-8418-5e75745bf3bb"><div class="modal-content"><h4>(include/postprocessors/AverageFissionHeat.h)</h4><pre class="moose-pre"><code class="language-cpp">#pragma once
 
 #include &quot;ElmIntegTotFissHeatPostprocessor.h&quot;
 
@@ -5358,4 +5358,4 @@ protected:
 
   Real _volume;
 };
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div><div class="col hide-on-med-and-down l2"><div class="toc-wrapper pin-top"><ul class="section table-of-contents"><li><a href="#7b512a38-6562-4a1a-862d-3da5498b5329" class="tooltipped" data-position="left" data-tooltip="Overview">Overview</a></li><li><a href="#1063acb3-8c47-4ce7-a639-2e20ea23c98c" class="tooltipped" data-position="left" data-tooltip="Example Input File Syntax">Example Input File Syntax</a></li><li><a href="#2c45a8af-c78c-493f-b294-23fbd14e3fed" class="tooltipped" data-position="left" data-tooltip="Input Parameters">Input Parameters</a></li><li><a href="#4bc3053a-ee5b-43d9-979f-db7796d8f3aa" class="tooltipped" data-position="left" data-tooltip="Input Files">Input Files</a></li><li><a href="#0031cbe3-605e-4b6e-afab-61b3b3e6a799" class="tooltipped" data-position="left" data-tooltip="Child Objects">Child Objects</a></li></ul></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div><div class="col hide-on-med-and-down l2"><div class="toc-wrapper pin-top"><ul class="section table-of-contents"><li><a href="#86a02cbd-5025-4830-a1a4-7c458feae1f3" class="tooltipped" data-position="left" data-tooltip="Overview">Overview</a></li><li><a href="#b5855a41-04d9-4090-8cbc-7eef65e595e2" class="tooltipped" data-position="left" data-tooltip="Example Input File Syntax">Example Input File Syntax</a></li><li><a href="#acc0a142-0ad4-4b57-bca3-8d3ad727e990" class="tooltipped" data-position="left" data-tooltip="Input Parameters">Input Parameters</a></li><li><a href="#8f2a9207-de29-420a-95f0-8fa156cf75fa" class="tooltipped" data-position="left" data-tooltip="Input Files">Input Files</a></li><li><a href="#b9ea5b47-bb1d-4c1d-8404-d37cd3fc9762" class="tooltipped" data-position="left" data-tooltip="Child Objects">Child Objects</a></li></ul></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>
