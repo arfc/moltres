@@ -1,3 +1,3 @@
 # Complete Syntax
 
-!syntax complete groups=MoltresApp
+!syntax complete groups=MoltresApp SquirrelApp
