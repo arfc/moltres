@@ -144,7 +144,7 @@ ymax=.05
     variable = p
     u = ux
     v = uy
-    p = p
+    pressure = p
   [../]
   [./x_time_deriv]
     type = INSMomentumTimeDerivative
@@ -159,7 +159,7 @@ ymax=.05
     variable = ux
     u = ux
     v = uy
-    p = p
+    pressure = p
     component = 0
   [../]
   [./y_momentum_space]
@@ -167,7 +167,7 @@ ymax=.05
     variable = uy
     u = ux
     v = uy
-    p = p
+    pressure = p
     component = 1
   [../]
   [./tempTimeDeriv]
