@@ -11,11 +11,11 @@ global_temperature=922
 [../]
 
 [Mesh]
+  coord_type = RZ
   file = '2d_lattice_structured_smaller.msh'
 [../]
 
 [Problem]
-  coord_type = RZ
   kernel_coverage_check = false
 []
 

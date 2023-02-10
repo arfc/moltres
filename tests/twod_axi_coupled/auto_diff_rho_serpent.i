@@ -34,12 +34,9 @@ nt_scale=1e13
 []
 
 [Mesh]
+  coord_type = RZ
   file = '2d_lattice_structured.msh'
 [../]
-
-[Problem]
-  coord_type = RZ
-[]
 
 [Precursors]
   [./pres]
