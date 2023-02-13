@@ -11,11 +11,11 @@ global_temperature=922
 [../]
 
 [Mesh]
+  coord_type = RZ
   file = '2d_lattice_structured_smaller.msh'
 [../]
 
 [Problem]
-  coord_type = RZ
   kernel_coverage_check = false
 []
 
@@ -57,9 +57,9 @@ global_temperature=922
   line_search = 'none'
   nl_max_its = 30
   l_max_its = 100
-  picard_max_its = 5
-  picard_rel_tol = 1e-6
-  picard_abs_tol = 1e-5
+  fixed_point_max_its = 5
+  fixed_point_rel_tol = 1e-6
+  fixed_point_abs_tol = 1e-5
   dtmin = 1e-2
   [./TimeStepper]
     type = IterationAdaptiveDT

@@ -15,6 +15,7 @@ ymax=100
 []
 
 [Mesh]
+  coord_type = RZ
   [./box]
     type = GeneratedMeshGenerator
     dim = 2
@@ -34,7 +35,6 @@ ymax=100
 []
 
 [Problem]
-  coord_type = RZ
   kernel_coverage_check = false
 []
 
@@ -91,14 +91,14 @@ ymax=100
     variable = p
     u = ux
     v = uy
-    p = p
+    pressure = p
   [../]
   [./ux_momentum]
     type = INSMomentumLaplaceFormRZ
     variable = ux
     u = ux
     v = uy
-    p = p
+    pressure = p
     component = 0
   [../]
   [./uy_momentum]
@@ -106,7 +106,7 @@ ymax=100
     variable = uy
     u = ux
     v = uy
-    p = p
+    pressure = p
     component = 1
   [../]
 []
@@ -190,9 +190,9 @@ ymax=100
   line_search = 'none'
   nl_max_its = 30
   l_max_its = 100
-  picard_max_its = 5
-  picard_rel_tol = 1e-6
-  picard_abs_tol = 1e-5
+  fixed_point_max_its = 5
+  fixed_point_rel_tol = 1e-6
+  fixed_point_abs_tol = 1e-5
   dtmin = 1e-2
   [./TimeStepper]
     type = IterationAdaptiveDT

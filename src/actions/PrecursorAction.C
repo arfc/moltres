@@ -459,12 +459,11 @@ PrecursorAction::addMultiAppTransfer(const std::string & var_name)
   {
     std::string transfer_name = "toloop_Transfer_" + var_name + "_" + _object_suffix;
     InputParameters params = _factory.getValidParams("MultiAppPostprocessorTransfer");
-    params.set<MultiAppName>("multi_app") = getParam<MultiAppName>("multi_app");
+    params.set<MultiAppName>("to_multi_app") = getParam<MultiAppName>("multi_app");
     params.set<PostprocessorName>("from_postprocessor") =
         "Outlet_Average_" + var_name + "_" + _object_suffix;
     params.set<PostprocessorName>("to_postprocessor") =
         "Inlet_Average_" + var_name + "_" + _object_suffix;
-    params.set<MultiMooseEnum>("direction") = "to_multiapp";
 
     _problem->addTransfer("MultiAppPostprocessorTransfer", transfer_name, params);
   }
@@ -473,12 +472,11 @@ PrecursorAction::addMultiAppTransfer(const std::string & var_name)
   {
     std::string transfer_name = "fromloop_Transfer_" + var_name + "_" + _object_suffix;
     InputParameters params = _factory.getValidParams("MultiAppPostprocessorTransfer");
-    params.set<MultiAppName>("multi_app") = getParam<MultiAppName>("multi_app");
+    params.set<MultiAppName>("from_multi_app") = getParam<MultiAppName>("multi_app");
     params.set<PostprocessorName>("from_postprocessor") =
         "Outlet_Average_" + var_name + "_" + _object_suffix;
     params.set<PostprocessorName>("to_postprocessor") =
         "Inlet_Average_" + var_name + "_" + _object_suffix;
-    params.set<MultiMooseEnum>("direction") = "from_multiapp";
     params.set<MooseEnum>("reduction_type") = "average";
 
     _problem->addTransfer("MultiAppPostprocessorTransfer", transfer_name, params);

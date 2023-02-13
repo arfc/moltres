@@ -52,7 +52,7 @@ VariableNotAMooseObjectAction::addVariable(const std::string & var_name)
 {
   std::set<SubdomainID> blocks = getSubdomainIDs();
   auto fe_type = AddVariableAction::feType(_pars);
-  auto type = AddVariableAction::determineType(fe_type, 1);
+  auto type = AddVariableAction::variableType(fe_type);
   auto var_params = _factory.getValidParams(type);
   var_params.applySpecificParameters(_pars, {"family", "order"});
   var_params.set<std::vector<Real>>("scaling") = {getParam<Real>("scaling")};
