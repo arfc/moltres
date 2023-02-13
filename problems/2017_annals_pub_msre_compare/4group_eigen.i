@@ -10,13 +10,9 @@
 []
 
 [Mesh]
+  coord_type = RZ
   file = '2d_lattice_structured.msh'
 []
-
-[Problem]
-  coord_type = RZ
-[]
-
 
 [Nt]
   var_name_base = group

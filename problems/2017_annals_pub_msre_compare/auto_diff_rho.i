@@ -19,11 +19,8 @@ H=162.56
 []
 
 [Mesh]
-  file = '2d_lattice_structured.msh'
-[]
-
-[Problem]
   coord_type = RZ
+  file = '2d_lattice_structured.msh'
 []
 
 [Variables]

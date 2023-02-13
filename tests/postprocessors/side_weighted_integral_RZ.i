@@ -1,4 +1,5 @@
 [Mesh]
+  coord_type = RZ
   [./box]
     type = GeneratedMeshGenerator
     dim = 2
@@ -9,10 +10,6 @@
     ymin = 0
     ymax = 1
   [../]
-[]
-
-[Problem]
-  coord_type = RZ
 []
 
 [Variables]
