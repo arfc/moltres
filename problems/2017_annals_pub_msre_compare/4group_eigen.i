@@ -38,14 +38,10 @@
 []
 
 [Executioner]
-  type = InversePowerMethod
-  max_power_iterations = 50
-  xdiff = 'group1diff'
-
-  bx_norm = 'bnorm'
-  k0 = 1.5
-  l_max_its = 100
-
+  type = Eigenvalue
+  eigen_tol = 1e-6
+  normalization = bnorm
+  normal_factor = 1
   solve_type = 'PJFNK'
   # solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
