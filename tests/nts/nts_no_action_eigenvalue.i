@@ -9,15 +9,77 @@
 []
 
 [Mesh]
-  coord_type = RZ
   file = '2d_lattice_structured_smaller.msh'
 []
 
-[Nt]
-  var_name_base = group
-  vacuum_boundaries = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
-  create_temperature_var = false
-  eigen = true
+[Problem]
+  coord_type = RZ
+[]
+
+[Variables]
+  [group1]
+  []
+  [group2]
+  []
+[]
+
+[Kernels]
+  # Neutronics
+  [diff_group1]
+    type = GroupDiffusion
+    variable = group1
+    group_number = 1
+  []
+  [sigma_r_group1]
+    type = SigmaR
+    variable = group1
+    group_number = 1
+  []
+  [fission_source_group1]
+    type = CoupledFissionKernel
+    variable = group1
+    group_number = 1
+    extra_vector_tags = 'eigen'
+  []
+  [inscatter_group1]
+    type = InScatter
+    variable = group1
+    group_number = 1
+  []
+  [diff_group2]
+    type = GroupDiffusion
+    variable = group2
+    group_number = 2
+  []
+  [sigma_r_group2]
+    type = SigmaR
+    variable = group2
+    group_number = 2
+  []
+  [fission_source_group2]
+    type = CoupledFissionKernel
+    variable = group2
+    group_number = 2
+    extra_vector_tags = 'eigen'
+  []
+  [inscatter_group2]
+    type = InScatter
+    variable = group2
+    group_number = 2
+  []
+[]
+
+[BCs]
+  [vacuum_group1]
+    type = VacuumConcBC
+    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
+    variable = group1
+  []
+  [vacuum_group2]
+    type = VacuumConcBC
+    boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
+    variable = group2
+  []
 []
 
 [Materials]
@@ -37,8 +99,10 @@
 
 [Executioner]
   type = Eigenvalue
+  initial_eigenvalue = 1
   eigen_tol = 1e-6
-  solve_type = 'PJFNK'
+
+  solve_type = PJFNK
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   petsc_options_iname = '-pc_type -sub_pc_type'
   petsc_options_value = 'asm lu'
@@ -94,6 +158,20 @@
     execute_on = 'linear timestep_end'
     use_displaced_mesh = false
   []
+  [multiplication_factor]
+    type = VectorPostprocessorComponent
+    index = 0
+    vector_name = 'eigen_values_real'
+    vectorpostprocessor = eigenvalues
+  []
+[]
+
+[VectorPostprocessors]
+  [./eigenvalues]
+    type = Eigenvalues
+    inverse_eigenvalue = true
+    contains_complete_history = true
+  []
 []
 
 [Outputs]
@@ -101,6 +179,9 @@
   print_linear_residuals = true
   [out]
     type = Exodus
+  []
+  [csv]
+    type = CSV
   []
 []
 
