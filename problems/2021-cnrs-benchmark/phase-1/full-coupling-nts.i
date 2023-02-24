@@ -13,11 +13,11 @@
   type = GeneratedMesh
   dim = 2
 
-  nx = 200
-  ny = 200
+#  nx = 200
+#  ny = 200
   ## Use a 40-by-40 mesh instead if running on a desktop/small cluster
-  #    nx = 40
-  #    ny = 40
+  nx = 40
+  ny = 40
 
   xmin = 0
   xmax = 200
@@ -27,32 +27,32 @@
 []
 
 [Problem]
-  type = FEProblem
+#  type = FEProblem
 []
 
 [Nt]
   var_name_base = group
   vacuum_boundaries = 'bottom left right top'
   create_temperature_var = false
-  transient = false
+#  transient = false
   eigen = true
-  scaling = 1e3
+#  scaling = 1e3
 []
 
 [Precursors]
   [pres]
     var_name_base = pre
-    outlet_boundaries = 'bottom'
+    outlet_boundaries = ''
     constant_velocity_values = false
-    uvel = vel_x
-    vvel = vel_y
+    uvel = velx
+    vvel = vely
     nt_exp_form = false
     family = MONOMIAL
     order = CONSTANT
     loop_precursors = false
     transient = false
     eigen = true
-    scaling = 1e3
+#    scaling = 1e3
   []
 []
 
@@ -62,11 +62,11 @@
     order = FIRST
     initial_condition = 900
   []
-  [vel_x]
+  [velx]
     family = LAGRANGE
     order = FIRST
   []
-  [vel_y]
+  [vely]
     family = LAGRANGE
     order = FIRST
   []
@@ -78,10 +78,10 @@
 
 [AuxKernels]
   [heat_source]
-    type = FissionHeatSourceAux
+    type = FissionHeatSourceTransientAux
     variable = heat
-    tot_fission_heat = powernorm
-    power = 1e7
+#    tot_fission_heat = powernorm
+#    power = 1e7
   []
 []
 
@@ -94,32 +94,47 @@
 []
 
 [Executioner]
-  type = InversePowerMethod
-  max_power_iterations = 50
-
-  # fission power normalization
-  # 1e7 corresponds to 1 GW / 100cm
-  # Change to 2e6, 4e6, 6e6 or 8e6 for different power output
-  # at 0.2GW, 0.4GW, 0.6GW or 0.8GW
-  normalization = 'powernorm'
-  normal_factor = 1e7 # Watts, 1e9 / 100
-
-  xdiff = 'group1diff'
-  bx_norm = 'bnorm'
-  k0 = 1.00400
+  type = Eigenvalue
+  eigen_problem_type = HERMITIAN
+  eigen_tol = 1e-6
   l_max_its = 100
-  eig_check_tol = 1e-6
-
-  solve_type = 'NEWTON'
+  nl_abs_tol = 1e-12
+  normalization = 'powernorm'
+  normal_factor = 1e7
+  automatic_scaling = true
+  compute_scaling_once = false
+  resid_vs_jac_scaling_param = 0.1
+  scaling_group_variables = 'group1 group2 group3 group4 group5 group6; pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8'
+  solve_type = 'PJFNK'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_gasm_overlap -sub_pc_factor_shift_type -pc_gasm_blocks -sub_pc_factor_mat_solver_type'
-  petsc_options_value = 'gasm     lu           200                1                NONZERO                   16              superlu_dist'
-
-  ## Use the settings below instead if running on a desktop/small cluster
-  #  petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type'
-  #  petsc_options_value = 'asm      lu           200                1               NONZERO'
-
-  line_search = none
+  petsc_options_iname = '-pc_type -pc_factor_mat_solver_type'
+  petsc_options_value = 'lu superlu_dist'
+#  type = InversePowerMethod
+#  max_power_iterations = 50
+#
+#  # fission power normalization
+#  # 1e7 corresponds to 1 GW / 100cm
+#  # Change to 2e6, 4e6, 6e6 or 8e6 for different power output
+#  # at 0.2GW, 0.4GW, 0.6GW or 0.8GW
+#  normalization = 'powernorm'
+#  normal_factor = 1e7 # Watts, 1e9 / 100
+#
+#  xdiff = 'group1diff'
+#  bx_norm = 'bnorm'
+#  k0 = 1.00400
+#  l_max_its = 100
+#  eig_check_tol = 1e-6
+#
+#  solve_type = 'NEWTON'
+#  petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
+#  petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_gasm_overlap -sub_pc_factor_shift_type -pc_gasm_blocks -sub_pc_factor_mat_solver_type'
+#  petsc_options_value = 'gasm     lu           200                1                NONZERO                   16              superlu_dist'
+#
+#  ## Use the settings below instead if running on a desktop/small cluster
+#  #  petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type'
+#  #  petsc_options_value = 'asm      lu           200                1               NONZERO'
+#
+#  line_search = none
 []
 
 [Preconditioning]
@@ -130,6 +145,11 @@
 []
 
 [Postprocessors]
+  [max_temp]
+    type = NodalExtremeValue
+    value_type = max
+    variable = temp
+  []
   [bnorm]
     type = ElmIntegTotFissNtsPostprocessor
     execute_on = linear

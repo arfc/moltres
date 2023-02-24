@@ -7,7 +7,7 @@ alpha = 1       # SUPG stabilization parameter
 t_alpha = 2e-4  # K-1, Thermal expansion coefficient
 
 [GlobalParams]
-  use_exp_form = false
+#  use_exp_form = false
   temperature = temp
   integrate_p_by_parts = true
 [../]
@@ -17,11 +17,11 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
     type = GeneratedMeshGenerator
     dim = 2
 
-    nx = 200
-    ny = 200
-## Use a 40-by-40 mesh instead if running on a desktop/small cluster
-#    nx = 40
-#    ny = 40
+#    nx = 200
+#    ny = 200
+# Use a 40-by-40 mesh instead if running on a desktop/small cluster
+    nx = 40
+    ny = 40
 
     xmin = 0
     xmax = 200
@@ -45,6 +45,7 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
   [./temp]
     family = LAGRANGE
     order = FIRST
+    initial_condition = 900
     scaling = 1e-3
   [../]
   [./vel]
@@ -58,11 +59,11 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
 []
 
 [AuxVariables]
-  [./vel_x]
+  [./velx]
     family = LAGRANGE
     order = FIRST
   [../]
-  [./vel_y]
+  [./vely]
     family = LAGRANGE
     order = FIRST
   [../]
@@ -151,15 +152,15 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
 []
 
 [AuxKernels]
-  [./vel_x]
+  [./velx]
     type = VectorVariableComponentAux
-    variable = vel_x
+    variable = velx
     vector_variable = vel
     component = 'x'
   [../]
-  [./vel_y]
+  [./vely]
     type = VectorVariableComponentAux
-    variable = vel_y
+    variable = vely
     vector_variable = vel
     component = 'y'
   [../]
@@ -185,7 +186,7 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
     type = VectorDirichletBC
     variable = vel
     boundary = 'top'
-    # '50 0 0' corresponds to vel_x = 50 cm s-1 along the top boundary.
+    # '50 0 0' corresponds to velx = 50 cm s-1 along the top boundary.
     # Change to 10, 20, 30, 40 for different velocity boundary conditions
     # at U_lid = 0.1, 0.2, 0.3, 0.4 m s-1.
     values = '50 0 0'
@@ -235,7 +236,7 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
   nl_abs_tol = 1e-8
 
   dtmin = 1e-1
-  dtmax = 10
+  dtmax = 50
   steady_state_detection = true
   [./TimeStepper]
     type = IterationAdaptiveDT
@@ -279,19 +280,19 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
     source_variable = temp
     variable = temp
   [../]
-  [./to_sub_vel_x]
+  [./to_sub_velx]
     type = MultiAppProjectionTransfer
     direction = to_multiapp
     multi_app = ntsApp
-    source_variable = vel_x
-    variable = vel_x
+    source_variable = velx
+    variable = velx
   [../]
-  [./to_sub_vel_y]
+  [./to_sub_vely]
     type = MultiAppProjectionTransfer
     direction = to_multiapp
     multi_app = ntsApp
-    source_variable = vel_y
-    variable = vel_y
+    source_variable = vely
+    variable = vely
   [../]
   [./from_sub]
     type = MultiAppProjectionTransfer
