@@ -336,8 +336,6 @@ NtAction::addDelayedNeutronSource(const unsigned & op, const std::string & var_n
   params.applySpecificParameters(parameters(), include);
   params.set<unsigned int>("num_precursor_groups") = _num_precursor_groups;
   params.set<Real>("eigenvalue_scaling") = getParam<Real>("eigenvalue_scaling");
-  if (getParam<bool>("eigen"))
-    params.set<std::vector<TagName>>("extra_vector_tags") = {"eigen"};
   std::string kernel_name = "DelayedNeutronSource_" + var_name;
   _problem->addKernel("DelayedNeutronSource", kernel_name, params);
 }

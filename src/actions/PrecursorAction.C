@@ -195,6 +195,8 @@ PrecursorAction::addPrecursorSource(const unsigned & op, const std::string & var
   std::vector<std::string> include = {"temperature", "group_fluxes"};
   params.applySpecificParameters(parameters(), include);
   params.set<bool>("use_exp_form") = getParam<bool>("nt_exp_form");
+  if (getParam<bool>("eigen"))
+    params.set<std::vector<TagName>>("extra_vector_tags") = {"eigen"};
 
   std::string kernel_name = "PrecursorSource_" + var_name + "_" + _object_suffix;
   _problem->addKernel("PrecursorSource", kernel_name, params);
