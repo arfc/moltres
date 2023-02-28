@@ -125,7 +125,6 @@ class openmc_xs:
 
         tally.load_from_statepoint(sp)
         df = tally.get_pandas_dataframe()
-        df = df.loc[df["legendre"] == "P1"]
         return list(df["mean"])
 
     def get_fisse(self, sp, fissionxs, kappa):
@@ -300,10 +299,10 @@ class openmc_xs:
                 name=str(id) + "_beta",
             )
             domain_dict[id]["chi"] = mgxs.Chi(
-                domain=domain, groups=groups, name=str(id) + "_chi"
+                domain=domain, energy_groups=groups, name=str(id) + "_chi"
             )
             domain_dict[id]["chiprompt"] = mgxs.Chi(
-                domain=domain, groups=groups,
+                domain=domain, energy_groups=groups,
                 name=str(id) + "_chiprompt", prompt=True)
             domain_dict[id]["chidelayed"] = mgxs.ChiDelayed(
                 domain=domain, energy_groups=groups,
@@ -317,29 +316,29 @@ class openmc_xs:
             domain_dict[id]["diffusioncoefficient"] = \
                 mgxs.DiffusionCoefficient(
                 domain=domain,
-                groups=groups,
+                energy_groups=groups,
                 name=str(id) +
                 "_diffusioncoefficient",
             )
             domain_dict[id]["scatterprobmatrix"] = \
                 mgxs.ScatterProbabilityMatrix(
-                domain=domain, groups=groups,
+                domain=domain, energy_groups=groups,
                 name=str(id) + "_scatterprobmatrix"
             )
             domain_dict[id]["scatterxs"] = mgxs.ScatterXS(
-                domain=domain, groups=groups,
+                domain=domain, energy_groups=groups,
                 name=str(id) + "_scatterxs", nu=True)
             domain_dict[id]["inversevelocity"] = mgxs.InverseVelocity(
-                domain=domain, groups=groups, name=str(id) + "_inversevelocity"
+                domain=domain, energy_groups=groups, name=str(id) + "_inversevelocity"
             )
             domain_dict[id]["fissionxs"] = mgxs.FissionXS(
-                domain=domain, groups=groups, name=str(id) + "_fissionxs"
+                domain=domain, energy_groups=groups, name=str(id) + "_fissionxs"
             )
             domain_dict[id]["kappafissionxs"] = mgxs.KappaFissionXS(
-                domain=domain, groups=groups, name=str(id) + "_kappafissionxs"
+                domain=domain, energy_groups=groups, name=str(id) + "_kappafissionxs"
             )
             domain_dict[id]["absorptionxs"] = mgxs.AbsorptionXS(
-                domain=domain, groups=groups, name=str(id) + "_absorptionxs"
+                domain=domain, energy_groups=groups, name=str(id) + "_absorptionxs"
             )
             domain_dict[id]["tally"] = openmc.Tally(name=str(id) + " tally")
             if isinstance(domain, openmc.Material):
