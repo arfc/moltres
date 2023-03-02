@@ -33,6 +33,9 @@ class openmc_xs:
     def __init__(self, xs_filename, file_num, xs_summary):
         sp = openmc.StatePoint(xs_filename, autolink=False)
         summary = openmc.Summary(xs_summary)
+        if (sp.version < (0, 13, 2)) or (summary.version < (0, 13, 2)):
+            raise Exception("Your OpenMC statepoint or summary files is not" +
+                            "generated from OpenMC v0.13.2 or later.")
         sp.link_with_summary(summary)
         domain_dict = openmc_ref_modules[file_num].domain_dict
         num_burn = 1
@@ -52,44 +55,33 @@ class openmc_xs:
                 self.xs_lib[i][j - 1] = {}
                 self.xs_lib[i][j - 1][k] = {}
                 self.xs_lib[i][j - 1][k]["BETA_EFF"] = self.mgxs_tallies(
-                    sp, domain_dict[j]["beta"]
-                )
+                    sp, domain_dict[j]["beta"])
                 self.xs_lib[i][j - 1][k]["CHI_T"] = self.mgxs_tallies(
-                    sp, domain_dict[j]["chi"]
-                )
+                    sp, domain_dict[j]["chi"])
                 self.xs_lib[i][j - 1][k]["CHI_P"] = self.mgxs_tallies(
-                    sp, domain_dict[j]["chiprompt"]
-                )
+                    sp, domain_dict[j]["chiprompt"])
                 self.xs_lib[i][j - 1][k]["CHI_D"] = self.mgxs_tallies(
-                    sp, domain_dict[j]["chidelayed"]
-                )
+                    sp, domain_dict[j]["chidelayed"])
                 self.xs_lib[i][j - 1][k]["DECAY_CONSTANT"] = self.mgxs_tallies(
-                    sp, domain_dict[j]["decayrate"]
-                )
+                    sp, domain_dict[j]["decayrate"])
                 self.xs_lib[i][j - 1][k]["DIFFCOEF"] = self.get_diffcoeff(
-                    sp, domain_dict[j]["diffusioncoefficient"]
-                )
+                    sp, domain_dict[j]["diffusioncoefficient"])
                 self.xs_lib[i][j - 1][k]["FISSE"] = self.get_fisse(
                     sp, domain_dict[j]["fissionxs"],
-                    domain_dict[j]["kappafissionxs"]
-                )
+                    domain_dict[j]["kappafissionxs"])
                 self.xs_lib[i][j - 1][k]["GTRANSFXS"] = self.get_scatter(
                     sp, domain_dict[j]["scatterprobmatrix"],
-                    domain_dict[j]["scatterxs"]
-                )
+                    domain_dict[j]["scatterxs"])
                 self.xs_lib[i][j - 1][k]["NSF"] = self.get_nsf(sp, j)
                 self.xs_lib[i][j - 1][k]["RECIPVEL"] = self.mgxs_tallies(
-                    sp, domain_dict[j]["inversevelocity"]
-                )
+                    sp, domain_dict[j]["inversevelocity"])
                 self.xs_lib[i][j - 1][k]["FISSXS"] = self.mgxs_tallies(
-                    sp, domain_dict[j]["fissionxs"]
-                )
+                    sp, domain_dict[j]["fissionxs"])
                 self.xs_lib[i][j - 1][k]["REMXS"] = self.get_remxs(
                     sp,
                     domain_dict[j]["scatterprobmatrix"],
                     domain_dict[j]["scatterxs"],
-                    domain_dict[j]["absorptionxs"],
-                )
+                    domain_dict[j]["absorptionxs"])
         return
 
     def mgxs_tallies(self, sp, tally):
@@ -246,14 +238,12 @@ class openmc_xs:
                 prob_matrix_df["group in"] == i]
             out_scatter_prob = np.array(
                 out_scatter_prob.loc[out_scatter_prob["group out"] != i]
-                ["mean"]
-            )
+                ["mean"])
             remxs.append(sum(out_scatter_prob) * scatter + absxs)
         return remxs
 
-    def generate_openmc_tallies_xml(
-        energy_groups, delayed_groups, domains, domain_ids, tallies_file
-    ):
+    def generate_openmc_tallies_xml(energy_groups, delayed_groups, domains,
+                                    domain_ids, tallies_file):
         """
         Users should use this function to generate the OpenMC tallies file
         for group constant generation.
@@ -281,6 +271,9 @@ class openmc_xs:
 
         import openmc
         import openmc.mgxs as mgxs
+        if float(openmc.__version__[2:]) < 13.2:
+            raise Exception("moltres_xs.py is compatible with OpenMC " +
+                            "v0.13.2 or later only.")
 
         groups = mgxs.EnergyGroups()
         groups.group_edges = np.array(energy_groups)
@@ -296,11 +289,9 @@ class openmc_xs:
                 domain=domain,
                 energy_groups=big_group,
                 delayed_groups=delayed_groups,
-                name=str(id) + "_beta",
-            )
+                name=str(id) + "_beta")
             domain_dict[id]["chi"] = mgxs.Chi(
-                domain=domain, energy_groups=groups, name=str(id) + "_chi"
-            )
+                domain=domain, energy_groups=groups, name=str(id) + "_chi")
             domain_dict[id]["chiprompt"] = mgxs.Chi(
                 domain=domain, energy_groups=groups,
                 name=str(id) + "_chiprompt", prompt=True)
@@ -311,35 +302,32 @@ class openmc_xs:
                 domain=domain,
                 energy_groups=big_group,
                 delayed_groups=delayed_groups,
-                name=str(id) + "_decayrate",
-            )
+                name=str(id) + "_decayrate")
             domain_dict[id]["diffusioncoefficient"] = \
                 mgxs.DiffusionCoefficient(
-                domain=domain,
-                energy_groups=groups,
-                name=str(id) +
-                "_diffusioncoefficient",
-            )
+                    domain=domain,
+                    energy_groups=groups,
+                    name=str(id) +
+                    "_diffusioncoefficient")
             domain_dict[id]["scatterprobmatrix"] = \
                 mgxs.ScatterProbabilityMatrix(
-                domain=domain, energy_groups=groups,
-                name=str(id) + "_scatterprobmatrix"
-            )
+                    domain=domain, energy_groups=groups,
+                    name=str(id) + "_scatterprobmatrix")
             domain_dict[id]["scatterxs"] = mgxs.ScatterXS(
                 domain=domain, energy_groups=groups,
                 name=str(id) + "_scatterxs", nu=True)
             domain_dict[id]["inversevelocity"] = mgxs.InverseVelocity(
-                domain=domain, energy_groups=groups, name=str(id) + "_inversevelocity"
-            )
+                domain=domain, energy_groups=groups,
+                name=str(id) + "_inversevelocity")
             domain_dict[id]["fissionxs"] = mgxs.FissionXS(
-                domain=domain, energy_groups=groups, name=str(id) + "_fissionxs"
-            )
+                domain=domain, energy_groups=groups,
+                name=str(id) + "_fissionxs")
             domain_dict[id]["kappafissionxs"] = mgxs.KappaFissionXS(
-                domain=domain, energy_groups=groups, name=str(id) + "_kappafissionxs"
-            )
+                domain=domain, energy_groups=groups,
+                name=str(id) + "_kappafissionxs")
             domain_dict[id]["absorptionxs"] = mgxs.AbsorptionXS(
-                domain=domain, energy_groups=groups, name=str(id) + "_absorptionxs"
-            )
+                domain=domain, energy_groups=groups,
+                name=str(id) + "_absorptionxs")
             domain_dict[id]["tally"] = openmc.Tally(name=str(id) + " tally")
             if isinstance(domain, openmc.Material):
                 domain_dict[id]["filter"] = openmc.MaterialFilter(domain)
@@ -349,12 +337,10 @@ class openmc_xs:
                 domain_dict[id]["filter"] = openmc.MeshFilter(domain)
             domain_dict[id]["tally"].filters = [
                 domain_dict[id]["filter"],
-                energy_filter,
-            ]
+                energy_filter]
             domain_dict[id]["tally"].scores = [
                 "nu-fission",
-                "flux",
-            ]
+                "flux"]
             tallies_file += domain_dict[id]["beta"].tallies.values()
             tallies_file += domain_dict[id]["chi"].tallies.values()
             tallies_file += domain_dict[id]["chiprompt"].tallies.values()
@@ -479,7 +465,7 @@ class scale_xs:
                     if self.catch[key].multi_line_flag:
                         if (key == 'Betas'):
                             beta_temp = self.get_multi_line_values(k)
-                        elif(key == 'Lambdas'):
+                        elif (key == 'Lambdas'):
                             lam_temp = self.get_multi_line_values(k)
                         else:
                             self.xs_lib[L][m][n][self.catch[key].xs_entry[0]]\
@@ -504,7 +490,7 @@ class scale_xs:
             for ent in val:
                 try:
                     values.append(float(ent))
-                except(ValueError):
+                except ValueError:
                     return values
 
 
@@ -639,12 +625,13 @@ if __name__ == '__main__':
                     files[i] = scale_xs(XS_in)
                 elif "serpent" in XS_t:
                     from pyne import serpent
-
                     files[i] = serpent_xs(XS_in)
                 elif "openmc" in XS_t:
                     XS_ref, XS_sum = inputs[2], inputs[3]
                     import openmc
-                    import openmc.mgxs as mgxs
+                    if float(openmc.__version__[2:]) < 13.2:
+                        raise Exception("moltres_xs.py is compatible with " +
+                                        "OpenMC v0.13.2 or later only.")
                     sys.path.append('./')
                     openmc_ref_modules = {}
                     openmc_ref_modules[i] = importlib.import_module(
