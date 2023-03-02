@@ -33,9 +33,6 @@ class openmc_xs:
     def __init__(self, xs_filename, file_num, xs_summary):
         sp = openmc.StatePoint(xs_filename, autolink=False)
         summary = openmc.Summary(xs_summary)
-        if (sp.version < (0, 13, 2)) or (summary.version < (0, 13, 2)):
-            raise Exception("Your OpenMC statepoint or summary files is not" +
-                            "generated from OpenMC v0.13.2 or later.")
         sp.link_with_summary(summary)
         domain_dict = openmc_ref_modules[file_num].domain_dict
         num_burn = 1
