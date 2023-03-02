@@ -1,6 +1,6 @@
 import openmc
 import sys
-sys.path.insert(1, '../')
+sys.path.insert(1, '../../python/')
 from moltres_xs import openmc_xs  # noqa: E402
 
 fuel_mat = openmc.Material(name='fuel', material_id=1)
@@ -21,7 +21,7 @@ geom = openmc.Geometry([fuel_core])
 geom.export_to_xml()
 
 settings = openmc.Settings()
-settings.batches = 200
+settings.batches = 100
 settings.inactive = 10
 settings.particles = 100000
 settings.temperature = {"multipole": True, "method": "interpolation"}

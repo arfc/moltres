@@ -1,6 +1,6 @@
 import openmc
 import sys
-sys.path.insert(1, '../')
+sys.path.insert(1, '../../python/')
 from moltres_xs import openmc_xs  # noqa: E402
 
 fuel_mat = openmc.Material(name='fuel', material_id=1)
