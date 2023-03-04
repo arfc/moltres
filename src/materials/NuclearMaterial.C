@@ -56,31 +56,18 @@ NuclearMaterial::NuclearMaterial(const InputParameters & parameters)
     _interp_type(getParam<MooseEnum>("interp_type"))
 
 {
-  std::vector<std::string> xsec_names{"REMXS",
-                                      "FISSXS",
-                                      "NSF",
-                                      "FISSE",
-                                      "DIFFCOEF",
-                                      "RECIPVEL",
-                                      "CHI_T",
-                                      "CHI_P",
-                                      "CHI_D",
-                                      "GTRANSFXS",
-                                      "BETA_EFF",
-                                      "DECAY_CONSTANT"};
-
   _num_groups = getParam<unsigned>("num_groups");
   _num_precursor_groups = getParam<unsigned>("num_precursor_groups");
 
-  auto n = xsec_names.size();
+  auto n = _xsec_names.size();
   for (decltype(n) j = 0; j < n; ++j)
   {
-    if (xsec_names[j].compare("GTRANSFXS") == 0)
-      _vec_lengths[xsec_names[j]] = _num_groups * _num_groups;
-    else if (xsec_names[j].compare("BETA_EFF") == 0 || xsec_names[j].compare("DECAY_CONSTANT") == 0)
-      _vec_lengths[xsec_names[j]] = _num_precursor_groups;
+    if (_xsec_names[j].compare("GTRANSFXS") == 0)
+      _vec_lengths[_xsec_names[j]] = _num_groups * _num_groups;
+    else if (_xsec_names[j].compare("BETA_EFF") == 0 || _xsec_names[j].compare("DECAY_CONSTANT") == 0)
+      _vec_lengths[_xsec_names[j]] = _num_precursor_groups;
     else
-      _vec_lengths[xsec_names[j]] = _num_groups;
+      _vec_lengths[_xsec_names[j]] = _num_groups;
   }
   _file_map["REMXS"] = "REMXS";
   _file_map["NSF"] = "NSF";
@@ -100,50 +87,42 @@ NuclearMaterial::NuclearMaterial(const InputParameters & parameters)
 void
 NuclearMaterial::dummyComputeQpProperties()
 {
-  auto dummy_temp = _XsTemperature[0];
   for (decltype(_num_groups) i = 0; i < _num_groups; ++i)
   {
-    _remxs[_qp][i] = _xsec_linear_interpolators["REMXS"][i].sample(dummy_temp);
-    _fissxs[_qp][i] = _xsec_linear_interpolators["FISSXS"][i].sample(dummy_temp);
-    _nsf[_qp][i] = _xsec_linear_interpolators["NSF"][i].sample(dummy_temp);
-    _fisse[_qp][i] = _xsec_linear_interpolators["FISSE"][i].sample(dummy_temp) * 1e6 *
-                     1.6e-19; // convert from MeV to Joules
-    _diffcoef[_qp][i] = _xsec_linear_interpolators["DIFFCOEF"][i].sample(dummy_temp);
-    _recipvel[_qp][i] = _xsec_linear_interpolators["RECIPVEL"][i].sample(dummy_temp);
-    _chi_t[_qp][i] = _xsec_linear_interpolators["CHI_T"][i].sample(dummy_temp);
-    _chi_p[_qp][i] = _xsec_linear_interpolators["CHI_P"][i].sample(dummy_temp);
-    _chi_d[_qp][i] = _xsec_linear_interpolators["CHI_D"][i].sample(dummy_temp);
-    _d_remxs_d_temp[_qp][i] = _xsec_linear_interpolators["REMXS"][i].sampleDerivative(dummy_temp);
-    _d_fissxs_d_temp[_qp][i] = _xsec_linear_interpolators["FISSXS"][i].sampleDerivative(dummy_temp);
-    _d_nsf_d_temp[_qp][i] = _xsec_linear_interpolators["NSF"][i].sampleDerivative(dummy_temp);
-    _d_fisse_d_temp[_qp][i] = _xsec_linear_interpolators["FISSE"][i].sampleDerivative(dummy_temp) *
-                              1e6 * 1.6e-19; // convert from MeV to Joules
-    _d_diffcoef_d_temp[_qp][i] =
-        _xsec_linear_interpolators["DIFFCOEF"][i].sampleDerivative(dummy_temp);
-    _d_recipvel_d_temp[_qp][i] =
-        _xsec_linear_interpolators["RECIPVEL"][i].sampleDerivative(dummy_temp);
-    _d_chi_t_d_temp[_qp][i] = _xsec_linear_interpolators["CHI_T"][i].sampleDerivative(dummy_temp);
-    _d_chi_p_d_temp[_qp][i] = _xsec_linear_interpolators["CHI_P"][i].sampleDerivative(dummy_temp);
-    _d_chi_d_d_temp[_qp][i] = _xsec_linear_interpolators["CHI_D"][i].sampleDerivative(dummy_temp);
+    _remxs[_qp][i] = _xsec_map["REMXS"][i][0];
+    _fissxs[_qp][i] = _xsec_map["FISSXS"][i][0];
+    _nsf[_qp][i] = _xsec_map["NSF"][i][0];
+    _fisse[_qp][i] = _xsec_map["FISSE"][i][0] * 1e6 * 1.6e-19; // convert from MeV to Joules
+    _diffcoef[_qp][i] = _xsec_map["DIFFCOEF"][i][0];
+    _recipvel[_qp][i] = _xsec_map["RECIPVEL"][i][0];
+    _chi_t[_qp][i] = _xsec_map["CHI_T"][i][0];
+    _chi_p[_qp][i] = _xsec_map["CHI_P"][i][0];
+    _chi_d[_qp][i] = _xsec_map["CHI_D"][i][0];
+    _d_remxs_d_temp[_qp][i] = _xsec_map["REMXS"][i][0];
+    _d_fissxs_d_temp[_qp][i] = _xsec_map["FISSXS"][i][0];
+    _d_nsf_d_temp[_qp][i] = _xsec_map["NSF"][i][0];
+    _d_fisse_d_temp[_qp][i] = _xsec_map["FISSE"][i][0] * 1e6 * 1.6e-19; // convert from MeV to Joules
+    _d_diffcoef_d_temp[_qp][i] = _xsec_map["DIFFCOEF"][i][0];
+    _d_recipvel_d_temp[_qp][i] = _xsec_map["RECIPVEL"][i][0];
+    _d_chi_t_d_temp[_qp][i] = _xsec_map["CHI_T"][i][0];
+    _d_chi_p_d_temp[_qp][i] = _xsec_map["CHI_P"][i][0];
+    _d_chi_d_d_temp[_qp][i] = _xsec_map["CHI_D"][i][0];
   }
   for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
   {
-    _gtransfxs[_qp][i] = _xsec_linear_interpolators["GTRANSFXS"][i].sample(dummy_temp);
-    _d_gtransfxs_d_temp[_qp][i] =
-        _xsec_linear_interpolators["GTRANSFXS"][i].sampleDerivative(dummy_temp);
+    _gtransfxs[_qp][i] = _xsec_map["GTRANSFXS"][i][0];
+    _d_gtransfxs_d_temp[_qp][i] = _xsec_map["GTRANSFXS"][i][0];
   }
   _beta[_qp] = 0;
   _d_beta_d_temp[_qp] = 0;
   for (decltype(_num_groups) i = 0; i < _num_precursor_groups; ++i)
   {
-    _beta_eff[_qp][i] = _xsec_linear_interpolators["BETA_EFF"][i].sample(dummy_temp);
-    _d_beta_eff_d_temp[_qp][i] =
-        _xsec_linear_interpolators["BETA_EFF"][i].sampleDerivative(dummy_temp);
+    _beta_eff[_qp][i] = _xsec_map["BETA_EFF"][i][0];
+    _d_beta_eff_d_temp[_qp][i] = _xsec_map["BETA_EFF"][i][0];
     _beta[_qp] += _beta_eff[_qp][i];
     _d_beta_d_temp[_qp] += _d_beta_eff_d_temp[_qp][i];
-    _decay_constant[_qp][i] = _xsec_linear_interpolators["DECAY_CONSTANT"][i].sample(dummy_temp);
-    _d_decay_constant_d_temp[_qp][i] =
-        _xsec_linear_interpolators["DECAY_CONSTANT"][i].sampleDerivative(dummy_temp);
+    _decay_constant[_qp][i] = _xsec_map["DECAY_CONSTANT"][i][0];
+    _d_decay_constant_d_temp[_qp][i] = _xsec_map["DECAY_CONSTANT"][i][0];
   }
 }
 
