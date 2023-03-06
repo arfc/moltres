@@ -20,6 +20,10 @@ NuclearMaterial::validParams()
   params.addParam<bool>(
       "sss2_input", true, "Whether serpent 2 was used to generate the input files.");
   params.set<MooseEnum>("constant_on") = "NONE";
+
+  // the following two lines esentially make the two parameters optional
+  params.set<std::vector<std::string>>("prop_names") = std::vector<std::string>();
+  params.set<std::vector<Real>>("prop_values") = std::vector<Real>();
   return params;
 }
 
@@ -296,4 +300,40 @@ NuclearMaterial::linearComputeQpProperties()
     _d_decay_constant_d_temp[_qp][i] =
         _xsec_linear_interpolators["DECAY_CONSTANT"][i].sampleDerivative(_temperature[_qp]);
   }
+}
+
+void
+NuclearMaterial::preComputeQpProperties()
+{
+  for (unsigned int i = 0; i < _num_props; i++)
+    (*_properties[i])[_qp] = _prop_values[i];
+  _remxs[_qp].resize(_num_groups);
+  _fissxs[_qp].resize(_num_groups);
+  _nsf[_qp].resize(_num_groups);
+  _fisse[_qp].resize(_num_groups);
+  _diffcoef[_qp].resize(_num_groups);
+  _recipvel[_qp].resize(_num_groups);
+  _chi_t[_qp].resize(_num_groups);
+  _chi_p[_qp].resize(_num_groups);
+  _chi_d[_qp].resize(_num_groups);
+
+  _gtransfxs[_qp].resize(_num_groups * _num_groups);
+
+  _beta_eff[_qp].resize(_num_precursor_groups);
+  _decay_constant[_qp].resize(_num_precursor_groups);
+
+  _d_remxs_d_temp[_qp].resize(_num_groups);
+  _d_fissxs_d_temp[_qp].resize(_num_groups);
+  _d_nsf_d_temp[_qp].resize(_num_groups);
+  _d_fisse_d_temp[_qp].resize(_num_groups);
+  _d_diffcoef_d_temp[_qp].resize(_num_groups);
+  _d_recipvel_d_temp[_qp].resize(_num_groups);
+  _d_chi_t_d_temp[_qp].resize(_num_groups);
+  _d_chi_p_d_temp[_qp].resize(_num_groups);
+  _d_chi_d_d_temp[_qp].resize(_num_groups);
+
+  _d_gtransfxs_d_temp[_qp].resize(_num_groups * _num_groups);
+
+  _d_beta_eff_d_temp[_qp].resize(_num_precursor_groups);
+  _d_decay_constant_d_temp[_qp].resize(_num_precursor_groups);
 }

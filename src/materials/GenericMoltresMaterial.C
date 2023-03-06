@@ -32,10 +32,6 @@ GenericMoltresMaterial::validParams()
                         "greater than the peak power density set point, "
                         "the absorption cross section gets incremented by "
                         "this amount");
-
-  // the following two lines esentially make the two parameters optional
-  params.set<std::vector<std::string>>("prop_names") = std::vector<std::string>();
-  params.set<std::vector<Real>>("prop_values") = std::vector<Real>();
   return params;
 }
 
@@ -154,14 +150,17 @@ GenericMoltresMaterial::Construct(std::string & property_tables_root,
           for (decltype(o) k = 0; k < o; ++k)
             _xsec_linear_interpolators[_xsec_names[j]][k].setData(oldtemperature,
                                                                   _xsec_map["CHI_D"][k]);
+          break;
         case SPLINE:
           for (decltype(o) k = 0; k < o; ++k)
             _xsec_spline_interpolators[_xsec_names[j]][k].setData(oldtemperature,
                                                                   _xsec_map["CHI_D"][k]);
+          break;
         case MONOTONE_CUBIC:
           for (decltype(o) k = 0; k < o; ++k)
             _xsec_monotone_cubic_interpolators[_xsec_names[j]][k].setData(oldtemperature,
                                                                           _xsec_map["CHI_D"][k]);
+          break;
       }
       continue;
     }
@@ -177,37 +176,41 @@ GenericMoltresMaterial::Construct(std::string & property_tables_root,
       {
         if (!temperature.empty() && value < temperature.back())
         {
+          // Check if temperature values are in increasing order. Also errors out if wrong number
+          // of data values are provided.
           mooseError(
-              "The temperature values in your group constant files are not in increasing order or "
-              "the number of energy/precursor groups do not match the "
-              "num_groups/num_precursor_groups parameter per temperature value.");
+              "The temperature values in the " + _file_map[_xsec_names[j]] + " files are not in "
+              "increasing order, or the number of " + _file_map[_xsec_names[j]] + " values does "
+              "not match the num_groups/num_precursor_groups parameter.");
         }
         temperature.push_back(value);
         for (decltype(o) k = 0; k < o; ++k)
         {
           myfile >> value;
           if (myfile.eof())
-            mooseError("Number of group constant data values provided is less than the "
-                       "num_groups/num_precursor_groups parameter for " + _xsec_names[j] + ". "
-                       "Please check whether you're providing the correct group constant files.");
+            // Check if insufficient number of data values are provided for interp_type=none
+            mooseError(
+                "The number of " + _file_map[_xsec_names[j]] + " values does not match "
+                "the num_groups/num_precursor_groups parameter.");
           _xsec_map[_xsec_names[j]][k].push_back(value);
         }
       }
       tempLength = temperature.size();
       if (num_lines != tempLength)
-        mooseError("The number of energy/precursor groups do not match the "
-                   "num_groups/num_precursor_groups parameter per temperature value.");
+        // Catch edge cases occurring when the total number of values is divisible by an
+        // erroneous num_groups/num_precursor_groups parameter.
+        mooseError("The number of " + _file_map[_xsec_names[j]] + " values does not match "
+                   "the num_groups/num_precursor_groups parameter.");
       oldtemperature = temperature;
       switch (_interp_type)
       {
         case NONE:
           myfile >> value;
           if (!myfile.eof())
-            mooseError("Number of group constant data values provided is more than the "
-                       "num_groups/num_precursor_groups parameter for " + _xsec_names[j] + ". Please "
-                       "check whether you're providing the correct group constant files. If you wish to "
-                       "provide group constants at multiple temperatures, do not set 'interp_type=none'."
-                       );
+            // Reject if group constants provided at multiple temperatures for interp_type=none"
+            mooseError(
+                "The number of " + _file_map[_xsec_names[j]] + " values does not match "
+                "the num_groups/num_precursor_groups parameter.");
           break;
         case LINEAR:
           for (decltype(o) k = 0; k < o; ++k)
@@ -215,19 +218,24 @@ GenericMoltresMaterial::Construct(std::string & property_tables_root,
             _xsec_linear_interpolators[_xsec_names[j]][k].setData(temperature,
                                                                   _xsec_map[_xsec_names[j]][k]);
           }
+          break;
         case SPLINE:
           for (decltype(o) k = 0; k < o; ++k)
           {
             _xsec_spline_interpolators[_xsec_names[j]][k].setData(temperature,
                                                                   _xsec_map[_xsec_names[j]][k]);
           }
+          break;
         case MONOTONE_CUBIC:
+          if (tempLength < 3)
+            mooseError("Monotone cubic interpolation requires at least three data points.");
           for (decltype(o) k = 0; k < o; ++k)
           {
             _xsec_monotone_cubic_interpolators[_xsec_names[j]][k].setData(
                 temperature,
                 _xsec_map[_xsec_names[j]][k]);
           }
+          break;
       }
       myfile.close();
     }
@@ -549,33 +557,7 @@ GenericMoltresMaterial::leastSquaresComputeQpProperties()
 void
 GenericMoltresMaterial::computeQpProperties()
 {
-  for (unsigned int i = 0; i < _num_props; i++)
-    (*_properties[i])[_qp] = _prop_values[i];
-
-  _remxs[_qp].resize(_vec_lengths["REMXS"]);
-  _fissxs[_qp].resize(_vec_lengths["FISSXS"]);
-  _nsf[_qp].resize(_vec_lengths["NSF"]);
-  _fisse[_qp].resize(_vec_lengths["FISSE"]);
-  _diffcoef[_qp].resize(_vec_lengths["DIFFCOEF"]);
-  _recipvel[_qp].resize(_vec_lengths["RECIPVEL"]);
-  _chi_t[_qp].resize(_vec_lengths["CHI_T"]);
-  _chi_p[_qp].resize(_vec_lengths["CHI_P"]);
-  _chi_d[_qp].resize(_vec_lengths["CHI_D"]);
-  _gtransfxs[_qp].resize(_vec_lengths["GTRANSFXS"]);
-  _beta_eff[_qp].resize(_vec_lengths["BETA_EFF"]);
-  _decay_constant[_qp].resize(_vec_lengths["DECAY_CONSTANT"]);
-  _d_remxs_d_temp[_qp].resize(_vec_lengths["REMXS"]);
-  _d_fissxs_d_temp[_qp].resize(_vec_lengths["FISSXS"]);
-  _d_nsf_d_temp[_qp].resize(_vec_lengths["NSF"]);
-  _d_fisse_d_temp[_qp].resize(_vec_lengths["FISSE"]);
-  _d_diffcoef_d_temp[_qp].resize(_vec_lengths["DIFFCOEF"]);
-  _d_recipvel_d_temp[_qp].resize(_vec_lengths["RECIPVEL"]);
-  _d_chi_t_d_temp[_qp].resize(_vec_lengths["CHI_T"]);
-  _d_chi_p_d_temp[_qp].resize(_vec_lengths["CHI_P"]);
-  _d_chi_d_d_temp[_qp].resize(_vec_lengths["CHI_D"]);
-  _d_gtransfxs_d_temp[_qp].resize(_vec_lengths["GTRANSFXS"]);
-  _d_beta_eff_d_temp[_qp].resize(_vec_lengths["BETA_EFF"]);
-  _d_decay_constant_d_temp[_qp].resize(_vec_lengths["DECAY_CONSTANT"]);
+  NuclearMaterial::preComputeQpProperties();
 
   switch (_interp_type)
   {

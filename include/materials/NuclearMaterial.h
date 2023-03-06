@@ -60,6 +60,7 @@ protected:
   virtual void splineComputeQpProperties();
   virtual void monotoneCubicComputeQpProperties();
   virtual void linearComputeQpProperties();
+  virtual void preComputeQpProperties();
 
   const VariableValue & _temperature;
 

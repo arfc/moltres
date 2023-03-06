@@ -88,8 +88,9 @@ MoltresJsonMaterial::Construct(nlohmann::json xs_root,
         oneInfo = true;
       }
       if (o != dims && o != 0)
-        mooseError("Dimensions of " + _material_key + "/" + temp_key + "/" +
-                   _file_map[_xsec_names[j]] + " and num_groups do not match\n" +
+        mooseError("The number of " + _material_key + "/" + temp_key + "/" +
+                   _file_map[_xsec_names[j]] + " values does not match the "
+                   "num_groups/num_precursor_groups parameter. " +
                    std::to_string(dims) + "!=" + std::to_string(o));
       for (auto k = 0; k < o; ++k)
       {
@@ -110,21 +111,24 @@ MoltresJsonMaterial::Construct(nlohmann::json xs_root,
         for (auto k = 0; k < o; ++k)
         {
           _xsec_linear_interpolators[_xsec_names[j]][k].setData(_XsTemperature,
-                                                               _xsec_map[_xsec_names[j]][k]);
+                                                                _xsec_map[_xsec_names[j]][k]);
         }
         break;
       case SPLINE:
         for (auto k = 0; k < o; ++k)
         {
           _xsec_spline_interpolators[_xsec_names[j]][k].setData(_XsTemperature,
-                                                               _xsec_map[_xsec_names[j]][k]);
+                                                                _xsec_map[_xsec_names[j]][k]);
         }
         break;
       case MONOTONE_CUBIC:
+        if (L < 3)
+          mooseError("Monotone cubic interpolation requires at least three data points.");
         for (auto k = 0; k < o; ++k)
         {
-          _xsec_monotone_cubic_interpolators[_xsec_names[j]][k].setData(_XsTemperature,
-                                                                       _xsec_map[_xsec_names[j]][k]);
+          _xsec_monotone_cubic_interpolators[_xsec_names[j]][k].setData(
+              _XsTemperature,
+              _xsec_map[_xsec_names[j]][k]);
         }
         break;
       default:
@@ -137,37 +141,7 @@ MoltresJsonMaterial::Construct(nlohmann::json xs_root,
 void
 MoltresJsonMaterial::computeQpProperties()
 {
-  for (unsigned int i = 0; i < _num_props; i++)
-    (*_properties[i])[_qp] = _prop_values[i];
-  _remxs[_qp].resize(_num_groups);
-  _fissxs[_qp].resize(_num_groups);
-  _nsf[_qp].resize(_num_groups);
-  _fisse[_qp].resize(_num_groups);
-  _diffcoef[_qp].resize(_num_groups);
-  _recipvel[_qp].resize(_num_groups);
-  _chi_t[_qp].resize(_num_groups);
-  _chi_p[_qp].resize(_num_groups);
-  _chi_d[_qp].resize(_num_groups);
-
-  _gtransfxs[_qp].resize(_num_groups * _num_groups);
-
-  _beta_eff[_qp].resize(_num_precursor_groups);
-  _decay_constant[_qp].resize(_num_precursor_groups);
-
-  _d_remxs_d_temp[_qp].resize(_num_groups);
-  _d_fissxs_d_temp[_qp].resize(_num_groups);
-  _d_nsf_d_temp[_qp].resize(_num_groups);
-  _d_fisse_d_temp[_qp].resize(_num_groups);
-  _d_diffcoef_d_temp[_qp].resize(_num_groups);
-  _d_recipvel_d_temp[_qp].resize(_num_groups);
-  _d_chi_t_d_temp[_qp].resize(_num_groups);
-  _d_chi_p_d_temp[_qp].resize(_num_groups);
-  _d_chi_d_d_temp[_qp].resize(_num_groups);
-
-  _d_gtransfxs_d_temp[_qp].resize(_num_groups * _num_groups);
-
-  _d_beta_eff_d_temp[_qp].resize(_num_precursor_groups);
-  _d_decay_constant_d_temp[_qp].resize(_num_precursor_groups);
+  NuclearMaterial::preComputeQpProperties();
 
   switch (_interp_type)
   {
