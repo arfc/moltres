@@ -42,12 +42,11 @@ MoltresJsonMaterial::MoltresJsonMaterial(const InputParameters & parameters)
     k = k + 1;
   }
 
-  Construct(xs_root, _xsec_names);
+  Construct(xs_root);
 }
 
 void
-MoltresJsonMaterial::Construct(nlohmann::json xs_root,
-                               std::vector<std::string> _xsec_names)
+MoltresJsonMaterial::Construct(nlohmann::json xs_root)
 {
   auto xsec_interpolators = _xsec_linear_interpolators;
   bool oneInfo = false;

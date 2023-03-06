@@ -80,22 +80,22 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
   switch (_interp_type)
   {
     case LSQ:
-      leastSquaresConstruct(property_tables_root, _xsec_names);
+      leastSquaresConstruct(property_tables_root);
       break;
     case SPLINE:
-      Construct(property_tables_root, _xsec_names);
+      Construct(property_tables_root);
       break;
     case MONOTONE_CUBIC:
-      Construct(property_tables_root, _xsec_names);
+      Construct(property_tables_root);
       break;
     case BICUBIC:
-      bicubicSplineConstruct(property_tables_root, _xsec_names, parameters);
+      bicubicSplineConstruct(property_tables_root, parameters);
       break;
     case LINEAR:
-      Construct(property_tables_root, _xsec_names);
+      Construct(property_tables_root);
       break;
     case NONE:
-      Construct(property_tables_root, _xsec_names);
+      Construct(property_tables_root);
       break;
     default:
       mooseError("Invalid enum type for interp_type");
@@ -104,8 +104,7 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
 }
 
 void
-GenericMoltresMaterial::Construct(std::string & property_tables_root,
-                                  std::vector<std::string> _xsec_names)
+GenericMoltresMaterial::Construct(std::string & property_tables_root)
 {
   Real value;
   int tempLength = 0;
@@ -246,7 +245,6 @@ GenericMoltresMaterial::Construct(std::string & property_tables_root,
 
 void
 GenericMoltresMaterial::bicubicSplineConstruct(std::string & property_tables_root,
-                                               std::vector<std::string> _xsec_names,
                                                const InputParameters & parameters)
 {
   Real value;
@@ -316,8 +314,7 @@ GenericMoltresMaterial::bicubicSplineConstruct(std::string & property_tables_roo
 }
 
 void
-GenericMoltresMaterial::leastSquaresConstruct(std::string & property_tables_root,
-                                              std::vector<std::string> _xsec_names)
+GenericMoltresMaterial::leastSquaresConstruct(std::string & property_tables_root)
 {
   Real value;
 

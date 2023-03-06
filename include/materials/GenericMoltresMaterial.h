@@ -14,12 +14,10 @@ public:
   static InputParameters validParams();
 
 protected:
-  void Construct(std::string & property_tables_root, std::vector<std::string> xsec_names);
+  void Construct(std::string & property_tables_root);
   void bicubicSplineConstruct(std::string & property_tables_root,
-                              std::vector<std::string> xsec_names,
                               const InputParameters & parameters);
-  void leastSquaresConstruct(std::string & property_tables_root,
-                             std::vector<std::string> xsec_names);
+  void leastSquaresConstruct(std::string & property_tables_root);
   virtual void computeQpProperties() override;
   virtual void fuelBicubic();
   virtual void moderatorBicubic();
