@@ -204,12 +204,11 @@ GenericMoltresMaterial::Construct(std::string & property_tables_root)
       switch (_interp_type)
       {
         case NONE:
-          myfile >> value;
-          if (!myfile.eof())
+          if (tempLength > 1)
             // Reject if group constants provided at multiple temperatures for interp_type=none"
             mooseError(
-                "The number of " + _file_map[_xsec_names[j]] + " values does not match "
-                "the num_groups/num_precursor_groups parameter.");
+                _file_map[_xsec_names[j]] + " values provided at multiple temperatures with "
+                "interp_type=none. Remove extra temperature data or change interpolation scheme.");
           break;
         case LINEAR:
           for (decltype(o) k = 0; k < o; ++k)

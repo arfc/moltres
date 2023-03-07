@@ -105,6 +105,11 @@ MoltresJsonMaterial::Construct(nlohmann::json xs_root)
         mooseError("BICUBIC not supported, please select \
           NONE, LINEAR, SPLINE, or MONOTONE_CUBIC ");
       case NONE:
+        if (L > 1)
+            mooseError(
+                "Group constant data for '" + _material_key + "' provided at "
+                "multiple temperatures with interp_type=none. Remove extra temperature data or "
+                "change interpolation scheme.");
         break;
       case LINEAR:
         for (auto k = 0; k < o; ++k)

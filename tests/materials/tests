@@ -67,6 +67,13 @@
       expect_err = "The temperature values in the REMXS files are not in increasing order, or the number of REMXS values does not match the num_groups/num_precursor_groups parameter."
       detail = 'the two-group data does not match num_groups=1 for interp_type=none.'
     []
+    [gmm_none_multi_temp]
+      type = RunException
+      input = 'gmm_none.i'
+      cli_args = "GlobalParams/num_precursor_groups=6 Materials/fuel/property_tables_root='../../property_file_dir/newt_fuel_'"
+      expect_err = "REMXS values provided at multiple temperatures with interp_type=none. Remove extra temperature data or change interpolation scheme."
+      detail = 'group constant data are provided at multiple temperatures for interp_type=none.'
+    []
     [gmm_linear_3]
       type = RunException
       input = 'gmm_linear.i'
@@ -87,6 +94,13 @@
       cli_args = "GlobalParams/num_groups=3"
       expect_err = "The number of fuel/900/REMXS values does not match the num_groups/num_precursor_groups parameter. 2!=3"
       detail = 'the two-group data does not match num_groups=3.'
+    []
+    [mjm_none_multi_temp]
+      type = RunException
+      input = 'mjm_none.i'
+      cli_args = "Materials/fuel/base_file='xsdata.json'"
+      expect_err = "Group constant data for 'fuel' provided at multiple temperatures with interp_type=none. Remove extra temperature data or change interpolation scheme."
+      detail = 'group constant data are provided at multiple temperatures for interp_type=none.'
     []
   []
 []
