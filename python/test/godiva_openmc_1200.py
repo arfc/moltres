@@ -21,7 +21,7 @@ geom = openmc.Geometry([fuel_core])
 geom.export_to_xml()
 
 settings = openmc.Settings()
-settings.batches = 200
+settings.batches = 100
 settings.inactive = 10
 settings.particles = 100000
 settings.temperature = {"multipole": True, "method": "interpolation"}
