@@ -5,7 +5,6 @@ global_temperature=922
   num_groups = 0
   num_precursor_groups = 6
   temperature = ${global_temperature}
-  use_exp_form = false
   group_fluxes = ''
   sss2_input = false
 []
@@ -38,6 +37,7 @@ global_temperature=922
 [Materials]
   [./fuel]
     type = GenericMoltresMaterial
+    num_groups = 2
     property_tables_root = '../../property_file_dir/newt_msre_fuel_'
     interp_type = 'spline'
   [../]
