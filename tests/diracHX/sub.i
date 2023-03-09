@@ -4,15 +4,6 @@
 
 flow_velocity=0.5 # cm/s. See MSRE-properties.ods
 
-[GlobalParams]
-  num_groups = 0
-  num_precursor_groups = 6
-  group_fluxes = ''
-  temperature = temp
-  sss2_input = false
-  # account_delayed = true
-[]
-
 [Mesh]
   type = GeneratedMesh
   dim = 1
@@ -28,20 +19,6 @@ flow_velocity=0.5 # cm/s. See MSRE-properties.ods
     family = MONOMIAL
     order = CONSTANT
   [../]
-[]
-
-[Precursors]
- [./core]
-  var_name_base = pre
-  outlet_boundaries = 'right'
-  u_def = ${flow_velocity}
-  v_def = 0
-  w_def = 0
-  nt_exp_form = false
-  loop_precursors = false
-  family = MONOMIAL
-  order = FIRST
- [../]
 []
 
 [Kernels]
@@ -106,11 +83,8 @@ flow_velocity=0.5 # cm/s. See MSRE-properties.ods
 []
 
 [Materials]
-  # need GenericMoltresMaterial so that DECAY_CONSTANT can be obtained
   [./fuel]
-    type = GenericMoltresMaterial
-    property_tables_root = '../../property_file_dir/newt_msre_fuel_'
-    interp_type = 'spline'
+    type = GenericConstantMaterial
     prop_names = 'k cp'
     prop_values = '.0553 1967' # Robertson MSRE technical report @ 922 K
   [../]
