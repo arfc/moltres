@@ -9,5 +9,5 @@ var searchData=
   ['sideweightedintegralpostprocessor_6',['SideWeightedIntegralPostprocessor',['../class_side_weighted_integral_postprocessor.html#a35657457f77c398fc2887ac30bbb53a2',1,'SideWeightedIntegralPostprocessor']]],
   ['sigmar_7',['SigmaR',['../class_sigma_r.html#a9d3593d181f130870331c54fb7b74144',1,'SigmaR']]],
   ['splinecomputeqpproperties_8',['splineComputeQpProperties',['../class_nuclear_material.html#a98d90f0d85995533393fb00d4b86612b',1,'NuclearMaterial']]],
-  ['splineconstruct_9',['splineConstruct',['../class_generic_moltres_material.html#a466f5e5e7b898da7cc6771c83cc7eda3',1,'GenericMoltresMaterial::splineConstruct()'],['../class_rodded_material.html#a6a1c7030c687e06c9fb292c19c6fe3c6',1,'RoddedMaterial::splineConstruct()']]]
+  ['splineconstruct_9',['splineConstruct',['../class_rodded_material.html#a6a1c7030c687e06c9fb292c19c6fe3c6',1,'RoddedMaterial']]]
 ];

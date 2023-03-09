@@ -23,8 +23,7 @@ var searchData=
   ['moltresjsonmaterial_2eh_20',['MoltresJsonMaterial.h',['../_moltres_json_material_8h.html',1,'']]],
   ['monotone_5fcubic_21',['MONOTONE_CUBIC',['../class_nuclear_material.html#a73b29fd4e54f4427080470460c8d95b3aa82497e322f02fb4fe33a21529675a9b',1,'NuclearMaterial']]],
   ['monotonecubiccomputeqpproperties_22',['monotoneCubicComputeQpProperties',['../class_nuclear_material.html#a8237ea6b1fc6c6c368836e6a6d8cbe2a',1,'NuclearMaterial']]],
-  ['monotonecubicconstruct_23',['monotoneCubicConstruct',['../class_generic_moltres_material.html#a2aced611a417a9deb7a44bfeb85ebb39',1,'GenericMoltresMaterial']]],
-  ['msrefueltwogrpxsfunctionmaterial_24',['MsreFuelTwoGrpXSFunctionMaterial',['../class_msre_fuel_two_grp_x_s_function_material.html',1,'MsreFuelTwoGrpXSFunctionMaterial'],['../class_msre_fuel_two_grp_x_s_function_material.html#a4a3d3f3bb4d1359efb32f8452ecf95b3',1,'MsreFuelTwoGrpXSFunctionMaterial::MsreFuelTwoGrpXSFunctionMaterial()']]],
-  ['msrefueltwogrpxsfunctionmaterial_2ec_25',['MsreFuelTwoGrpXSFunctionMaterial.C',['../_msre_fuel_two_grp_x_s_function_material_8_c.html',1,'']]],
-  ['msrefueltwogrpxsfunctionmaterial_2eh_26',['MsreFuelTwoGrpXSFunctionMaterial.h',['../_msre_fuel_two_grp_x_s_function_material_8h.html',1,'']]]
+  ['msrefueltwogrpxsfunctionmaterial_23',['MsreFuelTwoGrpXSFunctionMaterial',['../class_msre_fuel_two_grp_x_s_function_material.html',1,'MsreFuelTwoGrpXSFunctionMaterial'],['../class_msre_fuel_two_grp_x_s_function_material.html#a4a3d3f3bb4d1359efb32f8452ecf95b3',1,'MsreFuelTwoGrpXSFunctionMaterial::MsreFuelTwoGrpXSFunctionMaterial()']]],
+  ['msrefueltwogrpxsfunctionmaterial_2ec_24',['MsreFuelTwoGrpXSFunctionMaterial.C',['../_msre_fuel_two_grp_x_s_function_material_8_c.html',1,'']]],
+  ['msrefueltwogrpxsfunctionmaterial_2eh_25',['MsreFuelTwoGrpXSFunctionMaterial.h',['../_msre_fuel_two_grp_x_s_function_material_8h.html',1,'']]]
 ];

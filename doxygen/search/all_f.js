@@ -24,5 +24,5 @@ var searchData=
   ['sigmar_2eh_21',['SigmaR.h',['../_sigma_r_8h.html',1,'']]],
   ['spline_22',['SPLINE',['../class_nuclear_material.html#a73b29fd4e54f4427080470460c8d95b3ad76e9d3332bc71b94037559f33ddd47a',1,'NuclearMaterial']]],
   ['splinecomputeqpproperties_23',['splineComputeQpProperties',['../class_nuclear_material.html#a98d90f0d85995533393fb00d4b86612b',1,'NuclearMaterial']]],
-  ['splineconstruct_24',['splineConstruct',['../class_generic_moltres_material.html#a466f5e5e7b898da7cc6771c83cc7eda3',1,'GenericMoltresMaterial::splineConstruct()'],['../class_rodded_material.html#a6a1c7030c687e06c9fb292c19c6fe3c6',1,'RoddedMaterial::splineConstruct()']]]
+  ['splineconstruct_24',['splineConstruct',['../class_rodded_material.html#a6a1c7030c687e06c9fb292c19c6fe3c6',1,'RoddedMaterial']]]
 ];

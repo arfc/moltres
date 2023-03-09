@@ -7,6 +7,5 @@ var searchData=
   ['dirachx_4',['DiracHX',['../class_dirac_h_x.html#a0397626335b47bfe85bf8bdd7fd70c6f',1,'DiracHX']]],
   ['divfreecoupledscalaradvection_5',['DivFreeCoupledScalarAdvection',['../class_div_free_coupled_scalar_advection.html#a2caebee5e6dea7d32e79405c633b418e',1,'DivFreeCoupledScalarAdvection']]],
   ['divisionpostprocessor_6',['DivisionPostprocessor',['../class_division_postprocessor.html#a9185a79b9728d60ab878d8d5748befae',1,'DivisionPostprocessor']]],
-  ['dummycomputeqpproperties_7',['dummyComputeQpProperties',['../class_generic_moltres_material.html#a3cc489237227e99f664a49c3945dc3c4',1,'GenericMoltresMaterial::dummyComputeQpProperties()'],['../class_nuclear_material.html#a4da7bd2cd21e76b6d7709c85177aecd7',1,'NuclearMaterial::dummyComputeQpProperties()']]],
-  ['dummyconstruct_8',['dummyConstruct',['../class_generic_moltres_material.html#a69b0e8796958e2a42aafcd6b301f4241',1,'GenericMoltresMaterial']]]
+  ['dummycomputeqpproperties_7',['dummyComputeQpProperties',['../class_nuclear_material.html#a4da7bd2cd21e76b6d7709c85177aecd7',1,'NuclearMaterial']]]
 ];
