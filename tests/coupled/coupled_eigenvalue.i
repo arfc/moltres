@@ -86,6 +86,7 @@ flow_velocity=21.7      # cm/s. See MSRE-properties.ods
 [Postprocessors]
   [bnorm]
     type = ElmIntegTotFissNtsPostprocessor
+    block = 'fuel'
     execute_on = linear
   []
   [powernorm]
