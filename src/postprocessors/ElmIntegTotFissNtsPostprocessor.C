@@ -34,7 +34,7 @@ ElmIntegTotFissNtsPostprocessor::ElmIntegTotFissNtsPostprocessor(const InputPara
     mooseError("The number of group flux variables doesn't match the number of energy groups.");
 
   _group_fluxes.resize(n);
-  for (int i = 0; i < _group_fluxes.size(); ++i)
+  for (unsigned int i = 0; i < _group_fluxes.size(); ++i)
   {
     _group_fluxes[i] = &coupledValue("group_fluxes", i);
   }
@@ -53,7 +53,7 @@ ElmIntegTotFissNtsPostprocessor::ElmIntegTotFissNtsPostprocessor(const InputPara
                  "of precursor groups.");
     }
     _pre_concs.resize(m);
-    for (int i = 0; i < _pre_concs.size(); ++i)
+    for (unsigned int i = 0; i < _pre_concs.size(); ++i)
     {
       _pre_concs[i] = &coupledValue("pre_concs", i);
     }
