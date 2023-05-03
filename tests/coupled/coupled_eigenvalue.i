@@ -66,6 +66,7 @@ flow_velocity=21.7      # cm/s. See MSRE-properties.ods
   bx_norm = 'bnorm'
   k0 = 1
   l_max_its = 100
+  eig_check_tol = 1e-7
 
   normal_factor = 1e7
   normalization = powernorm
