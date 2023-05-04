@@ -11,7 +11,8 @@ group constant data to perform multiphysics reactor analysis.
 
 Moltres falls under the second step of the two-step procedure. The following sections cover
 various tutorials for group constant file generation and running various types of reactor
-simulations with Moltres.
+simulations with Moltres. The tutorials assume that readers have a basic understanding of reactor
+analysis and molten salt reactors.
 
 ## 1. Group Constant File Generation
 
@@ -24,7 +25,7 @@ while the older
 [`extractSerpent2GCs.py`](https://github.com/arfc/moltres/blob/devel/python/extractSerpent2GCs.py)
 script supports Serpent 2 only.
 
-+1a.+ [Group Constant File Generation with moltres_xs.py](moltres_xs.md)
++1a.+ [Group Constant File Generation with moltres_xs.py (Recommended)](moltres_xs.md)
 
 +1b.+ [Group Constant File Generation with extractSerpent2GCs.py](sss2_gc.md)
 
@@ -39,13 +40,13 @@ This tutorial webpage is currently a work in progress. Feel free to post on our 
 [Discussions](https://github.com/arfc/moltres/discussions) page if your use case is not covered by
 the existing tutorials below.
 
-+2a.+ [Introduction to the Moltres Input File Syntax](getting_started/eigenvalue.md)
++2a.+ [Introduction to the Moltres Input File Syntax](getting_started/input_syntax.md)
 
-+2b.+ [Eigenvalue Calculation](getting_started/eigenvalue_nt_action.md)
++2b.+ [Eigenvalue Calculation](getting_started/eigenvalue.md)
 
-+2c.+ [Transient Simulation with Thermal-Hydraulic Coupling and Precursor Drift](getting_started/transient.md)
++2c.+ [Time-dependent Simulation with Thermal-Hydraulic Coupling and Precursor Looping](getting_started/transient.md)
 
-+2d.+ [Recommended Executioner and Preconditioning Settings](getting_started/recommended.md)
+[Recommended Executioner and Preconditioning Settings](getting_started/recommended.md)
 
 ## 3. Data Postprocessing and Analysis
 
