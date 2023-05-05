@@ -213,7 +213,7 @@
     block = '1'
     base_file = 'xsdata.json'
     material_key = 'graphite'
-    interp_type = LINEAR 
+    interp_type = LINEAR
     prop_names ='rho k cp'
     prop_values = '1.86e-3 .312 1760'
   []
