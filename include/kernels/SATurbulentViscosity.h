@@ -1,11 +1,11 @@
 #pragma once
 
-#include "INSFEFluidKernelBase.h"
+#include "ADKernel.h"
 
 /**
  * All terms in the turbulent viscosity equation of the Spalart-Allmaras model 
  */
-class SATurbulentViscosity : public INSFEFluidKernelBase
+class SATurbulentViscosity : public ADKernel
 {
 public:
   static InputParameters validParams();
@@ -13,11 +13,13 @@ public:
   SATurbulentViscosity(const InputParameters & parameters);
 
 protected:
-  virtual Real computeQpResidual() override;
-  virtual Real computeQpJacobian() override;
-  virtual Real computeQpOffDiagJacobian(unsigned int jvar) override;
+  ADReal computeQpResidual() override;
 
-  const std::vector<BoundaryName> _wall_boundary_names;
+  const ADVectorVariableValue & _velocity;
+  const ADVectorVariableGradient & _grad_velocity;
+  const ADMaterialProperty<Real> & _mu;
+  const ADMaterialProperty<Real> & _rho;
+  const VariableValue & _wall_dist;
   const Real _sigma;
   const Real _cb1;
   const Real _cb2;
