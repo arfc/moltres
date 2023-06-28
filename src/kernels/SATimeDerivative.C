@@ -15,12 +15,12 @@ SATimeDerivative::validParams()
 
 SATimeDerivative::SATimeDerivative(const InputParameters & parameters)
   : ADTimeDerivative(parameters),
-    _rho(getADMaterialProperty<Real>("rho_name"))
+    _time_strong_residual(getADMaterialProperty<Real>("time_strong_residual"))
 {
 }
 
 ADReal
 SATimeDerivative::precomputeQpResidual()
 {
-  return ADTimeDerivative::precomputeQpResidual() * _rho[_qp];
+  return _time_strong_residual[_qp];
 }

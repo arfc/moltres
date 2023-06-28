@@ -6,7 +6,7 @@ InputParameters
 WallDistanceAux::validParams()
 {
   InputParameters params = AuxKernel::validParams();
-  params.addClassDescription("Computes the minimum wall distance of each element from wall "
+  params.addClassDescription("Computes the minimum wall distance of each node from wall "
                              "boundaries");
   params.addRequiredParam<std::vector<BoundaryName>>(
     "walls",
@@ -22,7 +22,8 @@ WallDistanceAux::WallDistanceAux(const InputParameters & parameters)
   if (!mesh.is_replicated())
     mooseError("WallDistanceAux only supports replicated meshes");
   if (!isNodal())
-    mooseError("WallDistanceAux only works on nodal fields.");
+    mooseError("WallDistanceAux only works on nodal wall distance variable fields "
+               "(e.g. LAGRANGE).");
 }
 
 Real
