@@ -13,9 +13,12 @@ public:
 
   SATurbulentViscosityCD(const InputParameters & parameters);
 
+  virtual void computeResidual() override;
+
 protected:
   ADRealVectorValue computeQpStabilization() override;
   ADReal precomputeQpStrongResidual() override;
+  void computeResidualsForJacobian() override;
 
   const ADMaterialProperty<Real> & _tau_visc_cd;
   const ADVectorVariableValue & _velocity;
