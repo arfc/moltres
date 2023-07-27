@@ -29,9 +29,6 @@ WallDistanceAux::WallDistanceAux(const InputParameters & parameters)
 Real
 WallDistanceAux::computeValue()
 {
-  // Get reference to the libMesh mesh object
-//  const MeshBase & l_mesh = _mesh.getMesh();
-
   // Get the ids of the wall boundaries
   std::vector<BoundaryID> vec_ids = _mesh.getBoundaryIDs(_wall_boundary_names, true);
 

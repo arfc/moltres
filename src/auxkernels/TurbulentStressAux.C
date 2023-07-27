@@ -33,6 +33,5 @@ TurbulentStressAux::computeValue()
   ADReal chi = _mu_tilde[_qp] / _mu[_qp];
   ADReal fv1 = std::pow(chi, 3) / (std::pow(chi, 3) + std::pow(7.1, 3));
   ADReal nu_T = _mu_tilde[_qp] * fv1 / _rho[_qp];
-  // Divide by sqrt(2) because _strain_mag = sqrt(2 * S_ij * S_ij)
-  return raw_value(std::sqrt(2.) * nu_T * _strain_mag[_qp]);
+  return raw_value(nu_T * _strain_mag[_qp]);
 }

@@ -97,7 +97,6 @@ SATauMaterialTempl<T>::SATauMaterialTempl(const InputParameters & parameters)
     _ct4(0.5),
     _mu_tilde(this->template adCoupledValue("mu_tilde")),
     _grad_mu(this->template adCoupledGradient("mu_tilde")),
-//    _second_mu(this->template adCoupledSecond("mu_tilde")),
     _tau_visc(this->template declareADProperty<Real>("tau_viscosity")),
     _wall_dist(this->template coupledValue("wall_distance_var")),
     _use_ft2_term(this->template getParam<bool>("use_ft2_term")),
@@ -135,63 +134,77 @@ SATauMaterialTempl<T>::computeQpProperties()
 {
   T::computeQpProperties();
 
-  ADRealTensorValue vorticity = .5 * (_grad_velocity[_qp] - _grad_velocity[_qp].transpose());
-  ADReal vorticity_mag = 0.;
-  for (unsigned int i = 0; i < 3; i++)
-    for (unsigned int j = 0; j < 3; j++)
-      vorticity_mag += 2 * vorticity(i, j) * vorticity(i, j);
-  vorticity_mag += 1e-16;
-  vorticity_mag = std::sqrt(vorticity_mag);
-  
-  ADRealTensorValue strain = .5 * (_grad_velocity[_qp] + _grad_velocity[_qp].transpose());
-  _strain_mag[_qp] = 0.;
-  for (unsigned int i = 0; i < 3; i++)
-    for (unsigned int j = 0; j < 3; j++)
-      _strain_mag[_qp] += 2 * strain(i, j) * strain(i, j);
-  _strain_mag[_qp] += 1e-16;
-  _strain_mag[_qp] = std::sqrt(_strain_mag[_qp]);
+//  ADRealTensorValue vorticity = .5 * (_grad_velocity[_qp] - _grad_velocity[_qp].transpose());
+//  ADReal vorticity_mag = 0.;
+//  for (unsigned int i = 0; i < 3; i++)
+//    for (unsigned int j = 0; j < 3; j++)
+//      vorticity_mag += 2 * vorticity(i, j) * vorticity(i, j);
+//  vorticity_mag += 1e-16;
+//  vorticity_mag = std::sqrt(vorticity_mag);
+//  
+//  ADRealTensorValue strain = .5 * (_grad_velocity[_qp] + _grad_velocity[_qp].transpose());
+//  _strain_mag[_qp] = 0.;
+//  for (unsigned int i = 0; i < 3; i++)
+//    for (unsigned int j = 0; j < 3; j++)
+//      _strain_mag[_qp] += 2 * strain(i, j) * strain(i, j);
+//  _strain_mag[_qp] += 1e-16;
+//  _strain_mag[_qp] = std::sqrt(_strain_mag[_qp]);
 
+  // Compute strain rate and vorticity magnitudes
+  _strain_mag[_qp] = 2.0 * Utility::pow<2>(_grad_velocity[_qp](0, 0)) +
+                     2.0 * Utility::pow<2>(_grad_velocity[_qp](1, 1)) +
+                     2.0 * Utility::pow<2>(_grad_velocity[_qp](2, 2)) +
+                     Utility::pow<2>(_grad_velocity[_qp](0, 2) + _grad_velocity[_qp](2, 0)) +
+                     Utility::pow<2>(_grad_velocity[_qp](0, 1) + _grad_velocity[_qp](1, 0)) +
+                     Utility::pow<2>(_grad_velocity[_qp](1, 2) + _grad_velocity[_qp](2, 1));
+  _strain_mag[_qp] = std::sqrt(_strain_mag[_qp] + 1e-16);
+  ADReal vorticity_mag =
+      Utility::pow<2>(_grad_velocity[_qp](0, 2) - _grad_velocity[_qp](2, 0)) +
+      Utility::pow<2>(_grad_velocity[_qp](0, 1) - _grad_velocity[_qp](1, 0)) +
+      Utility::pow<2>(_grad_velocity[_qp](1, 2) - _grad_velocity[_qp](2, 1));
+  vorticity_mag = std::sqrt(vorticity_mag + 1e-16);
+
+  // Compute relevant parameters for the SA equation
   Real d = std::max(_wall_dist[_qp], 1e-16);
   ADReal chi = _mu_tilde[_qp] / _mu[_qp];
-  ADReal fv1 = std::pow(chi, 3) / (std::pow(chi, 3) + std::pow(_cv1, 3));
+  ADReal fv1 = Utility::pow<3>(chi) / (Utility::pow<3>(chi) + Utility::pow<3>(_cv1));
   ADReal fv2 = 1. - chi / (1. + chi * fv1);
   ADReal S_tilde = vorticity_mag + _mu_tilde[_qp] * fv2 / (_kappa * _kappa * d * d * _rho[_qp]);
   ADReal S = S_tilde + 2 * std::min(0., _strain_mag[_qp] - vorticity_mag);
   ADReal r;
-  if (S_tilde <= 0.)
+  if (S_tilde <= 0.) // Avoid potential division by zero
     r = 10.;
   else
     r = std::min(_mu_tilde[_qp] / (S_tilde * _kappa * _kappa * d * d * _rho[_qp]), 10.);
-  ADReal g = r + _cw2 * (std::pow(r, 6) - r);
-  ADReal fw = g * std::pow((1. + std::pow(_cw3, 6)) / (std::pow(g, 6) + std::pow(_cw3, 6)),
+  ADReal g = r + _cw2 * (Utility::pow<6>(r) - r);
+  ADReal fw = g * std::pow((1. + Utility::pow<6>(_cw3)) /
+                           (Utility::pow<6>(g) + Utility::pow<6>(_cw3)),
                            1. / 6.);
 
-  if (_use_ft2_term)
+  // Compute strong forms of the SA equation
+  if (_use_ft2_term) // Whether to apply the f_t2 term in the SA equation
   {
     ADReal ft2 = _ct3 * std::exp(-_ct4 * chi * chi);
     _destruction_strong_residual[_qp] =
-      (_cw1 * fw - _cb1 * ft2 / _kappa / _kappa) * std::pow(_mu_tilde[_qp] / d, 2);
+      (_cw1 * fw - _cb1 * ft2 / _kappa / _kappa) * Utility::pow<2>(_mu_tilde[_qp] / d);
     _source_strong_residual[_qp] = -(1 - ft2) * _rho[_qp] * _cb1 * S * _mu_tilde[_qp];
   }
   else
   {
-    _destruction_strong_residual[_qp] = _cw1 * fw * std::pow(_mu_tilde[_qp] / d, 2);
+    _destruction_strong_residual[_qp] = _cw1 * fw * Utility::pow<2>(_mu_tilde[_qp] / d);
     _source_strong_residual[_qp] = -_rho[_qp] * _cb1 * S * _mu_tilde[_qp];
   }
-
   _convection_strong_residual[_qp] = _rho[_qp] * _velocity[_qp] * _grad_mu[_qp];
-//  _diffusion_strong_residual[_qp] = -1. / _sigma * ((_mu[_qp] + _mu_tilde[_qp]) *
-//    _second_mu[_qp].tr() + (1 + _cb2) * _grad_mu[_qp] * _grad_mu[_qp]);
   _diffusion_strong_residual[_qp] = -1. / _sigma * _cb2 * (_grad_mu[_qp] * _grad_mu[_qp]);
   if (_has_transient)
     _time_strong_residual[_qp] = (*_visc_dot)[_qp] * _rho[_qp];
-
   _visc_strong_residual[_qp] = _has_transient ? _time_strong_residual[_qp] : 0.;
   _visc_strong_residual[_qp] += (_convection_strong_residual[_qp] +
                                  _destruction_strong_residual[_qp] +
                                  _diffusion_strong_residual[_qp] +
                                  _source_strong_residual[_qp]);
 
+  // Compute the tau stabilization parameter for mu_tilde SUPG stabilization
   const auto nu_visc = (_mu[_qp] + _mu_tilde[_qp]) / _rho[_qp] / _sigma;
   const auto transient_part = _has_transient ? 4. / (_dt * _dt) : 0.;
   const auto speed = NS::computeSpeed(_velocity[_qp]);
@@ -200,6 +213,7 @@ SATauMaterialTempl<T>::computeQpProperties()
                                       9. * (4. * nu_visc / (_hmax * _hmax)) *
                                       4. * (nu_visc / (_hmax * _hmax)));
 
+  // Replace the nu value in the tau stabilization parameter for INS SUPG stabilization
   const auto nu = (_mu[_qp] + _mu_tilde[_qp] * fv1) / _rho[_qp];
   _tau[_qp] = _alpha / std::sqrt(transient_part +
                                  (2. * speed / _hmax) * (2. * speed / _hmax) +

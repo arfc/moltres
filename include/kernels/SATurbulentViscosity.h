@@ -3,7 +3,8 @@
 #include "ADKernel.h"
 
 /**
- * All terms in the turbulent viscosity equation of the Spalart-Allmaras model 
+ * Computes residual contributions of all terms in the turbulent viscosity
+ * equation of the Spalart-Allmaras model.
  */
 class SATurbulentViscosity : public ADKernel
 {

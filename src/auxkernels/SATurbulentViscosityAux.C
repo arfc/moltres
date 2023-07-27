@@ -30,6 +30,5 @@ SATurbulentViscosityAux::computeValue()
   Real chi = _mu_tilde[_qp] / MetaPhysicL::raw_value(_mu[_qp]);
   Real cv1 = 7.1;
   Real fv1 = std::pow(chi, 3) / (std::pow(chi, 3) + std::pow(cv1, 3));
-
   return _mu_tilde[_qp] * fv1;
 }

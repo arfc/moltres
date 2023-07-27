@@ -3,7 +3,7 @@
 #include "AuxKernel.h"
 
 /**
- * Auxiliary kernel for computing the wall shear stress
+ * Auxiliary kernel for computing the wall shear stress along a given boundary.
  */
 class WallShearStressAux : public AuxKernel
 {

@@ -54,7 +54,7 @@ INSADMomentumTurbulentViscous::qpViscousTerm()
 {
   ADReal chi = _mu_tilde[_qp] / _mu[_qp];
   Real cv1 = 7.1;
-  ADReal fv1 = std::pow(chi, 3) / (std::pow(chi, 3) + std::pow(cv1, 3));
+  ADReal fv1 = Utility::pow<3>(chi) / (Utility::pow<3>(chi) + Utility::pow<3>(cv1));
 
   if (_form == "laplace")
     return _mu_tilde[_qp] * fv1 * _grad_u[_qp];
@@ -67,7 +67,7 @@ INSADMomentumTurbulentViscous::qpAdditionalRZTerm()
 {
   ADReal chi = _mu_tilde[_qp] / _mu[_qp];
   Real cv1 = 7.1;
-  ADReal fv1 = std::pow(chi, 3) / (std::pow(chi, 3) + std::pow(cv1, 3));
+  ADReal fv1 = Utility::pow<3>(chi) / (Utility::pow<3>(chi) + Utility::pow<3>(cv1));
 
   // Add the u_r / r^2 term. There is an extra factor of 2 for the traction form
   ADReal resid = _mu_tilde[_qp] * fv1 * _u[_qp](0);
