@@ -2,9 +2,9 @@
 
 The input files associated with this tutorial are
 [moltres/tutorial/eigenvalue/nts.i](https://github.com/arfc/moltres/blob/devel/tutorial/eigenvalue/nts.i) and
-[moltres/tutorial/eigenvalue/nts-action.i](https://github.com/arfc/moltres/blob/devel/tutorial/eigenvalue/nts-action.i)
+[moltres/tutorial/eigenvalue/nts-action.i](https://github.com/arfc/moltres/blob/devel/tutorial/eigenvalue/nts-action.i).
 Refer to [Tutorial 2a](getting_started/input_syntax.md) for an introduction on the input file
-syntax and an in-depth description of every input parameter.
+syntax and in-depth descriptions of every input parameter.
 
 As mentioned in Tutorial 2a, this example involves a simple 2-D axisymmetric core model of the
 Molten Salt Reactor Experiment (MSRE) that was developed at Oak Ridge National Laboratory. The
