@@ -30,7 +30,7 @@ AverageFissionHeat::execute()
 }
 
 Real
-AverageFissionHeat::getValue()
+AverageFissionHeat::getValue() const
 {
   Real integral = ElmIntegTotFissHeatPostprocessor::getValue();
 

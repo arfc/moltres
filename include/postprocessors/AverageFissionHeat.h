@@ -12,7 +12,7 @@ public:
 protected:
   virtual void initialize() override;
   virtual void execute() override;
-  virtual Real getValue() override;
+  virtual Real getValue() const override;
   virtual void threadJoin(const UserObject & y) override;
 
   Real _volume;

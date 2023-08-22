@@ -42,7 +42,7 @@ LimitK::LimitK(const InputParameters & parameters)
 }
 
 Real
-LimitK::getValue()
+LimitK::getValue() const
 {
   Real dt = _feproblem.dt();
   if (_k > _k_threshold)

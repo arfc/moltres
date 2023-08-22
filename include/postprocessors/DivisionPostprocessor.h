@@ -15,5 +15,5 @@ public:
   static InputParameters validParams();
 
 protected:
-  virtual PostprocessorValue getValue() override;
+  virtual PostprocessorValue getValue() const override;
 };
