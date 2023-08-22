@@ -31,10 +31,6 @@ AverageFissionHeat::execute()
 Real
 AverageFissionHeat::getValue() const
 {
-//  Real integral = ElmIntegTotFissHeatPostprocessor::getValue();
-
-//  gatherSum(_volume);
-
   return _integral_value / _volume;
 }
 
