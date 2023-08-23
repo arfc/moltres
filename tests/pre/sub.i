@@ -45,7 +45,7 @@ global_temperature=922
 
 [Executioner]
   type = Transient
-  end_time = 500
+  end_time = 400
   nl_rel_tol = 1e-6
   nl_abs_tol = 1e-5
   solve_type = 'NEWTON'
@@ -56,6 +56,7 @@ global_temperature=922
   nl_max_its = 20
   l_max_its = 50
   dtmin = 1e-2
+  dtmax = 5
   [./TimeStepper]
     type = IterationAdaptiveDT
     dt = 1e-2

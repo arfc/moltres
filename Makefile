@@ -28,20 +28,26 @@ ALL_MODULES                 := no
 
 CHEMICAL_REACTIONS          := no
 CONTACT                     := no
+ELECTROMAGNETICS            := no
 EXTERNAL_PETSC_SOLVER       := no
 FLUID_PROPERTIES            := no
+FSI                         := no
 FUNCTIONAL_EXPANSION_TOOLS  := no
 GEOCHEMISTRY                := no
 HEAT_CONDUCTION             := no
 LEVEL_SET                   := no
 MISC                        := no
 NAVIER_STOKES               := yes
+OPTIMIZATION                := no
+PERIDYNAMICS                := no
 PHASE_FIELD                 := yes
 POROUS_FLOW                 := no
 RAY_TRACING                 := no
+REACTOR                     := yes
 RDG                         := no
 RICHARDS                    := no
 STOCHASTIC_TOOLS            := no
+THERMAL_HYDRAULICS          := no
 TENSOR_MECHANICS            := no
 XFEM                        := no
 

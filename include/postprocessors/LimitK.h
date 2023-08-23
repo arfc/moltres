@@ -26,10 +26,8 @@ public:
   virtual void initialize() override {}
   virtual void execute() override {}
 
-  /**
-   * This will return the current time step size.
-   */
-  virtual Real getValue() override;
+  using Postprocessor::getValue;
+  virtual Real getValue() const override;
 
 protected:
   const PostprocessorValue & _k;
