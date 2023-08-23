@@ -9,11 +9,14 @@ public:
 
   static InputParameters validParams();
 
+  using Postprocessor::getValue;
+  virtual Real getValue() const override;
+
 protected:
   virtual void initialize() override;
   virtual void execute() override;
-  virtual Real getValue() override;
   virtual void threadJoin(const UserObject & y) override;
+  virtual void finalize() override;
 
   Real _volume;
 };

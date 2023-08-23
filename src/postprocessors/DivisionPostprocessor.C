@@ -15,7 +15,7 @@ DivisionPostprocessor::DivisionPostprocessor(const InputParameters & parameters)
 }
 
 PostprocessorValue
-DivisionPostprocessor::getValue()
+DivisionPostprocessor::getValue() const
 {
   return _value1 / _value2;
 }
