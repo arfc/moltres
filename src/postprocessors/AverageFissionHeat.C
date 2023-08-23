@@ -25,18 +25,13 @@ void
 AverageFissionHeat::execute()
 {
   ElmIntegTotFissHeatPostprocessor::execute();
-
   _volume += _current_elem_volume;
 }
 
 Real
-AverageFissionHeat::getValue()
+AverageFissionHeat::getValue() const
 {
-  Real integral = ElmIntegTotFissHeatPostprocessor::getValue();
-
-  gatherSum(_volume);
-
-  return integral / _volume;
+  return _integral_value / _volume;
 }
 
 void
@@ -45,4 +40,11 @@ AverageFissionHeat::threadJoin(const UserObject & y)
   ElmIntegTotFissHeatPostprocessor::threadJoin(y);
   const AverageFissionHeat & pps = static_cast<const AverageFissionHeat &>(y);
   _volume += pps._volume;
+}
+
+void
+AverageFissionHeat::finalize()
+{
+  gatherSum(_volume);
+  gatherSum(_integral_value);
 }

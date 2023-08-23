@@ -9,12 +9,10 @@ public:
 
   static InputParameters validParams();
 
-protected:
-  /**
-   * Get the L2 Error.
-   */
-  virtual Real getValue() override;
+  using Postprocessor::getValue;
+  virtual Real getValue() const override;
 
+protected:
   virtual Real computeQpIntegral() override;
 
   const VariableValue & _u_old;
