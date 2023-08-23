@@ -1,0 +1,2140 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>MortarScalarBase | Moltres</title><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../contrib/katex/katex.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/katex_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/moltres.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script><script type="text/javascript" src="../../contrib/katex/katex.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Moltres</a><a href="https://github.com/arfc/moltres" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="#!" class="dropdown-trigger" data-target="c5df0311-1de5-40c9-89b3-480bb43d4d16" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="e648c412-1791-457d-aa90-50ece4ed9387" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="007c237a-c21c-417c-b6a7-7cccb9c6731d" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#" class="sidenav-trigger" data-target="eb937c2f-383a-41a2-8f0c-4e0659018d59"><i class="material-icons">menu</i></a><ul class="sidenav" id="eb937c2f-383a-41a2-8f0c-4e0659018d59"><li><a href="#!" class="dropdown-trigger" data-target="d7d8f1c7-9b64-466e-bc51-4058cf9a227d" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="6bf36b8a-92f6-4a16-918c-41e2d3fa817b" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="ae05c202-4ef2-4d3b-9d3f-bc1eb290634f" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="c5df0311-1de5-40c9-89b3-480bb43d4d16"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="e648c412-1791-457d-aa90-50ece4ed9387"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="007c237a-c21c-417c-b6a7-7cccb9c6731d"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul><ul class="dropdown-content" id="d7d8f1c7-9b64-466e-bc51-4058cf9a227d"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="6bf36b8a-92f6-4a16-918c-41e2d3fa817b"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="ae05c202-4ef2-4d3b-9d3f-bc1eb290634f"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="col hide-on-med-and-down l12"><nav class="breadcrumb-nav"><div class="nav-wrapper"><a href=".." class="breadcrumb">source</a><span class="breadcrumb">constraints</span><a href="#" class="breadcrumb">MortarScalarBase</a></div></nav></div></div><div class="row"><div class="moose-content col s12 m12 l10"><section id="30563e33-0e43-4af0-9261-3294aff5962f" data-section-level="1" data-section-text="MortarScalarBase"><h1 id="mortarscalarbase">MortarScalarBase</h1><p>The <code>MortarScalarBase</code> is part of the scalar augmentation system to complement the <a href="../../syntax/ScalarKernels/index.html">ScalarKernel</a> class. Its principal purpose is to add standard quadrature loops and assembly routines to handle the contributions from a single added scalar variable to a <a href="../../syntax/Constraints/index.html">Mortar Constraint</a> class, including the entire row of the Jacobian. These routines will assist with representing weak form terms in a partial differential equation involving scalar variables integrated over the surface of a non-conforming interface (mortar surface). As usual, this piece of physics is referred to as the &quot;residual&quot; and is evaluated at integration quadrature points along that interface. To implement your own physics in MOOSE, you create your own mortar constraint by subclassing the MOOSE <code>MortarScalarBase</code> class.</p><p>The mortar scalar augmentation system supports the use of <span class="tooltipped" data-tooltip="automatic differentiation" data-position="top" data-delay="50">AD</span> for residual calculations, as such there are two options for creating field-scalar coupling objects: <code>MortarScalarBase</code> and <code>ADMortarScalarBase</code>. To further understand automatic differentiation, please refer to the <a href="../../automatic_differentiation/index.html">Automatic Differentiation</a> page for more information.</p><p>Developers should read all sections; users can find <a href="MortarScalarBase.html#MSB-parameters">Parameters</a> described at the bottom.</p><section class="scrollspy" id="03801e56-edfb-4004-ae04-ad94b443c937" data-section-level="2" data-section-text="Creation of Mortar Constraint Scalar Coupling Classes"><h2 id="MSB-coupling">Creation of Mortar Constraint Scalar Coupling Classes</h2><p><code>MortarConstraint</code> objects are designed to handle weak-form contributions from both surface-based lower-dimensional (Lagrange multiplier) variables and domain-based (primary and secondary) spatial variables. For these three <strong>focus</strong> spatial variables, its job is to contribute to the associated rows of the residual and the Jacobian matrix. Herein, as in the source code of <code>MortarConstraints</code>, these spatial variables will be called (see Mortar <a href="../../syntax/Constraints/index.html#MC-parameters">Parameters</a> for the analogous input parameter names):</p><ul class="browser-default"><li><p><code>_var</code>: Corresponds to a Lagrange Multiplier variable that lives on the lower dimensional block on the secondary face </p></li><li><p><code>_secondary_var</code>: Primal variable on the secondary side of the mortar interface (lives on the interior elements) </p></li><li><p><code>_primary_var</code>: Primal variable on the primary side of the mortar interface (lives on the interior elements).</p></li></ul><p>The three focus spatial variables <code>_var</code>, <code>_secondary_var</code>, and <code>_primary_var</code> are each indicated by the name <code>var</code> below, and are differentiated by the <code>mortar_type</code> flag as one of &quot;Primary&quot;. &quot;Secondary&quot;, or &quot;Lower&quot;. In a coupled (multi-phyics) weak form, all interface integral terms containing the test function of one of these three variables are potential candidates for <code>MortarConstraint</code> contributions.</p><p>The philosphy of the scalar augmentation class <code>MortarScalarBase</code> is to add a single focus scalar variable referred to as <code>_kappa</code> to the <code>MortarConstraint</code> object so that all terms in the coupled weak form that involve the spatial variables, scalar variable, and/or their test functions can be assembled in one or multiple class instances. This philosophy is similar to how the lower dimensional variable <code>_lambda</code> is added to the element faces of <code>DGKernel</code> and <code>IntegratedBC</code> objects associated with the hybrid finite element method (HFEM). Documentation for that approach can be found <a href="../dgkernels/HFEMDiffusion.html">HFEMDiffusion</a> and <a href="../bcs/HFEMDirichletBC.html">HFEMDirichletBC</a> along with the base classes <code>DGLowerDKernel</code> and <code>LowerDIntegratedBC</code>.</p><p>In a <code>MortarScalarBase</code> subclass, a naming scheme is established for the quadrature point methods of the two variable types: methods contributing to the test function of <code>_kappa</code> have &quot;Scalar&quot; near the front and methods contributing to the trial function of scalar variables in the Jacobian have &quot;Scalar&quot; at the end. The <code>computeScalarQpResidual()</code> function <strong>should</strong> be overridden (see <a href="MortarScalarBase.html#MSB-parameters">Parameters</a> for cases where the scalar should be suppressed). The <code>computeQpResidual(mortar_type)</code> function <strong>must</strong> be overridden as usual for <code>MortarConstraint</code>, although it may return zero.</p><p>For non-AD objects, several contributions to the Jacobian matrix can be optionally overridden for use in Newton-type nonlinear solvers. As mentioned later, the developer should choose and document which terms (rows) of the residual and terms (rows and columns) of the Jacobian will be attributed to an instance of the developed class. These choices can be motivated by whether some terms in the weak form can be or have already been implemented within other MOOSE classes.</p><ul class="browser-default"><li><p><code>computeQpJacobian(jacobian_type, jvar_num)</code>: Jacobian component d-<code>var</code>-residual / d-<code>jvar</code> </p></li><li><p><code>computeQpOffDiagJacobianScalar(mortar_type, svar_num)</code>: Jacobian component d-<code>var</code>-residual / d-<code>svar</code> </p></li><li><p><code>computeScalarQpJacobian()</code>: Jacobian component d-<code>_kappa</code>-residual / d-<code>_kappa</code> </p></li><li><p><code>computeScalarQpOffDiagJacobian(mortar_type, jvar_num)</code>: Jacobian component d-<code>_kappa</code>-residual / d-<code>jvar</code> </p></li><li><p><code>computeScalarQpOffDiagJacobianScalar(svar_num)</code>: Jacobian component d-<code>_kappa</code>-residual / d-<code>svar</code></p></li></ul><p>Similar to the <code>mortar_type</code> flag mentioned above, the <code>jacobian_type</code> flag is used to distinguish the couplings between the test and trial functions of the three focus spatial variables. For example, <code>jacobian_type = LowerSecondary</code> indicates that the linearized weak form term from the <code>_var</code> test function and <code>_secondary_var</code> trial function should be evaluated. All nine combinations from the three focus variables are visited during the loops that call <code>computeQpJacobian(jacobian_type, jvar_num)</code>. Also, loops over the coupled variables wrap around these quadrature loops: the integer for the spatial variable is <code>jvar_num</code> and the integer for the scalar variable is <code>svar_num</code>. Note that the <code>jvar_num</code> integer is different for <code>_var</code> and <code>_secondary_var</code> and for any other spatial variables coupled by the developer through derived classes of <code>MortarScalarBase</code>, so consult the examples of these methods below in <a href="MortarScalarBase.html#MSB-examples">Examples from Source Code</a> for how to query the current target using logical tests.</p><p>Also, there are some pre-calculation routines that are called within the quadrature loop once before the loop over spatial variable test and shape functions as well as  before the loop over scalar components. These methods are useful for material or stabilization calculations.</p><ul class="browser-default"><li><p><code>initScalarQpResidual()</code>: evaluations depending on qp but independent of test functions </p></li><li><p><code>initScalarQpJacobian(jvar_num)</code>: evaluations depending on qp but independent of test and shape functions </p></li><li><p><code>initScalarQpOffDiagJacobian(jsvar)</code>: evaluations depending on qp but independent of test and shape functions</p></li></ul><p>In addition to those mentioned in the <a href="../../syntax/Constraints/index.html">MortarConstraints</a> documentation, you have access to several member variables inside your <code>MortarScalarBase</code> class for computing the residual and Jacobian values in the above mentioned functions:</p><ul class="browser-default"><li><p><code>_h</code>, <code>_l</code>: indices for the current test and trial scalar component respectively. </p></li><li><p><code>_kappa</code>: value of the scalar variable this <code>MortarConstraint</code> operates on; indexed by <code>_h</code> (i.e. <code>_kappa[_h]</code>). </p></li><li><p><code>_kappa_var</code>: ID number of this scalar variable; useful to differentiate from others. </p></li><li><p><code>_k_order</code>: order (number of components) of the scalar variable.</p></li></ul><p>Since the test and trial &quot;shape&quot; functions of a scalar are &quot;1&quot;, variables are not required for that value. Examples of the source codes below demonstrate this fact.</p><div class="card moose-alert moose-alert-warning"><div class="card-title moose-alert-title"><i class="material-icons moose-inline-icon">warning</i><span class="moose-alert-title-brand">warning:</span>AD global indexing required</div><div class="card-content"><div class="moose-alert-content"><p><code>ADMortarScalarBase</code> only works with MOOSE configured with global AD indexing (the default).</p></div></div></div></section><section class="scrollspy" id="8ac8b7ff-d55c-4c80-80f3-489342a2df80" data-section-level="2" data-section-text="Examples from Source Code"><h2 id="MSB-examples">Examples from Source Code</h2><p>As mentioned, the <code>computeScalarQpResidual</code> method <strong>should</strong> be overridden for both flavors of  mortar constraints, non-AD and AD. As an example, consider the scalar residual weak form terms of the  <a href="PeriodicSegmentalConstraint.html"><code>PeriodicSegmentalConstraint</code></a> class:</p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-b8b0ac6f-0251-4f2a-a7d8-e73894175703"></span><span class="moose-katex-equation-number">(1)</span><script>var element = document.getElementById("moose-equation-b8b0ac6f-0251-4f2a-a7d8-e73894175703");katex.render("  \\langle \\vec{\\kappa} \\cdot \\llbracket \\vec{x} \\rrbracket, \\lambda \\rangle _{\\Gamma^+} - \\langle \\vec{\\kappa} \\cdot \\llbracket \\vec{x} \\rrbracket, \\vec{\\sigma} \\cdot \\hat{n} \\rangle _{\\Gamma^+} ", element, {displayMode:true,throwOnError:false});</script></span></p><p>The <code>computeScalarQpResidual</code> method for the non-AD version of this class is provided in <a href="#PSC-non-ad-residual">Listing 1</a>, where <code>_kappa_aux</code> is equal to <span class="moose-katex-inline-equation" id="moose-equation-13c10619-da70-4f1a-a587-5c91b74b73a6"><script>var element = document.getElementById("moose-equation-13c10619-da70-4f1a-a587-5c91b74b73a6");katex.render("\\sigma", element, {displayMode:false,throwOnError:false});</script></span>.</p><div class="card moose-float"><div class="card-content"><p class="moose-caption"><span class="moose-caption-heading">Listing 1: </span><span class="moose-caption-text" id="PSC-non-ad-residual">The C++ weak-form residual statement of <a href="#moose-equation-b8b0ac6f-0251-4f2a-a7d8-e73894175703">Eq. (1)</a>.</span></p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">Real
+PeriodicSegmentalConstraint::computeScalarQpResidual()
+{
+  // Stability/penalty term for residual of scalar variable
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  Real r = -dx(_h) * _lambda[_qp];
+
+  RealVectorValue kappa_aux_vec(_kappa_aux[0], 0, 0);
+  if (_k_order == 2)
+  {
+    kappa_aux_vec(1) = _kappa_aux[1];
+  }
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#55967df2-77f3-4645-856d-2ac8c96ead9d">(moose/framework/src/constraints/PeriodicSegmentalConstraint.C)</a></div></div><p>Meanwhile, the contribution to the lower spatial variable residual of this object is associated with <a href="#moose-equation-288f6511-f66f-412c-adaf-c8edfed25629">Eq. (2)</a> and implemented in <a href="#lower-non-ad-residual">Listing 2</a> (note that the scalar variable <code>_kappa</code> is termed as  <span class="moose-katex-inline-equation" id="moose-equation-3061e55c-2817-4bc8-83bf-8d798274c7b0"><script>var element = document.getElementById("moose-equation-3061e55c-2817-4bc8-83bf-8d798274c7b0");katex.render("\\vec{\\epsilon}", element, {displayMode:false,throwOnError:false});</script></span> in this weak form).</p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-288f6511-f66f-412c-adaf-c8edfed25629"></span><span class="moose-katex-equation-number">(2)</span><script>var element = document.getElementById("moose-equation-288f6511-f66f-412c-adaf-c8edfed25629");katex.render("    \\langle \\mu , \\vec{\\epsilon} \\cdot \\llbracket \\vec{x} \\rrbracket \\rangle _{\\Gamma^+} ", element, {displayMode:true,throwOnError:false});</script></span></p><div class="card moose-float"><div class="card-content"><p class="moose-caption"><span class="moose-caption-heading">Listing 2: </span><span class="moose-caption-text" id="lower-non-ad-residual">The C++ weak-form residual statement of <a href="#moose-equation-288f6511-f66f-412c-adaf-c8edfed25629">Eq. (2)</a>.</span></p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">Real
+PeriodicSegmentalConstraint::computeQpResidual(const Moose::MortarType mortar_type)
+{
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  RealVectorValue kappa_vec(_kappa[0], 0, 0);
+  if (_k_order == 2)
+    kappa_vec(1) = _kappa[1];
+  else if (_k_order == 3)
+  {
+    kappa_vec(1) = _kappa[1];
+    kappa_vec(2) = _kappa[2];
+  }
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#3b6d5503-32fc-4099-98b3-f1edf75dec5b">(moose/framework/src/constraints/PeriodicSegmentalConstraint.C)</a></div></div><p>The other contributions to the lower spatial variable residual of this object is associated with <a href="#moose-equation-96b3b4c0-1310-4939-a241-85822099401d">Eq. (3)</a> and implemented in <a href="#EVC-non-ad-residual">Listing 3</a> within the <a href="EqualValueConstraint.html"><code>EqualValueConstraint</code></a> class.</p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-96b3b4c0-1310-4939-a241-85822099401d"></span><span class="moose-katex-equation-number">(3)</span><script>var element = document.getElementById("moose-equation-96b3b4c0-1310-4939-a241-85822099401d");katex.render("     -\\langle \\mu , \\llbracket u \\rrbracket \\rangle _{\\Gamma^+} ", element, {displayMode:true,throwOnError:false});</script></span></p><div class="card moose-float"><div class="card-content"><p class="moose-caption"><span class="moose-caption-heading">Listing 3: </span><span class="moose-caption-text" id="EVC-non-ad-residual">The C++ weak-form residual statement of <a href="#moose-equation-96b3b4c0-1310-4939-a241-85822099401d">Eq. (3)</a>.</span></p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">case Moose::MortarType::Lower:
+    {
+      auto residual = (_u_primary[_qp] - _u_secondary[_qp]) * _test[_i][_qp];
+
+      if (_stabilize)
+      {
+        // secondary
+        residual -= _delta * _lower_secondary_volume * _test[_i][_qp] *
+                    (_lambda[_qp] - _diff_secondary[_qp] * _grad_u_secondary[_qp] * _normals[_qp]);
+
+        // primary
+        residual -=
+            _delta * _lower_primary_volume * _test[_i][_qp] *
+            (_lambda[_qp] + _diff_primary[_qp] * _grad_u_primary[_qp] * _normals_primary[_qp]);
+      }
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#314a3da2-5bcb-4bdf-8e22-df7444f9757d">(moose/framework/src/constraints/EqualValueConstraint.C)</a></div></div><p>For an example of the contributions to <code>_primary_var</code> and <code>_secondary_var</code> residuals, consider the  penalty version of the periodic constraint associated with <a href="#moose-equation-6d427011-907e-42b9-97cb-af3c14836dcf">Eq. (4)</a> and implemented in <a href="#PPSC-non-ad-residual">Listing 4</a> within the <a href="PenaltyPeriodicSegmentalConstraint.html"><code>PenaltyPeriodicSegmentalConstraint</code></a> class.</p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-6d427011-907e-42b9-97cb-af3c14836dcf"></span><span class="moose-katex-equation-number">(4)</span><script>var element = document.getElementById("moose-equation-6d427011-907e-42b9-97cb-af3c14836dcf");katex.render(" - \\langle \\llbracket w \\rrbracket,\\tau \\vec{\\epsilon} \\cdot \\llbracket \\vec{x} \\rrbracket \\rangle _{\\Gamma^+} ", element, {displayMode:true,throwOnError:false});</script></span></p><div class="card moose-float"><div class="card-content"><p class="moose-caption"><span class="moose-caption-heading">Listing 4: </span><span class="moose-caption-text" id="PPSC-non-ad-residual">The C++ weak-form residual statement of <a href="#moose-equation-6d427011-907e-42b9-97cb-af3c14836dcf">Eq. (4)</a>.</span></p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">Real
+PenaltyPeriodicSegmentalConstraint::computeQpResidual(const Moose::MortarType mortar_type)
+{
+  // Compute penalty parameter times x-jump times average heat flux
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  RealVectorValue kappa_vec(_kappa[0], 0, 0);
+  if (_k_order == 2)
+    kappa_vec(1) = _kappa[1];
+  else if (_k_order == 3)
+  {
+    kappa_vec(1) = _kappa[1];
+    kappa_vec(2) = _kappa[2];
+  }
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#7cd197b8-4aee-4e1b-b4a2-5bdebb69cfc9">(moose/framework/src/constraints/PenaltyPeriodicSegmentalConstraint.C)</a></div></div><p>The <code>PeriodicSegmentalConstraint</code> class also overrides the <code>computeScalarQpOffDiagJacobian</code> method to define the Jacobian term related to <a href="#moose-equation-b8b0ac6f-0251-4f2a-a7d8-e73894175703">Eq. (1)</a> as shown in <a href="#non-ad-PSC-s-v-jacobian">Listing 5</a>.</p><div class="card moose-float"><div class="card-content"><p class="moose-caption"><span class="moose-caption-heading">Listing 5: </span><span class="moose-caption-text" id="non-ad-PSC-s-v-jacobian">The C++ weak-form Jacobian for d-<code>_kappa</code>-residual / d-<code>jvar</code>.</span></p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">Real
+PeriodicSegmentalConstraint::computeScalarQpOffDiagJacobian(const Moose::MortarType mortar_type,
+                                                            const unsigned int jvar_num)
+{
+  // Test if jvar is the ID of the primary variables and not some other random variable
+  switch (mortar_type)
+  {
+    case Moose::MortarType::Lower:
+      if (!_var || _var-&gt;number() != jvar_num)
+        return 0;
+      break;
+    default:
+      return 0;
+  }
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#8194a2f9-6802-4bd5-8e11-0df8b55c7591">(moose/framework/src/constraints/PeriodicSegmentalConstraint.C)</a></div></div><p>Notice that there is a conditional to confirm that the coupled <code>jvar</code> is the focus lower variable <code>_var</code>, otherwise it returns zero.</p><p>Similarly, it also overrides the <code>computeQpOffDiagJacobianScalar</code> method to define the Jacobian term related to <a href="#moose-equation-288f6511-f66f-412c-adaf-c8edfed25629">Eq. (2)</a> as shown in <a href="#non-ad-PSC-v-s-jacobian">Listing 6</a>.</p><div class="card moose-float"><div class="card-content"><p class="moose-caption"><span class="moose-caption-heading">Listing 6: </span><span class="moose-caption-text" id="non-ad-PSC-v-s-jacobian">The C++ weak-form Jacobian for d-<code>_var</code>-residual / d-<code>svar</code>.</span></p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">Real
+PeriodicSegmentalConstraint::computeQpOffDiagJacobianScalar(const Moose::MortarType mortar_type,
+                                                            const unsigned int svar_num)
+{
+  if (svar_num != _kappa_var)
+    return 0;
+
+  // Stability/penalty term for Jacobian
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  Real jac = -dx(_h);
+
+  switch (mortar_type)
+  {
+    case Moose::MortarType::Lower: // Residual_sign -1  ddeltaU_ddisp sign 1;
+      jac *= _test[_i][_qp];
+      break;
+    default:
+      return 0;
+  }
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#2dae7c95-0d1c-424e-ad38-ccd966b178c7">(moose/framework/src/constraints/PeriodicSegmentalConstraint.C)</a></div></div><p>Also notice the conditional that confirms the coupled <code>svar</code> is the focus scalar <code>_kappa</code>, otherwise it returns zero.</p><p>The AD version of this object, <a href="ADPeriodicSegmentalConstraint.html"><code>ADPeriodicSegmentalConstraint</code></a>, only requires the residual implementation; as such it overrides <code>computeScalarQpResidual</code> and <code>computeQpResidual</code> as follows.</p><div class="card moose-float"><div class="card-content"><p class="moose-caption"><span class="moose-caption-heading">Listing 7: </span><span class="moose-caption-text" id="PSC-ad-s-residual">The C++ AD weak-form residual statement of <a href="#moose-equation-b8b0ac6f-0251-4f2a-a7d8-e73894175703">Eq. (1)</a>.</span></p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">ADPeriodicSegmentalConstraint::computeScalarQpResidual()
+{
+  // Stability/penalty term for residual of scalar variable
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  ADReal r = -dx(_h) * _lambda[_qp];
+
+  RealVectorValue kappa_aux_vec(_kappa_aux[0], 0, 0);
+  if (_k_order == 2)
+  {
+    kappa_aux_vec(1) = _kappa_aux[1];
+  }
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#4084e040-9ebd-4747-a0d2-3c6a1e94466d">(moose/framework/src/constraints/ADPeriodicSegmentalConstraint.C)</a></div></div><div class="card moose-float"><div class="card-content"><p class="moose-caption"><span class="moose-caption-heading">Listing 8: </span><span class="moose-caption-text" id="PSC-ad-residual">The C++ AD weak-form residual statement of <a href="#moose-equation-288f6511-f66f-412c-adaf-c8edfed25629">Eq. (2)</a>.</span></p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">ADPeriodicSegmentalConstraint::computeQpResidual(const Moose::MortarType mortar_type)
+{
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  ADRealVectorValue kappa_vec(_kappa[0], 0, 0);
+  Moose::derivInsert(kappa_vec(0).derivatives(), _kappa_var_ptr-&gt;dofIndices()[0], 1);
+  if (_k_order == 2)
+  {
+    kappa_vec(1) = _kappa[1];
+    Moose::derivInsert(kappa_vec(1).derivatives(), _kappa_var_ptr-&gt;dofIndices()[1], 1);
+  }
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#5e2f6d4c-c338-4557-91c5-33ddf0e1d034">(moose/framework/src/constraints/ADPeriodicSegmentalConstraint.C)</a></div></div><p>Depending upon the weak form and its coupling terms between spatial and scalar variables, not all of the methods listed in <a href="MortarScalarBase.html#MSB-coupling">Creation of Mortar Constraint Scalar Coupling Classes</a> need to be overridden.</p><p>The scalar augmentation system is designed such that multiple scalar variables can be coupled to an instance of the <code>MortarConstraint</code> class, each focusing on one scalar from the list. This approach is similar to how Tensor Mechanics module classes operator on one component variable of the displacement vector field and are coupled to the other components. The developer can decide how to organize the coupling and off-diagonal Jacobian terms in a logical way and document this for the user.</p><p>An example for decomposing the coupling terms and having multiple scalar variables are contained in the source files of the framework test directory as well as input file <code>testperiodicsole.i</code>, with listings below. The comments within these header and source files should be consulted to visualize how the rows and columns of the relevant residual and Jacobian contributions are handled.</p><div class="card moose-float"><div class="card-content"><p class="moose-caption"><span class="moose-caption-heading">Listing 9: </span><span class="moose-caption-text" id="TPS-residual">Decomposition of spatial and scalar variable contributions by x and y components.</span></p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">/// Test object to illustrate coupling between mortar spatial variables
+/// and two separate scalar variables, kappa and kappa_other. The solution
+/// is equivalent to PenaltyPeriodicSegmentalConstraint.
+///
+/// The kappa variable is split into two scalars: the first component called &#x27;_kappa&#x27;
+/// herein and all other components called &#x27;_kappa_other&#x27; herein.
+/// This decomposition is ONLY valid for 2D problems with a macro scalar vector [kappa_x kappa_y]
+/// applied as a periodic boundary condition. For parameter _alpha = 0, the primary
+/// scalar (_kappa) is kappa_x and the coupled scalar is kappa_y. For parameter _alpha = 1, the primary
+/// scalar (_kappa) is kappa_y and the coupled scalar is kappa_x.
+/// That mapping MUST be handled in the input file.
+///
+/// Thus, each instance of TestPeriodicSole acts on both primary/secondary field variables
+/// and one scalar variable (_svar_alpha). The job of the constraint is to assemble the
+/// residual and Jacobian terms arising from _svar_alpha (namely, selected entries).
+/// It assembles one row of the Jacobian for the scalar variable as well as the couplings of that
+/// scalar to the primary and secondary spatial variables, using logical checks with _alpha.
+/// The entries for the other field/scalar variables are handled by the other instance of the
+/// constraint, which have the opposite value of _alpha. The logical checks ensure the proper
+/// decomposition of the jobs.
+///
+/// In summary, for x=disp_x etc. and k=kappa_x and a=kappa_y, then the contributions of the instances are
+/// PenaltyEqualValueConstraint
+/// R = [Rss+p, Rps+p, 0, 0]^T
+/// J = [Jss, Jsp, 000, 000
+///      Jps, Jpp, 000, 000
+///      000, 000, 000, 000
+///      000, 000, 000, 000]
+/// TestPeriodicSole
+/// _alpha=0
+/// R = [Rsk, Rpk,  Rk,  00]^T
+/// J = [000, 000, Jsk, 000
+///      000, 000, Jpk, 000
+///      Jks, Jkp, Jkk, Jka
+///      000, 000, 000, 000]
+/// _alpha=1
+/// R = [Rsa, Rpa,  00,  Ra]^T
+/// J = [000, 000, 000, Jsa
+///      000, 000, 000, Jpa
+///      000, 000, 000, 000
+///      Jas, Jap, Jak, Jaa]
+///
+/// In this manner, the full R and J are obtained with NO duplication of jobs:
+/// R = [Rs,  Rp,  Rk,  Ra ]^T
+/// J = [Jss, Jsp, Jsk, Jsa
+///      Jps, Jpp, Jpk, Jpa
+///      Jks, Jkp, Jkk, Jka
+///      Jas, Jap, Jak, Jaa]
+///
+
+class TestPeriodicSole : public DerivativeMaterialInterface&lt;MortarScalarBase&gt;
+{
+public:
+  static InputParameters validParams();
+  TestPeriodicSole(const InputParameters &amp; parameters);
+
+protected:
+  virtual void precalculateResidual() override;
+  virtual void precalculateJacobian() override;
+  virtual void initScalarQpResidual() override;
+
+  /**
+   * Method for computing the residual at quadrature points
+   */
+  virtual Real computeQpResidual(Moose::MortarType mortar_type) override;
+  Real computeQpJacobian(Moose::ConstraintJacobianType /*jacobian_type*/,
+                         unsigned int /*jvar*/) override
+  {
+    return 0;
+  }
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#32848418-3a36-4c30-b07e-492652fa34b0">(moose/test/include/constraints/TestPeriodicSole.h)</a></div></div><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[Constraints]
+  [mortarlr]
+    type = PenaltyEqualValueConstraint
+    primary_boundary = &#x27;11&#x27;
+    secondary_boundary = &#x27;13&#x27;
+    primary_subdomain = &#x27;primary_right&#x27;
+    secondary_subdomain = &#x27;secondary_left&#x27;
+    secondary_variable = u
+    correct_edge_dropping = true
+    penalty_value = 1.e3
+  []
+  [periodiclrx]
+    type = TestPeriodicSole
+    primary_boundary = &#x27;11&#x27;
+    secondary_boundary = &#x27;13&#x27;
+    primary_subdomain = &#x27;primary_right&#x27;
+    secondary_subdomain = &#x27;secondary_left&#x27;
+    secondary_variable = u
+    kappa = kappa_x
+    kappa_aux = kappa_aux
+    component = 0
+    kappa_other = kappa_y
+    correct_edge_dropping = true
+    penalty_value = 1.e3
+  []
+  [periodiclry]
+    type = TestPeriodicSole
+    primary_boundary = &#x27;11&#x27;
+    secondary_boundary = &#x27;13&#x27;
+    primary_subdomain = &#x27;primary_right&#x27;
+    secondary_subdomain = &#x27;secondary_left&#x27;
+    secondary_variable = u
+    kappa = kappa_y
+    kappa_aux = kappa_aux
+    component = 1
+    kappa_other = kappa_x
+    correct_edge_dropping = true
+    penalty_value = 1.e3
+  []
+  [mortarbt]
+    type = PenaltyEqualValueConstraint
+    primary_boundary = &#x27;12&#x27;
+    secondary_boundary = &#x27;10&#x27;
+    primary_subdomain = &#x27;primary_top&#x27;
+    secondary_subdomain = &#x27;secondary_bottom&#x27;
+    secondary_variable = u
+    correct_edge_dropping = true
+    penalty_value = 1.e3
+  []
+  [periodicbtx]
+    type = TestPeriodicSole
+    primary_boundary = &#x27;12&#x27;
+    secondary_boundary = &#x27;10&#x27;
+    primary_subdomain = &#x27;primary_top&#x27;
+    secondary_subdomain = &#x27;secondary_bottom&#x27;
+    secondary_variable = u
+    kappa = kappa_x
+    kappa_aux = kappa_aux
+    component = 0
+    kappa_other = kappa_y
+    correct_edge_dropping = true
+    penalty_value = 1.e3
+  []
+  [periodicbty]
+    type = TestPeriodicSole
+    primary_boundary = &#x27;12&#x27;
+    secondary_boundary = &#x27;10&#x27;
+    primary_subdomain = &#x27;primary_top&#x27;
+    secondary_subdomain = &#x27;secondary_bottom&#x27;
+    secondary_variable = u
+    kappa = kappa_y
+    kappa_aux = kappa_aux
+    component = 1
+    kappa_other = kappa_x
+    correct_edge_dropping = true
+    compute_scalar_residuals = true
+    penalty_value = 1.e3
+  []
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#8f780e1f-ab73-4f67-b6ff-f7b45fbee798">(moose/test/tests/mortar/periodic_segmental_constraint/testperiodicsole.i)</a><div class="card moose-alert moose-alert-note"><div class="card-title moose-alert-title"><i class="material-icons moose-inline-icon">comment</i><span class="moose-alert-title-brand">note:</span>Displaced mesh features untested</div><div class="card-content"><div class="moose-alert-content"><p>The displaced mesh features are not yet tested for the scalar augmentation system.</p></div></div></div></section><section class="scrollspy" id="1c807e98-0215-4114-a2a6-5e9cf2295625" data-section-level="2" data-section-text="Parameters"><h2 id="MSB-parameters">Parameters</h2><p>There is one required parameters the user must supply for a mortar constraint derived from <code>MortarScalarBase</code>:</p><ul class="browser-default"><li><p><code>scalar_variable</code>: the focus scalar variable of the mortar constraint, for which assembly of the residual and Jacobian contributions will occur. It must be a <code>MooseScalarVariable</code>. This parameter may be renamed in a derived class to be more physically meaningful.</p></li></ul><p>If the <code>scalar_variable</code> parameter is not specified, then the derived class will behave identically to a regular <code>MortarConstraint</code>, namely without any scalar functionality. This feature is useful if the scalar augmentation in inserted into a class structure with several levels and not all derived members use scalar variables.</p><p>As an example, the parameter listing is shown below for the <code>PeriodicSegmentalConstraint</code> object with the <code>scalar_variable</code> parameter renamed to <code>epsilon</code>:</p><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[Constraints]
+  [mortarlr]
+    type = EqualValueConstraint
+    primary_boundary = &#x27;11&#x27;
+    secondary_boundary = &#x27;13&#x27;
+    primary_subdomain = &#x27;primary_right&#x27;
+    secondary_subdomain = &#x27;secondary_left&#x27;
+    secondary_variable = u
+    variable = lm1
+    correct_edge_dropping = true
+  []
+  [periodiclr]
+    type = PeriodicSegmentalConstraint
+    primary_boundary = &#x27;11&#x27;
+    secondary_boundary = &#x27;13&#x27;
+    primary_subdomain = &#x27;primary_right&#x27;
+    secondary_subdomain = &#x27;secondary_left&#x27;
+    secondary_variable = u
+    epsilon = epsilon
+    sigma = sigma
+    variable = lm1
+    correct_edge_dropping = true
+  []
+  [mortarbt]
+    type = EqualValueConstraint
+    primary_boundary = &#x27;12&#x27;
+    secondary_boundary = &#x27;10&#x27;
+    primary_subdomain = &#x27;primary_top&#x27;
+    secondary_subdomain = &#x27;secondary_bottom&#x27;
+    secondary_variable = u
+    variable = lm2
+    correct_edge_dropping = true
+  []
+  [periodicbt]
+    type = PeriodicSegmentalConstraint
+    primary_boundary = &#x27;12&#x27;
+    secondary_boundary = &#x27;10&#x27;
+    primary_subdomain = &#x27;primary_top&#x27;
+    secondary_subdomain = &#x27;secondary_bottom&#x27;
+    secondary_variable = u
+    epsilon = epsilon
+    sigma = sigma
+    variable = lm2
+    correct_edge_dropping = true
+  []
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#9d74e806-47f6-4816-935b-76777487eda8">(moose/test/tests/mortar/periodic_segmental_constraint/periodic_simple2d.i)</a><p>Note: to avoid an error message &quot;Variable &#x27;kappa&#x27; does not exist in this system&quot;, the following block should be added to the input file:</p><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[Problem]
+  kernel_coverage_check = false
+  error_on_jacobian_nonzero_reallocation = true
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#ceb24c2a-be9a-4c93-a7b3-921100e64130">(moose/test/tests/mortar/periodic_segmental_constraint/periodic_simple2d.i)</a><p>There is one optional parameters that can be supplied to`MortarScalarBase` classes:</p><ul class="browser-default"><li><p><code>compute_scalar_residuals</code>: Whether to compute scalar residuals. This will automatically be set to false if a <code>scalar_variable</code> parameter is not supplied. Other cases where the user may want to set this to false is during testing when the scalar variable is an <code>AuxVariable</code> and not a solution variable in the system. This parameter has a similar usage as the <code>compute_lm_residuals</code> and <code>compute_primal_residuals</code> for all Mortar objects.</p></li></ul></section></section><div class="moose-modal modal" id="55967df2-77f3-4645-856d-2ac8c96ead9d"><div class="modal-content"><h4>(moose/framework/src/constraints/PeriodicSegmentalConstraint.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include &quot;PeriodicSegmentalConstraint.h&quot;
+
+registerMooseObject(&quot;MooseApp&quot;, PeriodicSegmentalConstraint);
+
+InputParameters
+PeriodicSegmentalConstraint::validParams()
+{
+  InputParameters params = MortarScalarBase::validParams();
+  params.addClassDescription(
+      &quot;PeriodicSegmentalConstraint enforces macro-micro periodic conditions between &quot;
+      &quot;secondary and primary sides of a mortar interface using Lagrange multipliers.&quot;
+      &quot;Must be used alongside EqualValueConstraint.&quot;);
+  params.renameCoupledVar(&quot;scalar_variable&quot;, &quot;epsilon&quot;, &quot;Primary coupled scalar variable&quot;);
+  params.addRequiredCoupledVar(&quot;sigma&quot;, &quot;Controlled scalar averaging variable&quot;);
+
+  return params;
+}
+
+PeriodicSegmentalConstraint::PeriodicSegmentalConstraint(const InputParameters &amp; parameters)
+  : DerivativeMaterialInterface&lt;MortarScalarBase&gt;(parameters),
+    _kappa_aux_ptr(getScalarVar(&quot;sigma&quot;, 0)),
+    _ka_order(_kappa_aux_ptr-&gt;order()),
+    _kappa_aux(coupledScalarValue(&quot;sigma&quot;))
+{
+  if (_kappa_aux_ptr-&gt;kind() != Moose::VarKindType::VAR_AUXILIARY)
+    paramError(&quot;sigma&quot;,
+               &quot;Must assign auxiliary scalar variable to sigma, rather than nonlinear variable&quot;);
+}
+
+Real
+PeriodicSegmentalConstraint::computeQpResidual(const Moose::MortarType mortar_type)
+{
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  RealVectorValue kappa_vec(_kappa[0], 0, 0);
+  if (_k_order == 2)
+    kappa_vec(1) = _kappa[1];
+  else if (_k_order == 3)
+  {
+    kappa_vec(1) = _kappa[1];
+    kappa_vec(2) = _kappa[2];
+  }
+  Real r = -(kappa_vec * dx);
+
+  switch (mortar_type)
+  {
+    case Moose::MortarType::Lower:
+      r *= _test[_i][_qp];
+      break;
+    default:
+      return 0;
+  }
+  return r;
+}
+
+Real
+PeriodicSegmentalConstraint::computeScalarQpResidual()
+{
+  // Stability/penalty term for residual of scalar variable
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  Real r = -dx(_h) * _lambda[_qp];
+
+  RealVectorValue kappa_aux_vec(_kappa_aux[0], 0, 0);
+  if (_k_order == 2)
+  {
+    kappa_aux_vec(1) = _kappa_aux[1];
+  }
+  else if (_k_order == 3)
+  {
+    kappa_aux_vec(1) = _kappa_aux[1];
+    kappa_aux_vec(2) = _kappa_aux[2];
+  }
+
+  r -= dx(_h) * (kappa_aux_vec * _normals[_qp]);
+
+  return r;
+}
+
+Real
+PeriodicSegmentalConstraint::computeQpOffDiagJacobianScalar(const Moose::MortarType mortar_type,
+                                                            const unsigned int svar_num)
+{
+  if (svar_num != _kappa_var)
+    return 0;
+
+  // Stability/penalty term for Jacobian
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  Real jac = -dx(_h);
+
+  switch (mortar_type)
+  {
+    case Moose::MortarType::Lower: // Residual_sign -1  ddeltaU_ddisp sign 1;
+      jac *= _test[_i][_qp];
+      break;
+    default:
+      return 0;
+  }
+  return jac;
+}
+
+Real
+PeriodicSegmentalConstraint::computeScalarQpOffDiagJacobian(const Moose::MortarType mortar_type,
+                                                            const unsigned int jvar_num)
+{
+  // Test if jvar is the ID of the primary variables and not some other random variable
+  switch (mortar_type)
+  {
+    case Moose::MortarType::Lower:
+      if (!_var || _var-&gt;number() != jvar_num)
+        return 0;
+      break;
+    default:
+      return 0;
+  }
+
+  // Stability/penalty term for Jacobian
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  Real jac = -dx(_h);
+
+  switch (mortar_type)
+  {
+    case Moose::MortarType::Lower:
+      jac *= (*_phi)[_j][_qp];
+      break;
+    default:
+      return 0;
+  }
+  return jac;
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="3b6d5503-32fc-4099-98b3-f1edf75dec5b"><div class="modal-content"><h4>(moose/framework/src/constraints/PeriodicSegmentalConstraint.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include &quot;PeriodicSegmentalConstraint.h&quot;
+
+registerMooseObject(&quot;MooseApp&quot;, PeriodicSegmentalConstraint);
+
+InputParameters
+PeriodicSegmentalConstraint::validParams()
+{
+  InputParameters params = MortarScalarBase::validParams();
+  params.addClassDescription(
+      &quot;PeriodicSegmentalConstraint enforces macro-micro periodic conditions between &quot;
+      &quot;secondary and primary sides of a mortar interface using Lagrange multipliers.&quot;
+      &quot;Must be used alongside EqualValueConstraint.&quot;);
+  params.renameCoupledVar(&quot;scalar_variable&quot;, &quot;epsilon&quot;, &quot;Primary coupled scalar variable&quot;);
+  params.addRequiredCoupledVar(&quot;sigma&quot;, &quot;Controlled scalar averaging variable&quot;);
+
+  return params;
+}
+
+PeriodicSegmentalConstraint::PeriodicSegmentalConstraint(const InputParameters &amp; parameters)
+  : DerivativeMaterialInterface&lt;MortarScalarBase&gt;(parameters),
+    _kappa_aux_ptr(getScalarVar(&quot;sigma&quot;, 0)),
+    _ka_order(_kappa_aux_ptr-&gt;order()),
+    _kappa_aux(coupledScalarValue(&quot;sigma&quot;))
+{
+  if (_kappa_aux_ptr-&gt;kind() != Moose::VarKindType::VAR_AUXILIARY)
+    paramError(&quot;sigma&quot;,
+               &quot;Must assign auxiliary scalar variable to sigma, rather than nonlinear variable&quot;);
+}
+
+Real
+PeriodicSegmentalConstraint::computeQpResidual(const Moose::MortarType mortar_type)
+{
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  RealVectorValue kappa_vec(_kappa[0], 0, 0);
+  if (_k_order == 2)
+    kappa_vec(1) = _kappa[1];
+  else if (_k_order == 3)
+  {
+    kappa_vec(1) = _kappa[1];
+    kappa_vec(2) = _kappa[2];
+  }
+  Real r = -(kappa_vec * dx);
+
+  switch (mortar_type)
+  {
+    case Moose::MortarType::Lower:
+      r *= _test[_i][_qp];
+      break;
+    default:
+      return 0;
+  }
+  return r;
+}
+
+Real
+PeriodicSegmentalConstraint::computeScalarQpResidual()
+{
+  // Stability/penalty term for residual of scalar variable
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  Real r = -dx(_h) * _lambda[_qp];
+
+  RealVectorValue kappa_aux_vec(_kappa_aux[0], 0, 0);
+  if (_k_order == 2)
+  {
+    kappa_aux_vec(1) = _kappa_aux[1];
+  }
+  else if (_k_order == 3)
+  {
+    kappa_aux_vec(1) = _kappa_aux[1];
+    kappa_aux_vec(2) = _kappa_aux[2];
+  }
+
+  r -= dx(_h) * (kappa_aux_vec * _normals[_qp]);
+
+  return r;
+}
+
+Real
+PeriodicSegmentalConstraint::computeQpOffDiagJacobianScalar(const Moose::MortarType mortar_type,
+                                                            const unsigned int svar_num)
+{
+  if (svar_num != _kappa_var)
+    return 0;
+
+  // Stability/penalty term for Jacobian
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  Real jac = -dx(_h);
+
+  switch (mortar_type)
+  {
+    case Moose::MortarType::Lower: // Residual_sign -1  ddeltaU_ddisp sign 1;
+      jac *= _test[_i][_qp];
+      break;
+    default:
+      return 0;
+  }
+  return jac;
+}
+
+Real
+PeriodicSegmentalConstraint::computeScalarQpOffDiagJacobian(const Moose::MortarType mortar_type,
+                                                            const unsigned int jvar_num)
+{
+  // Test if jvar is the ID of the primary variables and not some other random variable
+  switch (mortar_type)
+  {
+    case Moose::MortarType::Lower:
+      if (!_var || _var-&gt;number() != jvar_num)
+        return 0;
+      break;
+    default:
+      return 0;
+  }
+
+  // Stability/penalty term for Jacobian
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  Real jac = -dx(_h);
+
+  switch (mortar_type)
+  {
+    case Moose::MortarType::Lower:
+      jac *= (*_phi)[_j][_qp];
+      break;
+    default:
+      return 0;
+  }
+  return jac;
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="314a3da2-5bcb-4bdf-8e22-df7444f9757d"><div class="modal-content"><h4>(moose/framework/src/constraints/EqualValueConstraint.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include &quot;EqualValueConstraint.h&quot;
+#include &quot;SubProblem.h&quot;
+#include &quot;FEProblem.h&quot;
+#include &quot;Assembly.h&quot;
+
+registerMooseObject(&quot;MooseApp&quot;, EqualValueConstraint);
+
+InputParameters
+EqualValueConstraint::validParams()
+{
+  InputParameters params = ADMortarConstraint::validParams();
+  params.addClassDescription(
+      &quot;EqualValueConstraint enforces solution continuity between secondary and &quot;
+      &quot;primary sides of a mortar interface using lagrange multipliers&quot;);
+  params.addRangeCheckedParam&lt;Real&gt;(
+      &quot;delta&quot;, 0, &quot;0&lt;=delta&lt;=1&quot;, &quot;The coefficient for stabilizing terms&quot;);
+  params.addParam&lt;MaterialPropertyName&gt;(
+      &quot;diff_secondary&quot;, 1, &quot;The diffusivity on the secondary side&quot;);
+  params.addParam&lt;MaterialPropertyName&gt;(&quot;diff_primary&quot;, 1, &quot;The diffusivity on the primary side&quot;);
+  return params;
+}
+
+EqualValueConstraint::EqualValueConstraint(const InputParameters &amp; parameters)
+  : ADMortarConstraint(parameters),
+    _lower_secondary_volume(_assembly.lowerDElemVolume()),
+    _lower_primary_volume(_assembly.neighborLowerDElemVolume()),
+    _delta(getParam&lt;Real&gt;(&quot;delta&quot;)),
+    _diff_secondary(getADMaterialProperty&lt;Real&gt;(&quot;diff_secondary&quot;)),
+    _diff_primary(getADMaterialProperty&lt;Real&gt;(&quot;diff_primary&quot;)),
+    _stabilize(_delta &gt; TOLERANCE * TOLERANCE)
+{
+}
+
+ADReal
+EqualValueConstraint::computeQpResidual(Moose::MortarType mortar_type)
+{
+  switch (mortar_type)
+  {
+    case Moose::MortarType::Secondary:
+    {
+      // The sign choice here makes it so that for the true solution: lambda = normals_secondary *
+      // diff_secondary * grad_u_secondary
+      auto residual = -_lambda[_qp] * _test_secondary[_i][_qp];
+
+      if (_stabilize)
+        residual += _delta * _lower_secondary_volume *
+                    (_diff_secondary[_qp] * _grad_test_secondary[_i][_qp] * _normals[_qp]) *
+                    (_lambda[_qp] - _diff_secondary[_qp] * _grad_u_secondary[_qp] * _normals[_qp]);
+
+      return residual;
+    }
+
+    case Moose::MortarType::Primary:
+    {
+      // The sign choice here makes it so that for the true solution: lambda = -normals_primary *
+      // diff_primary * grad_u_primary
+      auto residual = _lambda[_qp] * _test_primary[_i][_qp];
+
+      if (_stabilize)
+        residual +=
+            _delta * _lower_primary_volume *
+            (_diff_primary[_qp] * _grad_test_primary[_i][_qp] * _normals_primary[_qp]) *
+            (-_lambda[_qp] - _diff_primary[_qp] * _grad_u_primary[_qp] * _normals_primary[_qp]);
+
+      return residual;
+    }
+
+    case Moose::MortarType::Lower:
+    {
+      auto residual = (_u_primary[_qp] - _u_secondary[_qp]) * _test[_i][_qp];
+
+      if (_stabilize)
+      {
+        // secondary
+        residual -= _delta * _lower_secondary_volume * _test[_i][_qp] *
+                    (_lambda[_qp] - _diff_secondary[_qp] * _grad_u_secondary[_qp] * _normals[_qp]);
+
+        // primary
+        residual -=
+            _delta * _lower_primary_volume * _test[_i][_qp] *
+            (_lambda[_qp] + _diff_primary[_qp] * _grad_u_primary[_qp] * _normals_primary[_qp]);
+      }
+
+      return residual;
+    }
+
+    default:
+      return 0;
+  }
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="7cd197b8-4aee-4e1b-b4a2-5bdebb69cfc9"><div class="modal-content"><h4>(moose/framework/src/constraints/PenaltyPeriodicSegmentalConstraint.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include &quot;PenaltyPeriodicSegmentalConstraint.h&quot;
+
+registerMooseObject(&quot;MooseApp&quot;, PenaltyPeriodicSegmentalConstraint);
+
+InputParameters
+PenaltyPeriodicSegmentalConstraint::validParams()
+{
+  InputParameters params = MortarScalarBase::validParams();
+  params.addClassDescription(
+      &quot;PenaltyPeriodicSegmentalConstraint enforces macro-micro periodic conditions between &quot;
+      &quot;secondary and primary sides of a mortar interface using a penalty approach &quot;
+      &quot;(no Lagrange multipliers needed). Must be used alongside PenaltyEqualValueConstraint.&quot;);
+  params.renameCoupledVar(&quot;scalar_variable&quot;, &quot;epsilon&quot;, &quot;Primary coupled scalar variable&quot;);
+  params.addRequiredCoupledVar(&quot;sigma&quot;, &quot;Controlled scalar averaging variable&quot;);
+  params.addParam&lt;Real&gt;(
+      &quot;penalty_value&quot;,
+      1.0,
+      &quot;Penalty value used to impose a generalized force capturing the mortar constraint equation&quot;);
+
+  return params;
+}
+
+PenaltyPeriodicSegmentalConstraint::PenaltyPeriodicSegmentalConstraint(
+    const InputParameters &amp; parameters)
+  : DerivativeMaterialInterface&lt;MortarScalarBase&gt;(parameters),
+    _temp_jump_global(),
+    _tau_s(),
+    _kappa_aux_ptr(getScalarVar(&quot;sigma&quot;, 0)),
+    _ka_order(_kappa_aux_ptr-&gt;order()),
+    _kappa_aux(coupledScalarValue(&quot;sigma&quot;)),
+    _pen_scale(getParam&lt;Real&gt;(&quot;penalty_value&quot;))
+{
+  if (_kappa_aux_ptr-&gt;kind() != Moose::VarKindType::VAR_AUXILIARY)
+    paramError(&quot;sigma&quot;,
+               &quot;Must assign auxiliary scalar variable to sigma, rather than nonlinear variable&quot;);
+}
+
+// Compute the stability parameters to use for all quadrature points
+void
+PenaltyPeriodicSegmentalConstraint::precalculateResidual()
+{
+  precalculateStability();
+}
+void
+PenaltyPeriodicSegmentalConstraint::precalculateJacobian()
+{
+  precalculateStability();
+}
+
+// Compute the temperature jump for current quadrature point
+void
+PenaltyPeriodicSegmentalConstraint::initScalarQpResidual()
+{
+  precalculateMaterial();
+}
+
+Real
+PenaltyPeriodicSegmentalConstraint::computeQpResidual(const Moose::MortarType mortar_type)
+{
+  // Compute penalty parameter times x-jump times average heat flux
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  RealVectorValue kappa_vec(_kappa[0], 0, 0);
+  if (_k_order == 2)
+    kappa_vec(1) = _kappa[1];
+  else if (_k_order == 3)
+  {
+    kappa_vec(1) = _kappa[1];
+    kappa_vec(2) = _kappa[2];
+  }
+  Real r = _tau_s * (kappa_vec * dx);
+
+  switch (mortar_type)
+  {
+    case Moose::MortarType::Secondary:
+      r *= _test_secondary[_i][_qp];
+      break;
+    case Moose::MortarType::Primary:
+      r *= -_test_primary[_i][_qp];
+      break;
+    case Moose::MortarType::Lower:
+      return 0;
+    default:
+      return 0;
+  }
+  return r;
+}
+
+Real
+PenaltyPeriodicSegmentalConstraint::computeScalarQpResidual()
+{
+  // Stability/penalty term for residual of scalar variable
+  Real r = _tau_s * _temp_jump_global;
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+
+  r *= -dx(_h);
+
+  RealVectorValue kappa_vec(_kappa[0], 0, 0);
+  RealVectorValue kappa_aux_vec(_kappa_aux[0], 0, 0);
+  if (_k_order == 2)
+  {
+    kappa_vec(1) = _kappa[1];
+    kappa_aux_vec(1) = _kappa_aux[1];
+  }
+  else if (_k_order == 3)
+  {
+    kappa_vec(1) = _kappa[1];
+    kappa_vec(2) = _kappa[2];
+    kappa_aux_vec(1) = _kappa_aux[1];
+    kappa_aux_vec(2) = _kappa_aux[2];
+  }
+
+  r += dx(_h) * _tau_s * (kappa_vec * dx);
+  r -= dx(_h) * (kappa_aux_vec * _normals[_qp]);
+
+  return r;
+}
+
+Real
+PenaltyPeriodicSegmentalConstraint::computeScalarQpJacobian()
+{
+  // Stability/penalty term for Jacobian of scalar variable
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+
+  Real jac = dx(_h) * _tau_s * dx(_l);
+
+  return jac;
+}
+
+Real
+PenaltyPeriodicSegmentalConstraint::computeQpOffDiagJacobianScalar(
+    const Moose::MortarType mortar_type, const unsigned int svar_num)
+{
+  if (svar_num != _kappa_var)
+    return 0;
+
+  // Stability/penalty term for Jacobian
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  Real jac = _tau_s;
+
+  switch (mortar_type)
+  {
+
+    case Moose::MortarType::Secondary: // Residual_sign -1  ddeltaU_ddisp sign 1;
+      jac *= _test_secondary[_i][_qp] * dx(_h);
+      break;
+    case Moose::MortarType::Primary: // Residual_sign -1  ddeltaU_ddisp sign -1;
+      jac *= -_test_primary[_i][_qp] * dx(_h);
+      break;
+
+    default:
+      return 0;
+  }
+  return jac;
+}
+
+Real
+PenaltyPeriodicSegmentalConstraint::computeScalarQpOffDiagJacobian(
+    const Moose::MortarType mortar_type, const unsigned int jvar_num)
+{
+  // Test if jvar is the ID of the primary variables and not some other random variable
+  switch (mortar_type)
+  {
+    case Moose::MortarType::Secondary:
+      if (jvar_num != _secondary_var.number())
+        return 0;
+      break;
+    case Moose::MortarType::Primary:
+      if (jvar_num != _primary_var.number())
+        return 0;
+      break;
+    default:
+      return 0;
+  }
+
+  // Stability/penalty term for Jacobian
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  Real jac = _tau_s;
+
+  switch (mortar_type)
+  {
+    case Moose::MortarType::Secondary:
+      jac *= (*_phi)[_j][_qp] * dx(_h);
+      break;
+    case Moose::MortarType::Primary:
+      jac *= -(*_phi)[_j][_qp] * dx(_h);
+      break;
+
+    default:
+      return 0;
+  }
+  return jac;
+}
+
+void
+PenaltyPeriodicSegmentalConstraint::precalculateStability()
+{
+  // Example showing how the penalty could be loaded from some function
+  _tau_s = _pen_scale;
+}
+
+// Compute temperature jump and flux average/jump
+void
+PenaltyPeriodicSegmentalConstraint::precalculateMaterial()
+{
+  _temp_jump_global = (_u_primary[_qp] - _u_secondary[_qp]);
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="8194a2f9-6802-4bd5-8e11-0df8b55c7591"><div class="modal-content"><h4>(moose/framework/src/constraints/PeriodicSegmentalConstraint.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include &quot;PeriodicSegmentalConstraint.h&quot;
+
+registerMooseObject(&quot;MooseApp&quot;, PeriodicSegmentalConstraint);
+
+InputParameters
+PeriodicSegmentalConstraint::validParams()
+{
+  InputParameters params = MortarScalarBase::validParams();
+  params.addClassDescription(
+      &quot;PeriodicSegmentalConstraint enforces macro-micro periodic conditions between &quot;
+      &quot;secondary and primary sides of a mortar interface using Lagrange multipliers.&quot;
+      &quot;Must be used alongside EqualValueConstraint.&quot;);
+  params.renameCoupledVar(&quot;scalar_variable&quot;, &quot;epsilon&quot;, &quot;Primary coupled scalar variable&quot;);
+  params.addRequiredCoupledVar(&quot;sigma&quot;, &quot;Controlled scalar averaging variable&quot;);
+
+  return params;
+}
+
+PeriodicSegmentalConstraint::PeriodicSegmentalConstraint(const InputParameters &amp; parameters)
+  : DerivativeMaterialInterface&lt;MortarScalarBase&gt;(parameters),
+    _kappa_aux_ptr(getScalarVar(&quot;sigma&quot;, 0)),
+    _ka_order(_kappa_aux_ptr-&gt;order()),
+    _kappa_aux(coupledScalarValue(&quot;sigma&quot;))
+{
+  if (_kappa_aux_ptr-&gt;kind() != Moose::VarKindType::VAR_AUXILIARY)
+    paramError(&quot;sigma&quot;,
+               &quot;Must assign auxiliary scalar variable to sigma, rather than nonlinear variable&quot;);
+}
+
+Real
+PeriodicSegmentalConstraint::computeQpResidual(const Moose::MortarType mortar_type)
+{
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  RealVectorValue kappa_vec(_kappa[0], 0, 0);
+  if (_k_order == 2)
+    kappa_vec(1) = _kappa[1];
+  else if (_k_order == 3)
+  {
+    kappa_vec(1) = _kappa[1];
+    kappa_vec(2) = _kappa[2];
+  }
+  Real r = -(kappa_vec * dx);
+
+  switch (mortar_type)
+  {
+    case Moose::MortarType::Lower:
+      r *= _test[_i][_qp];
+      break;
+    default:
+      return 0;
+  }
+  return r;
+}
+
+Real
+PeriodicSegmentalConstraint::computeScalarQpResidual()
+{
+  // Stability/penalty term for residual of scalar variable
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  Real r = -dx(_h) * _lambda[_qp];
+
+  RealVectorValue kappa_aux_vec(_kappa_aux[0], 0, 0);
+  if (_k_order == 2)
+  {
+    kappa_aux_vec(1) = _kappa_aux[1];
+  }
+  else if (_k_order == 3)
+  {
+    kappa_aux_vec(1) = _kappa_aux[1];
+    kappa_aux_vec(2) = _kappa_aux[2];
+  }
+
+  r -= dx(_h) * (kappa_aux_vec * _normals[_qp]);
+
+  return r;
+}
+
+Real
+PeriodicSegmentalConstraint::computeQpOffDiagJacobianScalar(const Moose::MortarType mortar_type,
+                                                            const unsigned int svar_num)
+{
+  if (svar_num != _kappa_var)
+    return 0;
+
+  // Stability/penalty term for Jacobian
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  Real jac = -dx(_h);
+
+  switch (mortar_type)
+  {
+    case Moose::MortarType::Lower: // Residual_sign -1  ddeltaU_ddisp sign 1;
+      jac *= _test[_i][_qp];
+      break;
+    default:
+      return 0;
+  }
+  return jac;
+}
+
+Real
+PeriodicSegmentalConstraint::computeScalarQpOffDiagJacobian(const Moose::MortarType mortar_type,
+                                                            const unsigned int jvar_num)
+{
+  // Test if jvar is the ID of the primary variables and not some other random variable
+  switch (mortar_type)
+  {
+    case Moose::MortarType::Lower:
+      if (!_var || _var-&gt;number() != jvar_num)
+        return 0;
+      break;
+    default:
+      return 0;
+  }
+
+  // Stability/penalty term for Jacobian
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  Real jac = -dx(_h);
+
+  switch (mortar_type)
+  {
+    case Moose::MortarType::Lower:
+      jac *= (*_phi)[_j][_qp];
+      break;
+    default:
+      return 0;
+  }
+  return jac;
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="2dae7c95-0d1c-424e-ad38-ccd966b178c7"><div class="modal-content"><h4>(moose/framework/src/constraints/PeriodicSegmentalConstraint.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include &quot;PeriodicSegmentalConstraint.h&quot;
+
+registerMooseObject(&quot;MooseApp&quot;, PeriodicSegmentalConstraint);
+
+InputParameters
+PeriodicSegmentalConstraint::validParams()
+{
+  InputParameters params = MortarScalarBase::validParams();
+  params.addClassDescription(
+      &quot;PeriodicSegmentalConstraint enforces macro-micro periodic conditions between &quot;
+      &quot;secondary and primary sides of a mortar interface using Lagrange multipliers.&quot;
+      &quot;Must be used alongside EqualValueConstraint.&quot;);
+  params.renameCoupledVar(&quot;scalar_variable&quot;, &quot;epsilon&quot;, &quot;Primary coupled scalar variable&quot;);
+  params.addRequiredCoupledVar(&quot;sigma&quot;, &quot;Controlled scalar averaging variable&quot;);
+
+  return params;
+}
+
+PeriodicSegmentalConstraint::PeriodicSegmentalConstraint(const InputParameters &amp; parameters)
+  : DerivativeMaterialInterface&lt;MortarScalarBase&gt;(parameters),
+    _kappa_aux_ptr(getScalarVar(&quot;sigma&quot;, 0)),
+    _ka_order(_kappa_aux_ptr-&gt;order()),
+    _kappa_aux(coupledScalarValue(&quot;sigma&quot;))
+{
+  if (_kappa_aux_ptr-&gt;kind() != Moose::VarKindType::VAR_AUXILIARY)
+    paramError(&quot;sigma&quot;,
+               &quot;Must assign auxiliary scalar variable to sigma, rather than nonlinear variable&quot;);
+}
+
+Real
+PeriodicSegmentalConstraint::computeQpResidual(const Moose::MortarType mortar_type)
+{
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  RealVectorValue kappa_vec(_kappa[0], 0, 0);
+  if (_k_order == 2)
+    kappa_vec(1) = _kappa[1];
+  else if (_k_order == 3)
+  {
+    kappa_vec(1) = _kappa[1];
+    kappa_vec(2) = _kappa[2];
+  }
+  Real r = -(kappa_vec * dx);
+
+  switch (mortar_type)
+  {
+    case Moose::MortarType::Lower:
+      r *= _test[_i][_qp];
+      break;
+    default:
+      return 0;
+  }
+  return r;
+}
+
+Real
+PeriodicSegmentalConstraint::computeScalarQpResidual()
+{
+  // Stability/penalty term for residual of scalar variable
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  Real r = -dx(_h) * _lambda[_qp];
+
+  RealVectorValue kappa_aux_vec(_kappa_aux[0], 0, 0);
+  if (_k_order == 2)
+  {
+    kappa_aux_vec(1) = _kappa_aux[1];
+  }
+  else if (_k_order == 3)
+  {
+    kappa_aux_vec(1) = _kappa_aux[1];
+    kappa_aux_vec(2) = _kappa_aux[2];
+  }
+
+  r -= dx(_h) * (kappa_aux_vec * _normals[_qp]);
+
+  return r;
+}
+
+Real
+PeriodicSegmentalConstraint::computeQpOffDiagJacobianScalar(const Moose::MortarType mortar_type,
+                                                            const unsigned int svar_num)
+{
+  if (svar_num != _kappa_var)
+    return 0;
+
+  // Stability/penalty term for Jacobian
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  Real jac = -dx(_h);
+
+  switch (mortar_type)
+  {
+    case Moose::MortarType::Lower: // Residual_sign -1  ddeltaU_ddisp sign 1;
+      jac *= _test[_i][_qp];
+      break;
+    default:
+      return 0;
+  }
+  return jac;
+}
+
+Real
+PeriodicSegmentalConstraint::computeScalarQpOffDiagJacobian(const Moose::MortarType mortar_type,
+                                                            const unsigned int jvar_num)
+{
+  // Test if jvar is the ID of the primary variables and not some other random variable
+  switch (mortar_type)
+  {
+    case Moose::MortarType::Lower:
+      if (!_var || _var-&gt;number() != jvar_num)
+        return 0;
+      break;
+    default:
+      return 0;
+  }
+
+  // Stability/penalty term for Jacobian
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  Real jac = -dx(_h);
+
+  switch (mortar_type)
+  {
+    case Moose::MortarType::Lower:
+      jac *= (*_phi)[_j][_qp];
+      break;
+    default:
+      return 0;
+  }
+  return jac;
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="4084e040-9ebd-4747-a0d2-3c6a1e94466d"><div class="modal-content"><h4>(moose/framework/src/constraints/ADPeriodicSegmentalConstraint.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include &quot;ADPeriodicSegmentalConstraint.h&quot;
+
+registerMooseObject(&quot;MooseApp&quot;, ADPeriodicSegmentalConstraint);
+
+InputParameters
+ADPeriodicSegmentalConstraint::validParams()
+{
+  InputParameters params = ADMortarScalarBase::validParams();
+  params.addClassDescription(
+      &quot;ADPeriodicSegmentalConstraint enforces macro-micro periodic conditions between &quot;
+      &quot;secondary and primary sides of a mortar interface using Lagrange multipliers.&quot;
+      &quot;Must be used alongside EqualValueConstraint.&quot;);
+  params.renameCoupledVar(&quot;scalar_variable&quot;, &quot;epsilon&quot;, &quot;Primary coupled scalar variable&quot;);
+  params.addRequiredCoupledVar(&quot;sigma&quot;, &quot;Controlled scalar averaging variable&quot;);
+
+  return params;
+}
+
+ADPeriodicSegmentalConstraint::ADPeriodicSegmentalConstraint(const InputParameters &amp; parameters)
+  : DerivativeMaterialInterface&lt;ADMortarScalarBase&gt;(parameters),
+    _kappa_aux_ptr(getScalarVar(&quot;sigma&quot;, 0)),
+    _ka_order(_kappa_aux_ptr-&gt;order()),
+    _kappa_aux(coupledScalarValue(&quot;sigma&quot;))
+{
+  if (_kappa_aux_ptr-&gt;kind() != Moose::VarKindType::VAR_AUXILIARY)
+    paramError(&quot;sigma&quot;,
+               &quot;Must assign auxiliary scalar variable to sigma, rather than nonlinear variable&quot;);
+}
+
+ADReal
+ADPeriodicSegmentalConstraint::computeQpResidual(const Moose::MortarType mortar_type)
+{
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  ADRealVectorValue kappa_vec(_kappa[0], 0, 0);
+  Moose::derivInsert(kappa_vec(0).derivatives(), _kappa_var_ptr-&gt;dofIndices()[0], 1);
+  if (_k_order == 2)
+  {
+    kappa_vec(1) = _kappa[1];
+    Moose::derivInsert(kappa_vec(1).derivatives(), _kappa_var_ptr-&gt;dofIndices()[1], 1);
+  }
+  else if (_k_order == 3)
+  {
+    kappa_vec(1) = _kappa[1];
+    kappa_vec(2) = _kappa[2];
+    Moose::derivInsert(kappa_vec(1).derivatives(), _kappa_var_ptr-&gt;dofIndices()[1], 1);
+    Moose::derivInsert(kappa_vec(2).derivatives(), _kappa_var_ptr-&gt;dofIndices()[2], 1);
+  }
+  ADReal r = -(kappa_vec * dx);
+
+  switch (mortar_type)
+  {
+    case Moose::MortarType::Lower:
+      r *= _test[_i][_qp];
+      break;
+    default:
+      return 0;
+  }
+  return r;
+}
+
+ADReal
+ADPeriodicSegmentalConstraint::computeScalarQpResidual()
+{
+  // Stability/penalty term for residual of scalar variable
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  ADReal r = -dx(_h) * _lambda[_qp];
+
+  RealVectorValue kappa_aux_vec(_kappa_aux[0], 0, 0);
+  if (_k_order == 2)
+  {
+    kappa_aux_vec(1) = _kappa_aux[1];
+  }
+  else if (_k_order == 3)
+  {
+    kappa_aux_vec(1) = _kappa_aux[1];
+    kappa_aux_vec(2) = _kappa_aux[2];
+  }
+
+  r -= dx(_h) * (kappa_aux_vec * _normals[_qp]);
+
+  return r;
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="5e2f6d4c-c338-4557-91c5-33ddf0e1d034"><div class="modal-content"><h4>(moose/framework/src/constraints/ADPeriodicSegmentalConstraint.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include &quot;ADPeriodicSegmentalConstraint.h&quot;
+
+registerMooseObject(&quot;MooseApp&quot;, ADPeriodicSegmentalConstraint);
+
+InputParameters
+ADPeriodicSegmentalConstraint::validParams()
+{
+  InputParameters params = ADMortarScalarBase::validParams();
+  params.addClassDescription(
+      &quot;ADPeriodicSegmentalConstraint enforces macro-micro periodic conditions between &quot;
+      &quot;secondary and primary sides of a mortar interface using Lagrange multipliers.&quot;
+      &quot;Must be used alongside EqualValueConstraint.&quot;);
+  params.renameCoupledVar(&quot;scalar_variable&quot;, &quot;epsilon&quot;, &quot;Primary coupled scalar variable&quot;);
+  params.addRequiredCoupledVar(&quot;sigma&quot;, &quot;Controlled scalar averaging variable&quot;);
+
+  return params;
+}
+
+ADPeriodicSegmentalConstraint::ADPeriodicSegmentalConstraint(const InputParameters &amp; parameters)
+  : DerivativeMaterialInterface&lt;ADMortarScalarBase&gt;(parameters),
+    _kappa_aux_ptr(getScalarVar(&quot;sigma&quot;, 0)),
+    _ka_order(_kappa_aux_ptr-&gt;order()),
+    _kappa_aux(coupledScalarValue(&quot;sigma&quot;))
+{
+  if (_kappa_aux_ptr-&gt;kind() != Moose::VarKindType::VAR_AUXILIARY)
+    paramError(&quot;sigma&quot;,
+               &quot;Must assign auxiliary scalar variable to sigma, rather than nonlinear variable&quot;);
+}
+
+ADReal
+ADPeriodicSegmentalConstraint::computeQpResidual(const Moose::MortarType mortar_type)
+{
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  ADRealVectorValue kappa_vec(_kappa[0], 0, 0);
+  Moose::derivInsert(kappa_vec(0).derivatives(), _kappa_var_ptr-&gt;dofIndices()[0], 1);
+  if (_k_order == 2)
+  {
+    kappa_vec(1) = _kappa[1];
+    Moose::derivInsert(kappa_vec(1).derivatives(), _kappa_var_ptr-&gt;dofIndices()[1], 1);
+  }
+  else if (_k_order == 3)
+  {
+    kappa_vec(1) = _kappa[1];
+    kappa_vec(2) = _kappa[2];
+    Moose::derivInsert(kappa_vec(1).derivatives(), _kappa_var_ptr-&gt;dofIndices()[1], 1);
+    Moose::derivInsert(kappa_vec(2).derivatives(), _kappa_var_ptr-&gt;dofIndices()[2], 1);
+  }
+  ADReal r = -(kappa_vec * dx);
+
+  switch (mortar_type)
+  {
+    case Moose::MortarType::Lower:
+      r *= _test[_i][_qp];
+      break;
+    default:
+      return 0;
+  }
+  return r;
+}
+
+ADReal
+ADPeriodicSegmentalConstraint::computeScalarQpResidual()
+{
+  // Stability/penalty term for residual of scalar variable
+  RealVectorValue dx(_phys_points_primary[_qp] - _phys_points_secondary[_qp]);
+  ADReal r = -dx(_h) * _lambda[_qp];
+
+  RealVectorValue kappa_aux_vec(_kappa_aux[0], 0, 0);
+  if (_k_order == 2)
+  {
+    kappa_aux_vec(1) = _kappa_aux[1];
+  }
+  else if (_k_order == 3)
+  {
+    kappa_aux_vec(1) = _kappa_aux[1];
+    kappa_aux_vec(2) = _kappa_aux[2];
+  }
+
+  r -= dx(_h) * (kappa_aux_vec * _normals[_qp]);
+
+  return r;
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="32848418-3a36-4c30-b07e-492652fa34b0"><div class="modal-content"><h4>(moose/test/include/constraints/TestPeriodicSole.h)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#pragma once
+
+#include &quot;MortarScalarBase.h&quot;
+#include &quot;DerivativeMaterialInterface.h&quot;
+#include &quot;MooseVariableScalar.h&quot;
+#include &quot;Assembly.h&quot;
+
+/// Test object to illustrate coupling between mortar spatial variables
+/// and two separate scalar variables, kappa and kappa_other. The solution
+/// is equivalent to PenaltyPeriodicSegmentalConstraint.
+///
+/// The kappa variable is split into two scalars: the first component called &#x27;_kappa&#x27;
+/// herein and all other components called &#x27;_kappa_other&#x27; herein.
+/// This decomposition is ONLY valid for 2D problems with a macro scalar vector [kappa_x kappa_y]
+/// applied as a periodic boundary condition. For parameter _alpha = 0, the primary
+/// scalar (_kappa) is kappa_x and the coupled scalar is kappa_y. For parameter _alpha = 1, the primary
+/// scalar (_kappa) is kappa_y and the coupled scalar is kappa_x.
+/// That mapping MUST be handled in the input file.
+///
+/// Thus, each instance of TestPeriodicSole acts on both primary/secondary field variables
+/// and one scalar variable (_svar_alpha). The job of the constraint is to assemble the
+/// residual and Jacobian terms arising from _svar_alpha (namely, selected entries).
+/// It assembles one row of the Jacobian for the scalar variable as well as the couplings of that
+/// scalar to the primary and secondary spatial variables, using logical checks with _alpha.
+/// The entries for the other field/scalar variables are handled by the other instance of the
+/// constraint, which have the opposite value of _alpha. The logical checks ensure the proper
+/// decomposition of the jobs.
+///
+/// In summary, for x=disp_x etc. and k=kappa_x and a=kappa_y, then the contributions of the instances are
+/// PenaltyEqualValueConstraint
+/// R = [Rss+p, Rps+p, 0, 0]^T
+/// J = [Jss, Jsp, 000, 000
+///      Jps, Jpp, 000, 000
+///      000, 000, 000, 000
+///      000, 000, 000, 000]
+/// TestPeriodicSole
+/// _alpha=0
+/// R = [Rsk, Rpk,  Rk,  00]^T
+/// J = [000, 000, Jsk, 000
+///      000, 000, Jpk, 000
+///      Jks, Jkp, Jkk, Jka
+///      000, 000, 000, 000]
+/// _alpha=1
+/// R = [Rsa, Rpa,  00,  Ra]^T
+/// J = [000, 000, 000, Jsa
+///      000, 000, 000, Jpa
+///      000, 000, 000, 000
+///      Jas, Jap, Jak, Jaa]
+///
+/// In this manner, the full R and J are obtained with NO duplication of jobs:
+/// R = [Rs,  Rp,  Rk,  Ra ]^T
+/// J = [Jss, Jsp, Jsk, Jsa
+///      Jps, Jpp, Jpk, Jpa
+///      Jks, Jkp, Jkk, Jka
+///      Jas, Jap, Jak, Jaa]
+///
+
+class TestPeriodicSole : public DerivativeMaterialInterface&lt;MortarScalarBase&gt;
+{
+public:
+  static InputParameters validParams();
+  TestPeriodicSole(const InputParameters &amp; parameters);
+
+protected:
+  virtual void precalculateResidual() override;
+  virtual void precalculateJacobian() override;
+  virtual void initScalarQpResidual() override;
+
+  /**
+   * Method for computing the residual at quadrature points
+   */
+  virtual Real computeQpResidual(Moose::MortarType mortar_type) override;
+  Real computeQpJacobian(Moose::ConstraintJacobianType /*jacobian_type*/,
+                         unsigned int /*jvar*/) override
+  {
+    return 0;
+  };
+
+  /**
+   * Method for computing the scalar part of residual at quadrature points
+   */
+  virtual Real computeScalarQpResidual() override;
+
+  /**
+   * Method for computing the scalar variable part of Jacobian at
+   * quadrature points
+   */
+  virtual Real computeScalarQpJacobian() override;
+
+  // using MortarScalarBase::computeOffDiagJacobianScalar;
+
+  /**
+   * Method for computing d-_var-residual / d-_kappa at quadrature points.
+   */
+  virtual Real computeQpOffDiagJacobianScalar(Moose::MortarType mortar_type,
+                                              const unsigned int svar_num) override;
+
+  /**
+   * Method for computing d-_kappa-residual / d-_var at quadrature points.
+   */
+  virtual Real computeScalarQpOffDiagJacobian(Moose::MortarType mortar_type,
+                                              const unsigned int jvar_num) override;
+
+  /**
+   * Method for computing an off-diagonal jacobian component at quadrature points.
+   */
+  virtual Real computeScalarQpOffDiagJacobianScalar(const unsigned int svar_num) override;
+
+  // Compute T jump and heat flux average/jump
+  void precalculateMaterial();
+  // Compute four stability tensors
+  void precalculateStability();
+
+protected:
+  /// the temperature jump in global and interface coordiantes;
+  /// TM-analogy: _displacement_jump_global, _interface_displacement_jump
+  ///@{
+  Real _temp_jump_global;
+  ///@}
+
+  /// The four stability parameters from the VMDG method
+  ///@{
+  Real _tau_s;
+  ///@}
+
+  /// The controlled scalar variable ID
+  const unsigned int _kappa_aux_var;
+
+  /// Order of the homogenization variable, used in several places
+  const unsigned int _ka_order;
+
+  /// The controlled scalar variable
+  const VariableValue &amp; _kappa_aux;
+
+  /// Which component of the vector residual this constraint is responsible for
+  const unsigned int _alpha;
+
+  /// (Pointer to) Scalar variable this constraint operates on
+  const MooseVariableScalar * const _kappao_var_ptr;
+
+  /// The unknown scalar variable ID
+  const unsigned int _kappao_var;
+
+  /// Order of the scalar variable, used in several places
+  const unsigned int _ko_order;
+
+  /// Reference to the current solution at the current quadrature point
+  const VariableValue &amp; _kappa_other;
+
+  const Real &amp; _current_elem_volume;
+
+  const Real &amp; _current_side_volume;
+
+  /// Input property to allow user modifying penalty parameter
+  const Real _pen_scale;
+
+private:
+  /// hard code the penalty for now
+  const Real pencoef = 1.0;
+};
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="8f780e1f-ab73-4f67-b6ff-f7b45fbee798"><div class="modal-content"><h4>(moose/test/tests/mortar/periodic_segmental_constraint/testperiodicsole.i)</h4><pre class="moose-pre"><code class="language-text">[Mesh]
+  [left_block]
+    type = GeneratedMeshGenerator
+    dim = 2
+    xmin = -1.0
+    xmax = 1.0
+    ymin = -1.0
+    ymax = 1.0
+    nx = 2
+    ny = 2
+    elem_type = QUAD4
+  []
+  [left_block_sidesets]
+    type = RenameBoundaryGenerator
+    input = left_block
+    old_boundary = &#x27;0 1 2 3&#x27;
+    new_boundary = &#x27;10 11 12 13&#x27;
+  []
+  [left_block_id]
+    type = SubdomainIDGenerator
+    input = left_block_sidesets
+    subdomain_id = 1
+  []
+  [left]
+    type = LowerDBlockFromSidesetGenerator
+    input = left_block_id
+    sidesets = &#x27;13&#x27;
+    new_block_id = &#x27;10003&#x27;
+    new_block_name = &#x27;secondary_left&#x27;
+  []
+  [right]
+    type = LowerDBlockFromSidesetGenerator
+    input = left
+    sidesets = &#x27;11&#x27;
+    new_block_id = &#x27;10001&#x27;
+    new_block_name = &#x27;primary_right&#x27;
+  []
+  [bottom]
+    type = LowerDBlockFromSidesetGenerator
+    input = right
+    sidesets = &#x27;10&#x27;
+    new_block_id = &#x27;10000&#x27;
+    new_block_name = &#x27;secondary_bottom&#x27;
+  []
+  [top]
+    type = LowerDBlockFromSidesetGenerator
+    input = bottom
+    sidesets = &#x27;12&#x27;
+    new_block_id = &#x27;10002&#x27;
+    new_block_name = &#x27;primary_top&#x27;
+  []
+
+  [corner_node]
+    type = ExtraNodesetGenerator
+    new_boundary = &#x27;pinned_node&#x27;
+    nodes = &#x27;0&#x27;
+    input = top
+  []
+[]
+
+[Variables]
+  [u]
+    order = FIRST
+    family = LAGRANGE
+  []
+  [kappa_x]
+    order = FIRST
+    family = SCALAR
+  []
+  [kappa_y]
+    order = FIRST
+    family = SCALAR
+  []
+[]
+
+[AuxVariables]
+  [kappa_aux]
+    order = SECOND
+    family = SCALAR
+  []
+  [./flux_x]
+      order = FIRST
+      family = MONOMIAL
+  [../]
+  [./flux_y]
+      order = FIRST
+      family = MONOMIAL
+  [../]
+[]
+
+[AuxScalarKernels]
+  [kappa]
+    type = FunctionScalarAux
+    variable = kappa_aux
+    function = &#x27;1 3&#x27;
+    execute_on = initial #timestep_end
+  []
+[]
+
+[AuxKernels]
+  [./flux_x]
+    type = DiffusionFluxAux
+    diffusivity = &#x27;conductivity&#x27;
+    variable = flux_x
+    diffusion_variable = u
+    component = x
+    block = 1
+  [../]
+  [./flux_y]
+    type = DiffusionFluxAux
+    diffusivity = &#x27;conductivity&#x27;
+    variable = flux_y
+    diffusion_variable = u
+    component = y
+    block = 1
+  [../]
+[]
+
+[Kernels]
+  [diff1]
+    type = Diffusion
+    variable = u
+    block = 1
+  []
+[]
+
+[Materials]
+  [k1]
+    type = GenericConstantMaterial
+    prop_names = &#x27;conductivity&#x27;
+    prop_values = 1.0
+    block = 1
+  []
+[]
+
+[Problem]
+  kernel_coverage_check = false
+  error_on_jacobian_nonzero_reallocation = true
+[]
+
+[BCs]
+  [fix_right]
+    type = DirichletBC
+    variable = u
+    boundary = pinned_node
+    value = 0
+  []
+[]
+
+[Constraints]
+  [mortarlr]
+    type = PenaltyEqualValueConstraint
+    primary_boundary = &#x27;11&#x27;
+    secondary_boundary = &#x27;13&#x27;
+    primary_subdomain = &#x27;primary_right&#x27;
+    secondary_subdomain = &#x27;secondary_left&#x27;
+    secondary_variable = u
+    correct_edge_dropping = true
+    penalty_value = 1.e3
+  []
+  [periodiclrx]
+    type = TestPeriodicSole
+    primary_boundary = &#x27;11&#x27;
+    secondary_boundary = &#x27;13&#x27;
+    primary_subdomain = &#x27;primary_right&#x27;
+    secondary_subdomain = &#x27;secondary_left&#x27;
+    secondary_variable = u
+    kappa = kappa_x
+    kappa_aux = kappa_aux
+    component = 0
+    kappa_other = kappa_y
+    correct_edge_dropping = true
+    penalty_value = 1.e3
+  []
+  [periodiclry]
+    type = TestPeriodicSole
+    primary_boundary = &#x27;11&#x27;
+    secondary_boundary = &#x27;13&#x27;
+    primary_subdomain = &#x27;primary_right&#x27;
+    secondary_subdomain = &#x27;secondary_left&#x27;
+    secondary_variable = u
+    kappa = kappa_y
+    kappa_aux = kappa_aux
+    component = 1
+    kappa_other = kappa_x
+    correct_edge_dropping = true
+    penalty_value = 1.e3
+  []
+  [mortarbt]
+    type = PenaltyEqualValueConstraint
+    primary_boundary = &#x27;12&#x27;
+    secondary_boundary = &#x27;10&#x27;
+    primary_subdomain = &#x27;primary_top&#x27;
+    secondary_subdomain = &#x27;secondary_bottom&#x27;
+    secondary_variable = u
+    correct_edge_dropping = true
+    penalty_value = 1.e3
+  []
+  [periodicbtx]
+    type = TestPeriodicSole
+    primary_boundary = &#x27;12&#x27;
+    secondary_boundary = &#x27;10&#x27;
+    primary_subdomain = &#x27;primary_top&#x27;
+    secondary_subdomain = &#x27;secondary_bottom&#x27;
+    secondary_variable = u
+    kappa = kappa_x
+    kappa_aux = kappa_aux
+    component = 0
+    kappa_other = kappa_y
+    correct_edge_dropping = true
+    penalty_value = 1.e3
+  []
+  [periodicbty]
+    type = TestPeriodicSole
+    primary_boundary = &#x27;12&#x27;
+    secondary_boundary = &#x27;10&#x27;
+    primary_subdomain = &#x27;primary_top&#x27;
+    secondary_subdomain = &#x27;secondary_bottom&#x27;
+    secondary_variable = u
+    kappa = kappa_y
+    kappa_aux = kappa_aux
+    component = 1
+    kappa_other = kappa_x
+    correct_edge_dropping = true
+    compute_scalar_residuals = true
+    penalty_value = 1.e3
+  []
+[]
+
+[Preconditioning]
+  [smp]
+    full = true
+    type = SMP
+  []
+[]
+
+[Executioner]
+  type = Steady
+  petsc_options_iname = &#x27;-pc_type&#x27;
+  petsc_options_value = &#x27;lu&#x27;
+  solve_type = NEWTON
+[]
+
+[Postprocessors]
+  [max]
+    type = ElementExtremeValue
+    variable = &#x27;flux_x&#x27;
+  []
+[]
+
+[Outputs]
+  csv = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="9d74e806-47f6-4816-935b-76777487eda8"><div class="modal-content"><h4>(moose/test/tests/mortar/periodic_segmental_constraint/periodic_simple2d.i)</h4><pre class="moose-pre"><code class="language-text">[Mesh]
+  [left_block]
+    type = GeneratedMeshGenerator
+    dim = 2
+    xmin = -1.0
+    xmax = 1.0
+    ymin = -1.0
+    ymax = 1.0
+    nx = 2
+    ny = 2
+    elem_type = QUAD9
+  []
+  [left_block_sidesets]
+    type = RenameBoundaryGenerator
+    input = left_block
+    old_boundary = &#x27;0 1 2 3&#x27;
+    new_boundary = &#x27;10 11 12 13&#x27;
+  []
+  [left_block_id]
+    type = SubdomainIDGenerator
+    input = left_block_sidesets
+    subdomain_id = 1
+  []
+  [left]
+    type = LowerDBlockFromSidesetGenerator
+    input = left_block_id
+    sidesets = &#x27;13&#x27;
+    new_block_id = &#x27;10003&#x27;
+    new_block_name = &#x27;secondary_left&#x27;
+  []
+  [right]
+    type = LowerDBlockFromSidesetGenerator
+    input = left
+    sidesets = &#x27;11&#x27;
+    new_block_id = &#x27;10001&#x27;
+    new_block_name = &#x27;primary_right&#x27;
+  []
+  [bottom]
+    type = LowerDBlockFromSidesetGenerator
+    input = right
+    sidesets = &#x27;10&#x27;
+    new_block_id = &#x27;10000&#x27;
+    new_block_name = &#x27;secondary_bottom&#x27;
+  []
+  [top]
+    type = LowerDBlockFromSidesetGenerator
+    input = bottom
+    sidesets = &#x27;12&#x27;
+    new_block_id = &#x27;10002&#x27;
+    new_block_name = &#x27;primary_top&#x27;
+  []
+
+  [corner_node]
+    type = ExtraNodesetGenerator
+    new_boundary = &#x27;pinned_node&#x27;
+    nodes = &#x27;0&#x27;
+    input = top
+  []
+[]
+
+[Variables]
+  [u]
+    order = SECOND
+    family = LAGRANGE
+  []
+  [epsilon]
+    order = SECOND
+    family = SCALAR
+  []
+  [./lm1]
+    order = FIRST
+    family = LAGRANGE
+    block = secondary_left
+  [../]
+  [./lm2]
+    order = FIRST
+    family = LAGRANGE
+    block = secondary_bottom
+  [../]
+[]
+
+[AuxVariables]
+  [sigma]
+    order = SECOND
+    family = SCALAR
+  []
+[]
+
+[AuxScalarKernels]
+  [sigma]
+    type = FunctionScalarAux
+    variable = sigma
+    function = &#x27;1 2&#x27;
+    execute_on = initial #timestep_end
+  []
+[]
+
+[Kernels]
+  [diff1]
+    type = Diffusion
+    variable = u
+    block = 1
+  []
+[]
+
+[Problem]
+  kernel_coverage_check = false
+  error_on_jacobian_nonzero_reallocation = true
+[]
+
+[BCs]
+  [fix_right]
+    type = DirichletBC
+    variable = u
+    boundary = pinned_node
+    value = 0
+  []
+[]
+
+[Constraints]
+  [mortarlr]
+    type = EqualValueConstraint
+    primary_boundary = &#x27;11&#x27;
+    secondary_boundary = &#x27;13&#x27;
+    primary_subdomain = &#x27;primary_right&#x27;
+    secondary_subdomain = &#x27;secondary_left&#x27;
+    secondary_variable = u
+    variable = lm1
+    correct_edge_dropping = true
+  []
+  [periodiclr]
+    type = PeriodicSegmentalConstraint
+    primary_boundary = &#x27;11&#x27;
+    secondary_boundary = &#x27;13&#x27;
+    primary_subdomain = &#x27;primary_right&#x27;
+    secondary_subdomain = &#x27;secondary_left&#x27;
+    secondary_variable = u
+    epsilon = epsilon
+    sigma = sigma
+    variable = lm1
+    correct_edge_dropping = true
+  []
+  [mortarbt]
+    type = EqualValueConstraint
+    primary_boundary = &#x27;12&#x27;
+    secondary_boundary = &#x27;10&#x27;
+    primary_subdomain = &#x27;primary_top&#x27;
+    secondary_subdomain = &#x27;secondary_bottom&#x27;
+    secondary_variable = u
+    variable = lm2
+    correct_edge_dropping = true
+  []
+  [periodicbt]
+    type = PeriodicSegmentalConstraint
+    primary_boundary = &#x27;12&#x27;
+    secondary_boundary = &#x27;10&#x27;
+    primary_subdomain = &#x27;primary_top&#x27;
+    secondary_subdomain = &#x27;secondary_bottom&#x27;
+    secondary_variable = u
+    epsilon = epsilon
+    sigma = sigma
+    variable = lm2
+    correct_edge_dropping = true
+  []
+[]
+
+[Preconditioning]
+  [smp]
+    full = true
+    type = SMP
+  []
+[]
+
+[Executioner]
+  type = Steady
+  petsc_options_iname = &#x27;-pc_type -pc_factor_shift_type&#x27;
+  petsc_options_value = &#x27;lu       NONZERO&#x27;
+  solve_type = NEWTON
+[]
+
+[Outputs]
+  exodus = true
+  csv = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="ceb24c2a-be9a-4c93-a7b3-921100e64130"><div class="modal-content"><h4>(moose/test/tests/mortar/periodic_segmental_constraint/periodic_simple2d.i)</h4><pre class="moose-pre"><code class="language-text">[Mesh]
+  [left_block]
+    type = GeneratedMeshGenerator
+    dim = 2
+    xmin = -1.0
+    xmax = 1.0
+    ymin = -1.0
+    ymax = 1.0
+    nx = 2
+    ny = 2
+    elem_type = QUAD9
+  []
+  [left_block_sidesets]
+    type = RenameBoundaryGenerator
+    input = left_block
+    old_boundary = &#x27;0 1 2 3&#x27;
+    new_boundary = &#x27;10 11 12 13&#x27;
+  []
+  [left_block_id]
+    type = SubdomainIDGenerator
+    input = left_block_sidesets
+    subdomain_id = 1
+  []
+  [left]
+    type = LowerDBlockFromSidesetGenerator
+    input = left_block_id
+    sidesets = &#x27;13&#x27;
+    new_block_id = &#x27;10003&#x27;
+    new_block_name = &#x27;secondary_left&#x27;
+  []
+  [right]
+    type = LowerDBlockFromSidesetGenerator
+    input = left
+    sidesets = &#x27;11&#x27;
+    new_block_id = &#x27;10001&#x27;
+    new_block_name = &#x27;primary_right&#x27;
+  []
+  [bottom]
+    type = LowerDBlockFromSidesetGenerator
+    input = right
+    sidesets = &#x27;10&#x27;
+    new_block_id = &#x27;10000&#x27;
+    new_block_name = &#x27;secondary_bottom&#x27;
+  []
+  [top]
+    type = LowerDBlockFromSidesetGenerator
+    input = bottom
+    sidesets = &#x27;12&#x27;
+    new_block_id = &#x27;10002&#x27;
+    new_block_name = &#x27;primary_top&#x27;
+  []
+
+  [corner_node]
+    type = ExtraNodesetGenerator
+    new_boundary = &#x27;pinned_node&#x27;
+    nodes = &#x27;0&#x27;
+    input = top
+  []
+[]
+
+[Variables]
+  [u]
+    order = SECOND
+    family = LAGRANGE
+  []
+  [epsilon]
+    order = SECOND
+    family = SCALAR
+  []
+  [./lm1]
+    order = FIRST
+    family = LAGRANGE
+    block = secondary_left
+  [../]
+  [./lm2]
+    order = FIRST
+    family = LAGRANGE
+    block = secondary_bottom
+  [../]
+[]
+
+[AuxVariables]
+  [sigma]
+    order = SECOND
+    family = SCALAR
+  []
+[]
+
+[AuxScalarKernels]
+  [sigma]
+    type = FunctionScalarAux
+    variable = sigma
+    function = &#x27;1 2&#x27;
+    execute_on = initial #timestep_end
+  []
+[]
+
+[Kernels]
+  [diff1]
+    type = Diffusion
+    variable = u
+    block = 1
+  []
+[]
+
+[Problem]
+  kernel_coverage_check = false
+  error_on_jacobian_nonzero_reallocation = true
+[]
+
+[BCs]
+  [fix_right]
+    type = DirichletBC
+    variable = u
+    boundary = pinned_node
+    value = 0
+  []
+[]
+
+[Constraints]
+  [mortarlr]
+    type = EqualValueConstraint
+    primary_boundary = &#x27;11&#x27;
+    secondary_boundary = &#x27;13&#x27;
+    primary_subdomain = &#x27;primary_right&#x27;
+    secondary_subdomain = &#x27;secondary_left&#x27;
+    secondary_variable = u
+    variable = lm1
+    correct_edge_dropping = true
+  []
+  [periodiclr]
+    type = PeriodicSegmentalConstraint
+    primary_boundary = &#x27;11&#x27;
+    secondary_boundary = &#x27;13&#x27;
+    primary_subdomain = &#x27;primary_right&#x27;
+    secondary_subdomain = &#x27;secondary_left&#x27;
+    secondary_variable = u
+    epsilon = epsilon
+    sigma = sigma
+    variable = lm1
+    correct_edge_dropping = true
+  []
+  [mortarbt]
+    type = EqualValueConstraint
+    primary_boundary = &#x27;12&#x27;
+    secondary_boundary = &#x27;10&#x27;
+    primary_subdomain = &#x27;primary_top&#x27;
+    secondary_subdomain = &#x27;secondary_bottom&#x27;
+    secondary_variable = u
+    variable = lm2
+    correct_edge_dropping = true
+  []
+  [periodicbt]
+    type = PeriodicSegmentalConstraint
+    primary_boundary = &#x27;12&#x27;
+    secondary_boundary = &#x27;10&#x27;
+    primary_subdomain = &#x27;primary_top&#x27;
+    secondary_subdomain = &#x27;secondary_bottom&#x27;
+    secondary_variable = u
+    epsilon = epsilon
+    sigma = sigma
+    variable = lm2
+    correct_edge_dropping = true
+  []
+[]
+
+[Preconditioning]
+  [smp]
+    full = true
+    type = SMP
+  []
+[]
+
+[Executioner]
+  type = Steady
+  petsc_options_iname = &#x27;-pc_type -pc_factor_shift_type&#x27;
+  petsc_options_value = &#x27;lu       NONZERO&#x27;
+  solve_type = NEWTON
+[]
+
+[Outputs]
+  exodus = true
+  csv = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div><div class="col hide-on-med-and-down l2"><div class="toc-wrapper pin-top"><ul class="section table-of-contents"><li><a href="#03801e56-edfb-4004-ae04-ad94b443c937" class="tooltipped" data-position="left" data-tooltip="Creation of Mortar Constraint Scalar Coupling Classes">Creation of Mortar Constraint Scalar Coupling Classes</a></li><li><a href="#8ac8b7ff-d55c-4c80-80f3-489342a2df80" class="tooltipped" data-position="left" data-tooltip="Examples from Source Code">Examples from Source Code</a></li><li><a href="#1c807e98-0215-4114-a2a6-5e9cf2295625" class="tooltipped" data-position="left" data-tooltip="Parameters">Parameters</a></li></ul></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>

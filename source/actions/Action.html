@@ -1,1 +1,685 @@
-<!DOCTYPE html><head><meta charset="UTF-8"><title>MOOSE Action System | Moltres</title><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/moltres.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Moltres</a><a href="https://github.com/arfc/moltres" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="#!" class="dropdown-trigger" data-target="0221015b-8b65-441a-a76e-b6b0655f2636" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="311138f2-0ebb-4a56-ab0c-b01af5494a32" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="4ea358db-2360-4e25-a9f0-346796218c1f" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#" class="sidenav-trigger" data-target="8c31131f-6c4b-48ae-b247-cd1b25e4668e"><i class="material-icons">menu</i></a><ul class="sidenav" id="8c31131f-6c4b-48ae-b247-cd1b25e4668e"><li><a href="#!" class="dropdown-trigger" data-target="5392d060-adac-4daf-8a03-464289db43b1" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="b81a5f6e-84d3-497d-ba3c-ef2414888cba" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="e217930f-b156-4b79-ae2c-3fd75062b1be" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="0221015b-8b65-441a-a76e-b6b0655f2636"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="311138f2-0ebb-4a56-ab0c-b01af5494a32"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="4ea358db-2360-4e25-a9f0-346796218c1f"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul><ul class="dropdown-content" id="5392d060-adac-4daf-8a03-464289db43b1"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="b81a5f6e-84d3-497d-ba3c-ef2414888cba"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="e217930f-b156-4b79-ae2c-3fd75062b1be"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="col hide-on-med-and-down l12"><nav class="breadcrumb-nav"><div class="nav-wrapper"><a href=".." class="breadcrumb">source</a><span class="breadcrumb">actions</span><a href="#" class="breadcrumb">Action</a></div></nav></div></div><div class="row"><div class="moose-content col s12 m12 l10"><section id="bc7b423f-3341-418a-85a8-235ca0585d8d" data-section-level="1" data-section-text="MOOSE Action System"><h1 id="moose-action-system">MOOSE Action System</h1><p>MOOSE actions, derived from the base class <em>Action</em> are used to set up a problem with other MOOSE objects including mesh generators, kernels, materials, user objects, etc. An action can be optionally linked to an input syntax, which provides the valid parameters to the action through the MOOSE input parser behind the scene. An action is assocated with tasks, which determine when the action is to be acted, or the <em>act</em> function of an action is to be called by MOOSE. Association with multiple tasks is allowed. In such case, it is developers&#x27; responsibility to switch the functions based on the current task in the act function. A full list of tasks is available in Moose.C file. Developers are allowed to register new tasks with MOOSE Action system. When actions are built either through the input parser or internally by MOOSE, they will exist during the entire simulation.</p><p>MOOSE has lots of built-in actions for adding individual objects through input files. But MOOSE action system is far beyond the basic capabilities provided by these built-in actions. Developers are encouraged to explore the MOOSE actions system to create their own actions in order to perform problem setup in one place and potentially simplify the input syntax significantly. One example is to use an action to append a mesh generator that generates a boundary surrounding a particular subdomain for imposing specific boundary conditions, based on the information not necessarily inside of a mesh generator block.</p><section class="scrollspy" id="ea68a215-d289-447d-9b69-d893fa952cb7" data-section-level="2" data-section-text="Relationship Managers and Actions"><h2 id="relationship-managers-and-actions">Relationship Managers and Actions</h2><p>If adding any <code>MooseObjects</code> in a custom action and those objects have associated relationship managers, then the <code>addRelationshipManagers(Moose::RelationshipManagerType input_rm_type)</code> must be overridden. Both the <code>ContactAction</code> in the contact module, and <code>PorousFlowActionBase</code> in the porous flow module provide examples of overriding this method. For the reasons behind why this must be done in the action system, please see <a href="../relationshipmanagers/RelationshipManager.html#rm_action">Relationship Managers and Actions</a>. </p></section></section></div><div class="col hide-on-med-and-down l2"><div class="toc-wrapper pin-top"><ul class="section table-of-contents"><li><a href="#ea68a215-d289-447d-9b69-d893fa952cb7" class="tooltipped" data-position="left" data-tooltip="Relationship Managers and Actions">Relationship Managers and Actions</a></li></ul></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>
+<!DOCTYPE html><head><meta charset="UTF-8"><title>MOOSE Action System | Moltres</title><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../contrib/katex/katex.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/katex_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/moltres.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script><script type="text/javascript" src="../../contrib/katex/katex.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Moltres</a><a href="https://github.com/arfc/moltres" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="#!" class="dropdown-trigger" data-target="5b95543f-07a4-4bda-8642-d90b7bc6e1e4" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="9073d6a3-4abd-4e6e-bd29-bc9f13f384e9" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="91d5e660-420c-46e6-9f8f-877c2c64fa49" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#" class="sidenav-trigger" data-target="3ddb0883-c2e4-4058-ac50-41f54bf39b2b"><i class="material-icons">menu</i></a><ul class="sidenav" id="3ddb0883-c2e4-4058-ac50-41f54bf39b2b"><li><a href="#!" class="dropdown-trigger" data-target="a27a38d9-1164-417b-a2de-f19bd85bd49c" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="c6be47b5-669f-4a29-9f3e-59441d50394b" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="a2ae982d-ba27-48c0-a442-e931673f66d6" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="5b95543f-07a4-4bda-8642-d90b7bc6e1e4"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="9073d6a3-4abd-4e6e-bd29-bc9f13f384e9"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="91d5e660-420c-46e6-9f8f-877c2c64fa49"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul><ul class="dropdown-content" id="a27a38d9-1164-417b-a2de-f19bd85bd49c"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="c6be47b5-669f-4a29-9f3e-59441d50394b"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="a2ae982d-ba27-48c0-a442-e931673f66d6"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="col hide-on-med-and-down l12"><nav class="breadcrumb-nav"><div class="nav-wrapper"><a href=".." class="breadcrumb">source</a><span class="breadcrumb">actions</span><a href="#" class="breadcrumb">Action</a></div></nav></div></div><div class="row"><div class="moose-content col s12 m12 l10"><section id="44efb9c9-2173-4154-bf64-f56a1367e47c" data-section-level="1" data-section-text="MOOSE Action System"><h1 id="moose-action-system">MOOSE Action System</h1><p>MOOSE <em>Actions</em> are used to execute <em>tasks</em>. Each application registers numerous <em>actions</em>, <em>tasks</em>, and <em>syntax</em>. Each task is associated with one or more actions, and each action may perform one or more tasks. Syntax is used by the input file parser to generate actions.</p><p>Common uses for actions are to perform setup and create MOOSE objects.</p><section class="scrollspy" id="aa212264-3966-420c-becc-146725dd7a0e" data-section-level="2" data-section-text="Creating Actions"><h2 id="creating-actions">Creating Actions</h2><p>To create a new action, first derive from the appropriate base class: if the new action is to correspond to creating MOOSE objects from an input file, then derive from <code>MooseObjectAction</code>; else, derive from <code>Action</code>.</p><p>The <code>act()</code> method must be implemented to perform the associated task(s). If the action will be registered to multiple tasks, then the variable <code>_current_task</code> can be queried to determine the current task, for example,</p><pre class="moose-pre"><code class="language-cpp">
+void
+ExampleAction::act()
+{
+  if (_current_task == &quot;example_task_a&quot;)
+  {
+    // &quot;example_task_a&quot; execution
+  }
+  else if (_current_task == &quot;example_task_b&quot;)
+  {
+    // &quot;example_task_b&quot; execution
+  }
+}
+</code></pre><p><code>MooseObjectAction</code>s, have the member variables <code>_type</code> and <code>_moose_object_pars</code>, which correspond to the type and <a href="../utils/InputParameters.html">InputParameters</a> of the MOOSE object to be created, respectively. For example, the action to create a BC object has the following <code>act()</code> method:</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">void
+AddBCAction::act()
+{
+  _problem-&gt;addBoundaryCondition(_type, _name, _moose_object_pars);
+}
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#a14db67b-51f1-42bc-a5f0-4b7d22bd87f0">(moose/framework/src/actions/AddBCAction.C)</a><p>The action should be registered to one or more tasks using the <code>registerMooseAction</code> macro (conventionally in the action source file), for example,</p><pre class="moose-pre"><code class="language-cpp">
+registerMooseAction(&quot;ExampleApp&quot;, ExampleAction, &quot;example_task_a&quot;);
+registerMooseAction(&quot;ExampleApp&quot;, ExampleAction, &quot;example_task_b&quot;);
+</code></pre></section><section class="scrollspy" id="7013a9a7-53b2-4b1d-882e-5c8568ea435a" data-section-level="2" data-section-text="Registering Tasks"><h2 id="registering_tasks">Registering Tasks</h2><p>Like MOOSE objects, tasks and syntax are registered in an application&#x27;s constructor, conventionally from a static method called <code>registerAll</code>. MOOSE&#x27;s tasks, actions, and syntax are defined in <a class="moose-source-filename tooltipped modal-trigger" href="#a66385c2-5a03-488f-876b-57afdbce20ba">Moose.C</a>, for example.</p><p>Several macros are relevant for registration of tasks and syntax.</p><p>Tasks must be registered using the <code>registerTask</code> macro:</p><pre class="moose-pre"><code class="language-cpp">
+registerTask(&quot;task_name&quot;, is_required)
+</code></pre><p>where <code>task_name</code> is the name of the new task, and <code>is_required</code> should be set to <code>true</code> if the task is required by the application. A required task always has all of its associated actions executed, even if no syntax triggers it.</p><p>Tasks may have dependencies between them. The macro <code>addTaskDependency</code> is used to declare that a task depends on another, for example,</p><pre class="moose-pre"><code class="language-cpp">
+addTaskDependency(&quot;secondary_task&quot;, &quot;primary_task&quot;)
+</code></pre><p>Here a task called &quot;secondary_task&quot; will be executed sometime after the task called &quot;primary_task&quot;.</p></section><section class="scrollspy" id="af2e3333-ee2e-4f04-a2fb-60c3b839cf65" data-section-level="2" data-section-text="Registering Syntax"><h2 id="registering_syntax">Registering Syntax</h2><p>There are two macros associated with registering syntax to an action/task: <code>registerSyntax</code> and <code>registerSyntaxTask</code>:</p><pre class="moose-pre"><code class="language-cpp">
+registerSyntax(action, syntax);
+registerSyntaxTask(action, syntax, task);
+</code></pre><p>The difference between these is only apparent when the action has more than one task registered to it; in this case, the additional argument in <code>registerSyntaxTask</code> specifies which task of the specified action to execute.</p><p>For example, the <a href="AddKernelAction.html">AddKernelAction</a> is registered to tasks for adding kernels and aux kernels:</p><pre class="moose-pre"><code class="language-cpp">
+registerSyntaxTask(&quot;AddKernelAction&quot;, &quot;Kernels/*&quot;, &quot;add_kernel&quot;);
+registerSyntaxTask(&quot;AddKernelAction&quot;, &quot;AuxKernels/*&quot;, &quot;add_aux_kernel&quot;);
+</code></pre><p>The syntax need not be associated only to sub-blocks in the input file. For example, the existence of a <code>Mesh</code> block triggers <a href="SetupMeshCompleteAction.html">SetupMeshCompleteAction</a>:</p><pre class="moose-pre"><code class="language-cpp">
+registerSyntax(&quot;SetupMeshCompleteAction&quot;, &quot;Mesh&quot;);
+</code></pre><p>Also, note that actions do not necessarily require registration of any associated syntax to execute a task: if that task is registered as required, then the action always will be built:</p><pre class="moose-pre"><code class="language-cpp">
+registerTask(&quot;task_name&quot;, true);
+</code></pre></section><section class="scrollspy" id="92b84252-ed7c-4daf-a773-b53a854e0e0f" data-section-level="2" data-section-text="How Actions Are Built"><h2 id="how-actions-are-built">How Actions Are Built</h2><p>The input file parser creates actions by finding actions/tasks that are associated to a given syntax via the syntax registration calls (see <a href="Action.html#registering_syntax">Registering Syntax</a>). After these actions are created, other actions may be &quot;auto-built&quot; to satisfy unsatisfied <em>required</em> (see <a href="Action.html#registering_tasks">Registering Tasks</a>) tasks: the tasks are sorted via the dependency resolver, using the registered dependencies between them, and then for each unsatisfied, required task, a loop over all of the actions registered to that task is performed:</p><div class="card moose-float"><div class="card-content"><p class="moose-caption"><span class="moose-caption-text">Auto-build algorithm</span></p><div class="moose-algorithm"><div class="moose-algorithm-line"><span><span style="font-size:80%">1: </span>&nbsp;<strong>for</strong> each unsatisfied, required task <span class="moose-katex-inline-equation" id="moose-equation-91c0a846-6cdb-4098-bd7b-9b9034ff81ff"><script>var element = document.getElementById("moose-equation-91c0a846-6cdb-4098-bd7b-9b9034ff81ff");katex.render("T", element, {displayMode:false,throwOnError:false});</script></span> <strong>do</strong></span><span></span></div> <div class="moose-algorithm-line"><span><span style="font-size:80%">2: </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>for</strong> each action <span class="moose-katex-inline-equation" id="moose-equation-3244af57-1e21-406c-894d-005f9a6c04aa"><script>var element = document.getElementById("moose-equation-3244af57-1e21-406c-894d-005f9a6c04aa");katex.render("A", element, {displayMode:false,throwOnError:false});</script></span> registered to <span class="moose-katex-inline-equation" id="moose-equation-aa33c27c-97bb-4596-aeb5-3444eb48c25a"><script>var element = document.getElementById("moose-equation-aa33c27c-97bb-4596-aeb5-3444eb48c25a");katex.render("T", element, {displayMode:false,throwOnError:false});</script></span> <strong>do</strong></span><span></span></div> <div class="moose-algorithm-line"><span><span style="font-size:80%">3: </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>if</strong> all required parameters of <span class="moose-katex-inline-equation" id="moose-equation-5ade4057-2055-451b-bee5-678c8745a685"><script>var element = document.getElementById("moose-equation-5ade4057-2055-451b-bee5-678c8745a685");katex.render("A", element, {displayMode:false,throwOnError:false});</script></span> are valid <strong>then</strong></span><span></span></div> <div class="moose-algorithm-line"><span><span style="font-size:80%">4: </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;build <span class="moose-katex-inline-equation" id="moose-equation-c95e4fe4-8363-4877-b55e-402e8fe5b464"><script>var element = document.getElementById("moose-equation-c95e4fe4-8363-4877-b55e-402e8fe5b464");katex.render("A", element, {displayMode:false,throwOnError:false});</script></span></span><span></span></div> <div class="moose-algorithm-line"><span><span style="font-size:80%">5: </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>end if</strong></span><span></span></div> <div class="moose-algorithm-line"><span><span style="font-size:80%">6: </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>end for</strong></span><span></span></div> <div class="moose-algorithm-line"><span><span style="font-size:80%">7: </span>&nbsp;<strong>end for</strong></span><span></span></div></div></div></div><p>Note that there is no &quot;break&quot; statement after &quot;build <span class="moose-katex-inline-equation" id="moose-equation-7085124b-cdc4-4981-a76d-c9e9b88a4cb3"><script>var element = document.getElementById("moose-equation-7085124b-cdc4-4981-a76d-c9e9b88a4cb3");katex.render("A", element, {displayMode:false,throwOnError:false});</script></span>&quot;; that is, the auto-building of actions does not stop after the first action has been built.</p></section><section class="scrollspy" id="8a8f4a35-534c-4016-8dbe-6d8b8ada68d9" data-section-level="2" data-section-text="Relationship Managers and Actions"><h2 id="relationship-managers-and-actions">Relationship Managers and Actions</h2><p>If adding any <code>MooseObjects</code> in a custom action and those objects have associated relationship managers, then the <code>addRelationshipManagers(Moose::RelationshipManagerType input_rm_type)</code> must be overridden. Both the <code>ContactAction</code> in the contact module, and <code>PorousFlowActionBase</code> in the porous flow module provide examples of overriding this method. For the reasons behind why this must be done in the action system, please see <a href="../relationshipmanagers/RelationshipManager.html#rm_action">Relationship Managers and Actions</a>.</p></section><section class="scrollspy" id="f386c86a-fae6-45b6-b1f8-4171ac93d691" data-section-level="2" data-section-text="Controlling Action Parameters"><h2 id="controlling-action-parameters">Controlling Action Parameters</h2><p>Action parameters can be controlled like other MOOSE object parameters. See <a href="../../syntax/Controls/index.html#controllable_params_added_by_actions">Controllable Parameters Added by Actions</a> for more information.</p></section><section class="scrollspy" id="3be5eb03-81de-4392-b024-3af38b3090b6" data-section-level="2" data-section-text="Troubleshooting Actions"><h2 id="troubleshooting-actions">Troubleshooting Actions</h2><p>There are two debugging flags that are particularly useful for troubleshooting actions/tasks:</p><ul class="browser-default"><li><p><code>show_actions</code>: show the list of actions as they execute (in order). </p></li><li><p><code>show_action_dependencies</code>: show the action dependency sets generated by the task dependency resolution, with the groups ordered by execution.</p></li></ul><p>These flags are used in a <code>Debug</code> block:</p><pre class="moose-pre"><code class="language-text">
+[Debug]
+  show_actions = true
+  show_action_dependencies = true
+[]
+</code></pre></section><section class="scrollspy" id="64286f3f-f2df-4d66-991e-45aeef67e141" data-section-level="2" data-section-text="Additional Notes"><h2 id="additional-notes">Additional Notes</h2><p>The following is a list of miscellaneous notes that may be useful to advanced developers:</p><ul class="browser-default"><li><p>The lifetime of actions is the entire simulation. </p></li><li><p>Actions can be obtained via the <code>ActionWarehouse</code> with methods such as <code>getAction</code>, <code>getActions</code>, etc. </p></li><li><p>Actions may be added by other actions, but the added action will only execute for tasks occurring after the task in which the action is added.</p></li></ul></section></section><div class="moose-modal modal" id="a14db67b-51f1-42bc-a5f0-4b7d22bd87f0"><div class="modal-content"><h4>(moose/framework/src/actions/AddBCAction.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include &quot;AddBCAction.h&quot;
+#include &quot;FEProblem.h&quot;
+#include &quot;BoundaryCondition.h&quot;
+
+registerMooseAction(&quot;MooseApp&quot;, AddBCAction, &quot;add_bc&quot;);
+
+InputParameters
+AddBCAction::validParams()
+{
+  InputParameters params = MooseObjectAction::validParams();
+  params.addClassDescription(&quot;Add a BoundaryCondition object to the simulation.&quot;);
+  return params;
+}
+
+AddBCAction::AddBCAction(const InputParameters &amp; params) : MooseObjectAction(params) {}
+
+void
+AddBCAction::act()
+{
+  _problem-&gt;addBoundaryCondition(_type, _name, _moose_object_pars);
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="a66385c2-5a03-488f-876b-57afdbce20ba"><div class="modal-content"><h4>(moose/framework/src/base/Moose.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include &quot;libmesh/petsc_macro.h&quot;
+#include &quot;libmesh/libmesh_config.h&quot;
+
+#include &quot;Moose.h&quot;
+#include &quot;MooseApp.h&quot;
+
+#include &quot;ActionWarehouse.h&quot;
+#include &quot;ActionFactory.h&quot;
+#include &quot;AuxiliarySystem.h&quot;
+#include &quot;Factory.h&quot;
+#include &quot;PetscSupport.h&quot;
+#include &quot;Syntax.h&quot;
+#include &quot;MooseSyntax.h&quot;
+#include &quot;ExecFlagRegistry.h&quot;
+
+#include &lt;unistd.h&gt;
+
+const ExecFlagType EXEC_NONE = registerDefaultExecFlag(&quot;NONE&quot;);
+const ExecFlagType EXEC_INITIAL = registerDefaultExecFlag(&quot;INITIAL&quot;);
+const ExecFlagType EXEC_LINEAR = registerDefaultExecFlag(&quot;LINEAR&quot;);
+const ExecFlagType EXEC_NONLINEAR = registerDefaultExecFlag(&quot;NONLINEAR&quot;);
+const ExecFlagType EXEC_TIMESTEP_END = registerDefaultExecFlag(&quot;TIMESTEP_END&quot;);
+const ExecFlagType EXEC_TIMESTEP_BEGIN = registerDefaultExecFlag(&quot;TIMESTEP_BEGIN&quot;);
+const ExecFlagType EXEC_MULTIAPP_FIXED_POINT_END =
+    registerDefaultExecFlag(&quot;MULTIAPP_FIXED_POINT_END&quot;);
+const ExecFlagType EXEC_MULTIAPP_FIXED_POINT_BEGIN =
+    registerDefaultExecFlag(&quot;MULTIAPP_FIXED_POINT_BEGIN&quot;);
+const ExecFlagType EXEC_FINAL = registerDefaultExecFlag(&quot;FINAL&quot;);
+const ExecFlagType EXEC_FORCED = registerExecFlag(&quot;FORCED&quot;);
+const ExecFlagType EXEC_FAILED = registerExecFlag(&quot;FAILED&quot;);
+const ExecFlagType EXEC_CUSTOM = registerDefaultExecFlag(&quot;CUSTOM&quot;);
+const ExecFlagType EXEC_SUBDOMAIN = registerExecFlag(&quot;SUBDOMAIN&quot;);
+const ExecFlagType EXEC_ALWAYS = registerDefaultExecFlag(&quot;ALWAYS&quot;);
+const ExecFlagType EXEC_PRE_DISPLACE = registerExecFlag(&quot;PRE_DISPLACE&quot;);
+const ExecFlagType EXEC_SAME_AS_MULTIAPP = registerExecFlag(&quot;SAME_AS_MULTIAPP&quot;);
+const ExecFlagType EXEC_PRE_MULTIAPP_SETUP = registerExecFlag(&quot;PRE_MULTIAPP_SETUP&quot;);
+const ExecFlagType EXEC_TRANSFER = registerExecFlag(&quot;TRANSFER&quot;);
+const ExecFlagType EXEC_PRE_KERNELS = registerExecFlag(&quot;PRE_KERNELS&quot;);
+
+namespace Moose
+{
+
+void associateSyntaxInner(Syntax &amp; syntax, ActionFactory &amp; action_factory);
+
+void
+registerAll(Factory &amp; f, ActionFactory &amp; af, Syntax &amp; s)
+{
+  registerObjects(f, {&quot;MooseApp&quot;});
+  associateSyntaxInner(s, af);
+  registerActions(s, af, {&quot;MooseApp&quot;});
+  registerDataFilePath();
+}
+
+void
+registerObjects(Factory &amp; factory)
+{
+  mooseDeprecated(&quot;use registerAll instead of registerObjects&quot;);
+  registerObjects(factory, {&quot;MooseApp&quot;});
+}
+
+void
+registerObjects(Factory &amp; factory, const std::set&lt;std::string&gt; &amp; obj_labels)
+{
+  Registry::registerObjectsTo(factory, obj_labels);
+}
+
+void
+addActionTypes(Syntax &amp; syntax)
+{
+  /**
+   * The (optional) last param here indicates whether the task should trigger an Action auto-build.
+   * If a task is marked as &quot;true&quot;. Then MOOSE will attempt to build the associated Action if one is
+   * not supplied by some other means (usually through the input file or custom Action). Only
+   * Actions that do not have required parameters and have defaults for all optional parameters can
+   * be built automatically (See ActionWarehouse.C).
+   *
+   * Note: Many of the actions in the &quot;Minimal Problem&quot; section are marked as false.  However, we
+   * can generally force creation of these &quot;Action&quot;s as needed by registering them to syntax that we
+   * expect to see even if those &quot;Action&quot;s  don&#x27;t normally pick up parameters from the input file.
+   */
+
+  // clang-format off
+  /**************************/
+  /**** Register Actions ****/
+  /**************************/
+  registerMooseObjectTask(&quot;create_problem&quot;,               Problem,                false);
+  registerMooseObjectTask(&quot;setup_executioner&quot;,            Executioner,            false);
+  registerMooseObjectTask(&quot;read_executor&quot;,                Executor,               false);
+  registerTask(&quot;add_executor&quot;, true);
+
+  // This task does not construct an object, but it needs all of the parameters that
+  // would normally be used to construct an object.
+  registerMooseObjectTask(&quot;determine_system_type&quot;,        Executioner,            true);
+
+  registerMooseObjectTask(&quot;setup_mesh&quot;,                   MooseMesh,              false);
+  registerMooseObjectTask(&quot;set_mesh_base&quot;,                MooseMesh,              false);
+  registerMooseObjectTask(&quot;init_mesh&quot;,                    MooseMesh,              false);
+  registerMooseObjectTask(&quot;add_mesh_generator&quot;,           MeshGenerator,          false);
+  registerTask(&quot;create_added_mesh_generators&quot;, true);
+  registerMooseObjectTask(&quot;append_mesh_generator&quot;,        MeshGenerator,          false);
+
+  registerMooseObjectTask(&quot;add_kernel&quot;,                   Kernel,                 false);
+  appendMooseObjectTask  (&quot;add_kernel&quot;,                   EigenKernel);
+  appendMooseObjectTask  (&quot;add_kernel&quot;,                   VectorKernel);
+  appendMooseObjectTask  (&quot;add_kernel&quot;,                   ArrayKernel);
+
+  registerMooseObjectTask(&quot;add_variable&quot;,                 MooseVariableBase,      false);
+  registerMooseObjectTask(&quot;add_aux_variable&quot;,             MooseVariableBase,      false);
+  registerMooseObjectTask(&quot;add_elemental_field_variable&quot;, MooseVariableBase,      false);
+
+  registerMooseObjectTask(&quot;add_nodal_kernel&quot;,             NodalKernel,            false);
+
+  registerMooseObjectTask(&quot;add_functor_material&quot;,         MaterialBase,           false);
+  registerMooseObjectTask(&quot;add_material&quot;,                 MaterialBase,           false);
+  registerMooseObjectTask(&quot;add_bc&quot;,                       BoundaryCondition,      false);
+
+  registerMooseObjectTask(&quot;add_function&quot;,                 Function,               false);
+  registerMooseObjectTask(&quot;add_distribution&quot;,             Distribution,           false);
+  registerMooseObjectTask(&quot;add_sampler&quot;,                  Sampler,                false);
+
+  registerMooseObjectTask(&quot;add_aux_kernel&quot;,               AuxKernel,              false);
+  appendMooseObjectTask  (&quot;add_aux_kernel&quot;,               VectorAuxKernel);
+  appendMooseObjectTask  (&quot;add_aux_kernel&quot;,               ArrayAuxKernel);
+
+  registerMooseObjectTask(&quot;add_scalar_kernel&quot;,            ScalarKernel,           false);
+  registerMooseObjectTask(&quot;add_aux_scalar_kernel&quot;,        AuxScalarKernel,        false);
+  registerMooseObjectTask(&quot;add_dirac_kernel&quot;,             DiracKernel,            false);
+  appendMooseObjectTask  (&quot;add_dirac_kernel&quot;,             VectorDiracKernel);
+  registerMooseObjectTask(&quot;add_dg_kernel&quot;,                DGKernel,               false);
+  registerMooseObjectTask(&quot;add_fv_kernel&quot;,                FVKernel,               false);
+  registerMooseObjectTask(&quot;add_fv_bc&quot;,                    FVBoundaryCondition,    false);
+  registerMooseObjectTask(&quot;add_fv_ik&quot;,                    FVInterfaceKernel,      false);
+  registerMooseObjectTask(&quot;add_interface_kernel&quot;,         InterfaceKernel,        false);
+  appendMooseObjectTask  (&quot;add_interface_kernel&quot;,         VectorInterfaceKernel);
+  registerMooseObjectTask(&quot;add_constraint&quot;,               Constraint,             false);
+
+  registerMooseObjectTask(&quot;add_ic&quot;,                       InitialCondition,       false);
+  appendMooseObjectTask  (&quot;add_ic&quot;,                       ScalarInitialCondition);
+
+  registerMooseObjectTask(&quot;add_damper&quot;,                   Damper,                 false);
+  registerMooseObjectTask(&quot;setup_predictor&quot;,              Predictor,              false);
+  registerMooseObjectTask(&quot;add_time_steppers&quot;,            TimeStepper,            false);
+  registerMooseObjectTask(&quot;add_time_stepper&quot;,             TimeStepper,            false);
+  registerTask           (&quot;compose_time_stepper&quot;,                                 true);
+  registerMooseObjectTask(&quot;setup_time_integrator&quot;,        TimeIntegrator,         false);
+
+  registerMooseObjectTask(&quot;add_preconditioning&quot;,          MoosePreconditioner,    false);
+  registerMooseObjectTask(&quot;add_field_split&quot;,              Split,                  false);
+
+  registerMooseObjectTask(&quot;add_user_object&quot;,              UserObject,             false);
+  appendMooseObjectTask  (&quot;add_user_object&quot;,              Postprocessor);
+
+  registerMooseObjectTask(&quot;add_postprocessor&quot;,            Postprocessor,          false);
+  registerMooseObjectTask(&quot;add_vector_postprocessor&quot;,     VectorPostprocessor,    false);
+  registerMooseObjectTask(&quot;add_reporter&quot;,                 Reporter,               false);
+  registerMooseObjectTask(&quot;add_positions&quot;,                Positions,              false);
+  registerMooseObjectTask(&quot;add_times&quot;,                    Times,                  false);
+
+  registerMooseObjectTask(&quot;add_indicator&quot;,                Indicator,              false);
+  registerMooseObjectTask(&quot;add_marker&quot;,                   Marker,                 false);
+
+  registerMooseObjectTask(&quot;add_multi_app&quot;,                MultiApp,               false);
+  registerMooseObjectTask(&quot;add_transfer&quot;,                 Transfer,               false);
+
+  registerMooseObjectTask(&quot;add_output&quot;,                   Output,                 false);
+
+  registerMooseObjectTask(&quot;add_control&quot;,                  Control,                false);
+  registerMooseObjectTask(&quot;add_partitioner&quot;,              MoosePartitioner,       false);
+
+  // clang-format on
+
+  registerTask(&quot;dynamic_object_registration&quot;, false);
+  registerTask(&quot;common_output&quot;, true);
+  registerTask(&quot;setup_recover_file_base&quot;, true);
+  registerTask(&quot;recover_meta_data&quot;, true);
+
+  registerTask(&quot;add_bounds_vectors&quot;, false);
+  registerTask(&quot;add_periodic_bc&quot;, false);
+  registerTask(&quot;add_aux_variable&quot;, false);
+  registerTask(&quot;add_external_aux_variables&quot;, true);
+  registerTask(&quot;add_variable&quot;, false);
+  registerTask(&quot;add_mortar_variable&quot;, false);
+
+  registerTask(&quot;execute_mesh_generators&quot;, true);
+  registerTask(&quot;uniform_refine_mesh&quot;, false);
+  registerTask(&quot;prepare_mesh&quot;, false);
+  registerTask(&quot;delete_remote_elements_after_late_geometric_ghosting&quot;, false);
+  registerTask(&quot;setup_mesh_complete&quot;, true); // calls prepare
+  registerTask(&quot;post_mesh_prepared&quot;, false);
+  registerTask(&quot;add_geometric_rm&quot;, false);
+  registerTask(&quot;attach_geometric_rm&quot;, true);
+  registerTask(&quot;attach_geometric_rm_final&quot;, true);
+
+  registerTask(&quot;init_displaced_problem&quot;, false);
+
+  registerTask(&quot;add_algebraic_rm&quot;, false);
+  registerTask(&quot;attach_algebraic_rm&quot;, true);
+  registerTask(&quot;add_coupling_rm&quot;, false);
+  registerTask(&quot;attach_coupling_rm&quot;, true);
+  registerTask(&quot;init_problem&quot;, true);
+  registerTask(&quot;check_copy_nodal_vars&quot;, true);
+  registerTask(&quot;copy_nodal_vars&quot;, true);
+  registerTask(&quot;copy_nodal_aux_vars&quot;, true);
+  registerTask(&quot;setup_postprocessor_data&quot;, false);
+  registerTask(&quot;setup_time_steppers&quot;, true);
+
+  registerTask(&quot;setup_dampers&quot;, true);
+  registerTask(&quot;check_integrity&quot;, true);
+  registerTask(&quot;resolve_optional_materials&quot;, true);
+  registerTask(&quot;check_integrity_early&quot;, true);
+  registerTask(&quot;setup_quadrature&quot;, true);
+
+  /// Additional Actions
+  registerTask(&quot;no_action&quot;, false); // Used for Empty Action placeholders
+  registerTask(&quot;set_global_params&quot;, false);
+  registerTask(&quot;setup_adaptivity&quot;, false);
+  registerTask(&quot;meta_action&quot;, false);
+  registerTask(&quot;setup_residual_debug&quot;, false);
+  registerTask(&quot;setup_oversampling&quot;, false);
+  registerTask(&quot;deprecated_block&quot;, false);
+  registerTask(&quot;set_adaptivity_options&quot;, false);
+  registerTask(&quot;add_mortar_interface&quot;, false);
+  registerTask(&quot;coupling_functor_check&quot;, true);
+  registerTask(&quot;add_master_action_material&quot;, false);
+
+  // Dummy Actions (useful for sync points in the dependencies)
+  registerTask(&quot;setup_function_complete&quot;, false);
+  registerTask(&quot;setup_variable_complete&quot;, false);
+  registerTask(&quot;ready_to_init&quot;, true);
+
+  // Output related actions
+  registerTask(&quot;add_output_aux_variables&quot;, true);
+  registerTask(&quot;check_output&quot;, true);
+
+  registerTask(&quot;create_problem_default&quot;, true);
+  registerTask(&quot;create_problem_custom&quot;, false);
+  registerTask(&quot;create_problem_complete&quot;, false);
+
+  // Action for setting up the signal-based checkpoint
+  registerTask(&quot;auto_checkpoint_action&quot;, true);
+  /**************************/
+  /****** Dependencies ******/
+  /**************************/
+  /**
+   * The following is the default set of action dependencies for a basic MOOSE problem.  The
+   * formatting of this string is important.  Each line represents a set of dependencies that depend
+   * on the previous line.  Items on the same line have equal weight and can be executed in any
+   * order.
+   *
+   * Additional dependencies can be inserted later inside of user applications with calls to
+   * ActionWarehouse::addDependency(&quot;task&quot;, &quot;pre_req&quot;)
+   */
+
+  // clang-format off
+  syntax.addDependencySets(&quot;(meta_action)&quot;
+                           &quot;(dynamic_object_registration)&quot;
+                           &quot;(common_output)&quot;
+                           &quot;(set_global_params)&quot;
+                           &quot;(setup_recover_file_base)&quot;
+                           &quot;(check_copy_nodal_vars)&quot;
+                           &quot;(setup_mesh)&quot;
+                           &quot;(add_geometric_rm)&quot;
+                           &quot;(add_partitioner)&quot;
+                           &quot;(add_mesh_generator)&quot;
+                           &quot;(create_added_mesh_generators)&quot;
+                           &quot;(append_mesh_generator)&quot;
+                           &quot;(execute_mesh_generators)&quot;
+                           &quot;(recover_meta_data)&quot;
+                           &quot;(set_mesh_base)&quot;
+                           &quot;(attach_geometric_rm)&quot;
+                           &quot;(init_mesh)&quot;
+                           &quot;(prepare_mesh)&quot;
+                           &quot;(add_mortar_interface)&quot;
+                           &quot;(uniform_refine_mesh)&quot;
+                           &quot;(setup_mesh_complete)&quot;
+                           &quot;(post_mesh_prepared)&quot;
+                           &quot;(determine_system_type)&quot;
+                           &quot;(create_problem)&quot;
+                           &quot;(create_problem_custom)&quot;
+                           &quot;(create_problem_default)&quot;
+                           &quot;(create_problem_complete)&quot;
+                           &quot;(setup_postprocessor_data)&quot;
+                           &quot;(setup_time_integrator)&quot;
+                           &quot;(setup_executioner)&quot;
+                           &quot;(read_executor)&quot;
+                           &quot;(add_executor)&quot;
+                           &quot;(check_integrity_early)&quot;
+                           &quot;(setup_predictor)&quot;
+                           &quot;(init_displaced_problem)&quot;
+                           &quot;(add_aux_variable, add_variable, add_elemental_field_variable,&quot;
+                           &quot; add_external_aux_variables)&quot;
+                           &quot;(add_mortar_variable)&quot;
+                           &quot;(setup_variable_complete)&quot;
+                           &quot;(setup_quadrature)&quot;
+                           &quot;(add_function)&quot;
+                           &quot;(add_periodic_bc)&quot;
+                           &quot;(add_user_object)&quot;
+                           &quot;(add_distribution)&quot;
+                           &quot;(add_sampler)&quot;
+                           &quot;(setup_function_complete)&quot;
+                           &quot;(setup_adaptivity)&quot;
+                           &quot;(set_adaptivity_options)&quot;
+                           &quot;(add_ic)&quot;
+                           &quot;(add_constraint, add_field_split)&quot;
+                           &quot;(add_preconditioning)&quot;
+                           &quot;(add_times)&quot;
+                           &quot;(add_time_stepper, add_time_steppers)&quot;
+                           &quot;(compose_time_stepper)&quot;
+                           &quot;(setup_time_steppers)&quot;
+                           &quot;(ready_to_init)&quot;
+                           &quot;(setup_dampers)&quot;
+                           &quot;(setup_residual_debug)&quot;
+                           &quot;(add_bounds_vectors)&quot;
+                           &quot;(add_positions)&quot;
+                           &quot;(add_multi_app)&quot;
+                           &quot;(add_transfer)&quot;
+                           &quot;(copy_nodal_vars, copy_nodal_aux_vars)&quot;
+                           &quot;(add_material)&quot;
+                           &quot;(add_master_action_material)&quot;
+                           &quot;(add_functor_material)&quot;
+                           &quot;(add_output_aux_variables)&quot;
+                           &quot;(add_output)&quot;
+                           &quot;(auto_checkpoint_action)&quot;
+                           &quot;(add_postprocessor)&quot;
+                           &quot;(add_vector_postprocessor)&quot; // MaterialVectorPostprocessor requires this
+                                                        // to be after material objects are created.
+                           &quot;(add_reporter)&quot;
+                           &quot;(add_aux_kernel, add_bc, add_damper, add_dirac_kernel, add_kernel,&quot;
+                           &quot; add_nodal_kernel, add_dg_kernel, add_fv_kernel, add_fv_bc, add_fv_ik,&quot;
+                           &quot; add_interface_kernel, add_scalar_kernel, add_aux_scalar_kernel,&quot;
+                           &quot; add_indicator, add_marker)&quot;
+                           &quot;(resolve_optional_materials)&quot;
+                           &quot;(add_algebraic_rm)&quot;
+                           &quot;(add_coupling_rm)&quot;
+                           &quot;(attach_geometric_rm_final)&quot;
+                           &quot;(attach_algebraic_rm)&quot;
+                           &quot;(attach_coupling_rm)&quot;
+                           &quot;(coupling_functor_check)&quot;
+                           &quot;(delete_remote_elements_after_late_geometric_ghosting)&quot;
+                           &quot;(init_problem)&quot;
+                           &quot;(add_control)&quot;
+                           &quot;(check_output)&quot;
+                           &quot;(check_integrity)&quot;);
+  // clang-format on
+}
+
+/**
+ * Multiple Action class can be associated with a single input file section, in which case all
+ * associated Actions will be created and &quot;acted&quot; on when the associated input file section is
+ * seen.*
+ *
+ * Example:
+ *  &quot;setup_mesh&quot; &lt;-----------&gt; SetupMeshAction &lt;---------
+ *                                                        \
+ *                                                         [Mesh]
+ *                                                        /
+ * &quot;setup_mesh_complete&quot; &lt;---&gt; SetupMeshCompleteAction &lt;-
+ *
+ *
+ * Action classes can also be registered to act on more than one input file section for a different
+ * task if similar logic can work in multiple cases
+ *
+ * Example:
+ * &quot;add_variable&quot; &lt;-----                       -&gt; [Variables/ *]
+ *                       \                   /
+ *                        CopyNodalVarsAction
+ *                       /                   \
+ * &quot;add_aux_variable&quot; &lt;-                       -&gt; [AuxVariables/ *]
+ *
+ *
+ * Note: Placeholder &quot;no_action&quot; actions must be put in places where it is possible to match an
+ *       object with a star or a more specific parent later on. (i.e. where one needs to negate the
+ *       &#x27;*&#x27; matching prematurely).
+ */
+void
+registerActions(Syntax &amp; syntax, ActionFactory &amp; action_factory)
+{
+  mooseDeprecated(&quot;use registerAll instead of registerActions&quot;);
+  registerActions(syntax, action_factory, {&quot;MooseApp&quot;});
+}
+
+void
+registerActions(Syntax &amp; syntax,
+                ActionFactory &amp; action_factory,
+                const std::set&lt;std::string&gt; &amp; obj_labels)
+{
+  Registry::registerActionsTo(action_factory, obj_labels);
+
+  // TODO: Why is this here?
+  registerTask(&quot;finish_input_file_output&quot;, false);
+}
+
+void
+associateSyntaxInner(Syntax &amp; syntax, ActionFactory &amp; /*action_factory*/)
+{
+  /**
+   * Note: the optional third parameter is used to differentiate which task is
+   * satisfied based on the syntax encountered for classes which are registered
+   * to satisfy more than one task
+   */
+  registerSyntaxTask(&quot;CopyNodalVarsAction&quot;, &quot;Variables/*&quot;, &quot;check_copy_nodal_vars&quot;);
+  registerSyntaxTask(&quot;CopyNodalVarsAction&quot;, &quot;Variables/*&quot;, &quot;copy_nodal_vars&quot;);
+  registerSyntaxTask(&quot;CopyNodalVarsAction&quot;, &quot;AuxVariables/*&quot;, &quot;check_copy_nodal_vars&quot;);
+  registerSyntaxTask(&quot;CopyNodalVarsAction&quot;, &quot;AuxVariables/*&quot;, &quot;copy_nodal_aux_vars&quot;);
+
+  registerSyntaxTask(&quot;AddKernelAction&quot;, &quot;Kernels/*&quot;, &quot;add_kernel&quot;);
+  registerSyntaxTask(&quot;AddNodalKernelAction&quot;, &quot;NodalKernels/*&quot;, &quot;add_nodal_kernel&quot;);
+  registerSyntaxTask(&quot;AddKernelAction&quot;, &quot;AuxKernels/*&quot;, &quot;add_aux_kernel&quot;);
+  registerSyntaxTask(&quot;AddKernelAction&quot;, &quot;Bounds/*&quot;, &quot;add_aux_kernel&quot;);
+
+  registerSyntax(&quot;AddAuxKernelAction&quot;, &quot;AuxVariables/*/AuxKernel&quot;);
+
+  registerSyntaxTask(&quot;AddScalarKernelAction&quot;, &quot;ScalarKernels/*&quot;, &quot;add_scalar_kernel&quot;);
+  registerSyntaxTask(&quot;AddScalarKernelAction&quot;, &quot;AuxScalarKernels/*&quot;, &quot;add_aux_scalar_kernel&quot;);
+
+  registerSyntaxTask(&quot;AddBCAction&quot;, &quot;BCs/*&quot;, &quot;add_bc&quot;);
+
+  registerSyntax(&quot;CreateProblemAction&quot;, &quot;Problem&quot;);
+  registerSyntax(&quot;DynamicObjectRegistrationAction&quot;, &quot;Problem&quot;);
+
+  registerSyntax(&quot;SetupMeshAction&quot;, &quot;Mesh&quot;);
+  registerSyntax(&quot;SetupMeshCompleteAction&quot;, &quot;Mesh&quot;);
+  registerSyntax(&quot;CreateDisplacedProblemAction&quot;, &quot;Mesh&quot;);
+  registerSyntax(&quot;DisplayGhostingAction&quot;, &quot;Mesh&quot;);
+  registerSyntax(&quot;AddMeshGeneratorAction&quot;, &quot;Mesh/*&quot;);
+  registerSyntax(&quot;ElementIDOutputAction&quot;, &quot;Mesh&quot;);
+  syntax.registerSyntaxType(&quot;Mesh/*&quot;, &quot;MeshGeneratorName&quot;);
+
+  registerSyntax(&quot;AddFunctionAction&quot;, &quot;Functions/*&quot;);
+  syntax.registerSyntaxType(&quot;Functions/*&quot;, &quot;FunctionName&quot;);
+
+  registerSyntax(&quot;GlobalParamsAction&quot;, &quot;GlobalParams&quot;);
+
+  registerSyntax(&quot;AddDistributionAction&quot;, &quot;Distributions/*&quot;);
+  syntax.registerSyntaxType(&quot;Distributions/*&quot;, &quot;DistributionName&quot;);
+
+  registerSyntax(&quot;AddSamplerAction&quot;, &quot;Samplers/*&quot;);
+  syntax.registerSyntaxType(&quot;Samplers/*&quot;, &quot;SamplerName&quot;);
+
+  registerSyntax(&quot;SetupDebugAction&quot;, &quot;Debug&quot;);
+  registerSyntax(&quot;SetupResidualDebugAction&quot;, &quot;Debug&quot;);
+
+  /// Variable/AuxVariable Actions
+  registerSyntax(&quot;AddVariableAction&quot;, &quot;Variables/*&quot;);
+  syntax.registerSyntaxType(&quot;Variables/*&quot;, &quot;VariableName&quot;);
+  syntax.registerSyntaxType(&quot;Variables/*&quot;, &quot;NonlinearVariableName&quot;);
+
+  registerSyntax(&quot;AddICAction&quot;, &quot;Variables/*/InitialCondition&quot;);
+
+  registerSyntax(&quot;AddAuxVariableAction&quot;, &quot;AuxVariables/*&quot;);
+  syntax.registerSyntaxType(&quot;AuxVariables/*&quot;, &quot;VariableName&quot;);
+  syntax.registerSyntaxType(&quot;AuxVariables/*&quot;, &quot;AuxVariableName&quot;);
+
+  registerSyntax(&quot;AddICAction&quot;, &quot;AuxVariables/*/InitialCondition&quot;);
+
+  registerSyntaxTask(&quot;EmptyAction&quot;, &quot;BCs/Periodic&quot;, &quot;no_action&quot;); // placeholder
+  registerSyntax(&quot;AddPeriodicBCAction&quot;, &quot;BCs/Periodic/*&quot;);
+
+  registerSyntaxTask(&quot;AddInitialConditionAction&quot;, &quot;ICs/*&quot;, &quot;add_ic&quot;);
+
+  registerSyntax(&quot;AddMaterialAction&quot;, &quot;Materials/*&quot;);
+  syntax.registerSyntaxType(&quot;Materials/*&quot;, &quot;MaterialName&quot;);
+
+  registerSyntax(&quot;AddFunctorMaterialAction&quot;, &quot;FunctorMaterials/*&quot;);
+  syntax.registerSyntaxType(&quot;FunctorMaterials/*&quot;, &quot;MaterialName&quot;);
+
+  registerSyntax(&quot;AddPostprocessorAction&quot;, &quot;Postprocessors/*&quot;);
+  syntax.registerSyntaxType(&quot;Postprocessors/*&quot;, &quot;PostprocessorName&quot;);
+  syntax.registerSyntaxType(&quot;Postprocessors/*&quot;, &quot;UserObjectName&quot;);
+
+  registerSyntax(&quot;AddVectorPostprocessorAction&quot;, &quot;VectorPostprocessors/*&quot;);
+  syntax.registerSyntaxType(&quot;VectorPostprocessors/*&quot;, &quot;VectorPostprocessorName&quot;);
+
+  registerSyntax(&quot;AddReporterAction&quot;, &quot;Reporters/*&quot;);
+  syntax.registerSyntaxType(&quot;Reporters/*&quot;, &quot;ReporterName&quot;);
+
+  registerSyntax(&quot;AddPositionsAction&quot;, &quot;Positions/*&quot;);
+  syntax.registerSyntaxType(&quot;Positions/*&quot;, &quot;PositionsName&quot;);
+
+  registerSyntax(&quot;AddTimesAction&quot;, &quot;Times/*&quot;);
+  syntax.registerSyntaxType(&quot;Times/*&quot;, &quot;TimesName&quot;);
+
+  registerSyntax(&quot;AddDamperAction&quot;, &quot;Dampers/*&quot;);
+
+  registerSyntax(&quot;AddOutputAction&quot;, &quot;Outputs/*&quot;);
+  registerSyntax(&quot;CommonOutputAction&quot;, &quot;Outputs&quot;);
+  syntax.registerSyntaxType(&quot;Outputs/*&quot;, &quot;OutputName&quot;);
+
+  // Note: Preconditioner Actions will be built by this setup action
+  registerSyntax(&quot;SetupPreconditionerAction&quot;, &quot;Preconditioning/*&quot;);
+  registerSyntax(&quot;AddFieldSplitAction&quot;, &quot;Preconditioning/*/*&quot;);
+
+  registerSyntax(&quot;CreateExecutionerAction&quot;, &quot;Executioner&quot;);
+  registerSyntax(&quot;ReadExecutorParamsAction&quot;, &quot;Executors/*&quot;);
+
+  registerSyntaxTask(&quot;AddTimeStepperAction&quot;, &quot;Executioner/TimeSteppers/*&quot;, &quot;add_time_steppers&quot;);
+  registerSyntaxTask(&quot;AddTimeStepperAction&quot;, &quot;Executioner/TimeStepper&quot;, &quot;add_time_stepper&quot;);
+  registerSyntaxTask(
+      &quot;ComposeTimeStepperAction&quot;, &quot;Executioner/TimeSteppers&quot;, &quot;compose_time_stepper&quot;);
+  registerSyntax(&quot;SetupTimeIntegratorAction&quot;, &quot;Executioner/TimeIntegrator&quot;);
+  syntax.registerSyntaxType(&quot;Executors/*&quot;, &quot;ExecutorName&quot;);
+
+  registerSyntax(&quot;SetupQuadratureAction&quot;, &quot;Executioner/Quadrature&quot;);
+  registerSyntax(&quot;SetupPredictorAction&quot;, &quot;Executioner/Predictor&quot;);
+#ifdef LIBMESH_ENABLE_AMR
+  registerSyntax(&quot;AdaptivityAction&quot;, &quot;Executioner/Adaptivity&quot;);
+#endif
+
+  registerSyntax(&quot;PartitionerAction&quot;, &quot;Mesh/Partitioner&quot;);
+
+  registerSyntax(&quot;AddDiracKernelAction&quot;, &quot;DiracKernels/*&quot;);
+
+  registerSyntax(&quot;AddDGKernelAction&quot;, &quot;DGKernels/*&quot;);
+  registerSyntax(&quot;AddFVKernelAction&quot;, &quot;FVKernels/*&quot;);
+  registerSyntax(&quot;AddFVBCAction&quot;, &quot;FVBCs/*&quot;);
+  registerSyntax(&quot;AddFVInterfaceKernelAction&quot;, &quot;FVInterfaceKernels/*&quot;);
+  registerSyntax(&quot;CheckFVBCAction&quot;, &quot;FVBCs&quot;);
+
+  registerSyntax(&quot;AddInterfaceKernelAction&quot;, &quot;InterfaceKernels/*&quot;);
+
+  registerSyntax(&quot;AddConstraintAction&quot;, &quot;Constraints/*&quot;);
+
+  registerSyntax(&quot;AddUserObjectAction&quot;, &quot;UserObjects/*&quot;);
+  syntax.registerSyntaxType(&quot;UserObjects/*&quot;, &quot;UserObjectName&quot;);
+  registerSyntax(&quot;AddControlAction&quot;, &quot;Controls/*&quot;);
+  registerSyntax(&quot;AddBoundsVectorsAction&quot;, &quot;Bounds&quot;);
+
+  registerSyntax(&quot;AddNodalNormalsAction&quot;, &quot;NodalNormals&quot;);
+
+  // Indicator
+  registerSyntax(&quot;AddElementalFieldAction&quot;, &quot;Adaptivity/Indicators/*&quot;);
+  registerSyntax(&quot;AddIndicatorAction&quot;, &quot;Adaptivity/Indicators/*&quot;);
+  syntax.registerSyntaxType(&quot;Adaptivity/Indicators/*&quot;, &quot;IndicatorName&quot;);
+
+  // Marker
+  registerSyntax(&quot;AddElementalFieldAction&quot;, &quot;Adaptivity/Markers/*&quot;);
+  registerSyntax(&quot;AddMarkerAction&quot;, &quot;Adaptivity/Markers/*&quot;);
+  syntax.registerSyntaxType(&quot;Adaptivity/Markers/*&quot;, &quot;MarkerName&quot;);
+
+  // New Adaptivity System
+  registerSyntax(&quot;SetAdaptivityOptionsAction&quot;, &quot;Adaptivity&quot;);
+
+  // Deprecated Block
+  registerSyntax(&quot;DeprecatedBlockAction&quot;, &quot;DeprecatedBlock&quot;);
+
+  // Multi Apps
+  registerSyntax(&quot;AddMultiAppAction&quot;, &quot;MultiApps/*&quot;);
+  syntax.registerSyntaxType(&quot;MultiApps/*&quot;, &quot;MultiAppName&quot;);
+
+  // Transfers
+  registerSyntax(&quot;AddTransferAction&quot;, &quot;Transfers/*&quot;);
+
+  // Material derivative test
+  registerSyntaxTask(&quot;EmptyAction&quot;, &quot;Debug/MaterialDerivativeTest&quot;, &quot;no_action&quot;); // placeholder
+  registerSyntax(&quot;MaterialDerivativeTestAction&quot;, &quot;Debug/MaterialDerivativeTest/*&quot;);
+
+  addActionTypes(syntax);
+}
+
+void
+associateSyntax(Syntax &amp; syntax, ActionFactory &amp; action_factory)
+{
+  associateSyntaxInner(syntax, action_factory);
+  registerActions(syntax, action_factory);
+}
+
+void
+setSolverDefaults(FEProblemBase &amp; problem)
+{
+  // May be a touch expensive to create a new DM every time, but probably safer to do it this way
+  Moose::PetscSupport::petscSetDefaults(problem);
+}
+
+MPI_Comm
+swapLibMeshComm(MPI_Comm new_comm)
+{
+  MPI_Comm old_comm = PETSC_COMM_WORLD;
+  PETSC_COMM_WORLD = new_comm;
+  return old_comm;
+}
+
+static bool _color_console = isatty(fileno(stdout));
+
+bool
+colorConsole()
+{
+  return _color_console;
+}
+
+bool
+setColorConsole(bool use_color, bool force)
+{
+  _color_console = (isatty(fileno(stdout)) || force) &amp;&amp; use_color;
+  return _color_console;
+}
+
+bool _warnings_are_errors = false;
+bool _deprecated_is_error = false;
+bool _throw_on_error = false;
+bool _throw_on_warning = false;
+int interrupt_signal_number = 0;
+bool show_trace = true;
+bool show_multiple = false;
+
+} // namespace Moose
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div><div class="col hide-on-med-and-down l2"><div class="toc-wrapper pin-top"><ul class="section table-of-contents"><li><a href="#aa212264-3966-420c-becc-146725dd7a0e" class="tooltipped" data-position="left" data-tooltip="Creating Actions">Creating Actions</a></li><li><a href="#7013a9a7-53b2-4b1d-882e-5c8568ea435a" class="tooltipped" data-position="left" data-tooltip="Registering Tasks">Registering Tasks</a></li><li><a href="#af2e3333-ee2e-4f04-a2fb-60c3b839cf65" class="tooltipped" data-position="left" data-tooltip="Registering Syntax">Registering Syntax</a></li><li><a href="#92b84252-ed7c-4daf-a773-b53a854e0e0f" class="tooltipped" data-position="left" data-tooltip="How Actions Are Built">How Actions Are Built</a></li><li><a href="#8a8f4a35-534c-4016-8dbe-6d8b8ada68d9" class="tooltipped" data-position="left" data-tooltip="Relationship Managers and Actions">Relationship Managers and Actions</a></li><li><a href="#f386c86a-fae6-45b6-b1f8-4171ac93d691" class="tooltipped" data-position="left" data-tooltip="Controlling Action Parameters">Controlling Action Parameters</a></li><li><a href="#3be5eb03-81de-4392-b024-3af38b3090b6" class="tooltipped" data-position="left" data-tooltip="Troubleshooting Actions">Troubleshooting Actions</a></li><li><a href="#64286f3f-f2df-4d66-991e-45aeef67e141" class="tooltipped" data-position="left" data-tooltip="Additional Notes">Additional Notes</a></li></ul></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>
