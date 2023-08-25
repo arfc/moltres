@@ -3,6 +3,10 @@
 #include "EigenKernel.h"
 #include "ScalarTransportBase.h"
 
+/**
+ * This object computes the residual and Jacobian contribution for the precursor source term in the
+ * delayed neutron precursor equation for k-eigenvalue problems.
+ */
 class PrecursorEigenSource : public EigenKernel, public ScalarTransportBase
 {
 public:
