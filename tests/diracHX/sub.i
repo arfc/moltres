@@ -69,7 +69,7 @@ flow_velocity=0.5 # cm/s. See MSRE-properties.ods
 [Functions]
   [./heatRemovalFcn]
     type = ParsedFunction
-    value = '1e2 + 1e2 * sin(t/5) ' # start losing cooling at t=50s
+    expression = '1e2 + 1e2 * sin(t/5) ' # start losing cooling at t=50s
   [../]
 []
 
@@ -90,9 +90,9 @@ flow_velocity=0.5 # cm/s. See MSRE-properties.ods
   [../]
   [./rho_fuel]
     type = DerivativeParsedMaterial
-    f_name = rho
-    function = '2.146e-3 * exp(-1.8 * 1.18e-4 * (temp - 922))'
-    args = 'temp'
+    property_name = rho
+    expression = '2.146e-3 * exp(-1.8 * 1.18e-4 * (temp - 922))'
+    coupled_variables = 'temp'
     derivative_order = 1
   [../]
 []

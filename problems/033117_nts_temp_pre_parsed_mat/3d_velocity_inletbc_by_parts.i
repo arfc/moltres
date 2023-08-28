@@ -158,8 +158,8 @@ fuel_sq_rad = 39.94
 [Functions]
   [./inlet_func]
     type = ParsedFunction
-    # value = '${fuel_velocity_max_inlet} * (${fuel_sq_rad}^2 - x^2) * (${fuel_sq_rad}^2 - y^2) / ${fuel_sq_rad}^4'
-    value = '${fuel_velocity_max_inlet} * (1 - cosh(pi * y / (2 * ${fuel_sq_rad})) / cosh(pi / 2)) * cos(pi * x / (2 * ${fuel_sq_rad}))'
-    # value = '${fuel_velocity_max_inlet} * cos(pi * x / (2 * ${fuel_sq_rad})) * cos(pi * y / (2 * ${fuel_sq_rad}))'
+    # expression = '${fuel_velocity_max_inlet} * (${fuel_sq_rad}^2 - x^2) * (${fuel_sq_rad}^2 - y^2) / ${fuel_sq_rad}^4'
+    expression = '${fuel_velocity_max_inlet} * (1 - cosh(pi * y / (2 * ${fuel_sq_rad})) / cosh(pi / 2)) * cos(pi * x / (2 * ${fuel_sq_rad}))'
+    # expression = '${fuel_velocity_max_inlet} * cos(pi * x / (2 * ${fuel_sq_rad})) * cos(pi * y / (2 * ${fuel_sq_rad}))'
   [../]
 []

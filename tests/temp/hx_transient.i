@@ -58,11 +58,11 @@
 [Functions]
   [./htc_func]
     type = ParsedFunction
-    value = 'exp(-t)'
+    expression = 'exp(-t)'
   [../]
   [./ic_func]
     type = ParsedFunction
-    value = 'cosh(x) / cosh(1)'
+    expression = 'cosh(x) / cosh(1)'
   [../]
 []
 

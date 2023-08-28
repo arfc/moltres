@@ -79,7 +79,7 @@
 [Functions]
   [./temp_bc_func]
     type = ParsedFunction
-    value = '${ini_temp} - (${ini_temp} - ${diri_temp}) * tanh(t/1e-2)'
+    expression = '${ini_temp} - (${ini_temp} - ${diri_temp}) * tanh(t/1e-2)'
   [../]
 []
 

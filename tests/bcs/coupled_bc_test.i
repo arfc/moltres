@@ -71,7 +71,7 @@
   # Parabolic, upward flow
   [./vel_func]
     type = ParsedFunction
-    value = '-(x - 0) * (x - 1)'
+    expression = '-(x - 0) * (x - 1)'
   [../]
 []
 

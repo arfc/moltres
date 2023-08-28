@@ -10,14 +10,11 @@
 []
 
 [Mesh]
+  coord_type = RZ
   [mesh]
     type = FileMeshGenerator
     file = '../eigenvalue/mesh.e'
   []
-[]
-
-[Problem]
-  coord_type = RZ
 []
 
 [Variables]
@@ -186,15 +183,15 @@
 [Functions]
   [temp_bc_func]
     type = ParsedFunction
-    value = '1000 - (1000-965) * tanh(t/1)'
+    expression = '1000 - (1000-965) * tanh(t/1)'
   []
   [dt_func]
     type = ParsedFunction
-    value = 'if(t<50, if(t<30, .4, 5), 10)'
+    expression = 'if(t<50, if(t<30, .4, 5), 10)'
   []
   [ic_func]
     type = ParsedFunction
-    value = '1e5 * (-x^2+70^2) * (-y * (y-150))'
+    expression = '1e5 * (-x^2+70^2) * (-y * (y-150))'
   []
 []
 

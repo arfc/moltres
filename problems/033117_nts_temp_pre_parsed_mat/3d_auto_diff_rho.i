@@ -189,11 +189,11 @@ offset=2.5
 [Functions]
   [./temp_bc_func]
     type = ParsedFunction
-    value = '${ini_temp} - (${ini_temp} - ${diri_temp}) * tanh(t/1e-2)'
+    expression = '${ini_temp} - (${ini_temp} - ${diri_temp}) * tanh(t/1e-2)'
   [../]
   [./nt_ic_func]
     type = ParsedFunction
-    value = 'sin(pi * z / ${height}) * sin(pi * (x + ${offset}) / ${width}) * sin(pi * (y + ${offset}) / ${width})'
+    expression = 'sin(pi * z / ${height}) * sin(pi * (x + ${offset}) / ${width}) * sin(pi * (y + ${offset}) / ${width})'
   [../]
 []
 
@@ -206,9 +206,9 @@ offset=2.5
   [../]
   [./rho_fuel]
     type = DerivativeParsedMaterial
-    f_name = rho
-    function = '2.146e-3 * exp(-1.8 * 1.18e-4 * (temp - 922))'
-    args = 'temp'
+    property_name = rho
+    expression = '2.146e-3 * exp(-1.8 * 1.18e-4 * (temp - 922))'
+    coupled_variables = 'temp'
     derivative_order = 1
     block = 'fuel'
   [../]
@@ -220,9 +220,9 @@ offset=2.5
   [../]
   [./rho_moder]
     type = DerivativeParsedMaterial
-    f_name = rho
-    function = '1.86e-3 * exp(-1.8 * 1.0e-5 * (temp - 922))'
-    args = 'temp'
+    property_name = rho
+    expression = '1.86e-3 * exp(-1.8 * 1.0e-5 * (temp - 922))'
+    coupled_variables = 'temp'
     derivative_order = 1
     block = 'moder'
   [../]

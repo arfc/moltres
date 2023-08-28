@@ -10,14 +10,11 @@
 []
 
 [Mesh]
+  coord_type = RZ
   [mesh]
     type = FileMeshGenerator
     file = 'mesh.e'
   []
-[]
-
-[Problem]
-  coord_type = RZ
 []
 
 [Nt]

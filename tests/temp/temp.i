@@ -59,7 +59,7 @@ ini_temp=922
 [Functions]
   [./temp_bc_func]
     type = ParsedFunction
-    value = '${ini_temp}'
+    expression = '${ini_temp}'
   [../]
 []
 
@@ -75,9 +75,9 @@ ini_temp=922
   [../]
   [./rho_fuel]
     type = DerivativeParsedMaterial
-    f_name = rho
-    function = '2.146e-3 * exp(-1.8 * 1.18e-4 * (temp - 922))'
-    args = 'temp'
+    property_name = rho
+    expression = '2.146e-3 * exp(-1.8 * 1.18e-4 * (temp - 922))'
+    coupled_variables = 'temp'
     derivative_order = 1
     block = 'fuel'
   [../]
@@ -92,9 +92,9 @@ ini_temp=922
   [../]
   [./rho_moder]
     type = DerivativeParsedMaterial
-    f_name = rho
-    function = '1.86e-3 * exp(-1.8 * 1.0e-5 * (temp - 922))'
-    args = 'temp'
+    property_name = rho
+    expression = '1.86e-3 * exp(-1.8 * 1.0e-5 * (temp - 922))'
+    coupled_variables = 'temp'
     derivative_order = 1
     block = 'moder'
   [../]

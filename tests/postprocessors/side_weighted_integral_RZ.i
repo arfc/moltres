@@ -60,7 +60,7 @@
   # Parabola function for v
   [./parabolic_func]
     type = ParsedFunction
-    value = '1 - (x / 2)^2'
+    expression = '1 - (x / 2)^2'
   [../]
 []
 
