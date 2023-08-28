@@ -1,16 +1,13 @@
 # GammaHeatSource
 
-!alert construction title=Undocumented Class
-The GammaHeatSource has not been documented. The content listed below should be used as a starting point for
-documenting the class, which includes the typical automatic documentation associated with a
-MooseObject; however, what is contained is ultimately determined by what is necessary to make the
-documentation clear for users.
-
 !syntax description /Kernels/GammaHeatSource
 
 ## Overview
 
-!! Replace these lines with information regarding the GammaHeatSource object.
+This object adds the $\gamma \sum_{g=1}^G \epsilon_g\Sigma_{f,g}\phi_g$ gamma heat source term of
+the temperature advection-diffusion
+equation where $\gamma$ is a factor represeting heat deposition by gamma and neutron irradiation in
+the moderator.
 
 ## Example Input File Syntax
 
