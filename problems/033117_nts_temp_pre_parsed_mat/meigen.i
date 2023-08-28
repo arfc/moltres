@@ -52,50 +52,50 @@
 []
 
 [BCs]
-  [./vacuum_group1]
+  [vacuum_group1]
     type = VacuumConcBC
     boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops moder_sides'
     variable = group1
-  [../]
-  [./vacuum_group2]
+  []
+  [vacuum_group2]
     type = VacuumConcBC
     boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops moder_sides'
     variable = group2
-  [../]
-  [./temp_diri_cg]
+  []
+  [temp_diri_cg]
     boundary = 'moder_bottoms fuel_bottoms moder_sides'
     type = FunctionDirichletBC
     function = 'temp_bc_func'
     variable = temp
-  [../]
-  [./temp_advection_outlet]
+  []
+  [temp_advection_outlet]
     boundary = 'fuel_tops'
     type = TemperatureOutflowBC
     variable = temp
     velocity = '0 0 ${flow_velocity}'
-  [../]
+  []
 []
 
 [Functions]
-  [./temp_bc_func]
+  [temp_bc_func]
     type = ParsedFunction
     expression = '${ini_temp} - (${ini_temp} - ${diri_temp}) * tanh(t/1e-2)'
-  [../]
+  []
 []
 
 [Materials]
-  [./fuel]
+  [fuel]
     type = GenericMoltresMaterial
     property_tables_root = '../property_file_dir/newt_msre_fuel_'
     interp_type = 'spline'
     block = 'fuel'
-  [../]
-  [./moder]
+  []
+  [moder]
     type = GenericMoltresMaterial
     property_tables_root = '../property_file_dir/newt_msre_mod_'
     interp_type = 'spline'
     block = 'moder'
-  [../]
+  []
 []
 
 [Executioner]
@@ -108,14 +108,13 @@
   #petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
   petsc_options_iname = '-pc_type -sub_pc_type'
   petsc_options_value = 'asm      lu ' #1               preonly       1e-3'
-  [../]
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
-  [../]
+  []
 []
 
 #[Postprocessors]
@@ -160,10 +159,10 @@
   perf_graph = true
   print_linear_residuals = true
   # csv = true
-  [./out]
+  [out]
     type = Exodus
     execute_on = 'final'
-  [../]
+  []
 []
 
 [Debug]

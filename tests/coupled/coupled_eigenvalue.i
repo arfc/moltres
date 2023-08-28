@@ -1,4 +1,4 @@
-flow_velocity=21.7      # cm/s. See MSRE-properties.ods
+flow_velocity = 21.7 # cm/s. See MSRE-properties.ods
 
 [GlobalParams]
   num_groups = 2
@@ -14,7 +14,7 @@ flow_velocity=21.7      # cm/s. See MSRE-properties.ods
 [Mesh]
   coord_type = RZ
   file = '2d_lattice_structured.msh'
-[../]
+[]
 
 [Nt]
   var_name_base = group
@@ -25,7 +25,7 @@ flow_velocity=21.7      # cm/s. See MSRE-properties.ods
 []
 
 [Precursors]
-  [./pres]
+  [pres]
     var_name_base = pre
     block = 'fuel'
     outlet_boundaries = 'fuel_tops'
@@ -38,24 +38,24 @@ flow_velocity=21.7      # cm/s. See MSRE-properties.ods
     order = CONSTANT
     transient = false
     eigen = true
-  [../]
+  []
 []
 
 [Materials]
-  [./fuel]
+  [fuel]
     type = GenericMoltresMaterial
     property_tables_root = '../../property_file_dir/newt_msre_converted_to_serpent/serpent_msre_fuel_'
     interp_type = 'spline'
     block = 'fuel'
-  [../]
-  [./moder]
+  []
+  [moder]
     type = GenericMoltresMaterial
     property_tables_root = '../../property_file_dir/newt_msre_converted_to_serpent/serpent_msre_mod_'
     interp_type = 'spline'
     prop_names = 'k cp'
     prop_values = '.312 1760' # Cammi 2011 at 908 K
     block = 'moder'
-  [../]
+  []
 []
 
 [Executioner]
@@ -78,10 +78,10 @@ flow_velocity=21.7      # cm/s. See MSRE-properties.ods
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
-  [../]
+  []
 []
 
 [Postprocessors]
@@ -137,10 +137,10 @@ flow_velocity=21.7      # cm/s. See MSRE-properties.ods
 [Outputs]
   perf_graph = true
   print_linear_residuals = true
-  [./exodus]
+  [exodus]
     type = Exodus
     file_base = 'coupled_eigenvalue'
-  [../]
+  []
 []
 
 [Debug]

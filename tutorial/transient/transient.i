@@ -84,7 +84,7 @@
     type = DelayedNeutronSource
     variable = group1
     block = '0'
-    group_number=1
+    group_number = 1
   []
 
   #---------------------------------------------------------------------
@@ -202,7 +202,7 @@
     base_file = '../eigenvalue/xsdata.json'
     material_key = 'fuel'
     interp_type = LINEAR
-    prop_names ='rho k cp'
+    prop_names = 'rho k cp'
     prop_values = '2.146e-3 .0553 1967'
   []
   [graphite]
@@ -211,7 +211,7 @@
     base_file = '../eigenvalue/xsdata.json'
     material_key = 'graphite'
     interp_type = LINEAR
-    prop_names ='rho k cp'
+    prop_names = 'rho k cp'
     prop_values = '1.86e-3 .312 1760'
   []
 []
@@ -241,13 +241,13 @@
     type = FunctionDT
     function = dt_func
   []
-#  [TimeStepper]
-#    type = IterationAdaptiveDT
-#    dt = .2
-#    cutback_factor = 0.4
-#    growth_factor = 1.2
-#    optimal_iterations = 20
-#  []
+  #  [TimeStepper]
+  #    type = IterationAdaptiveDT
+  #    dt = .2
+  #    cutback_factor = 0.4
+  #    growth_factor = 1.2
+  #    optimal_iterations = 20
+  #  []
 []
 
 [Preconditioning]
@@ -306,7 +306,7 @@
 
 [Outputs]
   perf_graph = true
-#  print_linear_residuals = true
+  #  print_linear_residuals = true
   [exodus]
     type = Exodus
   []
@@ -317,5 +317,5 @@
 []
 
 [Debug]
-#  show_var_residual_norms = true
+  #  show_var_residual_norms = true
 []

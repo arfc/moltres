@@ -1,69 +1,69 @@
 [Mesh]
-  [./square]
+  [square]
     type = GeneratedMeshGenerator
     dim = 1
     nx = 100
     xmin = -1
     xmax = 1
-  [../]
+  []
 []
 
 [Variables]
-  [./u]
-  [../]
+  [u]
+  []
 []
 
 [Kernels]
-  [./time_derivative]
+  [time_derivative]
     type = TimeDerivative
     variable = u
-  [../]
-  [./diffusion]
+  []
+  [diffusion]
     type = Diffusion
     variable = u
-  [../]
-  [./heat_sink]
+  []
+  [heat_sink]
     type = ConvectiveHeatExchanger
     variable = u
     htc = 1
     tref = 0
-  [../]
+  []
 []
 
 [BCs]
-  [./dirichlet]
+  [dirichlet]
     type = DirichletBC
     variable = u
     boundary = 'left right'
     value = 1
-  [../]
+  []
 []
 
 [ICs]
-  [./u_ic]
+  [u_ic]
     type = FunctionIC
     variable = u
     function = 'ic_func'
-  [../]
+  []
 []
 
 [Controls]
-  [./htc_control]
+  [htc_control]
     type = RealFunctionControl
     parameter = '*/*/htc'
     function = 'htc_func'
-  [../]
+  []
 []
 
 [Functions]
-  [./htc_func]
+  [htc_func]
     type = ParsedFunction
     expression = 'exp(-t)'
-  [../]
-  [./ic_func]
+  []
+  [ic_func]
     type = ParsedFunction
     expression = 'cosh(x) / cosh(1)'
-  [../]
+  []
 []
 
 [Executioner]

@@ -1,5 +1,5 @@
-flow_velocity=21.7 # cm/s. See MSRE-properties.ods
-global_temperature=922
+flow_velocity = 21.7 # cm/s. See MSRE-properties.ods
+global_temperature = 922
 
 [GlobalParams]
   num_groups = 2
@@ -8,19 +8,19 @@ global_temperature=922
   temperature = ${global_temperature}
   sss2_input = false
   transient = true
-[../]
+[]
 
 [Mesh]
   coord_type = RZ
   file = '2d_lattice_structured_smaller.msh'
-[../]
+[]
 
 [Problem]
   kernel_coverage_check = false
 []
 
 [Precursors]
-  [./pres]
+  [pres]
     var_name_base = pre
     outlet_boundaries = 'fuel_tops'
     u_def = 0
@@ -34,15 +34,15 @@ global_temperature=922
     is_loopapp = false
     inlet_boundaries = 'fuel_bottoms'
     block = 'fuel'
-  [../]
+  []
 []
 
 [Materials]
-  [./fuel]
+  [fuel]
     type = GenericMoltresMaterial
     property_tables_root = '../../property_file_dir/newt_msre_fuel_'
     interp_type = 'spline'
-  [../]
+  []
 []
 
 [Executioner]
@@ -62,41 +62,40 @@ global_temperature=922
   fixed_point_abs_tol = 1e-5
   dtmin = 1e-2
   dtmax = 5
-  [./TimeStepper]
+  [TimeStepper]
     type = IterationAdaptiveDT
     dt = 1e-2
     cutback_factor = 0.4
     growth_factor = 1.2
     optimal_iterations = 20
-  [../]
+  []
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
-  [../]
+  []
 []
-
 
 [Outputs]
   perf_graph = true
   print_linear_residuals = true
   csv = true
-  [./out]
+  [out]
     type = Exodus
     execute_on = 'final'
-  [../]
+  []
 []
 
 [MultiApps]
-  [./loopApp]
+  [loopApp]
     type = TransientMultiApp
     app_type = MoltresApp
     execute_on = timestep_begin
     positions = '200.0 200.0 0.0'
     input_files = 'sub.i'
-  [../]
+  []
 []
 
 [Debug]

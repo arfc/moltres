@@ -1,12 +1,12 @@
-flow_velocity=21.7 # cm/s. See MSRE-properties.ods
-nt_scale=1e13
-ini_temp=922
-diri_temp=922
-base_height=136
-scale=.99
-height=${fparse base_height * scale}
-width=145
-offset=2.5
+flow_velocity = 21.7 # cm/s. See MSRE-properties.ods
+nt_scale = 1e13
+ini_temp = 922
+diri_temp = 922
+base_height = 136
+scale = .99
+height = '${fparse base_height * scale}'
+width = 145
+offset = 2.5
 
 [GlobalParams]
   num_groups = 2
@@ -20,45 +20,45 @@ offset=2.5
 []
 
 [Mesh]
-  [./file]
+  [file]
     type = FileMeshGenerator
     ## Default to jac_test.msh for quicker syntax check tests.
     ## Switch to 3D mesh for actual simulations.
     # file = '3d_msre_29x29_136.msh'
     file = jac_test.msh
-  [../]
-  [./scale]
+  []
+  [scale]
     type = TransformGenerator
     input = file
     transform = SCALE
     vector_value = '1 1 ${scale}'
-  [../]
+  []
 []
 
 [Problem]
 []
 
 [Variables]
-  [./group1]
+  [group1]
     order = FIRST
     family = LAGRANGE
-#     initial_condition = 1
+    #     initial_condition = 1
     scaling = 1e4
-  [../]
-  [./group2]
+  []
+  [group2]
     order = FIRST
     family = LAGRANGE
-#     initial_condition = 1
+    #     initial_condition = 1
     scaling = 1e4
-  [../]
-  [./temp]
+  []
+  [temp]
     initial_condition = ${ini_temp}
     scaling = 1e-4
-  [../]
+  []
 []
 
 [Precursors]
-  [./pres]
+  [pres]
     var_name_base = pre
     block = 'fuel'
     outlet_boundaries = 'fuel_tops'
@@ -75,74 +75,74 @@ offset=2.5
 
 [Kernels]
   # Neutronics
-  [./time_group1]
+  [time_group1]
     type = NtTimeDerivative
     variable = group1
     group_number = 1
-  [../]
-  [./diff_group1]
+  []
+  [diff_group1]
     type = GroupDiffusion
     variable = group1
     group_number = 1
-  [../]
-  [./sigma_r_group1]
+  []
+  [sigma_r_group1]
     type = SigmaR
     variable = group1
     group_number = 1
-  [../]
-  [./fission_source_group1]
+  []
+  [fission_source_group1]
     type = CoupledFissionKernel
     variable = group1
     group_number = 1
-  [../]
-  [./delayed_group1]
+  []
+  [delayed_group1]
     type = DelayedNeutronSource
     variable = group1
     block = 'fuel'
     group_number = 1
-  [../]
-  [./inscatter_group1]
+  []
+  [inscatter_group1]
     type = InScatter
     variable = group1
     group_number = 1
-  [../]
-  [./diff_group2]
+  []
+  [diff_group2]
     type = GroupDiffusion
     variable = group2
     group_number = 2
-  [../]
-  [./sigma_r_group2]
+  []
+  [sigma_r_group2]
     type = SigmaR
     variable = group2
     group_number = 2
-  [../]
-  [./time_group2]
+  []
+  [time_group2]
     type = NtTimeDerivative
     variable = group2
     group_number = 2
-  [../]
-  [./fission_source_group2]
+  []
+  [fission_source_group2]
     type = CoupledFissionKernel
     variable = group2
     group_number = 2
-  [../]
-  [./inscatter_group2]
+  []
+  [inscatter_group2]
     type = InScatter
     variable = group2
     group_number = 2
-  [../]
+  []
 
   # Temperature
-  [./temp_time_derivative]
+  [temp_time_derivative]
     type = MatINSTemperatureTimeDerivative
     variable = temp
-  [../]
-  [./temp_source_fuel]
+  []
+  [temp_source_fuel]
     type = TransientFissionHeatSource
     variable = temp
-    nt_scale=${nt_scale}
+    nt_scale = ${nt_scale}
     block = 'fuel'
-  [../]
+  []
   # [./temp_source_mod]
   #   type = GammaHeatSource
   #   variable = temp
@@ -150,84 +150,84 @@ offset=2.5
   #   block = 'moder'
   #   average_fission_heat = 'average_fission_heat'
   # [../]
-  [./temp_diffusion]
+  [temp_diffusion]
     type = MatDiffusion
     diffusivity = 'k'
     variable = temp
-  [../]
-  [./temp_advection_fuel]
+  []
+  [temp_advection_fuel]
     type = ConservativeTemperatureAdvection
     velocity = '0 0 ${flow_velocity}'
     variable = temp
     block = 'fuel'
-  [../]
+  []
 []
 
 [BCs]
-  [./vacuum_group1]
+  [vacuum_group1]
     type = VacuumConcBC
     boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops moder_sides'
     variable = group1
-  [../]
-  [./vacuum_group2]
+  []
+  [vacuum_group2]
     type = VacuumConcBC
     boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops moder_sides'
     variable = group2
-  [../]
-  [./temp_diri_cg]
+  []
+  [temp_diri_cg]
     boundary = 'moder_bottoms fuel_bottoms moder_sides'
     type = FunctionDirichletBC
     function = 'temp_bc_func'
     variable = temp
-  [../]
-  [./temp_advection_outlet]
+  []
+  [temp_advection_outlet]
     boundary = 'fuel_tops'
     type = TemperatureOutflowBC
     variable = temp
     velocity = '0 0 ${flow_velocity}'
-  [../]
+  []
 []
 
 [Functions]
-  [./temp_bc_func]
+  [temp_bc_func]
     type = ParsedFunction
     expression = '${ini_temp} - (${ini_temp} - ${diri_temp}) * tanh(t/1e-2)'
-  [../]
-  [./nt_ic_func]
+  []
+  [nt_ic_func]
     type = ParsedFunction
     expression = 'sin(pi * z / ${height}) * sin(pi * (x + ${offset}) / ${width}) * sin(pi * (y + ${offset}) / ${width})'
-  [../]
+  []
 []
 
 [Materials]
-  [./fuel]
+  [fuel]
     type = MsreFuelTwoGrpXSFunctionMaterial
     block = 'fuel'
     prop_names = 'k cp'
     prop_values = '.0553 1967' # Robertson MSRE technical report @ 922 K
-  [../]
-  [./rho_fuel]
+  []
+  [rho_fuel]
     type = DerivativeParsedMaterial
     property_name = rho
     expression = '2.146e-3 * exp(-1.8 * 1.18e-4 * (temp - 922))'
     coupled_variables = 'temp'
     derivative_order = 1
     block = 'fuel'
-  [../]
-  [./moder]
+  []
+  [moder]
     type = GraphiteTwoGrpXSFunctionMaterial
     prop_names = 'k cp'
     prop_values = '.312 1760' # Cammi 2011 at 908 K
     block = 'moder'
-  [../]
-  [./rho_moder]
+  []
+  [rho_moder]
     type = DerivativeParsedMaterial
     property_name = rho
     expression = '1.86e-3 * exp(-1.8 * 1.0e-5 * (temp - 922))'
     coupled_variables = 'temp'
     derivative_order = 1
     block = 'moder'
-  [../]
+  []
 []
 
 [Executioner]
@@ -242,64 +242,64 @@ offset=2.5
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount -ksp_type'
   petsc_options_value = 'lu	  NONZERO		1e-10			preonly'
-#   petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
-#   petsc_options_value = 'asm      lu           1               preonly       1e-3'
+  #   petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
+  #   petsc_options_value = 'asm      lu           1               preonly       1e-3'
   # petsc_options_iname = '-snes_type'
   # petsc_options_value = 'test'
 
   nl_max_its = 30
   l_max_its = 200
 
-#   dtmax = 1
+  #   dtmax = 1
   dtmin = 1e-7
   # dt = 1e-3
-  [./TimeStepper]
+  [TimeStepper]
     type = IterationAdaptiveDT
     dt = 1e-6
     cutback_factor = 0.4
     growth_factor = 1.2
     optimal_iterations = 20
     linear_iteration_ratio = 1000
-  [../]
+  []
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
     ksp_norm = none
-  [../]
+  []
 []
 
 [Postprocessors]
-  [./group1_current]
+  [group1_current]
     type = IntegralNewVariablePostprocessor
     variable = group1
     outputs = 'console csv'
-  [../]
-  [./group1_old]
+  []
+  [group1_old]
     type = IntegralOldVariablePostprocessor
     variable = group1
     outputs = 'console csv'
-  [../]
-  [./multiplication]
+  []
+  [multiplication]
     type = DivisionPostprocessor
     value1 = group1_current
     value2 = group1_old
     outputs = 'console csv'
-  [../]
-  [./temp_fuel]
+  []
+  [temp_fuel]
     type = ElementAverageValue
     variable = temp
     block = 'fuel'
     outputs = 'csv console'
-  [../]
-  [./temp_moder]
+  []
+  [temp_moder]
     type = ElementAverageValue
     variable = temp
     block = 'moder'
     outputs = 'csv console'
-  [../]
+  []
   # [./average_fission_heat]
   #   type = AverageFissionHeat
   #   nt_scale = ${nt_scale}
@@ -313,9 +313,9 @@ offset=2.5
   perf_graph = true
   print_linear_residuals = true
   csv = true
-  [./out]
+  [out]
     type = Exodus
-  [../]
+  []
 []
 
 [Debug]
@@ -323,32 +323,32 @@ offset=2.5
 []
 
 [ICs]
-#   [./temp_ic]
-#     type = RandomIC
-#     variable = temp
-#     min = 922
-#     max = 1022
-#   [../]
-#   [./group1_ic]
-#     type = RandomIC
-#     variable = group1
-#     min = .5
-#     max = 1.5
-#   [../]
-#   [./group2_ic]
-#     type = RandomIC
-#     variable = group2
-#     min = .5
-#     max = 1.5
-#   [../]
-  [./group1_ic]
+  #   [./temp_ic]
+  #     type = RandomIC
+  #     variable = temp
+  #     min = 922
+  #     max = 1022
+  #   [../]
+  #   [./group1_ic]
+  #     type = RandomIC
+  #     variable = group1
+  #     min = .5
+  #     max = 1.5
+  #   [../]
+  #   [./group2_ic]
+  #     type = RandomIC
+  #     variable = group2
+  #     min = .5
+  #     max = 1.5
+  #   [../]
+  [group1_ic]
     type = FunctionIC
     variable = group1
     function = 'nt_ic_func'
-  [../]
-  [./group2_ic]
+  []
+  [group2_ic]
     type = FunctionIC
     variable = group2
     function = 'nt_ic_func'
-  [../]
+  []
 []

@@ -1,5 +1,5 @@
 [Mesh]
-  [./box]
+  [box]
     type = GeneratedMeshGenerator
     dim = 2
     nx = 200
@@ -8,59 +8,59 @@
     xmax = 2
     ymin = 0
     ymax = 1
-  [../]
+  []
 []
 
 [Variables]
-  [./u]
+  [u]
     order = FIRST
     family = LAGRANGE
-  [../]
+  []
 []
 
 [AuxVariables]
-  [./v]
+  [v]
     order = FIRST
     family = LAGRANGE
-  [../]
+  []
 []
 
 [Kernels]
-  [./diff]
+  [diff]
     type = Diffusion
     variable = u
-  [../]
+  []
 []
 
 [AuxKernels]
-  [./v_aux]
+  [v_aux]
     type = FunctionAux
     variable = v
     function = parabolic_func
-  [../]
+  []
 []
 
 [BCs]
-  [./u_top]
+  [u_top]
     type = DirichletBC
     variable = u
     boundary = 'top'
     value = 1
-  [../]
-  [./u_bottom]
+  []
+  [u_bottom]
     type = DirichletBC
     variable = u
     boundary = 'bottom'
     value = 0
-  [../]
+  []
 []
 
 [Functions]
   # Parabola function for v
-  [./parabolic_func]
+  [parabolic_func]
     type = ParsedFunction
     expression = '-1 * (x - 0) * (x - 2)'
-  [../]
+  []
 []
 
 [Executioner]
@@ -71,34 +71,34 @@
 [Postprocessors]
   # Test integral of u=1 across top boundary, weighted by parabola v
   # Solution = 4/3
-  [./weight_parabolic]
+  [weight_parabolic]
     type = SideWeightedIntegralPostprocessor
     variable = u
     boundary = 'top'
     weight = v
-  [../]
+  []
 
   # Test integral of parabola v across top boundary, weighted by u=1
   # Solution = 4/3
-  [./variable_parabolic]
+  [variable_parabolic]
     type = SideWeightedIntegralPostprocessor
     variable = v
     boundary = 'top'
     weight = u
-  [../]
+  []
 
   # Test integral of parabola v across top boundary, weighted by parabola v
   # Solution = 16/15
-  [./both_parabolic]
+  [both_parabolic]
     type = SideWeightedIntegralPostprocessor
     variable = v
     boundary = 'top'
     weight = v
-  [../]
+  []
 []
 
 [Outputs]
-  [./out]
+  [out]
     type = Exodus
-  [../]
+  []
 []
