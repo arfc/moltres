@@ -9,7 +9,6 @@ alpha = 1       # SUPG stabilization parameter
 t_alpha = 2e-4  # K-1, Thermal expansion coefficient
 
 [GlobalParams]
-  use_exp_form = false
   temperature = temp
   integrate_p_by_parts = true
 [../]
@@ -60,11 +59,11 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
 []
 
 [AuxVariables]
-  [./vel_x]
+  [./velx]
     family = LAGRANGE
     order = FIRST
   [../]
-  [./vel_y]
+  [./vely]
     family = LAGRANGE
     order = FIRST
   [../]
@@ -98,7 +97,7 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
   [./momentum_pressure]
     type = INSADMomentumPressure
     variable = vel
-    p = p
+    pressure = p
   [../]
   [./momentum_supg]
     type = INSADMomentumSUPG
@@ -155,13 +154,13 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
 [AuxKernels]
   [./vel_x]
     type = VectorVariableComponentAux
-    variable = vel_x
+    variable = velx
     vector_variable = vel
     component = 'x'
   [../]
   [./vel_y]
     type = VectorVariableComponentAux
-    variable = vel_y
+    variable = vely
     vector_variable = vel
     component = 'y'
   [../]
@@ -259,7 +258,7 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
 [VectorPostprocessors]
   [./vel_aa]
     type = LineValueSampler
-    variable = 'vel_x vel_y'
+    variable = 'velx vely'
     start_point = '0 100 0'
     end_point = '200 100 0'
     num_points = 201
@@ -269,7 +268,7 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
   [../]
   [./vel_bb]
     type = LineValueSampler
-    variable = 'vel_x vel_y'
+    variable = 'velx vely'
     start_point = '100 0 0'
     end_point = '100 200 0'
     num_points = 201
@@ -321,14 +320,14 @@ t_alpha = 2e-4  # K-1, Thermal expansion coefficient
     type = MultiAppProjectionTransfer
     direction = to_multiapp
     multi_app = ntsApp
-    source_variable = vel_x
+    source_variable = velx
     variable = vel_x
   [../]
   [./to_sub_vel_y]
     type = MultiAppProjectionTransfer
     direction = to_multiapp
     multi_app = ntsApp
-    source_variable = vel_y
+    source_variable = vely
     variable = vel_y
   [../]
   [./from_sub]

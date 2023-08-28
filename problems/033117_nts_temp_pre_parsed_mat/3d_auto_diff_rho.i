@@ -22,8 +22,10 @@ offset=2.5
 [Mesh]
   [./file]
     type = FileMeshGenerator
-    file = '3d_msre_29x29_136.msh'
-    # file = jac_test.msh
+    ## Default to jac_test.msh for quicker syntax check tests.
+    ## Switch to 3D mesh for actual simulations.
+    # file = '3d_msre_29x29_136.msh'
+    file = jac_test.msh
   [../]
   [./scale]
     type = TransformGenerator

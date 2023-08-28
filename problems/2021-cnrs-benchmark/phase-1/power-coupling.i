@@ -17,7 +17,6 @@ alpha = 1 # INS SUPG and PSPG stabilization parameter
   temperature = temp
   sss2_input = true
   account_delayed = true
-  integrate_p_by_parts = true
 []
 
 [Mesh]
@@ -54,7 +53,6 @@ alpha = 1 # INS SUPG and PSPG stabilization parameter
   var_name_base = group
   vacuum_boundaries = 'bottom left right top'
   create_temperature_var = false
-  transient = false
   eigen = true
   scaling = 1e3
 []
@@ -214,7 +212,6 @@ alpha = 1 # INS SUPG and PSPG stabilization parameter
 
 [Executioner]
   type = NonlinearEigen
-  max_power_iterations = 50
 
   # fission power normalization
   normalization = 'powernorm'
@@ -224,7 +221,6 @@ alpha = 1 # INS SUPG and PSPG stabilization parameter
   # We divide the total power=1e9W by 100 because our length units are in cm.
   # Our domain = 2m x 2m x 0.01m
 
-  xdiff = 'group1diff'
   bx_norm = 'bnorm'
   k0 = 1.00
   l_max_its = 1000
