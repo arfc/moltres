@@ -12,7 +12,7 @@
 [Mesh]
   [mesh]
     type = FileMeshGenerator
-    file = 'mesh.e'
+    file = '../eigenvalue/mesh.e'
   []
 []
 
@@ -202,7 +202,7 @@
   [fuel]
     type = MoltresJsonMaterial
     block = '0'
-    base_file = 'xsdata.json'
+    base_file = '../eigenvalue/xsdata.json'
     material_key = 'fuel'
     interp_type = LINEAR
     prop_names ='rho k cp'
@@ -211,9 +211,9 @@
   [graphite]
     type = MoltresJsonMaterial
     block = '1'
-    base_file = 'xsdata.json'
+    base_file = '../eigenvalue/xsdata.json'
     material_key = 'graphite'
-    interp_type = LINEAR 
+    interp_type = LINEAR
     prop_names ='rho k cp'
     prop_values = '1.86e-3 .312 1760'
   []

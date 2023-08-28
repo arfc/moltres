@@ -3,20 +3,20 @@
 The *two-step procedure* is a common approach for multiphysics full-core nuclear reactor analysis.
 These steps are:
 
-+Step 1:+ Generate group constant data with a lattice or full-core reactor model on a
-high-fidelity, continuous-/fine-energy neutronics software at various reactor states.
++Step 1:+ Generate neutron group constant data with a lattice or full-core reactor model on a
+high-fidelity, continuous/fine-energy neutronics software at various reactor states.
 
 +Step 2:+ Use an intermediate-fidelity, computationally cheaper neutronics software with the
-group constant data to perform multiphysics reactor analysis.
+neutron group constant data to perform multiphysics reactor analysis.
 
-Moltres falls under the second step of the two-step procedure. The following sections cover
+Moltres falls under Step 2 of the two-step procedure. The following sections cover
 various tutorials for group constant file generation and running various types of reactor
 simulations with Moltres. The tutorials assume that readers have a basic understanding of reactor
-analysis and molten salt reactors.
+analysis, molten salt reactors, and the [MOOSE framework](https://mooseframework.inl.gov/).
 
 ## 1. Group Constant File Generation
 
-Moltres requires group constants in a compatible text- or JSON-based files to run reactor
+Moltres requires group constants in compatible text- or JSON-based format to run reactor
 simulations. The Moltres GitHub repository provides Python scripts that can automatically parse
 output files from OpenMC, Serpent 2 and NEWT (in SCALE) and generate the requisite .txt or .json
 files. The newer [`moltres_xs.py`](https://github.com/arfc/moltres/blob/devel/python/moltres_xs.py)
@@ -46,9 +46,8 @@ the existing tutorials below.
 
 +2c.+ [Time-dependent Simulation with Thermal-Hydraulic Coupling and Precursor Looping](getting_started/transient.md)
 
-[Recommended Executioner and Preconditioning Settings](getting_started/recommended.md)
++Tip:+ [Recommended Executioner and Preconditioning Settings](getting_started/recommended.md)
 
 ## 3. Data Postprocessing and Analysis
 
-TODO: Add tutorials for this section
-
+Tutorials to come at a later date.
