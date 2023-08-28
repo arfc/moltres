@@ -1,16 +1,11 @@
 # CoupledScalarAdvectionNoBCBC
 
-!alert construction title=Undocumented Class
-The CoupledScalarAdvectionNoBCBC has not been documented. The content listed below should be used as a starting point for
-documenting the class, which includes the typical automatic documentation associated with a
-MooseObject; however, what is contained is ultimately determined by what is necessary to make the
-documentation clear for users.
-
 !syntax description /BCs/CoupledScalarAdvectionNoBCBC
 
 ## Overview
 
-!! Replace these lines with information regarding the CoupledScalarAdvectionNoBCBC object.
+This object adds the "No Boundary Condition" outflow boundary condition devised by
+[Griffiths](https://www.researchgate.net/publication/264456900_The_No_Boundary_Condition_Outflow_Boundary_Condition).
 
 ## Example Input File Syntax
 
