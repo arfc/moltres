@@ -12,19 +12,12 @@
 #include "libmesh/enum_to_string.h"
 
 registerMooseAction("MoltresApp", NtAction, "add_kernel");
-
 registerMooseAction("MoltresApp", NtAction, "add_bc");
-
 registerMooseAction("MoltresApp", NtAction, "add_variable");
-
 registerMooseAction("MoltresApp", NtAction, "add_ic");
-
 registerMooseAction("MoltresApp", NtAction, "add_aux_variable");
-
 registerMooseAction("MoltresApp", NtAction, "add_aux_kernel");
-
 registerMooseAction("MoltresApp", NtAction, "check_copy_nodal_vars");
-
 registerMooseAction("MoltresApp", NtAction, "copy_nodal_vars");
 
 InputParameters
@@ -73,10 +66,9 @@ NtAction::validParams()
   params.addParam<std::vector<SubdomainName>>("pre_blocks", "The blocks the precursors live on.");
   params.addParam<Real>("eigenvalue_scaling",
                         1.0,
-                        "Artificial scaling factor for the fission "
-                        "source. Primarily introduced to make "
-                        "super/sub-critical systems exactly critical "
-                        "for the CNRS benchmark.");
+                        "Artificial scaling factor for the fission source. Primarily for "
+                        "introducing artificial reactivity to make super/subcritical systems "
+                        "exactly critical or to simulate reactivity insertions/withdrawals.");
   return params;
 }
 
@@ -262,7 +254,6 @@ NtAction::act()
         std::vector<std::string> include = {"temperature", "pre_concs"};
         params.applySpecificParameters(parameters(), include);
         params.set<unsigned int>("num_precursor_groups") = _num_precursor_groups;
-        params.set<Real>("eigenvalue_scaling") = getParam<Real>("eigenvalue_scaling");
 
         std::string kernel_name = "DelayedNeutronSource_" + var_name;
         _problem->addKernel("DelayedNeutronSource", kernel_name, params);
