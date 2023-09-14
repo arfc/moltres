@@ -1,36 +1,36 @@
 # Step 0.1: Velocity Field input file
 
-density = .002      # kg cm-3
-viscosity = .5      # dynamic viscosity, mu = nu * rho, kg cm-1 s-1
-alpha = 1           # INS SUPG and PSPG stabilization parameter
+density = .002 # kg cm-3
+viscosity = .5 # dynamic viscosity, mu = nu * rho, kg cm-1 s-1
+alpha = 1 # INS SUPG and PSPG stabilization parameter
 
 [GlobalParams]
   integrate_p_by_parts = true
 []
 
 [Mesh]
-  [./square]
+  [square]
     type = GeneratedMeshGenerator
     dim = 2
 
     nx = 200
     ny = 200
-## Use a 40-by-40 mesh instead if running on a desktop/small cluster
-#    nx = 40
-#    ny = 40
+    ## Use a 40-by-40 mesh instead if running on a desktop/small cluster
+    #    nx = 40
+    #    ny = 40
 
     xmin = 0
     xmax = 200
     ymin = 0
     ymax = 200
     elem_type = QUAD4
-  [../]
-  [./corner_node]
+  []
+  [corner_node]
     type = ExtraNodesetGenerator
     input = square
     new_boundary = 'pinned_node'
     coord = '200 200'
-  [../]
+  []
 []
 
 [Problem]
@@ -38,69 +38,69 @@ alpha = 1           # INS SUPG and PSPG stabilization parameter
 []
 
 [Variables]
-  [./vel]
+  [vel]
     family = LAGRANGE_VEC
     order = FIRST
-  [../]
-  [./p]
+  []
+  [p]
     family = LAGRANGE
     order = FIRST
-  [../]
+  []
 []
 
 [AuxVariables]
-  [./vel_x]
+  [vel_x]
     family = LAGRANGE
     order = FIRST
-  [../]
-  [./vel_y]
+  []
+  [vel_y]
     family = LAGRANGE
     order = FIRST
-  [../]
+  []
 []
 
 [Kernels]
-  [./mass]
+  [mass]
     type = INSADMass
     variable = p
-  [../]
-  [./mass_pspg]
+  []
+  [mass_pspg]
     type = INSADMassPSPG
     variable = p
-  [../]
-  [./momentum_advection]
+  []
+  [momentum_advection]
     type = INSADMomentumAdvection
     variable = vel
-  [../]
-  [./momentum_viscous]
+  []
+  [momentum_viscous]
     type = INSADMomentumViscous
     variable = vel
-  [../]
-  [./momentum_pressure]
+  []
+  [momentum_pressure]
     type = INSADMomentumPressure
     variable = vel
     p = p
-  [../]
-  [./momentum_supg]
+  []
+  [momentum_supg]
     type = INSADMomentumSUPG
     variable = vel
     velocity = vel
-  [../]
+  []
 []
 
 [AuxKernels]
-  [./vel_x]
+  [vel_x]
     type = VectorVariableComponentAux
     variable = vel_x
     vector_variable = vel
     component = 'x'
-  [../]
-  [./vel_y]
+  []
+  [vel_y]
     type = VectorVariableComponentAux
     variable = vel_y
     vector_variable = vel
     component = 'y'
-  [../]
+  []
 []
 
 [ICs]
@@ -113,38 +113,38 @@ alpha = 1           # INS SUPG and PSPG stabilization parameter
 []
 
 [BCs]
-  [./no_slip]
+  [no_slip]
     type = VectorDirichletBC
     variable = vel
     boundary = 'bottom left right'
     values = '0 0 0'
-  [../]
-  [./lid]
+  []
+  [lid]
     type = VectorDirichletBC
     variable = vel
     boundary = 'top'
     values = '50 0 0'
-  [../]
-  [./pressure_pin]
+  []
+  [pressure_pin]
     type = DirichletBC
     variable = p
     boundary = 'pinned_node'
     value = 0
-  [../]
+  []
 []
 
 [Materials]
-  [./ad_mat]
+  [ad_mat]
     type = ADGenericConstantMaterial
     prop_names = 'rho mu'
     prop_values = '${density} ${viscosity}'
-  [../]
-  [./ins_mat]
+  []
+  [ins_mat]
     type = INSADTauMaterial
     alpha = ${alpha}
     velocity = vel
     pressure = p
-  [../]
+  []
 []
 
 [Executioner]
@@ -158,7 +158,7 @@ alpha = 1           # INS SUPG and PSPG stabilization parameter
 []
 
 [VectorPostprocessors]
-  [./aa]
+  [aa]
     type = LineValueSampler
     variable = 'vel_x vel_y'
     start_point = '0 100 0'
@@ -167,8 +167,8 @@ alpha = 1           # INS SUPG and PSPG stabilization parameter
     sort_by = x
     execute_on = FINAL
     outputs = 'csv'
-  [../]
-  [./bb]
+  []
+  [bb]
     type = LineValueSampler
     variable = 'vel_x vel_y'
     start_point = '100 0 0'
@@ -177,25 +177,25 @@ alpha = 1           # INS SUPG and PSPG stabilization parameter
     sort_by = y
     execute_on = FINAL
     outputs = 'csv'
-  [../]
+  []
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
-  [../]
+  []
 []
 
 [Outputs]
-  [./exodus]
+  [exodus]
     type = Exodus
     execute_on = 'final'
-  [../]
-  [./csv]
+  []
+  [csv]
     type = CSV
     execute_on = 'final'
-  [../]
+  []
 []
 
 [Debug]

@@ -21,20 +21,19 @@
   eigen = true
 []
 
-
 [Materials]
-  [./fuel]
+  [fuel]
     type = GenericMoltresMaterial
     property_tables_root = '../../tutorial/step01_groupConstants/MSREProperties/msre_gentry_4g_fuel_rod0_'
     interp_type = 'spline'
     block = 'fuel'
-  [../]
-  [./moder]
+  []
+  [moder]
     type = GenericMoltresMaterial
     property_tables_root = '../../tutorial/step01_groupConstants/MSREProperties/msre_gentry_4g_moder_rod0_'
     interp_type = 'spline'
     block = 'moder'
-  [../]
+  []
 []
 
 [Executioner]
@@ -56,24 +55,24 @@
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
-  [../]
+  []
 []
 
 [Postprocessors]
-  [./bnorm]
+  [bnorm]
     type = ElmIntegTotFissNtsPostprocessor
     block = 'fuel'
     execute_on = 'nonlinear linear timestep_end'
-  [../]
-  [./group1diff]
+  []
+  [group1diff]
     type = ElementL2Diff
     variable = group1
     execute_on = 'nonlinear linear timestep_end'
     use_displaced_mesh = false
-  [../]
+  []
 []
 
 [Outputs]

@@ -10,14 +10,11 @@
 []
 
 [Mesh]
+  coord_type = RZ
   [mesh]
     type = FileMeshGenerator
     file = '../eigenvalue/mesh.e'
   []
-[]
-
-[Problem]
-  coord_type = RZ
 []
 
 [Variables]
@@ -87,7 +84,7 @@
     type = DelayedNeutronSource
     variable = group1
     block = '0'
-    group_number=1
+    group_number = 1
   []
 
   #---------------------------------------------------------------------
@@ -186,15 +183,15 @@
 [Functions]
   [temp_bc_func]
     type = ParsedFunction
-    value = '1000 - (1000-965) * tanh(t/1)'
+    expression = '1000 - (1000-965) * tanh(t/1)'
   []
   [dt_func]
     type = ParsedFunction
-    value = 'if(t<50, if(t<30, .4, 5), 10)'
+    expression = 'if(t<50, if(t<30, .4, 5), 10)'
   []
   [ic_func]
     type = ParsedFunction
-    value = '1e5 * (-x^2+70^2) * (-y * (y-150))'
+    expression = '1e5 * (-x^2+70^2) * (-y * (y-150))'
   []
 []
 
@@ -205,7 +202,7 @@
     base_file = '../eigenvalue/xsdata.json'
     material_key = 'fuel'
     interp_type = LINEAR
-    prop_names ='rho k cp'
+    prop_names = 'rho k cp'
     prop_values = '2.146e-3 .0553 1967'
   []
   [graphite]
@@ -214,7 +211,7 @@
     base_file = '../eigenvalue/xsdata.json'
     material_key = 'graphite'
     interp_type = LINEAR
-    prop_names ='rho k cp'
+    prop_names = 'rho k cp'
     prop_values = '1.86e-3 .312 1760'
   []
 []
@@ -244,13 +241,13 @@
     type = FunctionDT
     function = dt_func
   []
-#  [TimeStepper]
-#    type = IterationAdaptiveDT
-#    dt = .2
-#    cutback_factor = 0.4
-#    growth_factor = 1.2
-#    optimal_iterations = 20
-#  []
+  #  [TimeStepper]
+  #    type = IterationAdaptiveDT
+  #    dt = .2
+  #    cutback_factor = 0.4
+  #    growth_factor = 1.2
+  #    optimal_iterations = 20
+  #  []
 []
 
 [Preconditioning]
@@ -309,7 +306,7 @@
 
 [Outputs]
   perf_graph = true
-#  print_linear_residuals = true
+  #  print_linear_residuals = true
   [exodus]
     type = Exodus
   []
@@ -320,5 +317,5 @@
 []
 
 [Debug]
-#  show_var_residual_norms = true
+  #  show_var_residual_norms = true
 []
