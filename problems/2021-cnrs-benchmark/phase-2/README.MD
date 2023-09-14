@@ -8,7 +8,7 @@ clusters with at least 64 independent processors and 64 GB of RAM. The
 transient case with the shortest perturbation period
 took ~0.67h to complete one period (200 timesteps) and 16.67h in total (5000
 timesteps) to reach reasonable convergence of the gain and phase shift
-values on the 512 MPI processes on Blue Water. Conversely, the case with the
+values on the 512 MPI processes on Blue Waters. Conversely, the case with the
 longest perturbation period took x2.25 longer due to the longer simulation time
 needed to reach convergence.
 
