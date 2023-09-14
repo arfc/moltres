@@ -60,7 +60,7 @@ INSADMomentumSUPGBC::computeResidual()
           raw_value((_test[_i][_qp] * _normals[_qp]) * computeQpStabilization() * value);
     }
 
-  _assembly.processResiduals(_residuals, _var.dofIndices(), _vector_tags, _var.scalingFactor());
+  addResiduals(_assembly, _residuals, _var.dofIndices(), _var.scalingFactor());
 
   if (_has_save_in)
     for (unsigned int i = 0; i < _save_in.size(); i++)
