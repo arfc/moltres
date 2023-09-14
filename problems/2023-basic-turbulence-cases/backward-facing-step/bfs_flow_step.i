@@ -1,5 +1,3 @@
-# Step 0.1: Velocity Field input file
-
 Re = 3.6e4
 density = 1      # kg cm-3
 D = 1
@@ -18,10 +16,6 @@ alpha = .33333           # INS SUPG and PSPG stabilization parameter
   [block]
     type = CartesianMeshGenerator
     dim = 2
-#    dx = '18  2  2  2  22'
-#    ix = '360 32 25 20 176'
-#    dx = '4  1.5 1  7.5 4  2  2  2.5 3  3.5 25'
-#    ix = '64 30  25 150 64 25 20 20  20 20  125'
     dx = '4  .8 .4 1.6 .4 6.8 4  2  2  2.5 3  3.5 25'
     ix = '64 16 10 50  10 136 64 25 20 20  20 20  125'
     dy = '.025 .025 .9 .025 .025 .025 .025 .2 1.25 1  2.5 1.5 1.25 .2 .025 .025'
@@ -125,10 +119,6 @@ alpha = .33333           # INS SUPG and PSPG stabilization parameter
     type = INSADMomentumSUPG
     variable = vel
   []
-#  [momentum_cd]
-#    type = INSADMomentumCD
-#    variable = vel
-#  []
   [momentum_time]
     type = INSADMomentumTimeDerivative
     variable = vel
@@ -146,10 +136,6 @@ alpha = .33333           # INS SUPG and PSPG stabilization parameter
     type = SATurbulentViscositySUPG
     variable = mu_tilde
   []
-#  [mu_tilde_cd]
-#    type = SATurbulentViscosityCD
-#    variable = mu_tilde
-#  []
 []
 
 [AuxKernels]
@@ -201,13 +187,8 @@ alpha = .33333           # INS SUPG and PSPG stabilization parameter
 [Functions]
   [xfunc]
     type = ParsedFunction
-#    expression = '-6 * (y^2) + 3 / 2'
     expression = '${fparse inlet}'
   []
-#  [mu_func]
-#    type = ParsedFunction
-#    expression = 'if(y=1, 0, if(y=9, 0, ${fparse viscosity * 3}))'
-#  []
   [velx_bc]
     type = SolutionFunction
     solution = inlet
@@ -298,11 +279,11 @@ alpha = .33333           # INS SUPG and PSPG stabilization parameter
 []
 
 [Materials]
-  [./ad_mat]
+  [ad_mat]
     type = ADGenericConstantMaterial
     prop_names = 'rho mu'
     prop_values = '${density} ${viscosity}'
-  [../]
+  []
   [sa_mat]
     type = SATauMaterial
     alpha = ${alpha}
@@ -413,16 +394,16 @@ alpha = .33333           # INS SUPG and PSPG stabilization parameter
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
-  [../]
+  []
 []
 
 [Outputs]
-  [./exodus]
+  [exodus]
     type = Exodus
-  [../]
+  []
   [csv]
     type = CSV
     execute_on = final

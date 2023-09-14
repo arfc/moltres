@@ -1,5 +1,3 @@
-# Step 0.1: Velocity Field input file
-
 Re = 3.6e4
 density = 1      # kg cm-3
 D = 1
@@ -107,10 +105,6 @@ alpha = .33333           # INS SUPG and PSPG stabilization parameter
     type = INSADMomentumSUPG
     variable = vel
   []
-#  [momentum_cd]
-#    type = INSADMomentumCD
-#    variable = vel
-#  []
   [momentum_time]
     type = INSADMomentumTimeDerivative
     variable = vel
@@ -128,10 +122,6 @@ alpha = .33333           # INS SUPG and PSPG stabilization parameter
     type = SATurbulentViscositySUPG
     variable = mu_tilde
   []
-#  [mu_tilde_cd]
-#    type = SATurbulentViscosityCD
-#    variable = mu_tilde
-#  []
 []
 
 [AuxKernels]
@@ -173,7 +163,6 @@ alpha = .33333           # INS SUPG and PSPG stabilization parameter
 [Functions]
   [xfunc]
     type = ParsedFunction
-#    expression = '-6 * (y^2) + 3 / 2'
     expression = '${fparse inlet}'
   []
   [mu_func]
@@ -255,34 +244,17 @@ alpha = .33333           # INS SUPG and PSPG stabilization parameter
 []
 
 [Materials]
-  [./ad_mat]
+  [ad_mat]
     type = ADGenericConstantMaterial
     prop_names = 'rho mu'
     prop_values = '${density} ${viscosity}'
-  [../]
+  []
   [sa_mat]
     type = SATauMaterial
     alpha = ${alpha}
     mu_tilde = mu_tilde
     wall_distance_var = wall_dist
   []
-[]
-
-[VectorPostprocessors]
-#  [outlet]
-#    type = NodalValueSampler
-#    variable = velx
-#    boundary = 'right'
-#    sort_by = y
-#    execute_on = final
-#  []
-#  [prior]
-#    type = NodalValueSampler
-#    variable = velx
-#    boundary = 'right'
-#    sort_by = y
-#    execute_on = final
-#  []
 []
 
 [Executioner]
@@ -321,16 +293,16 @@ alpha = .33333           # INS SUPG and PSPG stabilization parameter
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
-  [../]
+  []
 []
 
 [Outputs]
-  [./exodus]
+  [exodus]
     type = Exodus
-  [../]
+  []
   [csv]
     type = CSV
     execute_on = final

@@ -1,5 +1,3 @@
-# Step 0.1: Velocity Field input file
-
 Re = 1.375e4
 density = 1      # kg cm-3
 D = 1
@@ -291,17 +289,17 @@ alpha = .33333           # INS SUPG and PSPG stabilization parameter
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
-  [../]
+  []
 []
 
 [Outputs]
-  [./exodus]
+  [exodus]
     type = Exodus
     execute_on = final
-  [../]
+  []
 []
 
 [Debug]

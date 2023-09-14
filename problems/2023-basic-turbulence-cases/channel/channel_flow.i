@@ -1,5 +1,3 @@
-# Step 0.1: Velocity Field input file
-
 Re = 1.375e4
 density = 1      # kg cm-3
 D = 1
@@ -242,11 +240,11 @@ alpha = .33333           # INS SUPG and PSPG stabilization parameter
 []
 
 [Materials]
-  [./ad_mat]
+  [ad_mat]
     type = ADGenericConstantMaterial
     prop_names = 'rho mu'
     prop_values = '${density} ${viscosity}'
-  [../]
+  []
   [sa_mat]
     type = SATauMaterial
     alpha = ${alpha}
@@ -314,16 +312,16 @@ alpha = .33333           # INS SUPG and PSPG stabilization parameter
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
-  [../]
+  []
 []
 
 [Outputs]
-  [./exodus]
+  [exodus]
     type = Exodus
-  [../]
+  []
   [csv]
     type = CSV
     execute_on = final
