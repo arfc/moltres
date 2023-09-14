@@ -5,7 +5,7 @@
   group_fluxes = 'group1 group2'
   temperature = 922
   sss2_input = true
-  pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6'
+  pre_concs = ''
   account_delayed = false
 []
 
@@ -67,6 +67,7 @@
 [Postprocessors]
   [./bnorm]
     type = ElmIntegTotFissNtsPostprocessor
+    block = 'fuel'
     execute_on = 'nonlinear linear timestep_end'
   [../]
   [./group1diff]
