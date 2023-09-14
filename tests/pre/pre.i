@@ -1,5 +1,5 @@
-flow_velocity=21.7 # cm/s. See MSRE-properties.ods
-global_temperature=922
+flow_velocity = 21.7 # cm/s. See MSRE-properties.ods
+global_temperature = 922
 
 [GlobalParams]
   num_groups = 2
@@ -8,19 +8,19 @@ global_temperature=922
   temperature = ${global_temperature}
   sss2_input = false
   transient = false
-[../]
+[]
 
 [Mesh]
   coord_type = RZ
   file = '2d_lattice_structured_smaller.msh'
-[../]
+[]
 
 [Problem]
   kernel_coverage_check = false
 []
 
 [Precursors]
-  [./pres]
+  [pres]
     var_name_base = pre
     outlet_boundaries = 'fuel_tops'
     u_def = 0
@@ -31,15 +31,15 @@ global_temperature=922
     family = MONOMIAL
     order = CONSTANT
     block = 'fuel'
-  [../]
+  []
 []
 
 [Materials]
-  [./fuel]
+  [fuel]
     type = GenericMoltresMaterial
     property_tables_root = '../../property_file_dir/newt_msre_fuel_'
     interp_type = 'spline'
-  [../]
+  []
 []
 
 [Executioner]
@@ -58,20 +58,19 @@ global_temperature=922
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
-  [../]
+  []
 []
-
 
 [Outputs]
   perf_graph = true
   print_linear_residuals = true
   csv = true
-  [./out]
+  [out]
     type = Exodus
-  [../]
+  []
 []
 
 [Debug]

@@ -316,7 +316,7 @@ are represented below, followed by the input required to construct these equatio
 In the `group1` and `group2` neutron flux equations below and in the input that
 follows, notice that the fission kernel (`CoupledFissionEigenKernel`)
 is only included in the fuel region ('0'), and is not included in the moderator region ('1')
-since there is no fuel in the moderator region. Also, the `DelayedNeutronEigenSource`
+since there is no fuel in the moderator region. Also, the `DelayedNeutronSource`
 kernel, which contributes neutrons from the precursor group equations, is only
 included as part of the `group1` or fast group equation.
 
@@ -359,7 +359,7 @@ included as part of the `group1` or fast group equation.
     block = '0'
   []
   [delayed_group1]
-    type = DelayedNeutronEigenSource
+    type = DelayedNeutronSource
     variable = group1
     block = '0'
     group_number = 1

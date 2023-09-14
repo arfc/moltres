@@ -1,5 +1,5 @@
-flow_velocity=21.7 # cm/s. See MSRE-properties.ods
-nt_scale=1e13
+flow_velocity = 21.7 # cm/s. See MSRE-properties.ods
+nt_scale = 1e13
 
 [GlobalParams]
   num_groups = 2
@@ -16,32 +16,32 @@ nt_scale=1e13
 
 [Mesh]
   file = '2d_lattice_structured.msh'
-[../]
+[]
 
 [Problem]
   coord_type = RZ
 []
 
 [Variables]
-  [./group1]
+  [group1]
     order = FIRST
     family = LAGRANGE
     initial_condition = 1
     scaling = 1e4
-  [../]
-  [./group2]
+  []
+  [group2]
     order = FIRST
     family = LAGRANGE
     initial_condition = 1
     scaling = 1e4
-  [../]
+  []
 []
 
 [AuxVariables]
-  [./power_density]
+  [power_density]
     order = CONSTANT
     family = MONOMIAL
-  [../]
+  []
 []
 
 [Precursors]
@@ -59,91 +59,91 @@ nt_scale=1e13
 
 [Kernels]
   # Neutronics
-  [./time_group1]
+  [time_group1]
     type = NtTimeDerivative
     variable = group1
     group_number = 1
-  [../]
-  [./diff_group1]
+  []
+  [diff_group1]
     type = GroupDiffusion
     variable = group1
     group_number = 1
-  [../]
-  [./sigma_r_group1]
+  []
+  [sigma_r_group1]
     type = SigmaR
     variable = group1
     group_number = 1
-  [../]
-  [./fission_source_group1]
+  []
+  [fission_source_group1]
     type = CoupledFissionKernel
     variable = group1
     group_number = 1
-  [../]
-  [./delayed_group1]
+  []
+  [delayed_group1]
     type = DelayedNeutronSource
     variable = group1
-  [../]
-  [./inscatter_group1]
+  []
+  [inscatter_group1]
     type = InScatter
     variable = group1
     group_number = 1
-  [../]
-  [./diff_group2]
+  []
+  [diff_group2]
     type = GroupDiffusion
     variable = group2
     group_number = 2
-  [../]
-  [./sigma_r_group2]
+  []
+  [sigma_r_group2]
     type = SigmaR
     variable = group2
     group_number = 2
-  [../]
-  [./time_group2]
+  []
+  [time_group2]
     type = NtTimeDerivative
     variable = group2
     group_number = 2
-  [../]
-  [./fission_source_group2]
+  []
+  [fission_source_group2]
     type = CoupledFissionKernel
     variable = group2
     group_number = 2
-  [../]
-  [./inscatter_group2]
+  []
+  [inscatter_group2]
     type = InScatter
     variable = group2
     group_number = 2
-  [../]
+  []
 []
 
 [BCs]
-  [./vacuum_group1]
+  [vacuum_group1]
     type = VacuumConcBC
     boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
     variable = group1
-  [../]
-  [./vacuum_group2]
+  []
+  [vacuum_group2]
     type = VacuumConcBC
     boundary = 'fuel_bottoms fuel_tops moder_bottoms moder_tops outer_wall'
     variable = group2
-  [../]
+  []
 []
 
 [AuxKernels]
-  [./fuel]
+  [fuel]
     block = 'fuel'
     type = FissionHeatSourceTransientAux
     variable = power_density
-  [../]
-  [./moderator]
+  []
+  [moderator]
     block = 'moder'
     type = ModeratorHeatSourceTransientAux
     average_fission_heat = 'average_fission_heat'
     variable = power_density
-  [../]
+  []
 []
 
 [Materials]
-  [./fuel]
+  [fuel]
     type = GenericMoltresMaterial
     property_tables_root = '../property_file_dir/newt_msre_fuel_'
     interp_type = 'spline'
@@ -152,8 +152,8 @@ nt_scale=1e13
     prop_values = '.0553 1967 2.146e-3' # Robertson MSRE technical report @ 922 K
     peak_power_density = peak_power_density
     controller_gain = 1e-5
-  [../]
-  [./moder]
+  []
+  [moder]
     type = GenericMoltresMaterial
     property_tables_root = '../property_file_dir/newt_msre_mod_'
     interp_type = 'spline'
@@ -161,7 +161,7 @@ nt_scale=1e13
     prop_values = '.312 1760 1.86e-3' # Cammi 2011 at 908 K
     block = 'moder'
     controller_gain = 0
-  [../]
+  []
 []
 
 [Executioner]
@@ -186,61 +186,61 @@ nt_scale=1e13
   dtmin = 1e-5
   # dtmax = 1
   # dt = 1e-3
-  [./TimeStepper]
+  [TimeStepper]
     type = IterationAdaptiveDT
     dt = 1e-3
     cutback_factor = 0.4
     growth_factor = 1.2
     optimal_iterations = 20
-  [../]
+  []
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
-  [../]
+  []
 []
 
 [Postprocessors]
-  [./group1_current]
+  [group1_current]
     type = IntegralNewVariablePostprocessor
     variable = group1
     outputs = 'console csv'
-  [../]
-  [./group1_old]
+  []
+  [group1_old]
     type = IntegralOldVariablePostprocessor
     variable = group1
     outputs = 'console csv'
-  [../]
-  [./multiplication]
+  []
+  [multiplication]
     type = DivisionPostprocessor
     value1 = group1_current
     value2 = group1_old
     outputs = 'console csv'
-  [../]
-  [./peak_power_density]
+  []
+  [peak_power_density]
     type = ElementExtremeValue
     value_type = max
     variable = power_density
     execute_on = 'linear nonlinear timestep_begin'
-  [../]
-  [./average_fission_heat]
+  []
+  [average_fission_heat]
     type = AverageFissionHeat
     nt_scale = ${nt_scale}
     # execute_on = 'linear nonlinear'
     outputs = 'csv console'
     block = 'fuel'
-  [../]
+  []
 []
 
 [Outputs]
   perf_graph = true
   print_linear_residuals = true
   csv = true
-  [./exodus]
+  [exodus]
     type = Exodus
-  [../]
+  []
 []
 
 [Debug]
