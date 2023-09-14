@@ -1,7 +1,5 @@
 #include "SATurbulentViscosity.h"
 
-#include "metaphysicl/raw_type.h"
-
 registerMooseObject("MoltresApp", SATurbulentViscosity);
 
 InputParameters

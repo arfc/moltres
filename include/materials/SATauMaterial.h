@@ -38,7 +38,6 @@ protected:
   const Real _ct4;
   const ADVariableValue & _mu_tilde;
   const ADVariableGradient & _grad_mu;
-//  const ADVariableSecond & _second_mu;
   const ADVariableValue * _visc_dot;
   ADMaterialProperty<Real> & _tau_visc;
   const VariableValue & _wall_dist;
@@ -72,7 +71,7 @@ SATauMaterialTempl<T>::validParams()
 {
   InputParameters params = T::validParams();
   params.addClassDescription(
-      "This is the material class used to comptue the stabilization parameter tau_viscosity "
+      "This is the material class used to compute the stabilization parameter tau_viscosity "
       "for the Spalart-Allmaras turbulent viscosity equation.");
   params.addRequiredCoupledVar("mu_tilde", "Spalart-Allmaras turbulence viscosity variable");
   params.addRequiredCoupledVar("wall_distance_var", "Wall distance aux variable name");
@@ -134,22 +133,6 @@ SATauMaterialTempl<T>::computeQpProperties()
 {
   T::computeQpProperties();
 
-//  ADRealTensorValue vorticity = .5 * (_grad_velocity[_qp] - _grad_velocity[_qp].transpose());
-//  ADReal vorticity_mag = 0.;
-//  for (unsigned int i = 0; i < 3; i++)
-//    for (unsigned int j = 0; j < 3; j++)
-//      vorticity_mag += 2 * vorticity(i, j) * vorticity(i, j);
-//  vorticity_mag += 1e-16;
-//  vorticity_mag = std::sqrt(vorticity_mag);
-//  
-//  ADRealTensorValue strain = .5 * (_grad_velocity[_qp] + _grad_velocity[_qp].transpose());
-//  _strain_mag[_qp] = 0.;
-//  for (unsigned int i = 0; i < 3; i++)
-//    for (unsigned int j = 0; j < 3; j++)
-//      _strain_mag[_qp] += 2 * strain(i, j) * strain(i, j);
-//  _strain_mag[_qp] += 1e-16;
-//  _strain_mag[_qp] = std::sqrt(_strain_mag[_qp]);
-
   // Compute strain rate and vorticity magnitudes
   _strain_mag[_qp] = 2.0 * Utility::pow<2>(_grad_velocity[_qp](0, 0)) +
                      2.0 * Utility::pow<2>(_grad_velocity[_qp](1, 1)) +
@@ -165,26 +148,27 @@ SATauMaterialTempl<T>::computeQpProperties()
   vorticity_mag = std::sqrt(vorticity_mag + 1e-16);
 
   // Compute relevant parameters for the SA equation
-  Real d = std::max(_wall_dist[_qp], 1e-16);
-  ADReal chi = _mu_tilde[_qp] / _mu[_qp];
-  ADReal fv1 = Utility::pow<3>(chi) / (Utility::pow<3>(chi) + Utility::pow<3>(_cv1));
-  ADReal fv2 = 1. - chi / (1. + chi * fv1);
-  ADReal S_tilde = vorticity_mag + _mu_tilde[_qp] * fv2 / (_kappa * _kappa * d * d * _rho[_qp]);
-  ADReal S = S_tilde + 2 * std::min(0., _strain_mag[_qp] - vorticity_mag);
+  const Real d = std::max(_wall_dist[_qp], 1e-16); // Avoid potential division by zero
+  const ADReal chi = _mu_tilde[_qp] / _mu[_qp];
+  const ADReal fv1 = Utility::pow<3>(chi) / (Utility::pow<3>(chi) + Utility::pow<3>(_cv1));
+  const ADReal fv2 = 1. - chi / (1. + chi * fv1);
+  const ADReal S_tilde =
+    vorticity_mag + _mu_tilde[_qp] * fv2 / (_kappa * _kappa * d * d * _rho[_qp]);
+  const ADReal S = S_tilde + 2 * std::min(0., _strain_mag[_qp] - vorticity_mag);
   ADReal r;
   if (S_tilde <= 0.) // Avoid potential division by zero
     r = 10.;
   else
     r = std::min(_mu_tilde[_qp] / (S_tilde * _kappa * _kappa * d * d * _rho[_qp]), 10.);
-  ADReal g = r + _cw2 * (Utility::pow<6>(r) - r);
-  ADReal fw = g * std::pow((1. + Utility::pow<6>(_cw3)) /
+  const ADReal g = r + _cw2 * (Utility::pow<6>(r) - r);
+  const ADReal fw = g * std::pow((1. + Utility::pow<6>(_cw3)) /
                            (Utility::pow<6>(g) + Utility::pow<6>(_cw3)),
                            1. / 6.);
 
   // Compute strong forms of the SA equation
   if (_use_ft2_term) // Whether to apply the f_t2 term in the SA equation
   {
-    ADReal ft2 = _ct3 * std::exp(-_ct4 * chi * chi);
+    const ADReal ft2 = _ct3 * std::exp(-_ct4 * chi * chi);
     _destruction_strong_residual[_qp] =
       (_cw1 * fw - _cb1 * ft2 / _kappa / _kappa) * Utility::pow<2>(_mu_tilde[_qp] / d);
     _source_strong_residual[_qp] = -(1 - ft2) * _rho[_qp] * _cb1 * S * _mu_tilde[_qp];
