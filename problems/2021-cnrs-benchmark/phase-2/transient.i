@@ -1,14 +1,14 @@
-density = .002 # kg cm-3
-cp = 3075 # J kg-1 K-1, 6.15 / 2.0e-3
-k = .005 # W cm-1 K-1
-gamma = 1 # W cm-3 K-1, Volumetric heat transfer coefficient
-viscosity = .5 # dynamic viscosity
-alpha = 1 # SUPG stabilization parameter
-t_alpha = 2e-4 # K-1, Thermal expansion coefficient
+density = .002      # kg cm-3
+cp = 3075           # J kg-1 K-1, 6.15 / 2.0e-3
+k = .005            # W cm-1 K-1
+gamma = 1           # W cm-3 K-1, Volumetric heat transfer coefficient
+viscosity = .5      # dynamic viscosity
+alpha = 1           # SUPG stabilization parameter
+t_alpha = 2e-4      # K-1, Thermal expansion coefficient
 
 # Change "freq" and "dt" values for different perturbation frequencies
-freq = 0.8 # Perturbation frequency = 0.8 Hz
-dt = 0.00625 # Timestep size = 1 / freq / 200 = 0.00625 s
+freq = 0.8          # Perturbation frequency = 0.8 Hz
+dt = 0.00625        # Timestep size = 1 / freq / 200 = 0.00625 s
 
 [GlobalParams]
   num_groups = 6
