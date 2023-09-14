@@ -41,7 +41,9 @@ INSADMomentumCD::computeResidual()
     for (_qp = 0; _qp < _qrule->n_points(); _qp++)
     {
       ADReal vel_mag = _velocity[_qp] * _velocity[_qp];
-      vel_tensor = (1., 0., 0., 0., 1., 0., 0., 0., 1.);
+      vel_tensor = 0.;
+      for (unsigned int i = 0; i < 3; i++)
+        vel_tensor(i, i) = 1.;
       if (raw_value(vel_mag) > 0.)
         for (unsigned int i = 0; i < 3; i++)
           for (unsigned int j = 0; j < 3; j++)
@@ -58,7 +60,7 @@ INSADMomentumCD::computeResidual()
           grad_vel = (_grad_velocity[_qp](i, 0),
                       _grad_velocity[_qp](i, 1),
                       _grad_velocity[_qp](i, 2));
-          vel_vector = (0., 0., 0.);
+          vel_vector = 0.;
           for (unsigned int j = 0; j < 3; j++)
             for (unsigned int k = 0; k < 3; k++)
               vel_vector(j) += grad_test(k) * vel_tensor(j, k);
@@ -75,7 +77,9 @@ INSADMomentumCD::computeResidual()
     for (_qp = 0; _qp < _qrule->n_points(); _qp++)
     {
       ADReal vel_mag = _velocity[_qp] * _velocity[_qp];
-      vel_tensor = (1., 0., 0., 0., 1., 0., 0., 0., 1.);
+      vel_tensor = 0.;
+      for (unsigned int i = 0; i < 3; i++)
+        vel_tensor(i, i) = 1.;
       if (raw_value(vel_mag) > 0.)
         for (unsigned int i = 0; i < 3; i++)
           for (unsigned int j = 0; j < 3; j++)
@@ -92,7 +96,7 @@ INSADMomentumCD::computeResidual()
           grad_vel = (_grad_velocity[_qp](i, 0),
                       _grad_velocity[_qp](i, 1),
                       _grad_velocity[_qp](i, 2));
-          vel_vector = (0., 0., 0.);
+          vel_vector = 0.;
           for (unsigned int j = 0; j < 3; j++)
             for (unsigned int k = 0; k < 3; k++)
               vel_vector(j) += regular_grad_test(k) * vel_tensor(j, k);
@@ -135,7 +139,9 @@ INSADMomentumCD::computeResidualsForJacobian()
     for (_qp = 0; _qp < _qrule->n_points(); _qp++)
     {
       ADReal vel_mag = _velocity[_qp] * _velocity[_qp];
-      vel_tensor = (1., 0., 0., 0., 1., 0., 0., 0., 1.);
+      vel_tensor = 0.;
+      for (unsigned int i = 0; i < 3; i++)
+        vel_tensor(i, i) = 1.;
       if (raw_value(vel_mag) > 0.)
         for (unsigned int i = 0; i < 3; i++)
           for (unsigned int j = 0; j < 3; j++)
@@ -152,7 +158,7 @@ INSADMomentumCD::computeResidualsForJacobian()
           grad_vel = (_grad_velocity[_qp](i, 0),
                       _grad_velocity[_qp](i, 1),
                       _grad_velocity[_qp](i, 2));
-          vel_vector = (0., 0., 0.);
+          vel_vector = 0.;
           for (unsigned int j = 0; j < 3; j++)
             for (unsigned int k = 0; k < 3; k++)
               vel_vector(j) += grad_test(k) * vel_tensor(j, k);
@@ -169,7 +175,9 @@ INSADMomentumCD::computeResidualsForJacobian()
     for (_qp = 0; _qp < _qrule->n_points(); _qp++)
     {
       ADReal vel_mag = _velocity[_qp] * _velocity[_qp];
-      vel_tensor = (1., 0., 0., 0., 1., 0., 0., 0., 1.);
+      vel_tensor = 0.;
+      for (unsigned int i = 0; i < 3; i++)
+        vel_tensor(i, i) = 1.;
       if (raw_value(vel_mag) > 0.)
         for (unsigned int i = 0; i < 3; i++)
           for (unsigned int j = 0; j < 3; j++)
@@ -186,7 +194,7 @@ INSADMomentumCD::computeResidualsForJacobian()
           grad_vel = (_grad_velocity[_qp](i, 0),
                       _grad_velocity[_qp](i, 1),
                       _grad_velocity[_qp](i, 2));
-          vel_vector = (0., 0., 0.);
+          vel_vector = 0.;
           for (unsigned int j = 0; j < 3; j++)
             for (unsigned int k = 0; k < 3; k++)
               vel_vector(j) += regular_grad_test(k) * vel_tensor(j, k);

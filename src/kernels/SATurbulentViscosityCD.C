@@ -51,7 +51,9 @@ SATurbulentViscosityCD::computeResidual()
     for (_qp = 0; _qp < _qrule->n_points(); _qp++)
     {
       ADReal vel_mag = _velocity[_qp] * _velocity[_qp];
-      vel_tensor = (1., 0., 0., 0., 1., 0., 0., 0., 1.);
+      vel_tensor = 0.;
+      for (unsigned int i = 0; i < 3; i++)
+        vel_tensor(i, i) = 1.;
       if (raw_value(vel_mag) > 0.)
         for (unsigned int i = 0; i < 3; i++)
           for (unsigned int j = 0; j < 3; j++)
@@ -59,7 +61,7 @@ SATurbulentViscosityCD::computeResidual()
       const auto value = precomputeQpStrongResidual() * _ad_JxW[_qp] * _ad_coord[_qp];
       for (_i = 0; _i < n_test; _i++) // target for auto vectorization
       {
-        vel_vector = (0., 0., 0.);
+        vel_vector = 0.;
         for (unsigned int i = 0; i < 3; i++)
           for (unsigned int j = 0; j < 3; j++)
             vel_vector(i) += _grad_test[_i][_qp](j) * vel_tensor(i, j);
@@ -70,7 +72,9 @@ SATurbulentViscosityCD::computeResidual()
     for (_qp = 0; _qp < _qrule->n_points(); _qp++)
     {
       ADReal vel_mag = _velocity[_qp] * _velocity[_qp];
-      vel_tensor = (1., 0., 0., 0., 1., 0., 0., 0., 1.);
+      vel_tensor = 0.;
+      for (unsigned int i = 0; i < 3; i++)
+        vel_tensor(i, i) = 1.;
       if (raw_value(vel_mag) > 0.)
         for (unsigned int i = 0; i < 3; i++)
           for (unsigned int j = 0; j < 3; j++)
@@ -78,7 +82,7 @@ SATurbulentViscosityCD::computeResidual()
       const auto value = precomputeQpStrongResidual() * _JxW[_qp] * _coord[_qp];
       for (_i = 0; _i < n_test; _i++) // target for auto vectorization
       {
-        vel_vector = (0., 0., 0.);
+        vel_vector = 0.;
         for (unsigned int i = 0; i < 3; i++)
           for (unsigned int j = 0; j < 3; j++)
             vel_vector(i) += _regular_grad_test[_i][_qp](j) * vel_tensor(i, j);
@@ -113,7 +117,9 @@ SATurbulentViscosityCD::computeResidualsForJacobian()
     for (_qp = 0; _qp < _qrule->n_points(); _qp++)
     {
       ADReal vel_mag = _velocity[_qp] * _velocity[_qp];
-      vel_tensor = (1., 0., 0., 0., 1., 0., 0., 0., 1.);
+      vel_tensor = 0.;
+      for (unsigned int i = 0; i < 3; i++)
+        vel_tensor(i, i) = 1.;
       if (raw_value(vel_mag) > 0.)
         for (unsigned int i = 0; i < 3; i++)
           for (unsigned int j = 0; j < 3; j++)
@@ -121,7 +127,7 @@ SATurbulentViscosityCD::computeResidualsForJacobian()
       const auto value = precomputeQpStrongResidual() * _ad_JxW[_qp] * _ad_coord[_qp];
       for (_i = 0; _i < _grad_test.size(); _i++)
       {
-        vel_vector = (0., 0., 0.);
+        vel_vector = 0.;
         for (unsigned int i = 0; i < 3; i++)
           for (unsigned int j = 0; j < 3; j++)
             vel_vector(i) += _grad_test[_i][_qp](j) * vel_tensor(i, j);
@@ -133,7 +139,9 @@ SATurbulentViscosityCD::computeResidualsForJacobian()
     for (_qp = 0; _qp < _qrule->n_points(); _qp++)
     {
       ADReal vel_mag = _velocity[_qp] * _velocity[_qp];
-      vel_tensor = (1., 0., 0., 0., 1., 0., 0., 0., 1.);
+      vel_tensor = 0.;
+      for (unsigned int i = 0; i < 3; i++)
+        vel_tensor(i, i) = 1.;
       if (raw_value(vel_mag) > 0.)
         for (unsigned int i = 0; i < 3; i++)
           for (unsigned int j = 0; j < 3; j++)
@@ -141,7 +149,7 @@ SATurbulentViscosityCD::computeResidualsForJacobian()
       const auto value = precomputeQpStrongResidual() * _JxW[_qp] * _coord[_qp];
       for (_i = 0; _i < _grad_test.size(); _i++)
       {
-        vel_vector = (0., 0., 0.);
+        vel_vector = 0.;
         for (unsigned int i = 0; i < 3; i++)
           for (unsigned int j = 0; j < 3; j++)
             vel_vector(i) += _regular_grad_test[_i][_qp](j) * vel_tensor(i, j);
