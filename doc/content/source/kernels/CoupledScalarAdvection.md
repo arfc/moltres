@@ -1,16 +1,22 @@
 # CoupledScalarAdvection
 
-!alert construction title=Undocumented Class
-The CoupledScalarAdvection has not been documented. The content listed below should be used as a starting point for
-documenting the class, which includes the typical automatic documentation associated with a
-MooseObject; however, what is contained is ultimately determined by what is necessary to make the
-documentation clear for users.
-
 !syntax description /Kernels/CoupledScalarAdvection
 
 ## Overview
 
-!! Replace these lines with information regarding the CoupledScalarAdvection object.
+This object adds the $\vec{u}\cdot\nabla C_i$ advection term of the delayed neutron precursor
+equation. $\vec{u}$ can be either constant velocity values defined using the `u_def`, `v_def`, and
+`w_def` input parameters or coupled velocity variables using the `u`, `v`, and `w` input
+parameters. Note that we applied the product rule and integration by parts to obtain the following
+weak form:
+
+!equation
+-\int\nabla\psi \cdot \vec{u} C_i\ dV
+
+This form is only valid if the divergence of the velocity is zero, $\nabla \cdot \vec{u} = 0$.
+Boundary conditions at the outlet must be defined using [OutflowBC](/OutflowBC.md),
+[CoupledOutflowBC](/CoupledOutflowBC.md), or
+[CoupledScalarAdvectionNoBCBC](/CoupledScalarAdvectionNoBCBC.md).
 
 ## Example Input File Syntax
 

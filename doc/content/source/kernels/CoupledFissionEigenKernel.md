@@ -1,16 +1,14 @@
 # CoupledFissionEigenKernel
 
-!alert construction title=Undocumented Class
-The CoupledFissionEigenKernel has not been documented. The content listed below should be used as a starting point for
-documenting the class, which includes the typical automatic documentation associated with a
-MooseObject; however, what is contained is ultimately determined by what is necessary to make the
-documentation clear for users.
-
 !syntax description /Kernels/CoupledFissionEigenKernel
 
 ## Overview
 
-!! Replace these lines with information regarding the CoupledFissionEigenKernel object.
+This object adds the $\frac{\chi_g^p}{k} \sum_{g' = 1}^G (1 - \beta) \nu \Sigma_{g'}^f \phi_{g'}$
+neutron source term of the multigroup neutron diffusion equations for the $k$-eigenvalue problem.
+If `account_delayed=false` (i.e.
+no delayed neutron precursor modeling), the $\frac{\chi_g^t}{k} \sum_{g' = 1}^G \nu \Sigma_{g'}^f
+\phi_{g'}$ form is used instead.
 
 ## Example Input File Syntax
 
