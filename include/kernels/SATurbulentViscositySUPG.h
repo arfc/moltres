@@ -15,6 +15,6 @@ public:
 
 protected:
   ADReal precomputeQpStrongResidual() override;
-  
+
   const ADMaterialProperty<Real> & _visc_strong_residual;
 };

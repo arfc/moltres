@@ -40,7 +40,7 @@ WallDistanceAux::computeValue()
     // Loop over all boundary ids
     for (BoundaryID bid : vec_ids)
     {
-      // Check if boundary node falls on wall boundary 
+      // Check if boundary node falls on wall boundary
       if (bid == bnd_id)
       {
         // Find distance to closest wall boundary node

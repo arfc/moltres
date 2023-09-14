@@ -146,7 +146,7 @@ CDTauMaterialTempl<T>::computeQpProperties()
   {
     ADReal proj_speed_visc = (_grad_mu[_qp] * _velocity[_qp]) / std::norm(_grad_mu[_qp]);
     if (proj_speed_visc > 0.)
-      _tau_visc_cd[_qp] = 
+      _tau_visc_cd[_qp] =
         _alpha / std::sqrt(transient_part +
                            std::pow(std::max(0., .7 - 2. * nu_visc / _hmin / proj_speed_visc) *
                                     _hmin / std::norm(_grad_mu[_qp]) / 2, 2.));
