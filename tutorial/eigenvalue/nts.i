@@ -10,14 +10,11 @@
 []
 
 [Mesh]
+  coord_type = RZ
   [mesh]
     type = FileMeshGenerator
     file = 'mesh.e'
   []
-[]
-
-[Problem]
-  coord_type = RZ
 []
 
 [Variables]
@@ -77,10 +74,10 @@
     block = '0'
   []
   [delayed_group1]
-    type = DelayedNeutronEigenSource
+    type = DelayedNeutronSource
     variable = group1
     block = '0'
-    group_number=1
+    group_number = 1
   []
 
   #---------------------------------------------------------------------
@@ -129,7 +126,7 @@
     base_file = 'xsdata.json'
     material_key = 'fuel'
     interp_type = LINEAR
-    prop_names =''
+    prop_names = ''
     prop_values = ''
   []
   [graphite]
@@ -138,7 +135,7 @@
     base_file = 'xsdata.json'
     material_key = 'graphite'
     interp_type = LINEAR
-    prop_names =''
+    prop_names = ''
     prop_values = ''
   []
 []
@@ -178,6 +175,7 @@
 [Postprocessors]
   [bnorm]
     type = ElmIntegTotFissNtsPostprocessor
+    block = 0
     execute_on = linear
   []
   [tot_fissions]

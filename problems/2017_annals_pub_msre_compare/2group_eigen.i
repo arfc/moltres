@@ -5,7 +5,7 @@
   group_fluxes = 'group1 group2'
   temperature = 922
   sss2_input = true
-  pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6'
+  pre_concs = ''
   account_delayed = false
 []
 
@@ -21,22 +21,21 @@
   eigen = true
 []
 
-
 [Materials]
-  [./fuel]
+  [fuel]
     type = GenericMoltresMaterial
     property_tables_root = '../../property_file_dir/serp3d2group0.78eV/2g0.78eV_fuel_'
     interp_type = 'spline'
     block = 'fuel'
     temperature = 972
-  [../]
-  [./moder]
+  []
+  [moder]
     type = GenericMoltresMaterial
     property_tables_root = '../../property_file_dir/serp3d2group0.78eV/2g0.78eV_moder_'
     interp_type = 'spline'
     block = 'moder'
     temperature = 972
-  [../]
+  []
 []
 
 [Executioner]
@@ -58,23 +57,24 @@
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
-  [../]
+  []
 []
 
 [Postprocessors]
-  [./bnorm]
+  [bnorm]
     type = ElmIntegTotFissNtsPostprocessor
+    block = 'fuel'
     execute_on = 'nonlinear linear timestep_end'
-  [../]
-  [./group1diff]
+  []
+  [group1diff]
     type = ElementL2Diff
     variable = group1
     execute_on = 'nonlinear linear timestep_end'
     use_displaced_mesh = false
-  [../]
+  []
 []
 
 [Outputs]
