@@ -20,6 +20,9 @@ dt = 0.00625 # Timestep size = 1 / freq / 200 = 0.00625 s
   sss2_input = true
   account_delayed = true
   integrate_p_by_parts = true
+  eigenvalue_scaling = 0.9927821802
+  ## Use the eigenvalue scaling factor below if running on a 40x40 mesh
+  # eigenvalue_scaling = 0.9926551482
 []
 
 [Mesh]
@@ -60,9 +63,6 @@ dt = 0.00625 # Timestep size = 1 / freq / 200 = 0.00625 s
   vacuum_boundaries = 'bottom left right top'
   create_temperature_var = false
   init_nts_from_file = true
-  eigenvalue_scaling = 0.9927821802
-  ## Use the eigenvalue scaling factor below if running on a 40x40 mesh
-  #  eigenvalue_scaling = 0.9926551482
 []
 
 [Precursors]
