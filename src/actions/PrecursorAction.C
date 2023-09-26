@@ -52,6 +52,11 @@ PrecursorAction::validParams()
   params.addParam<bool>("nt_exp_form",
                         false,
                         "Whether concentrations should be in an expotential/logarithmic format.");
+  params.addParam<Real>("eigenvalue_scaling",
+                        1.0,
+                        "Artificial scaling factor for the fission source. Primarily for "
+                        "introducing artificial reactivity to make super/subcritical systems "
+                        "exactly critical or to simulate reactivity insertions/withdrawals.");
   params.addParam<bool>("jac_test",
                         false,
                         "Whether we're testing the Jacobian and should use some "
@@ -72,7 +77,7 @@ PrecursorAction::validParams()
                                               "from the base list of blocks. Replaces the 'block'"
                                               "parameter when initializing kernels.");
   params.addParam<MultiAppName>("multi_app", "Multiapp name for looping precursors.");
-  params.addParam<bool>("is_loopapp", "if circulating precursors, whether this is loop app");
+  params.addParam<bool>("is_loopapp", false, "if circulating precursors, whether this is loop app");
   params.addParam<bool>("eigen", false, "whether neutronics is in eigenvalue calculation mode");
   params.addParam<NonlinearVariableName>("outlet_vel",
                                          "Name of the velocity variable normal to the "
@@ -87,7 +92,8 @@ PrecursorAction::PrecursorAction(const InputParameters & params)
     _num_precursor_groups(getParam<unsigned int>("num_precursor_groups")),
     _var_name_base(getParam<std::string>("var_name_base")),
     _num_groups(getParam<unsigned int>("num_groups")),
-    _object_suffix(getParam<std::string>("object_suffix"))
+    _object_suffix(getParam<std::string>("object_suffix")),
+    _is_loopapp(getParam<bool>("is_loopapp"))
 {
   if (getParam<bool>("loop_precursors"))
   {
@@ -170,7 +176,7 @@ PrecursorAction::act()
 
     // transfers
     else if (_current_task == "add_transfer" && getParam<bool>("loop_precursors") &&
-        !getParam<bool>("is_loopapp"))
+        (!_is_loopapp))
     {
       // Set up MultiAppTransfer to simulate precursor looped flow into and
       // out of the reactor core
@@ -181,7 +187,7 @@ PrecursorAction::act()
   // Add outflow rate postprocessor for Navier-Stokes velocities in the main
   // app if precursors are looped
   if (_current_task == "add_postprocessor" && getParam<bool>("loop_precursors") &&
-      isParamValid("uvel") && !getParam<bool>("is_loopapp"))
+      isParamValid("uvel") && (!_is_loopapp))
     addCoolantOutflowPostprocessor();
 }
 
@@ -210,6 +216,7 @@ PrecursorAction::addPrecursorSource(const unsigned & op, const std::string & var
     std::vector<std::string> include = {"temperature", "group_fluxes"};
     params.applySpecificParameters(parameters(), include);
     params.set<bool>("use_exp_form") = getParam<bool>("nt_exp_form");
+    params.set<Real>("eigenvalue_scaling") = getParam<Real>("eigenvalue_scaling");
 
     std::string kernel_name = "PrecursorSource_" + var_name + "_" + _object_suffix;
     _problem->addKernel("PrecursorSource", kernel_name, params);

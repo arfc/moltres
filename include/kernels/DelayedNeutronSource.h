@@ -24,7 +24,6 @@ protected:
   unsigned int _num_precursor_groups;
   unsigned int _temp_id;
   const VariableValue & _temp;
-  Real _eigenvalue_scaling;
   std::vector<const VariableValue *> _pre_concs;
   std::vector<unsigned int> _pre_ids;
 };
