@@ -38,12 +38,12 @@ VariableNotAMooseObjectAction::getSubdomainIDs()
 {
   // Extract and return the block ids supplied in the input
   std::set<SubdomainID> blocks;
-  std::vector<SubdomainName> block_param = getParam<std::vector<SubdomainName>>("block");
-  for (const auto & subdomain_name : block_param)
-  {
-    SubdomainID blk_id = _problem->mesh().getSubdomainID(subdomain_name);
-    blocks.insert(blk_id);
-  }
+  if (isParamValid("block"))
+    for (const auto & subdomain_name : getParam<std::vector<SubdomainName>>("block"))
+    {
+      SubdomainID blk_id = _problem->mesh().getSubdomainID(subdomain_name);
+      blocks.insert(blk_id);
+    }
   return blocks;
 }
 
