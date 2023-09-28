@@ -64,6 +64,12 @@ protected:
 
   const VariableValue & _temperature;
 
+  // Number of neutron groups
+  unsigned int _num_groups;
+
+  // Number of precursor groups
+  unsigned int _num_precursor_groups;
+
   // Group constant MaterialProperty(s)
   MaterialProperty<std::vector<Real>> & _remxs;
   MaterialProperty<std::vector<Real>> & _fissxs;
@@ -108,12 +114,6 @@ protected:
                                        "GTRANSFXS",
                                        "BETA_EFF",
                                        "DECAY_CONSTANT"};
-
-  // Number of neutron groups
-  unsigned _num_groups;
-
-  // Number of precursor groups
-  unsigned _num_precursor_groups;
 
   // Map of group constant names to group constant values
   std::map<std::string, std::vector<std::vector<Real>>> _xsec_map;

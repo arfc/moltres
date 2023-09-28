@@ -15,7 +15,7 @@ NuclearMaterial::validParams()
   params.addCoupledVar(
       "temperature", 937, "The temperature field for determining group constants.");
   params.addRequiredParam<MooseEnum>("interp_type",
-                                     GenericMoltresMaterial::interpTypes(),
+                                     NuclearMaterial::interpTypes(),
                                      "The type of interpolation to perform.");
   params.addParam<bool>(
       "sss2_input", true, "Whether serpent 2 was used to generate the input files.");
