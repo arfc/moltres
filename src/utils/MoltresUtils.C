@@ -4,7 +4,7 @@ namespace MoltresUtils
 {
 
 std::vector<Real>
-ordinates(unsigned int N)
+points(unsigned int N)
 {
   switch (N)
   {
@@ -64,6 +64,52 @@ ordinates(unsigned int N)
     default:
       mooseError("Only even orders of N and N<20 are allowed.");
   }
+}
+
+RealEigenMatrix
+directions(unsigned int N)
+{
+  RealEigenMatrix vec_d(N*(N+2),3);
+  std::vector<Real> mu = points(N);
+  auto idx = 0;
+  for (auto i = 0; i < N / 2; ++i)
+    for (auto j = 0; j < N / 2 - i; ++j)
+    {
+      auto k = N / 2 - 1 - i - j;
+      vec_d(idx,0) = mu[i];
+      vec_d(idx,1) = mu[j];
+      vec_d(idx,2) = mu[k];
+      ++idx;
+      vec_d(idx,0) = -mu[i];
+      vec_d(idx,1) = mu[j];
+      vec_d(idx,2) = mu[k];
+      ++idx;
+      vec_d(idx,0) = mu[i];
+      vec_d(idx,1) = -mu[j];
+      vec_d(idx,2) = mu[k];
+      ++idx;
+      vec_d(idx,0) = mu[i];
+      vec_d(idx,1) = mu[j];
+      vec_d(idx,2) = -mu[k];
+      ++idx;
+      vec_d(idx,0) = -mu[i];
+      vec_d(idx,1) = -mu[j];
+      vec_d(idx,2) = mu[k];
+      ++idx;
+      vec_d(idx,0) = -mu[i];
+      vec_d(idx,1) = mu[j];
+      vec_d(idx,2) = -mu[k];
+      ++idx;
+      vec_d(idx,0) = mu[i];
+      vec_d(idx,1) = -mu[j];
+      vec_d(idx,2) = -mu[k];
+      ++idx;
+      vec_d(idx,0) = -mu[i];
+      vec_d(idx,1) = -mu[j];
+      vec_d(idx,2) = -mu[k];
+      ++idx;
+    }
+  return vec_d;
 }
 
 std::vector<Real>
@@ -175,8 +221,8 @@ sph_harmonics(unsigned int l, int m, Real eta, Real xi, Real mu)
   }
 }
 
-unsigned int
-factorial(unsigned int n)
+int
+factorial(int n)
 {
     if (n == 0 || n == 1)
         return 1;
