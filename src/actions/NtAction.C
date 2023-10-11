@@ -103,7 +103,7 @@ NtAction::act()
 
       if (_current_task == "copy_nodal_vars")
       {
-        SystemBase * system = &_problem->getNonlinearSystemBase();
+        SystemBase * system = &_problem->getNonlinearSystemBase(/*nl_sys_num=*/0);
         system->addVariableToCopy(var_name, var_name, "LATEST");
       }
     }
@@ -374,7 +374,7 @@ NtAction::act()
       if (_current_task == "copy_nodal_vars")
       {
         SystemBase * system;
-        system = &_problem->getNonlinearSystemBase();
+        system = &_problem->getNonlinearSystemBase(/*nl_sys_num=*/0);
         system->addVariableToCopy(temp_var, temp_var, "LATEST");
       }
     }
