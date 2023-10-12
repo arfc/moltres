@@ -65,8 +65,8 @@ PrecursorAction::validParams()
   params.addParam<bool>(
       "init_from_file", false, "Whether to initialize the precursors from a file.");
   params.addParam<bool>("create_vars", true, "Whether this action should create the variables.");
-  params.addRequiredParam<bool>(
-      "loop_precursors", "Whether precursors are circulated in coolant loop.");
+  params.addRequiredParam<bool>("loop_precursors",
+                                "Whether precursors are circulated in coolant loop.");
   params.addParam<std::string>(
       "object_suffix",
       "",
@@ -128,7 +128,7 @@ PrecursorAction::act()
 
         else if (_current_task == "copy_nodal_vars")
         {
-          SystemBase * system = &_problem->getNonlinearSystemBase();
+          SystemBase * system = &_problem->getNonlinearSystemBase(/*nl_sys_num=*/0);
           system->addVariableToCopy(var_name, var_name, "LATEST");
         }
       }
@@ -175,8 +175,7 @@ PrecursorAction::act()
     }
 
     // transfers
-    else if (_current_task == "add_transfer" && getParam<bool>("loop_precursors") &&
-        (!_is_loopapp))
+    else if (_current_task == "add_transfer" && getParam<bool>("loop_precursors") && (!_is_loopapp))
     {
       // Set up MultiAppTransfer to simulate precursor looped flow into and
       // out of the reactor core
@@ -313,7 +312,7 @@ PrecursorAction::addOutflowBC(const std::string & var_name)
     InputParameters params = _factory.getValidParams("CoupledOutflowBC");
     params.set<NonlinearVariableName>("variable") = var_name;
     params.set<std::vector<BoundaryName>>("boundary") =
-      getParam<std::vector<BoundaryName>>("outlet_boundaries");
+        getParam<std::vector<BoundaryName>>("outlet_boundaries");
     params.set<std::vector<VariableName>>("uvel") = {getParam<NonlinearVariableName>("uvel")};
     if (isParamValid("vvel"))
       params.set<std::vector<VariableName>>("vvel") = {getParam<NonlinearVariableName>("vvel")};
@@ -429,7 +428,7 @@ PrecursorAction::addOutletPostprocessor(const std::string & var_name)
     params.set<std::vector<BoundaryName>>("boundary") =
         getParam<std::vector<BoundaryName>>("outlet_boundaries");
     params.set<std::vector<OutputName>>("outputs") = {"none"};
-     _problem->addPostprocessor("SideAverageValue", postproc_name, params);
+    _problem->addPostprocessor("SideAverageValue", postproc_name, params);
   }
   else if (isParamValid("uvel")) // checks if Navier-Stokes velocities are provided
   {
@@ -443,8 +442,8 @@ PrecursorAction::addOutletPostprocessor(const std::string & var_name)
       params.set<std::vector<BoundaryName>>("boundary") =
           getParam<std::vector<BoundaryName>>("outlet_boundaries");
       params.set<std::vector<OutputName>>("outputs") = {"none"};
-      params.set<std::vector<VariableName>>("weight") =
-          {getParam<NonlinearVariableName>("outlet_vel")};
+      params.set<std::vector<VariableName>>("weight") = {
+          getParam<NonlinearVariableName>("outlet_vel")};
 
       _problem->addPostprocessor("SideWeightedIntegralPostprocessor", postproc_name, params);
     }
@@ -458,7 +457,7 @@ PrecursorAction::addOutletPostprocessor(const std::string & var_name)
       params.set<PostprocessorName>("value1") = "Outlet_Total_" + var_name + "_" + _object_suffix;
       params.set<PostprocessorName>("value2") = "Coolant_Outflow_" + _object_suffix;
       params.set<std::vector<OutputName>>("outputs") = {"none"};
-       _problem->addPostprocessor("DivisionPostprocessor", postproc_name, params);
+      _problem->addPostprocessor("DivisionPostprocessor", postproc_name, params);
     }
   }
 }
@@ -511,8 +510,8 @@ PrecursorAction::addCoolantOutflowPostprocessor()
 {
   std::string postproc_name = "Coolant_Outflow_" + _object_suffix;
   InputParameters params = _factory.getValidParams("SideWeightedIntegralPostprocessor");
-  params.set<std::vector<VariableName>>("variable") =
-      {getParam<NonlinearVariableName>("outlet_vel")};
+  params.set<std::vector<VariableName>>("variable") = {
+      getParam<NonlinearVariableName>("outlet_vel")};
   params.set<std::vector<BoundaryName>>("boundary") =
       getParam<std::vector<BoundaryName>>("outlet_boundaries");
   params.set<std::vector<OutputName>>("outputs") = {"none"};
@@ -524,10 +523,9 @@ void
 PrecursorAction::setVarNameAndBlock(InputParameters & params, const std::string & var_name)
 {
   params.set<NonlinearVariableName>("variable") = var_name;
-    if (isParamValid("kernel_block"))
-      params.set<std::vector<SubdomainName>>("block") =
-          getParam<std::vector<SubdomainName>>("kernel_block");
-    else if (isParamValid("block"))
-      params.set<std::vector<SubdomainName>>("block") =
-          getParam<std::vector<SubdomainName>>("block");
+  if (isParamValid("kernel_block"))
+    params.set<std::vector<SubdomainName>>("block") =
+        getParam<std::vector<SubdomainName>>("kernel_block");
+  else if (isParamValid("block"))
+    params.set<std::vector<SubdomainName>>("block") = getParam<std::vector<SubdomainName>>("block");
 }
