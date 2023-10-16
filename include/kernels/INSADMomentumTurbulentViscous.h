@@ -1,25 +1,13 @@
-//* This file is derived from INSADMomentumViscous.h, which comes with the
-//* following copyright statement:
-//*
-//* This file is part of the MOOSE framework
-//* https://www.mooseframework.org
-//*
-//* All rights reserved, see COPYRIGHT for full restrictions
-//* https://github.com/idaholab/moose/blob/master/COPYRIGHT
-//*
-//* Licensed under LGPL 2.1, please see LICENSE for details
-//* https://www.gnu.org/licenses/lgpl-2.1.html
-
 #pragma once
 
-#include "ADKernel.h"
+#include "INSADMomentumViscous.h"
 
 /**
  * This class computes the momentum equation residual and Jacobian
- * contributions for the viscous term of the incompressible Navier-Stokes momentum
- * equation.
+ * contributions for the turbulent viscous term of the incompressible
+ * Navier-Stokes momentum equation.
  */
-class INSADMomentumTurbulentViscous : public ADVectorKernel
+class INSADMomentumTurbulentViscous : public INSADMomentumViscous
 {
 public:
   static InputParameters validParams();
@@ -27,8 +15,6 @@ public:
   INSADMomentumTurbulentViscous(const InputParameters & parameters);
 
 protected:
-  void computeResidual() override;
-  void computeResidualsForJacobian() override;
   ADReal computeQpResidual() override;
 
   /**
@@ -42,12 +28,5 @@ protected:
    */
   ADRealVectorValue qpAdditionalRZTerm();
 
-  const ADMaterialProperty<Real> & _mu;
-
   const ADVariableValue & _mu_tilde;
-
-  const Moose::CoordinateSystemType & _coord_sys;
-
-  /// Either traction or laplace
-  MooseEnum _form;
 };

@@ -270,11 +270,11 @@ alpha = .33333           # INS SUPG and PSPG stabilization parameter
   off_diagonals_in_auto_scaling = true
 
   nl_rel_tol = 1e-8
-  nl_abs_tol = 1e-12
+  nl_abs_tol = 1e-14
   nl_max_its = 10
 
   steady_state_detection = true
-  steady_state_tolerance = 1e-8
+  steady_state_tolerance = 1e-10
   dtmin = 1e-0
   dtmax = 10
   [TimeStepper]
