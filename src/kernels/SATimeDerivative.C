@@ -6,7 +6,7 @@ InputParameters
 SATimeDerivative::validParams()
 {
   InputParameters params = ADTimeDerivative::validParams();
-  params.addClassDescription("Computes the time derivative term in the Spalart-Allmaras "
+  params.addClassDescription("Adds the time derivative term of the Spalart-Allmaras "
                              "turbulence model.");
   params.addParam<MaterialPropertyName>(
       "rho_name", "rho", "The name of the density material property");

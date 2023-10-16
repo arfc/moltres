@@ -6,6 +6,8 @@ InputParameters
 INSADMomentumCD::validParams()
 {
   InputParameters params = ADVectorKernelStabilized::validParams();
+  params.addClassDescription("Adds the crosswind diffusion stabilization terms to the "
+                             "INS momentum equation");
   params.addParam<MaterialPropertyName>(
       "tau_name", "tau_cd", "The name of the crosswind diffusion stabilization parameter.");
   params.addRequiredCoupledVar("velocity", "The velocity variable.");

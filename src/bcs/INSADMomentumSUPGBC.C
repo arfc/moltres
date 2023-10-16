@@ -40,7 +40,7 @@ INSADMomentumSUPGBC::precomputeQpStrongResidual()
 void
 INSADMomentumSUPGBC::computeResidual()
 {
-  _residuals.resize(_grad_test.size(), 0);
+  _residuals.resize(_test.size(), 0);
   for (auto & r : _residuals)
     r = 0;
 
@@ -48,14 +48,15 @@ INSADMomentumSUPGBC::computeResidual()
     for (_qp = 0; _qp < _qrule->n_points(); _qp++)
     {
       const auto value = precomputeQpStrongResidual() * _ad_JxW[_qp] * _ad_coord[_qp];
-      for (_i = 0; _i < _grad_test.size(); _i++)
-        _residuals[_i] += raw_value(_grad_test[_i][_qp] * computeQpStabilization() * value);
+      for (_i = 0; _i < _test.size(); _i++)
+        _residuals[_i] += raw_value((_test[_i][_qp] * _normals[_qp]) * computeQpStabilization() *
+            value);
     }
   else
     for (_qp = 0; _qp < _qrule->n_points(); _qp++)
     {
       const auto value = precomputeQpStrongResidual() * _JxW[_qp] * _coord[_qp];
-      for (_i = 0; _i < _grad_test.size(); _i ++)
+      for (_i = 0; _i < _test.size(); _i ++)
         _residuals[_i] +=
           raw_value((_test[_i][_qp] * _normals[_qp]) * computeQpStabilization() * value);
     }
@@ -70,8 +71,8 @@ INSADMomentumSUPGBC::computeResidual()
 void
 INSADMomentumSUPGBC::computeResidualsForJacobian()
 {
-  if (_residuals_and_jacobians.size() != _grad_test.size())
-    _residuals_and_jacobians.resize(_grad_test.size(), 0);
+  if (_residuals_and_jacobians.size() != _test.size())
+    _residuals_and_jacobians.resize(_test.size(), 0);
   for (auto & r : _residuals_and_jacobians)
     r = 0;
 
@@ -79,14 +80,15 @@ INSADMomentumSUPGBC::computeResidualsForJacobian()
     for (_qp = 0; _qp < _qrule->n_points(); _qp++)
     {
       const auto value = precomputeQpStrongResidual() * _ad_JxW[_qp] * _ad_coord[_qp];
-      for (_i = 0; _i < _grad_test.size(); _i++)
-        _residuals_and_jacobians[_i] += _grad_test[_i][_qp] * computeQpStabilization() * value;
+      for (_i = 0; _i < _test.size(); _i++)
+        _residuals_and_jacobians[_i] += (_test[_i][_qp] * _normals[_qp]) *
+          computeQpStabilization() * value;
     }
   else
     for (_qp = 0; _qp < _qrule->n_points(); _qp++)
     {
       const auto value = precomputeQpStrongResidual() * _JxW[_qp] * _coord[_qp];
-      for (_i = 0; _i < _grad_test.size(); _i ++)
+      for (_i = 0; _i < _test.size(); _i ++)
         _residuals_and_jacobians[_i] +=
           (_test[_i][_qp] * _normals[_qp]) * computeQpStabilization() * value;
     }

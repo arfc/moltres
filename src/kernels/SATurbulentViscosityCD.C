@@ -8,6 +8,8 @@ InputParameters
 SATurbulentViscosityCD::validParams()
 {
   InputParameters params = ADKernelStabilized::validParams();
+  params.addClassDescription("Adds the crosswind diffusion stabilization term in the turbulent "
+                             "viscosity equation from the Spalart-Allmaras model");
   params.addParam<MaterialPropertyName>(
       "tau_name",
       "tau_visc_cd",

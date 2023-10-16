@@ -2,6 +2,10 @@
 
 #include "DGKernel.h"
 
+/**
+ * Computes residual contributions of the turbulent diffusion term in the delayed neutron
+ * precursor equation using the discontinuous Galerkin method
+ */
 class DGTurbulentDiffusion : public DGKernel
 {
 public:

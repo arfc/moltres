@@ -17,7 +17,7 @@ DGTurbulentDiffusion::validParams()
   params.addParam<MaterialPropertyName>("mu_name", "mu",
                                         "The name of the dynamic viscosity material proerty");
   params.addRequiredCoupledVar("mu_tilde", "Spalart-Allmaras turbulence viscosity variable");
-  params.addParam<Real>("schmidt_number", 0.85, "The turbulent Schmidt number");
+  params.addParam<Real>("schmidt_number", 0.85, "Turbulent Schmidt number");
   return params;
 }
 
