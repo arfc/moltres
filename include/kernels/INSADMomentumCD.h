@@ -3,7 +3,7 @@
 #include "ADKernelStabilized.h"
 
 /**
- * This class copmutes the momentum equation residual and Jacobian
+ * This class computes the momentum equation residual and Jacobian
  * contributions for CD stabilization terms of the incompressible Navier-Stokes momentum
  * equation.
  */
