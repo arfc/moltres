@@ -1,16 +1,28 @@
 # MoltresJsonMaterial
 
-!alert construction title=Undocumented Class
-The MoltresJsonMaterial has not been documented. The content listed below should be used as a starting point for
-documenting the class, which includes the typical automatic documentation associated with a
-MooseObject; however, what is contained is ultimately determined by what is necessary to make the
-documentation clear for users.
-
 !syntax description /Materials/MoltresJsonMaterial
 
 ## Overview
 
-!! Replace these lines with information regarding the MoltresJsonMaterial object.
+This material class preloads and interpolates JSON-based group constant data provided at various
+temperature. `MoltresJsonMaterial` declares the interpolated group constant data as material
+properties which may be accessed by the neutron diffusion kernels to model a reactor and simulate
+temperature reactivity feedback. Refer to the "Materials Block" subsection of the
+[Tutorial 2a](input_syntax.md) for more information.
+
+!table id=group_const caption=Relevant group constants for neutron energy group $g$ or delayed neutron precursor group $i$
+| Group constant | Formula | Label |
+| - | - | - |
+| Macroscopic fission cross section | $\Sigma_{f,g}$ | FISSXS |
+| Macroscopic removal cross section | $\Sigma_{r,g}$ | REMXS |
+| Macroscopic scattering cross section | $\Sigma_s^{g'\rightarrow g}$ | GTRANSFXS |
+| Neutron diffusion coefficient | $D_g$ | DIFFCOEF |
+| Inverse neutron velocity | $\frac{1}{v_g}$ | RECIPVEL |
+| Fission neutron spectrum (total) | $\chi_{t,g}$ | CHI_T |
+| Fission neutron spectrum (prompt) | $\chi_{p,g}$ | CHI_P |
+| Fission neutron spectrum (delayed) | $\chi_{d,g}$ | CHI_D |
+| Effective delayed neutron fraction | $\beta_{eff}$ | BETA_EFF |
+| Delayed neutron precursor decay constant | $\lambda_i$ | DECAY_CONSTANT |
 
 ## Example Input File Syntax
 

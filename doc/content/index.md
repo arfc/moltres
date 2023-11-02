@@ -12,10 +12,11 @@ Moltres is a finite element-based multiphysics reactor simulation tool for molte
 (MSRs) and other advanced reactors in various dimensions and geometries. Moltres is built on the
 MOOSE framework and provides multiphysics
 capabilities to accurately model delayed neutron precursor drift and the strong temperature
-feedback effects inherent in MSRs. Users have the flexibility of setting up fully coupled solves
-in which all variables are solved in a single monolithic system or tightly coupled solves by
-arbitrarily segregating systems of equations corresponding to separate physics. As a MOOSE-based
-application, Moltres can also scale efficiently on high-performance computers.
+feedback effects inherent in MSRs. Users have the flexibility of setting up fully coupled
+solution schemes in which all variables are solved in a single monolithic system, or tightly
+coupled solution schemes by arbitrarily segregating systems of equations corresponding to separate
+physics. As a MOOSE-based application, Moltres can also scale efficiently on high-performance
+computers.
 
 !row!
 !col! small=12 medium=4 large=6
