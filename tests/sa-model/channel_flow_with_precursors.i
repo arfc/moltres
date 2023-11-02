@@ -277,7 +277,7 @@ diff = '${fparse viscosity / density / 0.85}'
     variable = mu_tilde
     boundary = 'right'
   []
-  
+
   [prec_inlet]
     type = InflowBC
     variable = prec

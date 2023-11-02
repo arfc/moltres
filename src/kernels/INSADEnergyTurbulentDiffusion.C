@@ -1,13 +1,13 @@
-#include "INSADHeatTurbulentDiffusion.h"
+#include "INSADEnergyTurbulentDiffusion.h"
 
 #include "metaphysicl/raw_type.h"
 
 using MetaPhysicL::raw_value;
 
-registerMooseObject("MoltresApp", INSADHeatTurbulentDiffusion);
+registerMooseObject("MoltresApp", INSADEnergyTurbulentDiffusion);
 
 InputParameters
-INSADHeatTurbulentDiffusion::validParams()
+INSADEnergyTurbulentDiffusion::validParams()
 {
   InputParameters params = ADDiffusion::validParams();
   params.addClassDescription("Adds the turbulent diffusion term in the INSAD heat equation");
@@ -19,7 +19,7 @@ INSADHeatTurbulentDiffusion::validParams()
   return params;
 }
 
-INSADHeatTurbulentDiffusion::INSADHeatTurbulentDiffusion(const InputParameters & parameters)
+INSADEnergyTurbulentDiffusion::INSADEnergyTurbulentDiffusion(const InputParameters & parameters)
   : ADDiffusion(parameters),
     _cp(getADMaterialProperty<Real>("cp_name")),
     _mu(getADMaterialProperty<Real>("mu_name")),
@@ -29,7 +29,7 @@ INSADHeatTurbulentDiffusion::INSADHeatTurbulentDiffusion(const InputParameters &
 }
 
 ADRealVectorValue
-INSADHeatTurbulentDiffusion::precomputeQpResidual()
+INSADEnergyTurbulentDiffusion::precomputeQpResidual()
 {
   ADReal chi = _mu_tilde[_qp] / _mu[_qp];
   Real cv1 = 7.1;

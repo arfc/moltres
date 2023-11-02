@@ -160,10 +160,6 @@ DGTurbulentDiffusion::computeQpOffDiagJacobian(Moose::DGJacobianType type, unsig
     Real D_nb = _phi_neighbor[_j][_qp] * fv1_nb / raw_value(_rho_nb[_qp]) / _sc *
       (1 + 3 * Utility::pow<3>(cv1) / (Utility::pow<3>(chi_nb) + Utility::pow<3>(cv1)));
 
-    const int elem_b_order = std::max(libMesh::Order(1), _var.order());
-    const Real h_elem =
-        _current_elem_volume / _current_side_volume * 1.0 / Utility::pow<2>(elem_b_order);
-
     switch (type)
     {
       case Moose::ElementElement:

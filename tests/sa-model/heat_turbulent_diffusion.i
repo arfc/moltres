@@ -33,7 +33,7 @@
 
 [Kernels]
   [turbulent_diffusion]
-    type = INSADHeatTurbulentDiffusion
+    type = INSADEnergyTurbulentDiffusion
     variable = temp
     mu_tilde = mu_tilde
   []

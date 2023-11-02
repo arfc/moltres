@@ -129,7 +129,7 @@ k = '${fparse viscosity * cp / 0.85}'
     thermal_conductivity = 'k'
   []
   [temp_turbulent_diffusion]
-    type = INSADHeatTurbulentDiffusion
+    type = INSADEnergyTurbulentDiffusion
     variable = temp
     mu_tilde = mu_tilde
   []
