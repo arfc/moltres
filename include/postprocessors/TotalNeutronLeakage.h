@@ -19,7 +19,7 @@ protected:
 
   std::vector<MooseVariableFEBase *> _vars;
   const MaterialProperty<std::vector<Real>> & _diffcoef;
-  int _num_groups;
+  unsigned int _num_groups;
   std::vector<const VariableValue *> _group_fluxes;
   std::vector<const VariableGradient *> _grad_group_fluxes;
 };
