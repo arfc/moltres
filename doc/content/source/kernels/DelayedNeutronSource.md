@@ -1,16 +1,11 @@
 # DelayedNeutronSource
 
-!alert construction title=Undocumented Class
-The DelayedNeutronSource has not been documented. The content listed below should be used as a starting point for
-documenting the class, which includes the typical automatic documentation associated with a
-MooseObject; however, what is contained is ultimately determined by what is necessary to make the
-documentation clear for users.
-
 !syntax description /Kernels/DelayedNeutronSource
 
 ## Overview
 
-!! Replace these lines with information regarding the DelayedNeutronSource object.
+This object adds the $\chi_g^d \sum_i^I \lambda_i C_i$ delayed neutron source term of the
+multigroup neutron diffusion equations.
 
 ## Example Input File Syntax
 

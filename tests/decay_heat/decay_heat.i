@@ -1,5 +1,5 @@
-flow_velocity=21.7 # cm/s. See MSRE-properties.ods
-global_temperature=922
+flow_velocity = 21.7 # cm/s. See MSRE-properties.ods
+global_temperature = 922
 
 [GlobalParams]
   num_groups = 2
@@ -10,122 +10,122 @@ global_temperature=922
   decay_heat_constants = '1 .1 .01'
   temperature = ${global_temperature}
   sss2_input = false
-[../]
+[]
 
 [Mesh]
   coord_type = RZ
   file = '2d_lattice_structured_smaller.msh'
-[../]
+[]
 
 [Problem]
   kernel_coverage_check = false
 []
 
 [Variables]
-  [./heat1]
+  [heat1]
     order = CONSTANT
     family = MONOMIAL
     block = 'fuel'
-  [../]
-  [./heat2]
+  []
+  [heat2]
     order = CONSTANT
     family = MONOMIAL
     block = 'fuel'
-  [../]
-  [./heat3]
+  []
+  [heat3]
     order = CONSTANT
     family = MONOMIAL
     block = 'fuel'
-  [../]
+  []
 []
 
 [Kernels]
-  [./decay_heat1_source]
+  [decay_heat1_source]
     type = HeatPrecursorSource
     variable = heat1
     decay_heat_group_number = 1
     block = 'fuel'
-  [../]
-  [./decay_heat1_decay]
+  []
+  [decay_heat1_decay]
     type = HeatPrecursorDecay
     variable = heat1
     decay_heat_group_number = 1
     block = 'fuel'
-  [../]
-  [./decay_heat2_source]
+  []
+  [decay_heat2_source]
     type = HeatPrecursorSource
     variable = heat2
     decay_heat_group_number = 2
     block = 'fuel'
-  [../]
-  [./decay_heat2_decay]
+  []
+  [decay_heat2_decay]
     type = HeatPrecursorDecay
     variable = heat2
     decay_heat_group_number = 2
     block = 'fuel'
-  [../]
-  [./decay_heat3_source]
+  []
+  [decay_heat3_source]
     type = HeatPrecursorSource
     variable = heat3
     decay_heat_group_number = 3
     block = 'fuel'
-  [../]
-  [./decay_heat3_decay]
+  []
+  [decay_heat3_decay]
     type = HeatPrecursorDecay
     variable = heat3
     decay_heat_group_number = 3
     block = 'fuel'
-  [../]
+  []
 []
 
 [DGKernels]
-  [./decay_heat1_convection]
+  [decay_heat1_convection]
     type = DGConvection
     variable = heat1
     velocity = '0 ${flow_velocity} 0'
     block = 'fuel'
-  [../]
-  [./decay_heat2_convection]
+  []
+  [decay_heat2_convection]
     type = DGConvection
     variable = heat2
     velocity = '0 ${flow_velocity} 0'
     block = 'fuel'
-  [../]
-  [./decay_heat3_convection]
+  []
+  [decay_heat3_convection]
     type = DGConvection
     variable = heat3
     velocity = '0 ${flow_velocity} 0'
     block = 'fuel'
-  [../]
+  []
 []
 
 [BCs]
-  [./decay_heat1_outflow]
+  [decay_heat1_outflow]
     type = OutflowBC
     variable = heat1
     velocity = '0 ${flow_velocity} 0'
     boundary = 'fuel_tops'
-  [../]
-  [./decay_heat2_outflow]
+  []
+  [decay_heat2_outflow]
     type = OutflowBC
     variable = heat2
     velocity = '0 ${flow_velocity} 0'
     boundary = 'fuel_tops'
-  [../]
-  [./decay_heat3_outflow]
+  []
+  [decay_heat3_outflow]
     type = OutflowBC
     variable = heat3
     velocity = '0 ${flow_velocity} 0'
     boundary = 'fuel_tops'
-  [../]
+  []
 []
 
 [Materials]
-  [./fuel]
+  [fuel]
     type = GenericMoltresMaterial
     property_tables_root = '../../property_file_dir/newt_msre_fuel_'
     interp_type = 'spline'
-  [../]
+  []
 []
 
 [Executioner]
@@ -144,20 +144,19 @@ global_temperature=922
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
-  [../]
+  []
 []
-
 
 [Outputs]
   perf_graph = true
   print_linear_residuals = true
   csv = true
-  [./out]
+  [out]
     type = Exodus
-  [../]
+  []
 []
 
 [Debug]

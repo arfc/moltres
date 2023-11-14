@@ -1,10 +1,10 @@
-flow_velocity=21.7 # cm/s. See MSRE-properties.ods
-nt_scale=1e13
-ini_temp=922
-diri_temp=922
-gamma_frac=.075
-R=70.1675
-H=162.56
+flow_velocity = 21.7 # cm/s. See MSRE-properties.ods
+nt_scale = 1e13
+ini_temp = 922
+diri_temp = 922
+gamma_frac = .075
+R = 70.1675
+H = 162.56
 
 [GlobalParams]
   num_groups = 4
@@ -24,21 +24,21 @@ H=162.56
 []
 
 [Variables]
-  [./temp]
+  [temp]
     initial_condition = ${ini_temp}
     scaling = 1e-4
-  [../]
+  []
 []
 
 [AuxVariables]
-  [./power_density]
+  [power_density]
     order = CONSTANT
     family = MONOMIAL
-  [../]
+  []
 []
 
 [Precursors]
-  [./pres]
+  [pres]
     var_name_base = pre
     block = 'fuel'
     outlet_boundaries = 'fuel_tops'
@@ -50,7 +50,7 @@ H=162.56
     family = MONOMIAL
     order = CONSTANT
     # jac_test = true
-  [../]
+  []
 []
 
 [Nt]
@@ -63,85 +63,85 @@ H=162.56
 
 [Kernels]
   # Temperature
-  [./temp_time_derivative]
+  [temp_time_derivative]
     type = MatINSTemperatureTimeDerivative
     variable = temp
-  [../]
-  [./temp_source_fuel]
+  []
+  [temp_source_fuel]
     type = TransientFissionHeatSource
     variable = temp
     block = 'fuel'
-  [../]
-  [./temp_source_mod]
+  []
+  [temp_source_mod]
     type = GammaHeatSource
     variable = temp
     block = 'moder'
     average_fission_heat = 'average_fission_heat'
     gamma = gamma_func
-  [../]
-  [./temp_diffusion]
+  []
+  [temp_diffusion]
     type = MatDiffusion
     diffusivity = 'k'
     variable = temp
-  [../]
-  [./temp_advection_fuel]
+  []
+  [temp_advection_fuel]
     type = ConservativeTemperatureAdvection
     velocity = '0 ${flow_velocity} 0'
     variable = temp
     block = 'fuel'
-  [../]
+  []
 []
 
 [BCs]
-  [./temp_diri_cg]
+  [temp_diri_cg]
     boundary = 'fuel_bottoms outer_wall'
     type = FlexiblePostprocessorDirichletBC
     postprocessor = coreEndTemp
     offset = -27.8
     variable = temp
-  [../]
+  []
   # [./temp_diri_cg]
   #   boundary = 'moder_bottoms fuel_bottoms outer_wall'
   #   type = FunctionDirichletBC
   #   function = 'temp_bc_func'
   #   variable = temp
   # [../]
-  [./temp_advection_outlet]
+  [temp_advection_outlet]
     boundary = 'fuel_tops'
     type = TemperatureOutflowBC
     variable = temp
     velocity = '0 ${flow_velocity} 0'
-  [../]
+  []
 []
 
 [AuxKernels]
-  [./fuel]
+  [fuel]
     block = 'fuel'
     type = FissionHeatSourceTransientAux
     variable = power_density
-  [../]
-  [./moderator]
+  []
+  [moderator]
     block = 'moder'
     type = ModeratorHeatSourceTransientAux
     average_fission_heat = 'average_fission_heat'
     variable = power_density
     gamma = gamma_func
-  [../]
+  []
 []
 
 [Functions]
-  [./temp_bc_func]
+  [temp_bc_func]
     type = ParsedFunction
-    value = '${ini_temp} - (${ini_temp} - ${diri_temp}) * tanh(t/1e-2)'
-  [../]
-  [./gamma_func]
+    expression = '${ini_temp} - (${ini_temp} - ${diri_temp}) * tanh(t/1e-2)'
+  []
+  [gamma_func]
     type = ParsedFunction
-    value = '${gamma_frac} * pi^2 / 4 * cos(pi * x / (2. * ${R})) * sin(pi * y / ${H})'
-  [../]
+    expression = '${gamma_frac} * pi^2 / 4 * cos(pi * x / (2. * ${R})) * sin(pi * y / ${H})'
+  []
 []
 
 [Materials]
-  [./fuel]
+  [fuel]
     type = GenericMoltresMaterial
     property_tables_root = '../../tutorial/step01_groupConstants/MSREProperties/msre_gentry_4g_fuel_rod0_'
     interp_type = 'spline'
@@ -149,16 +149,16 @@ H=162.56
     prop_names = 'k cp'
     prop_values = '.0553 1967' # Robertson MSRE technical report @ 922 K
     controller_gain = 0
-  [../]
-  [./rho_fuel]
+  []
+  [rho_fuel]
     type = DerivativeParsedMaterial
-    f_name = rho
-    function = '2.146e-3 * exp(-1.8 * 1.18e-4 * (temp - 922))'
-    args = 'temp'
+    property_name = rho
+    expression = '2.146e-3 * exp(-1.8 * 1.18e-4 * (temp - 922))'
+    coupled_variables = 'temp'
     derivative_order = 1
     block = 'fuel'
-  [../]
-  [./moder]
+  []
+  [moder]
     type = GenericMoltresMaterial
     property_tables_root = '../../tutorial/step01_groupConstants/MSREProperties/msre_gentry_4g_moder_rod0_'
     interp_type = 'spline'
@@ -166,15 +166,15 @@ H=162.56
     prop_values = '.312 1760' # Cammi 2011 at 908 K
     block = 'moder'
     controller_gain = 0
-  [../]
-  [./rho_moder]
+  []
+  [rho_moder]
     type = DerivativeParsedMaterial
-    f_name = rho
-    function = '1.86e-3 * exp(-1.8 * 1.0e-5 * (temp - 922))'
-    args = 'temp'
+    property_name = rho
+    expression = '1.86e-3 * exp(-1.8 * 1.0e-5 * (temp - 922))'
+    coupled_variables = 'temp'
     derivative_order = 1
     block = 'moder'
-  [../]
+  []
 []
 
 [Executioner]
@@ -194,70 +194,70 @@ H=162.56
   l_max_its = 100
 
   dtmin = 1e-5
-  [./TimeStepper]
+  [TimeStepper]
     type = PostprocessorDT
     postprocessor = limit_k
     dt = 1e-3
-  [../]
+  []
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
-  [../]
+  []
 []
 
 [Postprocessors]
-  [./group1_current]
+  [group1_current]
     type = IntegralNewVariablePostprocessor
     variable = group1
     outputs = 'console csv'
-  [../]
-  [./group1_old]
+  []
+  [group1_old]
     type = IntegralOldVariablePostprocessor
     variable = group1
     outputs = 'console csv'
-  [../]
-  [./multiplication]
+  []
+  [multiplication]
     type = DivisionPostprocessor
     value1 = group1_current
     value2 = group1_old
     outputs = 'console csv'
-  [../]
-  [./temp_fuel]
+  []
+  [temp_fuel]
     type = ElementAverageValue
     variable = temp
     block = 'fuel'
     outputs = 'csv console'
-  [../]
-  [./temp_moder]
+  []
+  [temp_moder]
     type = ElementAverageValue
     variable = temp
     block = 'moder'
     outputs = 'csv console'
-  [../]
-  [./average_fission_heat]
+  []
+  [average_fission_heat]
     type = AverageFissionHeat
     execute_on = 'linear nonlinear'
     outputs = 'csv console'
     block = 'fuel'
-  [../]
-  [./coreEndTemp]
+  []
+  [coreEndTemp]
     type = SideAverageValue
     variable = temp
     boundary = 'fuel_tops'
     outputs = 'csv console'
     execute_on = 'linear nonlinear'
-  [../]
-  [./limit_k]
+  []
+  [limit_k]
     type = LimitK
     execute_on = 'timestep_end'
     k_postprocessor = multiplication
     growth_factor = 1.2
     cutback_factor = .4
     k_threshold = 1.5
-  [../]
+  []
 []
 
 [Outputs]

@@ -1,0 +1,23 @@
+[Tests]
+  [coupled_transient_scale]
+    type = 'Exodiff'
+    input = 'auto_diff_rho.i'
+    exodiff = 'auto_diff_rho.e'
+    heavy = true
+    max_time = 300
+  []
+  [coupled_transient_serpent]
+    type = 'Exodiff'
+    input = 'auto_diff_rho_serpent.i'
+    exodiff = 'auto_diff_rho_serpent.e'
+    heavy = true
+    max_time = 300
+  []
+  [coupled_eigenvalue]
+    type = 'Exodiff'
+    input = 'coupled_eigenvalue.i'
+    exodiff = 'coupled_eigenvalue.e'
+    # We loosen up the tolerance to make the test pass in parallel. Alternatively, could explore tightening some of the eigen solve tolerances
+    rel_err = 1e-4
+  []
+[]

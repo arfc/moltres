@@ -1,16 +1,13 @@
 # DivFreeCoupledScalarAdvection
 
-!alert construction title=Undocumented Class
-The DivFreeCoupledScalarAdvection has not been documented. The content listed below should be used as a starting point for
-documenting the class, which includes the typical automatic documentation associated with a
-MooseObject; however, what is contained is ultimately determined by what is necessary to make the
-documentation clear for users.
-
 !syntax description /Kernels/DivFreeCoupledScalarAdvection
 
 ## Overview
 
-!! Replace these lines with information regarding the DivFreeCoupledScalarAdvection object.
+This object adds the $\vec{u}\cdot\nabla C_i$ advection term of the delayed neutron precursor
+equation. $\vec{u}$ can be either constant velocity values defined using the `u_def`, `v_def`, and
+`w_def` input parameters or coupled velocity variables using the `u`, `v`, and `w` input
+parameters.
 
 ## Example Input File Syntax
 

@@ -18,26 +18,26 @@ fuel_sq_rad = 39.94
 []
 
 [Variables]
-  [./vel_x]
+  [vel_x]
     order = SECOND
     family = LAGRANGE
     block = 'fuel'
-  [../]
-  [./vel_y]
+  []
+  [vel_y]
     order = SECOND
     family = LAGRANGE
     block = 'fuel'
-  [../]
-  [./vel_z]
+  []
+  [vel_z]
     order = SECOND
     family = LAGRANGE
     block = 'fuel'
-  [../]
-  [./p]
+  []
+  [p]
     order = FIRST
     family = LAGRANGE
     block = 'fuel'
-  [../]
+  []
 []
 
 [Kernels]
@@ -53,15 +53,15 @@ fuel_sq_rad = 39.94
   #   type = INSMomentumTimeDerivative
   #   variable = vel_z
   # [../]
-  [./mass]
+  [mass]
     type = INSMass
     variable = p
     u = vel_x
     v = vel_y
     w = vel_z
     p = p
-  [../]
-  [./x_momentum_space]
+  []
+  [x_momentum_space]
     type = INSMomentumLaplaceForm
     variable = vel_x
     u = vel_x
@@ -69,16 +69,16 @@ fuel_sq_rad = 39.94
     w = vel_z
     p = p
     component = 0
-  [../]
-  [./y_momentum_space]
+  []
+  [y_momentum_space]
     type = INSMomentumLaplaceForm
     variable = vel_y
     u = vel_x
     v = vel_y
     p = p
     component = 1
-  [../]
-  [./z_momentum_space]
+  []
+  [z_momentum_space]
     type = INSMomentumLaplaceForm
     variable = vel_z
     u = vel_x
@@ -86,52 +86,52 @@ fuel_sq_rad = 39.94
     w = vel_z
     p = p
     component = 2
-  [../]
+  []
 []
 
 [BCs]
-  [./z_no_slip]
+  [z_no_slip]
     type = DirichletBC
     variable = vel_z
     boundary = 'fuel_sides'
     value = 0.0
-  [../]
-  [./y_no_slip]
+  []
+  [y_no_slip]
     type = DirichletBC
     variable = vel_y
     boundary = 'fuel_sides fuel_bottoms'
     value = 0.0
-  [../]
-  [./x_no_slip]
+  []
+  [x_no_slip]
     type = DirichletBC
     variable = vel_x
     boundary = 'fuel_sides fuel_bottoms'
     value = 0.0
-  [../]
-  [./z_inlet]
+  []
+  [z_inlet]
     type = FunctionDirichletBC
     variable = vel_z
     boundary = 'fuel_bottoms'
     function = 'inlet_func'
-  [../]
+  []
 []
 
 [Materials]
-  [./const]
+  [const]
     type = GenericConstantMaterial
     # block = 'fuel moder'
     block = 'fuel'
     prop_names = 'rho mu'
     prop_values = '${rho}  ${mu}'
-  [../]
+  []
 []
 
 [Preconditioning]
-  [./smp]
+  [smp]
     type = SMP
     full = true
     solve_type = PJFNK
-  [../]
+  []
 []
 
 [Executioner]
@@ -150,16 +150,16 @@ fuel_sq_rad = 39.94
 []
 
 [Outputs]
-  [./out]
+  [out]
     type = Exodus
-  [../]
+  []
 []
 
 [Functions]
-  [./inlet_func]
+  [inlet_func]
     type = ParsedFunction
-    # value = '${fuel_velocity_max_inlet} * (${fuel_sq_rad}^2 - x^2) * (${fuel_sq_rad}^2 - y^2) / ${fuel_sq_rad}^4'
-    value = '${fuel_velocity_max_inlet} * (1 - cosh(pi * y / (2 * ${fuel_sq_rad})) / cosh(pi / 2)) * cos(pi * x / (2 * ${fuel_sq_rad}))'
-    # value = '${fuel_velocity_max_inlet} * cos(pi * x / (2 * ${fuel_sq_rad})) * cos(pi * y / (2 * ${fuel_sq_rad}))'
-  [../]
+    # expression = '${fuel_velocity_max_inlet} * (${fuel_sq_rad}^2 - x^2) * (${fuel_sq_rad}^2 - y^2) / ${fuel_sq_rad}^4'
+    expression = '${fuel_velocity_max_inlet} * (1 - cosh(pi * y / (2 * ${fuel_sq_rad})) / cosh(pi / 2)) * cos(pi * x / (2 * ${fuel_sq_rad}))'
+    # expression = '${fuel_velocity_max_inlet} * cos(pi * x / (2 * ${fuel_sq_rad})) * cos(pi * y / (2 * ${fuel_sq_rad}))'
+  []
 []

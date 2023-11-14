@@ -1,16 +1,15 @@
 # VacuumConcBC
 
-!alert construction title=Undocumented Class
-The VacuumConcBC has not been documented. The content listed below should be used as a starting point for
-documenting the class, which includes the typical automatic documentation associated with a
-MooseObject; however, what is contained is ultimately determined by what is necessary to make the
-documentation clear for users.
-
 !syntax description /BCs/VacuumConcBC
 
 ## Overview
 
-!! Replace these lines with information regarding the VacuumConcBC object.
+This object adds the $\frac{\phi}{4}-\frac{D_g}{2}\hat{n}\cdot\nabla\phi_g = 0$ vacuum boundary
+condition of the multigroup neutron diffusion equations. The weak form after applying integration
+by parts to the neutron diffusion term ([GroupDiffusion](/GroupDiffusion.md)) is:
+
+!equation
+\int_{\partial V}\psi D_g\nabla\phi_g\cdot\hat{n}\ dS = \int_{\partial V}\psi\frac{\phi_g}{2}\ dS
 
 ## Example Input File Syntax
 

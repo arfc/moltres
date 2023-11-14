@@ -1,5 +1,5 @@
-xmax=.05
-ymax=.05
+xmax = .05
+ymax = .05
 
 [GlobalParams]
   #integrate_p_by_parts = false
@@ -7,7 +7,7 @@ ymax=.05
 []
 
 [Mesh]
-  [./generate]
+  [generate]
     type = GeneratedMeshGenerator
     dim = 2
     xmax = ${xmax}
@@ -16,24 +16,23 @@ ymax=.05
     ny = 20
     elem_type = QUAD9
   []
-  [./bottom_left]
+  [bottom_left]
     type = ExtraNodesetGenerator
     input = generate
     new_boundary = corner
     coord = '0 0'
-  [../]
+  []
 []
-
 
 [Problem]
 []
 
 [Preconditioning]
-  [./Newton_SMP]
+  [Newton_SMP]
     type = SMP
     full = true
     solve_type = 'NEWTON'
-  [../]
+  []
 []
 
 [Executioner]
@@ -46,7 +45,7 @@ ymax=.05
   petsc_options_value = 'lu	  NONZERO		1e-10'
   # petsc_options_iname = '-snes_type'
   # petsc_options_value = 'test'
-   line_search = 'none'
+  line_search = 'none'
   nl_rel_tol = 1e-12
   nl_max_its = 20
   l_tol = 1e-6
@@ -64,141 +63,139 @@ ymax=.05
 []
 
 [Debug]
-    show_var_residual_norms = true
+  show_var_residual_norms = true
 []
 
 [Outputs]
   perf_graph = true
   print_linear_residuals = true
-  [./out]
+  [out]
     type = Exodus
     execute_on = 'final'
   []
 []
 
 [Variables]
-  [./ux]
+  [ux]
     family = LAGRANGE
     order = SECOND
-  [../]
-  [./uy]
+  []
+  [uy]
     family = LAGRANGE
     order = SECOND
-  [../]
-  [./p]
+  []
+  [p]
     family = LAGRANGE
     order = FIRST
-  [../]
-  [./temp]
+  []
+  [temp]
     family = LAGRANGE
     order = SECOND
     initial_condition = 340
     scaling = 1e-4
-  [../]
+  []
 []
 
-
 [BCs]
-  [./ux_dirichlet]
+  [ux_dirichlet]
     type = DirichletBC
     boundary = 'left right bottom top'
     variable = ux
     value = 0
-  [../]
-  [./uy_dirichlet]
+  []
+  [uy_dirichlet]
     type = DirichletBC
     boundary = 'left right bottom top'
     variable = uy
     value = 0
-  [../]
-  [./p_zero]
+  []
+  [p_zero]
     type = DirichletBC
     boundary = corner
     variable = p
     value = 0
-  [../]
-  [./temp_insulate]
+  []
+  [temp_insulate]
     type = NeumannBC
     variable = temp
     value = 0 # no conduction through side walls
     boundary = 'top bottom' # not top
-  [../]
-  [./coldOnTop]
+  []
+  [coldOnTop]
     type = DirichletBC
     variable = temp
     boundary = left
     value = 300
-  [../]
-  [./hotOnBottom]
+  []
+  [hotOnBottom]
     type = DirichletBC
     variable = temp
     boundary = right
     value = 400
-  [../]
+  []
 []
 
-
 [Kernels]
-  [./mass]
+  [mass]
     type = INSMass
     variable = p
     u = ux
     v = uy
     pressure = p
-  [../]
-  [./x_time_deriv]
+  []
+  [x_time_deriv]
     type = INSMomentumTimeDerivative
     variable = ux
-  [../]
-  [./y_time_deriv]
+  []
+  [y_time_deriv]
     type = INSMomentumTimeDerivative
     variable = uy
-  [../]
-  [./x_momentum_space]
+  []
+  [x_momentum_space]
     type = INSMomentumLaplaceForm
     variable = ux
     u = ux
     v = uy
     pressure = p
     component = 0
-  [../]
-  [./y_momentum_space]
+  []
+  [y_momentum_space]
     type = INSMomentumLaplaceForm
     variable = uy
     u = ux
     v = uy
     pressure = p
     component = 1
-  [../]
-  [./tempTimeDeriv]
+  []
+  [tempTimeDeriv]
     type = MatINSTemperatureTimeDerivative
     variable = temp
-  [../]
-  [./tempAdvectionDiffusion]
+  []
+  [tempAdvectionDiffusion]
     type = INSTemperature
     variable = temp
     u = ux
     v = uy
-  [../]
-  [./buoyancy_x]
+  []
+  [buoyancy_x]
     type = INSBoussinesqBodyForce
     variable = ux
     component = 0
     temperature = temp
-  [../]
-  [./buoyancy_y]
+  []
+  [buoyancy_y]
     type = INSBoussinesqBodyForce
     variable = uy
     component = 1
     temperature = temp
-  [../]
+  []
 []
 
 [Materials]
-  [./const]
+  [const]
     type = GenericConstantMaterial
     # alpha = coefficient of thermal expansion where rho  = rho0 -alpha * rho0 * delta T
-    prop_names =  'mu        rho    temp_ref alpha   k        cp'
+    prop_names = 'mu        rho    temp_ref alpha   k        cp'
     prop_values = '30.74e-6  .5757  900      2.9e-3  46.38e-3 1054'
-  [../]
+  []
 []

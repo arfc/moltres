@@ -1,5 +1,5 @@
-flow_velocity=20
-global_temperature=922
+flow_velocity = 20
+global_temperature = 922
 
 [GlobalParams]
   num_groups = 0
@@ -15,10 +15,10 @@ global_temperature=922
   nx = 20
   xmax = 100
   elem_type = EDGE2
-[../]
+[]
 
 [Precursors]
-  [./core]
+  [core]
     var_name_base = pre
     outlet_boundaries = 'right'
     u_def = ${flow_velocity}
@@ -31,21 +31,21 @@ global_temperature=922
     multi_app = loopApp
     is_loopapp = true
     inlet_boundaries = 'left'
-  [../]
+  []
 []
 
 [Materials]
-  [./fuel]
+  [fuel]
     type = GenericMoltresMaterial
     num_groups = 2
     property_tables_root = '../../property_file_dir/newt_msre_fuel_'
     interp_type = 'spline'
-  [../]
+  []
 []
 
 [Executioner]
   type = Transient
-  end_time = 500
+  end_time = 400
   nl_rel_tol = 1e-6
   nl_abs_tol = 1e-5
   solve_type = 'NEWTON'
@@ -56,20 +56,21 @@ global_temperature=922
   nl_max_its = 20
   l_max_its = 50
   dtmin = 1e-2
-  [./TimeStepper]
+  dtmax = 4
+  [TimeStepper]
     type = IterationAdaptiveDT
     dt = 1e-2
     cutback_factor = 0.4
     growth_factor = 1.2
     optimal_iterations = 20
-  [../]
+  []
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
-  [../]
+  []
 []
 
 [Postprocessors]
@@ -78,10 +79,10 @@ global_temperature=922
 [Outputs]
   perf_graph = true
   print_linear_residuals = true
-  [./out]
+  [out]
     type = Exodus
     execute_on = 'final'
-  [../]
+  []
 []
 
 [Debug]

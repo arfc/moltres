@@ -1,5 +1,5 @@
 [Mesh]
-  [./box]
+  [box]
     type = GeneratedMeshGenerator
     dim = 2
     nx = 20
@@ -8,71 +8,71 @@
     xmax = 1
     ymin = 0
     ymax = 1
-  [../]
+  []
 []
 
 [Variables]
-  [./u]
+  [u]
     order = CONSTANT
     family = MONOMIAL
-  [../]
+  []
 []
 
 [AuxVariables]
-  [./v]
+  [v]
     order = FIRST
     family = LAGRANGE
-  [../]
+  []
 []
 
 [Kernels]
-  [./diff]
+  [diff]
     type = Diffusion
     variable = u
-  [../]
+  []
 []
 
 [DGKernels]
-  [./dg_advection]
+  [dg_advection]
     type = DGCoupledAdvection
     variable = u
     uvel = 0
     vvel = v
-  [../]
+  []
 []
 
 [AuxKernels]
-  [./v_aux]
+  [v_aux]
     type = FunctionAux
     variable = v
     function = vel_func
-  [../]
+  []
 []
 
 [BCs]
-  [./u_inlet]
+  [u_inlet]
     type = PostprocessorCoupledInflowBC
     variable = u
     boundary = 'bottom'
     postprocessor = 1
     uvel = 0
     vvel = v
-  [../]
-  [./u_outlet]
+  []
+  [u_outlet]
     type = CoupledOutflowBC
     variable = u
     boundary = 'top'
     uvel = 0
     vvel = v
-  [../]
+  []
 []
 
 [Functions]
   # Parabolic, upward flow
-  [./vel_func]
+  [vel_func]
     type = ParsedFunction
-    value = '-(x - 0) * (x - 1)'
-  [../]
+    expression = '-(x - 0) * (x - 1)'
+  []
 []
 
 [Executioner]
@@ -81,7 +81,7 @@
 []
 
 [Outputs]
-  [./out]
+  [out]
     type = Exodus
-  [../]
+  []
 []

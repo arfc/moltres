@@ -1,6 +1,6 @@
-flow_velocity=21.7 # cm/s. See MSRE-properties.ods
-nt_scale=1e13
-ini_temp=922
+flow_velocity = 21.7 # cm/s. See MSRE-properties.ods
+nt_scale = 1e13
+ini_temp = 922
 
 [GlobalParams]
   num_groups = 2
@@ -15,56 +15,56 @@ ini_temp=922
 []
 
 [Variables]
-  [./temp]
+  [temp]
     initial_condition = ${ini_temp}
-  [../]
+  []
 []
 
 [Kernels]
-  [./temp_source_fuel]
+  [temp_source_fuel]
     type = TransientFissionHeatSource
     variable = temp
-    nt_scale=${nt_scale}
+    nt_scale = ${nt_scale}
     block = 'fuel'
     group_fluxes = '1 1'
-  [../]
-  [./temp_diffusion]
+  []
+  [temp_diffusion]
     type = MatDiffusion
     diffusivity = 'k'
     variable = temp
-  [../]
-  [./temp_advection_fuel]
+  []
+  [temp_advection_fuel]
     type = ConservativeTemperatureAdvection
     velocity = '0 ${flow_velocity} 0'
     variable = temp
     block = 'fuel'
-  [../]
+  []
 []
 
 [BCs]
-  [./temp_diri_cg]
+  [temp_diri_cg]
     boundary = 'moder_bottoms fuel_bottoms outer_wall'
     type = FunctionDirichletBC
     function = 'temp_bc_func'
     variable = temp
-  [../]
-  [./temp_advection_outlet]
+  []
+  [temp_advection_outlet]
     boundary = 'fuel_tops'
     type = TemperatureOutflowBC
     variable = temp
     velocity = '0 ${flow_velocity} 0'
-  [../]
+  []
 []
 
 [Functions]
-  [./temp_bc_func]
+  [temp_bc_func]
     type = ParsedFunction
-    value = '${ini_temp}'
-  [../]
+    expression = '${ini_temp}'
+  []
 []
 
 [Materials]
-  [./fuel]
+  [fuel]
     type = GenericMoltresMaterial
     property_tables_root = '../../property_file_dir/newt_msre_fuel_'
     interp_type = 'spline'
@@ -72,16 +72,16 @@ ini_temp=922
     block = 'fuel'
     prop_names = 'k cp'
     prop_values = '.0553 1967' # Robertson MSRE technical report @ 922 K
-  [../]
-  [./rho_fuel]
+  []
+  [rho_fuel]
     type = DerivativeParsedMaterial
-    f_name = rho
-    function = '2.146e-3 * exp(-1.8 * 1.18e-4 * (temp - 922))'
-    args = 'temp'
+    property_name = rho
+    expression = '2.146e-3 * exp(-1.8 * 1.18e-4 * (temp - 922))'
+    coupled_variables = 'temp'
     derivative_order = 1
     block = 'fuel'
-  [../]
-  [./moder]
+  []
+  [moder]
     type = GenericMoltresMaterial
     property_tables_root = '../../property_file_dir/newt_msre_mod_'
     interp_type = 'spline'
@@ -89,15 +89,15 @@ ini_temp=922
     prop_names = 'k cp'
     prop_values = '.312 1760' # Cammi 2011 at 908 K
     block = 'moder'
-  [../]
-  [./rho_moder]
+  []
+  [rho_moder]
     type = DerivativeParsedMaterial
-    f_name = rho
-    function = '1.86e-3 * exp(-1.8 * 1.0e-5 * (temp - 922))'
-    args = 'temp'
+    property_name = rho
+    expression = '1.86e-3 * exp(-1.8 * 1.0e-5 * (temp - 922))'
+    coupled_variables = 'temp'
     derivative_order = 1
     block = 'moder'
-  [../]
+  []
 []
 
 [Executioner]
@@ -115,33 +115,33 @@ ini_temp=922
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
-  [../]
+  []
 []
 
 [Postprocessors]
-  [./temp_fuel]
+  [temp_fuel]
     type = ElementAverageValue
     variable = temp
     block = 'fuel'
     outputs = 'console'
-  [../]
-  [./temp_moder]
+  []
+  [temp_moder]
     type = ElementAverageValue
     variable = temp
     block = 'moder'
     outputs = 'console'
-  [../]
+  []
 []
 
 [Outputs]
   perf_graph = true
   print_linear_residuals = true
-  [./out]
+  [out]
     type = Exodus
-  [../]
+  []
 []
 
 [Debug]
