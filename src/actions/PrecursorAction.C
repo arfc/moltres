@@ -52,6 +52,11 @@ PrecursorAction::validParams()
   params.addParam<bool>("nt_exp_form",
                         false,
                         "Whether concentrations should be in an expotential/logarithmic format.");
+  params.addParam<Real>("eigenvalue_scaling",
+                        1.0,
+                        "Artificial scaling factor for the fission source. Primarily for "
+                        "introducing artificial reactivity to make super/subcritical systems "
+                        "exactly critical or to simulate reactivity insertions/withdrawals.");
   params.addParam<bool>("jac_test",
                         false,
                         "Whether we're testing the Jacobian and should use some "
@@ -60,8 +65,8 @@ PrecursorAction::validParams()
   params.addParam<bool>(
       "init_from_file", false, "Whether to initialize the precursors from a file.");
   params.addParam<bool>("create_vars", true, "Whether this action should create the variables.");
-  params.addRequiredParam<bool>(
-      "loop_precursors", "Whether precursors are circulated in coolant loop.");
+  params.addRequiredParam<bool>("loop_precursors",
+                                "Whether precursors are circulated in coolant loop.");
   params.addParam<std::string>(
       "object_suffix",
       "",
@@ -72,7 +77,7 @@ PrecursorAction::validParams()
                                               "from the base list of blocks. Replaces the 'block'"
                                               "parameter when initializing kernels.");
   params.addParam<MultiAppName>("multi_app", "Multiapp name for looping precursors.");
-  params.addParam<bool>("is_loopapp", "if circulating precursors, whether this is loop app");
+  params.addParam<bool>("is_loopapp", false, "if circulating precursors, whether this is loop app");
   params.addParam<bool>("eigen", false, "whether neutronics is in eigenvalue calculation mode");
   params.addParam<NonlinearVariableName>("outlet_vel",
                                          "Name of the velocity variable normal to the "
@@ -87,7 +92,8 @@ PrecursorAction::PrecursorAction(const InputParameters & params)
     _num_precursor_groups(getParam<unsigned int>("num_precursor_groups")),
     _var_name_base(getParam<std::string>("var_name_base")),
     _num_groups(getParam<unsigned int>("num_groups")),
-    _object_suffix(getParam<std::string>("object_suffix"))
+    _object_suffix(getParam<std::string>("object_suffix")),
+    _is_loopapp(getParam<bool>("is_loopapp"))
 {
   if (getParam<bool>("loop_precursors"))
   {
@@ -122,7 +128,7 @@ PrecursorAction::act()
 
         else if (_current_task == "copy_nodal_vars")
         {
-          SystemBase * system = &_problem->getNonlinearSystemBase();
+          SystemBase * system = &_problem->getNonlinearSystemBase(/*nl_sys_num=*/0);
           system->addVariableToCopy(var_name, var_name, "LATEST");
         }
       }
@@ -169,8 +175,7 @@ PrecursorAction::act()
     }
 
     // transfers
-    else if (_current_task == "add_transfer" && getParam<bool>("loop_precursors") &&
-        !getParam<bool>("is_loopapp"))
+    else if (_current_task == "add_transfer" && getParam<bool>("loop_precursors") && (!_is_loopapp))
     {
       // Set up MultiAppTransfer to simulate precursor looped flow into and
       // out of the reactor core
@@ -181,7 +186,7 @@ PrecursorAction::act()
   // Add outflow rate postprocessor for Navier-Stokes velocities in the main
   // app if precursors are looped
   if (_current_task == "add_postprocessor" && getParam<bool>("loop_precursors") &&
-      isParamValid("uvel") && !getParam<bool>("is_loopapp"))
+      isParamValid("uvel") && (!_is_loopapp))
     addCoolantOutflowPostprocessor();
 }
 
@@ -195,6 +200,7 @@ PrecursorAction::addPrecursorSource(const unsigned & op, const std::string & var
   std::vector<std::string> include = {"temperature", "group_fluxes"};
   params.applySpecificParameters(parameters(), include);
   params.set<bool>("use_exp_form") = getParam<bool>("nt_exp_form");
+  params.set<Real>("eigenvalue_scaling") = getParam<Real>("eigenvalue_scaling");
   if (getParam<bool>("eigen"))
     params.set<std::vector<TagName>>("extra_vector_tags") = {"eigen"};
 
@@ -292,7 +298,7 @@ PrecursorAction::addOutflowBC(const std::string & var_name)
     InputParameters params = _factory.getValidParams("CoupledOutflowBC");
     params.set<NonlinearVariableName>("variable") = var_name;
     params.set<std::vector<BoundaryName>>("boundary") =
-      getParam<std::vector<BoundaryName>>("outlet_boundaries");
+        getParam<std::vector<BoundaryName>>("outlet_boundaries");
     params.set<std::vector<VariableName>>("uvel") = {getParam<NonlinearVariableName>("uvel")};
     if (isParamValid("vvel"))
       params.set<std::vector<VariableName>>("vvel") = {getParam<NonlinearVariableName>("vvel")};
@@ -408,7 +414,7 @@ PrecursorAction::addOutletPostprocessor(const std::string & var_name)
     params.set<std::vector<BoundaryName>>("boundary") =
         getParam<std::vector<BoundaryName>>("outlet_boundaries");
     params.set<std::vector<OutputName>>("outputs") = {"none"};
-     _problem->addPostprocessor("SideAverageValue", postproc_name, params);
+    _problem->addPostprocessor("SideAverageValue", postproc_name, params);
   }
   else if (isParamValid("uvel")) // checks if Navier-Stokes velocities are provided
   {
@@ -422,8 +428,8 @@ PrecursorAction::addOutletPostprocessor(const std::string & var_name)
       params.set<std::vector<BoundaryName>>("boundary") =
           getParam<std::vector<BoundaryName>>("outlet_boundaries");
       params.set<std::vector<OutputName>>("outputs") = {"none"};
-      params.set<std::vector<VariableName>>("weight") =
-          {getParam<NonlinearVariableName>("outlet_vel")};
+      params.set<std::vector<VariableName>>("weight") = {
+          getParam<NonlinearVariableName>("outlet_vel")};
 
       _problem->addPostprocessor("SideWeightedIntegralPostprocessor", postproc_name, params);
     }
@@ -437,7 +443,7 @@ PrecursorAction::addOutletPostprocessor(const std::string & var_name)
       params.set<PostprocessorName>("value1") = "Outlet_Total_" + var_name + "_" + _object_suffix;
       params.set<PostprocessorName>("value2") = "Coolant_Outflow_" + _object_suffix;
       params.set<std::vector<OutputName>>("outputs") = {"none"};
-       _problem->addPostprocessor("DivisionPostprocessor", postproc_name, params);
+      _problem->addPostprocessor("DivisionPostprocessor", postproc_name, params);
     }
   }
 }
@@ -490,8 +496,8 @@ PrecursorAction::addCoolantOutflowPostprocessor()
 {
   std::string postproc_name = "Coolant_Outflow_" + _object_suffix;
   InputParameters params = _factory.getValidParams("SideWeightedIntegralPostprocessor");
-  params.set<std::vector<VariableName>>("variable") =
-      {getParam<NonlinearVariableName>("outlet_vel")};
+  params.set<std::vector<VariableName>>("variable") = {
+      getParam<NonlinearVariableName>("outlet_vel")};
   params.set<std::vector<BoundaryName>>("boundary") =
       getParam<std::vector<BoundaryName>>("outlet_boundaries");
   params.set<std::vector<OutputName>>("outputs") = {"none"};
@@ -503,10 +509,9 @@ void
 PrecursorAction::setVarNameAndBlock(InputParameters & params, const std::string & var_name)
 {
   params.set<NonlinearVariableName>("variable") = var_name;
-    if (isParamValid("kernel_block"))
-      params.set<std::vector<SubdomainName>>("block") =
-          getParam<std::vector<SubdomainName>>("kernel_block");
-    else if (isParamValid("block"))
-      params.set<std::vector<SubdomainName>>("block") =
-          getParam<std::vector<SubdomainName>>("block");
+  if (isParamValid("kernel_block"))
+    params.set<std::vector<SubdomainName>>("block") =
+        getParam<std::vector<SubdomainName>>("kernel_block");
+  else if (isParamValid("block"))
+    params.set<std::vector<SubdomainName>>("block") = getParam<std::vector<SubdomainName>>("block");
 }

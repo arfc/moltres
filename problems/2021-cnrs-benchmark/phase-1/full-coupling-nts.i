@@ -34,7 +34,6 @@
   var_name_base = group
   vacuum_boundaries = 'bottom left right top'
   create_temperature_var = false
-#  transient = false
   eigen = true
 #  scaling = 1e3
 []

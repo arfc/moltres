@@ -1,16 +1,17 @@
 # FissionHeatSource
 
-!alert construction title=Undocumented Class
-The FissionHeatSource has not been documented. The content listed below should be used as a starting point for
-documenting the class, which includes the typical automatic documentation associated with a
-MooseObject; however, what is contained is ultimately determined by what is necessary to make the
-documentation clear for users.
-
 !syntax description /Kernels/FissionHeatSource
 
 ## Overview
 
-!! Replace these lines with information regarding the FissionHeatSource object.
+This object adds the $\frac{P}{\int_V \sum_{g' = 1}^G \epsilon_{g'} \Sigma_{g'}^f \phi_{g'} dV} \sum_{g' = 1}^G \epsilon_{g'} \Sigma_{g'}^f \phi_{g'}$ heat source term of the steady-state temperature
+advection-diffusion equation with coupled neutron fluxes from a $k$-eigenvalue calculation. The
+`power` input parameter allows the user to set a fixed thermal power output regardless of the
+neutron flux normalization factor. Alternatively, one may choose to normalize the neutron flux
+instead using the `normalization` and `normal_factor` parameters for the
+[InversePowerMethod](https://mooseframework.inl.gov/source/executioners/InversePowerMethod.html) or
+[NonlinearEigen](https://mooseframework.inl.gov/source/executioners/NonlinearEigen.html)
+executioners.
 
 ## Example Input File Syntax
 

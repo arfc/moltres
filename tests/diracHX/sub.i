@@ -2,16 +2,7 @@
 # test does a sinusoid heat removal in the loop
 # Courant # = 0.5
 
-flow_velocity=0.5 # cm/s. See MSRE-properties.ods
-
-[GlobalParams]
-  num_groups = 0
-  num_precursor_groups = 6
-  group_fluxes = ''
-  temperature = temp
-  sss2_input = false
-  # account_delayed = true
-[]
+flow_velocity = 0.5 # cm/s. See MSRE-properties.ods
 
 [Mesh]
   type = GeneratedMesh
@@ -19,60 +10,44 @@ flow_velocity=0.5 # cm/s. See MSRE-properties.ods
   nx = 100
   xmax = 100
   elem_type = EDGE2
-[../]
+[]
 
 [Variables]
-  [./temp]
+  [temp]
     initial_condition = 930 #approx steady outlet of other problem
     scaling = 1e-4
     family = MONOMIAL
     order = CONSTANT
-  [../]
-[]
-
-[Precursors]
- [./core]
-  var_name_base = pre
-  outlet_boundaries = 'right'
-  u_def = ${flow_velocity}
-  v_def = 0
-  w_def = 0
-  nt_exp_form = false
-  loop_precursors = false
-  family = MONOMIAL
-  order = FIRST
- [../]
+  []
 []
 
 [Kernels]
   # Temperature
-  [./temp_time_derivative]
+  [temp_time_derivative]
     type = MatINSTemperatureTimeDerivative
     variable = temp
-  [../]
+  []
 []
 
 [DGKernels]
-  [./temp_adv]
+  [temp_adv]
     type = DGTemperatureAdvection
     variable = temp
     velocity = '${flow_velocity} 0 0'
-  [../]
+  []
 []
 
-
 [DiracKernels]
-  [./heat_exchanger]
+  [heat_exchanger]
     type = DiracHX
     variable = temp
     power = 100 # see controls
     point = '50 0 0'
-  [../]
+  []
 []
 
-
 [BCs]
-  [./fuel_bottoms_looped]
+  [fuel_bottoms_looped]
     boundary = 'left'
     type = TemperatureInflowBC
     variable = temp
@@ -80,47 +55,44 @@ flow_velocity=0.5 # cm/s. See MSRE-properties.ods
     vv = 0
     ww = 0
     inlet_conc = 930
-  [../]
-  [./temp_advection_outlet]
+  []
+  [temp_advection_outlet]
     boundary = 'right'
     type = TemperatureOutflowBC
     variable = temp
     velocity = '${flow_velocity} 0 0'
-  [../]
+  []
 []
 
 [Functions]
-  [./heatRemovalFcn]
+  [heatRemovalFcn]
     type = ParsedFunction
-    value = '1e2 + 1e2 * sin(t/5) ' # start losing cooling at t=50s
-  [../]
+    expression = '1e2 + 1e2 * sin(t/5) ' # start losing cooling at t=50s
+  []
 []
 
 [Controls]
-  [./hxFuncCtrl]
+  [hxFuncCtrl]
     type = RealFunctionControl
     parameter = DiracKernels/heat_exchanger/power
     function = heatRemovalFcn
     execute_on = 'initial timestep_begin'
-  [../]
+  []
 []
 
 [Materials]
-  # need GenericMoltresMaterial so that DECAY_CONSTANT can be obtained
-  [./fuel]
-    type = GenericMoltresMaterial
-    property_tables_root = '../../property_file_dir/newt_msre_fuel_'
-    interp_type = 'spline'
+  [fuel]
+    type = GenericConstantMaterial
     prop_names = 'k cp'
     prop_values = '.0553 1967' # Robertson MSRE technical report @ 922 K
-  [../]
-  [./rho_fuel]
+  []
+  [rho_fuel]
     type = DerivativeParsedMaterial
-    f_name = rho
-    function = '2.146e-3 * exp(-1.8 * 1.18e-4 * (temp - 922))'
-    args = 'temp'
+    property_name = rho
+    expression = '2.146e-3 * exp(-1.8 * 1.18e-4 * (temp - 922))'
+    coupled_variables = 'temp'
     derivative_order = 1
-  [../]
+  []
 []
 
 [Executioner]
@@ -136,40 +108,40 @@ flow_velocity=0.5 # cm/s. See MSRE-properties.ods
   petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
   petsc_options_value = 'asm      lu           1               preonly       1e-3'
 
-  [./TimeStepper]
+  [TimeStepper]
     type = ConstantDT
     dt = 1
-  [../]
+  []
 []
 
 [Preconditioning]
-  [./SMP]
+  [SMP]
     type = SMP
     full = true
-  [../]
+  []
 []
 
 [Postprocessors]
-  [./temp_fuel]
+  [temp_fuel]
     type = ElementAverageValue
     variable = temp
     outputs = 'exodus console'
-  [../]
-  [./loopEndTemp]
+  []
+  [loopEndTemp]
     type = SideAverageValue
     variable = temp
     boundary = 'right'
-  [../]
+  []
 []
 
 [Outputs]
   perf_graph = true
   print_linear_residuals = true
-  [./exodus]
+  [exodus]
     type = Exodus
     file_base = 'sub'
     execute_on = 'timestep_begin'
-  [../]
+  []
 []
 
 [Debug]

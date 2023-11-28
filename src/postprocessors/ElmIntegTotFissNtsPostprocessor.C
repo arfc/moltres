@@ -53,7 +53,7 @@ ElmIntegTotFissNtsPostprocessor::ElmIntegTotFissNtsPostprocessor(const InputPara
                  "of precursor groups.");
     }
     _pre_concs.resize(m);
-    for (int i = 0; i < _pre_concs.size(); ++i)
+    for (unsigned int i = 0; i < _pre_concs.size(); ++i)
     {
       _pre_concs[i] = &coupledValue("pre_concs", i);
     }

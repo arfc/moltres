@@ -15,8 +15,8 @@ TransientFissionHeatSource::validParams()
   params.addParam<unsigned int>("num_decay_heat_groups", 0, "The number of decay heat groups.");
   params.addCoupledVar("heat_concs", "All the variables that hold the decay heat "
                                      "precursor concentrations.");
-  params.addParam<std::vector<Real>>("decay_heat_fractions", "Decay Heat Fractions");
-  params.addParam<std::vector<Real>>("decay_heat_constants", "Decay Heat Constants");
+  params.addParam<std::vector<Real>>("decay_heat_fractions", {}, "Decay Heat Fractions");
+  params.addParam<std::vector<Real>>("decay_heat_constants", {}, "Decay Heat Constants");
   params.addParam<bool>("account_decay_heat", false, "Whether to account for decay heat.");
   return params;
 }

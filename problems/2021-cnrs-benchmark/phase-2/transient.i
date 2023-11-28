@@ -1,10 +1,14 @@
-density = .002 # kg cm-3
-cp = 3075 # J kg-1 K-1, 6.15 / 2.0e-3
-k = .005 # W cm-1 K-1
-gamma = 1 # W cm-3 K-1, Volumetric heat transfer coefficient
-viscosity = .5 # dynamic viscosity
-alpha = 1 # SUPG stabilization parameter
-t_alpha = 2e-4 # K-1, Thermal expansion coefficient
+density = .002      # kg cm-3
+cp = 3075           # J kg-1 K-1, 6.15 / 2.0e-3
+k = .005            # W cm-1 K-1
+gamma = 1           # W cm-3 K-1, Volumetric heat transfer coefficient
+viscosity = .5      # dynamic viscosity
+alpha = 1           # SUPG stabilization parameter
+t_alpha = 2e-4      # K-1, Thermal expansion coefficient
+
+# Change "freq" and "dt" values for different perturbation frequencies
+freq = 0.8          # Perturbation frequency = 0.8 Hz
+dt = 0.00625        # Timestep size = 1 / freq / 200 = 0.00625 s
 
 [GlobalParams]
   num_groups = 6
@@ -16,6 +20,9 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
   sss2_input = true
   account_delayed = true
   integrate_p_by_parts = true
+  eigenvalue_scaling = 0.9927821802
+  ## Use the eigenvalue scaling factor below if running on a 40x40 mesh
+  # eigenvalue_scaling = 0.9926551482
 []
 
 [Mesh]
@@ -56,9 +63,6 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
   vacuum_boundaries = 'bottom left right top'
   create_temperature_var = false
   init_nts_from_file = true
-  eigenvalue_scaling = 0.9927821802
-  ## Use the eigenvalue scaling factor below if running on a 40x40 mesh
-  #  eigenvalue_scaling = 0.9926551482
 []
 
 [Precursors]
@@ -66,22 +70,23 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
     var_name_base = pre
     outlet_boundaries = ''
     constant_velocity_values = false
-    uvel = vel_x
-    vvel = vel_y
+    uvel = velx
+    vvel = vely
     nt_exp_form = false
     family = MONOMIAL
     order = CONSTANT
     loop_precursors = false
     transient = true
+    init_from_file = true
   []
 []
 
 [AuxVariables]
-  [vel_x]
+  [velx]
     family = LAGRANGE
     order = FIRST
   []
-  [vel_y]
+  [vely]
     family = LAGRANGE
     order = FIRST
   []
@@ -115,7 +120,7 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
   [momentum_pressure]
     type = INSADMomentumPressure
     variable = vel
-    p = p
+    pressure = p
   []
   [momentum_supg]
     type = INSADMomentumSUPG
@@ -171,13 +176,13 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
 [AuxKernels]
   [vel_x]
     type = VectorVariableComponentAux
-    variable = vel_x
+    variable = velx
     vector_variable = vel
     component = 'x'
   []
   [vel_y]
     type = VectorVariableComponentAux
-    variable = vel_y
+    variable = vely
     vector_variable = vel
     component = 'y'
   []
@@ -191,14 +196,7 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
   [initial_th]
     type = SolutionUserObject
     mesh = '../phase-1/full-coupling_exodus.e'
-    system_variables = 'vel_x vel_y p temp'
-    timestep = LATEST
-    execute_on = INITIAL
-  []
-  [initial_pre]
-    type = SolutionUserObject
-    mesh = '../phase-1/full-coupling_out_ntsApp0_exodus.e'
-    system_variables = 'pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8 heat'
+    system_variables = 'velx vely p temp heat'
     timestep = LATEST
     execute_on = INITIAL
   []
@@ -216,64 +214,16 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
 [Functions]
   [func_alpha]
     type = ParsedFunction
-    value = '1 + 0.1 * sin(2*pi*t*.8)' # Perturbation frequency = 0.8Hz
-  []
-  [pre1f]
-    type = SolutionFunction
-    from_variable = pre1
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre2f]
-    type = SolutionFunction
-    from_variable = pre2
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre3f]
-    type = SolutionFunction
-    from_variable = pre3
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre4f]
-    type = SolutionFunction
-    from_variable = pre4
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre5f]
-    type = SolutionFunction
-    from_variable = pre5
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre6f]
-    type = SolutionFunction
-    from_variable = pre6
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre7f]
-    type = SolutionFunction
-    from_variable = pre7
-    solution = initial_pre
-    scale_factor = 7.61666e+17
-  []
-  [pre8f]
-    type = SolutionFunction
-    from_variable = pre8
-    solution = initial_pre
-    scale_factor = 7.61666e+17
+    value = '1 + 0.1 * sin(2*pi*t*${freq})' # Perturbation frequency = 0.8Hz
   []
   [velxf]
     type = SolutionFunction
-    from_variable = vel_x
+    from_variable = velx
     solution = initial_th
   []
   [velyf]
     type = SolutionFunction
-    from_variable = vel_y
+    from_variable = vely
     solution = initial_th
   []
   [pf]
@@ -289,7 +239,7 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
   [heatf]
     type = SolutionFunction
     from_variable = heat
-    solution = initial_pre
+    solution = initial_th
   []
 []
 
@@ -299,46 +249,6 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
     variable = vel
     function_x = velxf
     function_y = velyf
-  []
-  [pre1_ic]
-    type = FunctionIC
-    variable = pre1
-    function = pre1f
-  []
-  [pre2_ic]
-    type = FunctionIC
-    variable = pre2
-    function = pre2f
-  []
-  [pre3_ic]
-    type = FunctionIC
-    variable = pre3
-    function = pre3f
-  []
-  [pre4_ic]
-    type = FunctionIC
-    variable = pre4
-    function = pre4f
-  []
-  [pre5_ic]
-    type = FunctionIC
-    variable = pre5
-    function = pre5f
-  []
-  [pre6_ic]
-    type = FunctionIC
-    variable = pre6
-    function = pre6f
-  []
-  [pre7_ic]
-    type = FunctionIC
-    variable = pre7
-    function = pre7f
-  []
-  [pre8_ic]
-    type = FunctionIC
-    variable = pre8
-    function = pre8f
   []
   [p_ic]
     type = FunctionIC
@@ -422,7 +332,7 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
   l_max_its = 400
   l_tol = 1e-4
 
-  dt = 0.00625
+  dt = ${dt}
 []
 
 [Preconditioning]

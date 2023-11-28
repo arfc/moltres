@@ -1,16 +1,21 @@
 # ScalarAdvectionArtDiff
 
-!alert construction title=Undocumented Class
-The ScalarAdvectionArtDiff has not been documented. The content listed below should be used as a starting point for
-documenting the class, which includes the typical automatic documentation associated with a
-MooseObject; however, what is contained is ultimately determined by what is necessary to make the
-documentation clear for users.
-
 !syntax description /Kernels/ScalarAdvectionArtDiff
 
 ## Overview
 
-!! Replace these lines with information regarding the ScalarAdvectionArtDiff object.
+This object adds an isotropic artificial diffusion term where:
+
+!equation
+\gamma = \frac{|\vec{u}|h}{2D}
+
+and
+
+!equation
+\tau=\frac{1}{\tanh\gamma}-\frac{1}{\gamma}.
+
+This scheme is not recommended for most simulations because it tends to produce overly diffusive
+results.
 
 ## Example Input File Syntax
 

@@ -11,7 +11,7 @@ public:
   static InputParameters validParams();
 
 protected:
-  void Construct(nlohmann::json xs_root, std::vector<std::string> xsec_names);
+  void Construct(nlohmann::json xs_root);
   virtual void computeQpProperties() override;
 
   std::string _material_key;

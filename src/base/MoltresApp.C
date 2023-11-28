@@ -9,11 +9,6 @@ InputParameters
 MoltresApp::validParams()
 {
   InputParameters params = MooseApp::validParams();
-
-  params.set<bool>("use_legacy_uo_initialization") = false;
-  params.set<bool>("use_legacy_uo_aux_computation") = false;
-  params.set<bool>("use_legacy_output_syntax") = false;
-
   return params;
 }
 
@@ -29,45 +24,41 @@ MoltresApp::MoltresApp(InputParameters parameters)
 
 MoltresApp::~MoltresApp() {}
 
-// External entry point for dynamic application loading
-extern "C" void
-MoltresApp__registerApps()
+void
+MoltresApp::registerAll(Factory & f, ActionFactory & af, Syntax & s)
 {
-  MoltresApp::registerApps();
+  ModulesApp::registerAllObjects<MoltresApp>(f, af, s);
+  Registry::registerObjectsTo(f, {"MoltresApp"});
+  Registry::registerActionsTo(af, {"MoltresApp"});
+
+  // register objects from Squirrel
+  SquirrelApp::registerAll(f, af, s);
+
+  // register custom execute flags, action syntax, etc. here
+  s.registerActionSyntax("NtAction", "Nt");
+  s.registerActionSyntax("PrecursorAction", "Precursors/*");
 }
+
 void
 MoltresApp::registerApps()
 {
   registerApp(MoltresApp);
 }
 
+/**************************************************************************************************
+ *********************** Dynamic Library Entry Points - DO NOT MODIFY *****************************
+ *************************************************************************************************/
+
 // External entry point for object registration
 extern "C" void
-MoltresApp__registerAll(Factory & factory, ActionFactory & action_factory, Syntax & syntax)
+MoltresApp__registerAll(Factory & f, ActionFactory & af, Syntax & s)
 {
-  MoltresApp::registerAll(factory, action_factory, syntax);
-}
-void
-MoltresApp::registerAll(Factory & factory, ActionFactory & action_factory, Syntax & syntax)
-{
-  Registry::registerObjectsTo(factory, {"MoltresApp"});
-  Registry::registerActionsTo(action_factory, {"MoltresApp"});
-  MoltresApp::associateSyntax(syntax, action_factory);
-
-  ModulesApp::registerAll(factory, action_factory, syntax);
-  SquirrelApp::registerAll(factory, action_factory, syntax);
+  MoltresApp::registerAll(f, af, s);
 }
 
-// External entry point for dynamic syntax association
+// External entry point for dynamic application loading
 extern "C" void
-MoltresApp__associateSyntax(Syntax & syntax, ActionFactory & action_factory)
+MoltresApp__registerApps()
 {
-  MoltresApp::associateSyntax(syntax, action_factory);
-}
-void
-MoltresApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
-{
-  Registry::registerActionsTo(action_factory, {"MoltresApp"});
-  syntax.registerActionSyntax("PrecursorAction", "Precursors/*");
-  syntax.registerActionSyntax("NtAction", "Nt");
+  MoltresApp::registerApps();
 }

@@ -1,0 +1,106 @@
+[Tests]
+  [gmm_none]
+    type = Exodiff
+    input = 'gmm_none.i'
+    exodiff = 'gmm_none_out.e'
+    requirement = 'The system shall be able to load txt-based two-group data at a single temperature using GenericMoltresMaterial with interp_type=none.'
+  []
+  [gmm_linear]
+    type = Exodiff
+    input = 'gmm_linear.i'
+    exodiff = 'gmm_linear_out.e'
+    requirement = 'The system shall be able to load txt-based two-group data at multiple temperatures using GenericMoltresMaterial with interp_type=linear.'
+  []
+  [gmm_spline]
+    type = Exodiff
+    input = 'gmm_spline.i'
+    cli_args = 'Materials/fuel/interp_type=spline'
+    exodiff = 'gmm_spline_out.e'
+    requirement = 'The system shall be able to load txt-based two-group data at multiple temperatures using GenericMoltresMaterial with interp_type=spline.'
+  []
+  [gmm_monotone_cubic]
+    type = Exodiff
+    input = 'gmm_monotone_cubic.i'
+    cli_args = 'Materials/fuel/interp_type=monotone_cubic'
+    exodiff = 'gmm_monotone_cubic_out.e'
+    requirement = 'The system shall be able to load txt-based two-group data at multiple temperatures using GenericMoltresMaterial with interp_type=monotone_cubic.'
+  []
+  [mjm_none]
+    type = Exodiff
+    input = 'mjm_none.i'
+    exodiff = 'mjm_none_out.e'
+    requirement = 'The system shall be able to load txt-based two-group data at a single temperature using MoltresJsonMaterial with interp_type=none.'
+  []
+  [mjm_linear]
+    type = Exodiff
+    input = 'mjm_linear.i'
+    exodiff = 'mjm_linear_out.e'
+    requirement = 'The system shall be able to load txt-based two-group data at multiple temperatures using MoltresJsonMaterial with interp_type=linear.'
+  []
+  [mjm_spline]
+    type = Exodiff
+    input = 'mjm_spline.i'
+    cli_args = 'Materials/fuel/interp_type=spline'
+    exodiff = 'mjm_spline_out.e'
+    requirement = 'The system shall be able to load txt-based two-group data at multiple temperatures using MoltresJsonMaterial with interp_type=spline.'
+  []
+  [mjm_monotone_cubic]
+    type = Exodiff
+    input = 'mjm_monotone_cubic.i'
+    cli_args = 'Materials/fuel/interp_type=monotone_cubic'
+    exodiff = 'mjm_monotone_cubic_out.e'
+    requirement = 'The system shall be able to load txt-based two-group data at multiple temperatures using MoltresJsonMaterial with interp_type=monotone_cubic.'
+  []
+  [errors]
+    requirement = 'The system shall error if'
+    [gmm_none_less]
+      type = RunException
+      input = 'gmm_none.i'
+      cli_args = "GlobalParams/num_groups=3"
+      expect_err = "The number of REMXS values does not match the num_groups/num_precursor_groups parameter."
+      detail = 'the two-group data does not match num_groups=3 for interp_type=none.'
+    []
+    [gmm_none_more]
+      type = RunException
+      input = 'gmm_none.i'
+      cli_args = "GlobalParams/num_groups=1"
+      expect_err = "The temperature values in the REMXS files are not in increasing order, or the number of REMXS values does not match the num_groups/num_precursor_groups parameter."
+      detail = 'the two-group data does not match num_groups=1 for interp_type=none.'
+    []
+    [gmm_none_multi_temp]
+      type = RunException
+      input = 'gmm_none.i'
+      cli_args = "GlobalParams/num_precursor_groups=6 Materials/fuel/property_tables_root='../../property_file_dir/newt_fuel_'"
+      expect_err = "REMXS values provided at multiple temperatures with interp_type=none. Remove extra temperature data or change interpolation scheme."
+      detail = 'group constant data are provided at multiple temperatures for interp_type=none.'
+    []
+    [gmm_linear_3]
+      type = RunException
+      input = 'gmm_linear.i'
+      cli_args = "GlobalParams/num_groups=3"
+      expect_err = "The temperature values in the REMXS files are not in increasing order, or the number of REMXS values does not match the num_groups/num_precursor_groups parameter."
+      detail = 'the two-group data does not match num_groups=3 for interp_type=linear.'
+    []
+    [gmm_linear_5]
+      type = RunException
+      input = 'gmm_linear.i'
+      cli_args = "GlobalParams/num_groups=5"
+      expect_err = "The number of REMXS values does not match the num_groups/num_precursor_groups parameter."
+      detail = 'the two-group data does not match num_groups=5 for interp_type=linear.'
+    []
+    [mjm]
+      type = RunException
+      input = 'mjm_none.i'
+      cli_args = "GlobalParams/num_groups=3"
+      expect_err = "The number of fuel/900/REMXS values does not match the num_groups/num_precursor_groups parameter. 2!=3"
+      detail = 'the two-group data does not match num_groups=3.'
+    []
+    [mjm_none_multi_temp]
+      type = RunException
+      input = 'mjm_none.i'
+      cli_args = "Materials/fuel/base_file='xsdata.json'"
+      expect_err = "Group constant data for 'fuel' provided at multiple temperatures with interp_type=none. Remove extra temperature data or change interpolation scheme."
+      detail = 'group constant data are provided at multiple temperatures for interp_type=none.'
+    []
+  []
+[]
