@@ -1,4 +1,5 @@
 #include "SNCollision.h"
+#include "MoltresUtils.h"
 
 registerMooseObject("MoltresApp", SNCollision);
 
@@ -14,33 +15,34 @@ SNCollision::validParams()
 
 SNCollision::SNCollision(const InputParameters & parameters)
   : ArrayKernel(parameters),
-    _sigma_t(getMaterialProperty<std::vector<Real>>("sigma_t")),
-    _d_sigma_t_d_temp(getMaterialProperty<std::vector<Real>>("d_sigma_t_d_temp")),
+    _totxs(getMaterialProperty<std::vector<Real>>("totxs")),
+    _d_totxs_d_temp(getMaterialProperty<std::vector<Real>>("d_totxs_d_temp")),
     _N(getParam<unsigned int>("N")),
     _group(getParam<unsigned int>("group_number") - 1),
     _temp_id(coupled("temperature"))
 {
+  // Level-symmetric quadrature weights
+  _weights = MoltresUtils::level_symmetric(_N).col(3);
 }
 
 void
 SNCollision::computeQpResidual(RealEigenVector & residual)
 {
-  residual = _test[_i][_qp] * _sigma_t[_qp][_group] * _u[_qp];
+  residual = _test[_i][_qp] * _totxs[_qp][_group] * _weights.cwiseProduct(_u[_qp]);
 }
 
 RealEigenVector
 SNCollision::computeQpJacobian()
 {
-  return RealEigenVector::Constant(
-      _var.count(), _test[_i][_qp] * _sigma_t[_qp][_group] * _phi[_j][_qp]);
+  return _test[_i][_qp] * _totxs[_qp][_group] * _phi[_j][_qp] * _weights;
 }
 
 RealEigenMatrix
 SNCollision::computeQpOffDiagJacobian(const MooseVariableFEBase & jvar)
 {
   if (jvar.number() == _temp_id)
-    return (_test[_i][_qp] * _d_sigma_t_d_temp[_qp][_group] *
-            _phi[_j][_qp] * _u[_qp]).asDiagonal();
+    return _test[_i][_qp] * _d_totxs_d_temp[_qp][_group] * _phi[_j][_qp] *
+      _weights.cwiseProduct(_u[_qp]);
   else
     return ArrayKernel::computeQpOffDiagJacobian(jvar);
 }

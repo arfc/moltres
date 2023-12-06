@@ -1,23 +1,23 @@
 #pragma once
 
-#include "ArrayKernel.h"
+#include "ArrayIntegratedBC.h"
 
-class SNCollision : public ArrayKernel
+class SNReflectingBC : public ArrayIntegratedBC
 {
 public:
   static InputParameters validParams();
 
-  SNCollision(const InputParameters & parameters);
+  SNReflectingBC(const InputParameters & parameters);
 
 protected:
   virtual void computeQpResidual(RealEigenVector & residual) override;
   virtual RealEigenVector computeQpJacobian() override;
   virtual RealEigenMatrix computeQpOffDiagJacobian(const MooseVariableFEBase & jvar) override;
 
-  const MaterialProperty<std::vector<Real>> & _totxs;
-  const MaterialProperty<std::vector<Real>> & _d_totxs_d_temp;
   unsigned int _N;
-  unsigned int _group;
-  unsigned int _temp_id;
+  RealEigenMatrix _ordinates;
   RealEigenVector _weights;
+  std::vector<int> _x_reflection;
+  std::vector<int> _y_reflection;
+  std::vector<int> _z_reflection;
 };

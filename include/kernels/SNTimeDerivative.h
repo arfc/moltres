@@ -1,13 +1,13 @@
 #pragma once
 
-#include "ArrayKernel.h"
+#include "ArrayTimeKernel.h"
 
-class SNStreaming : public ArrayKernel
+class SNTimeDerivative : public ArrayTimeKernel
 {
 public:
   static InputParameters validParams();
 
-  SNStreaming(const InputParameters & parameters);
+  SNTimeDerivative(const InputParameters & parameters);
 
 protected:
   virtual void computeQpResidual(RealEigenVector & residual) override;
@@ -15,8 +15,8 @@ protected:
   virtual RealEigenMatrix computeQpOffDiagJacobian(const MooseVariableFEBase & jvar) override;
 
   const MaterialProperty<std::vector<Real>> & _tau_sn;
-  const MaterialProperty<std::vector<Real>> & _totxs;
-  const MaterialProperty<std::vector<Real>> & _d_totxs_d_temp;
+  const MaterialProperty<std::vector<Real>> & _recipvel;
+  const MaterialProperty<std::vector<Real>> & _d_recipvel_d_temp;
   const unsigned int _N;
   const unsigned int _group;
   const unsigned int _temp_id;

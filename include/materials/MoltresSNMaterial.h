@@ -41,7 +41,7 @@ public:
   // returns a MooseEnum corresponding to the above enum
   static MooseEnum interpTypes()
   {
-    return MooseEnum("spline=1 monotone_cubic=2 linear=3 none=4");
+    return MooseEnum("spline=0 monotone_cubic=1 linear=2 none=3");
   }
 
 protected:
@@ -98,6 +98,12 @@ protected:
 
   // Discrete ordinate order
   unsigned int _N;
+
+  const Real _sigma;
+
+  const MooseEnum _h_type;
+
+  MaterialProperty<std::vector<Real>> & _tau_sn;
 
   // Vector of group constant names
   std::vector<std::string> _xsec_names{"TOTXS",

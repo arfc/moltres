@@ -16,8 +16,6 @@ MoltresSNMaterial::validParams()
   params.addRequiredParam<MooseEnum>("interp_type",
                                      MoltresSNMaterial::interpTypes(),
                                      "The type of interpolation to perform.");
-  params.addParam<bool>(
-      "sss2_input", true, "Whether serpent 2 was used to generate the input files.");
   params.set<MooseEnum>("constant_on") = "NONE";
   params.addRequiredParam<std::string>("base_file", "The file containing macroscopic XS.");
   params.addRequiredParam<std::string>("material_key",
@@ -37,6 +35,12 @@ MoltresSNMaterial::validParams()
                                "DECAY_CONSTANT"},
       "Group constants to be determined.");
   params.addRequiredParam<unsigned int>("N", "Discrete ordinate order");
+  params.addParam<Real>("void_constant", 0.,
+      "The limit under which stabilization is applied for near-void and void regions");
+  MooseEnum h_type("max min", "max");
+  params.addParam<MooseEnum>("h_type", h_type,
+      "Whether to use the maximum or minimum vertex separation in calculating the stabilization "
+      "parameter");
 
   // the following two lines esentially make the two parameters optional
   params.set<std::vector<std::string>>("prop_names") = std::vector<std::string>();
@@ -61,7 +65,6 @@ MoltresSNMaterial::MoltresSNMaterial(const InputParameters & parameters)
     _beta_eff(declareProperty<std::vector<Real>>("beta_eff")),
     _beta(declareProperty<Real>("beta")),
     _decay_constant(declareProperty<std::vector<Real>>("decay_constant")),
-
     _d_totxs_d_temp(declareProperty<std::vector<Real>>("d_totxs_d_temp")),
     _d_fissxs_d_temp(declareProperty<std::vector<Real>>("d_fissxs_d_temp")),
     _d_nsf_d_temp(declareProperty<std::vector<Real>>("d_nsf_d_temp")),
@@ -77,14 +80,17 @@ MoltresSNMaterial::MoltresSNMaterial(const InputParameters & parameters)
     _interp_type(getParam<MooseEnum>("interp_type")),
     _group_consts(getParam<std::vector<std::string>>("group_constants")),
     _material_key(getParam<std::string>("material_key")),
-    _N(getParam<unsigned int>("N"))
+    _N(getParam<unsigned int>("N")),
+    _sigma(getParam<Real>("void_constant")),
+    _h_type(getParam<MooseEnum>("h_type")),
+    _tau_sn(declareProperty<std::vector<Real>>("tau_sn"))
 {
   auto n = _xsec_names.size();
   for (decltype(n) j = 0; j < n; ++j)
   {
-    if (_xsec_names[j].compare("SPN") == 0)
+    if (_xsec_names[j] == "SPN")
       _vec_lengths[_xsec_names[j]] = _num_groups * _num_groups * 3;
-    else if (_xsec_names[j].compare("BETA_EFF") == 0 || _xsec_names[j].compare("DECAY_CONSTANT") == 0)
+    else if (_xsec_names[j] == "BETA_EFF" || _xsec_names[j] == "DECAY_CONSTANT")
       _vec_lengths[_xsec_names[j]] = _num_precursor_groups;
     else
       _vec_lengths[_xsec_names[j]] = _num_groups;
@@ -331,7 +337,6 @@ MoltresSNMaterial::preComputeQpProperties()
   _beta_eff[_qp].resize(_num_precursor_groups);
   _decay_constant[_qp].resize(_num_precursor_groups);
 
-
   _d_totxs_d_temp[_qp].resize(_num_groups);
   _d_fissxs_d_temp[_qp].resize(_num_groups);
   _d_nsf_d_temp[_qp].resize(_num_groups);
@@ -343,6 +348,8 @@ MoltresSNMaterial::preComputeQpProperties()
   _d_scatter_d_temp[_qp].resize(_num_groups * _num_groups * 3);
   _d_beta_eff_d_temp[_qp].resize(_num_precursor_groups);
   _d_decay_constant_d_temp[_qp].resize(_num_precursor_groups);
+
+  _tau_sn[_qp].resize(_num_groups);
 }
 
 void
@@ -387,21 +394,22 @@ MoltresSNMaterial::Construct(nlohmann::json xs_root)
           mooseInfo("Only precursor material data initialized (num_groups = 0) for material " + _name);
           oneInfo = true;
         }
-        if ((o != dims && o != 0) || (dims != 3 && _xsec_names[j].compare("SPN")))
+        if ((o!=dims && o!=0 && _xsec_names[j] != "SPN") || (dims!=3 && _xsec_names[j] == "SPN"))
           mooseError("The number of " + _material_key + "/" + temp_key + "/" +
                      _xsec_names[j] + " values does not match the "
                      "num_groups/num_precursor_groups parameter. " +
                      std::to_string(dims) + "!=" + std::to_string(o));
-        if (_xsec_names[j].compare("SPN"))
+        if (_xsec_names[j] == "SPN")
           for (auto i = 0; i < 3; ++i)
-            for (auto k = 0; k < o; ++k)
-              _xsec_map[_xsec_names[j]][i*o+k].push_back(dataset[i][k].get<double>());
+            for (auto k = 0; k < o/3; ++k)
+              _xsec_map[_xsec_names[j]][i*o/3+k].push_back(dataset[i][k].get<double>());
         else
           for (auto k = 0; k < o; ++k)
             _xsec_map[_xsec_names[j]][k].push_back(dataset[k].get<double>());
       }
     } else
     {
+      // Initialize excluded group constants as zero values
       for (decltype(_XsTemperature.size()) l = 0; l < L; ++l)
         for (auto k = 0; k < o; ++k)
           _xsec_map[_xsec_names[j]][k].push_back(0.);
@@ -418,7 +426,7 @@ MoltresSNMaterial::Construct(nlohmann::json xs_root)
       case LINEAR:
         for (auto k = 0; k < o; ++k)
         {
-          if (_xsec_names[j].compare("SPN"))
+          if (_xsec_names[j] == "SPN")
             for (auto i = 0; i < 3; ++i)
               _xsec_linear_interpolators[_xsec_names[j]][i*o+k].setData(
                 _XsTemperature,
@@ -431,7 +439,7 @@ MoltresSNMaterial::Construct(nlohmann::json xs_root)
       case SPLINE:
         for (auto k = 0; k < o; ++k)
         {
-          if (_xsec_names[j].compare("SPN"))
+          if (_xsec_names[j] == "SPN")
             for (auto i = 0; i < 3; ++i)
               _xsec_spline_interpolators[_xsec_names[j]][i*o+k].setData(
                 _XsTemperature,
@@ -446,7 +454,7 @@ MoltresSNMaterial::Construct(nlohmann::json xs_root)
           mooseError("Monotone cubic interpolation requires at least three data points.");
         for (auto k = 0; k < o; ++k)
         {
-          if (_xsec_names[j].compare("SPN"))
+          if (_xsec_names[j] == "SPN")
             for (auto i = 0; i < 3; ++i)
               _xsec_monotone_cubic_interpolators[_xsec_names[j]][i*o+k].setData(
                 _XsTemperature,
@@ -487,4 +495,17 @@ MoltresSNMaterial::computeQpProperties()
       mooseError("Invalid enum type for interp_type");
       break;
   }
+
+  Real h;
+  if (_h_type == "max")
+    h = _current_elem->hmax();
+  else
+    h = _current_elem->hmin();
+  for (unsigned int i = 0; i < _num_groups; ++i)
+  {
+    if (h * _totxs[_qp][i] > _sigma)
+      _tau_sn[_qp][i] = 1. / _totxs[_qp][i];
+    else
+      _tau_sn[_qp][i] = h / _sigma;
+  } 
 }

@@ -1,4 +1,5 @@
 #include "MoltresUtils.h"
+#include "MooseError.h"
 
 namespace MoltresUtils
 {
@@ -28,6 +29,7 @@ points(unsigned int N)
                                0.6943188875943843,
                                0.8397599622366847,
                                0.9634909811104685};
+    case 12:
       return std::vector<Real>{0.1672324971414912,
                                0.4595505230549429,
                                0.6280180398523312,
@@ -64,52 +66,6 @@ points(unsigned int N)
     default:
       mooseError("Only even orders of N and N<20 are allowed.");
   }
-}
-
-RealEigenMatrix
-directions(unsigned int N)
-{
-  RealEigenMatrix vec_d(N*(N+2),3);
-  std::vector<Real> mu = points(N);
-  auto idx = 0;
-  for (auto i = 0; i < N / 2; ++i)
-    for (auto j = 0; j < N / 2 - i; ++j)
-    {
-      auto k = N / 2 - 1 - i - j;
-      vec_d(idx,0) = mu[i];
-      vec_d(idx,1) = mu[j];
-      vec_d(idx,2) = mu[k];
-      ++idx;
-      vec_d(idx,0) = -mu[i];
-      vec_d(idx,1) = mu[j];
-      vec_d(idx,2) = mu[k];
-      ++idx;
-      vec_d(idx,0) = mu[i];
-      vec_d(idx,1) = -mu[j];
-      vec_d(idx,2) = mu[k];
-      ++idx;
-      vec_d(idx,0) = mu[i];
-      vec_d(idx,1) = mu[j];
-      vec_d(idx,2) = -mu[k];
-      ++idx;
-      vec_d(idx,0) = -mu[i];
-      vec_d(idx,1) = -mu[j];
-      vec_d(idx,2) = mu[k];
-      ++idx;
-      vec_d(idx,0) = -mu[i];
-      vec_d(idx,1) = mu[j];
-      vec_d(idx,2) = -mu[k];
-      ++idx;
-      vec_d(idx,0) = mu[i];
-      vec_d(idx,1) = -mu[j];
-      vec_d(idx,2) = -mu[k];
-      ++idx;
-      vec_d(idx,0) = -mu[i];
-      vec_d(idx,1) = -mu[j];
-      vec_d(idx,2) = -mu[k];
-      ++idx;
-    }
-  return vec_d;
 }
 
 std::vector<Real>
@@ -172,61 +128,144 @@ weights(unsigned int N)
   }
 }
 
+RealEigenMatrix
+permute_octant(RealEigenMatrix m, unsigned int idx, Real mu1, Real mu2, Real mu3, Real w)
+{
+  RealEigenMatrix permutations(8, 4);
+  permutations <<   mu1,  mu2,  mu3, w,
+                   -mu1,  mu2,  mu3, w,
+                    mu1, -mu2,  mu3, w,
+                    mu1,  mu2, -mu3, w,
+                   -mu1, -mu2,  mu3, w,
+                   -mu1,  mu2, -mu3, w,
+                    mu1, -mu2, -mu3, w,
+                   -mu1, -mu2, -mu3, w;
+  m.block(idx, 0, 8, 4) = permutations;
+  return m;
+}
+
+RealEigenMatrix
+level_symmetric(unsigned int N)
+{
+  RealEigenMatrix mu_w(N*(N+2),4);
+  std::vector<Real> mu = points(N);
+  std::vector<Real> weight = weights(N);
+  unsigned int idx = 0;
+  unsigned int w_idx = 0;
+  for (unsigned int i = 0; i < (N+5)/6; ++i)
+    for (unsigned int j = i; j < ((N/2-i)+1)/2; ++j)
+    {
+      unsigned int k = N / 2 - 1 - i - j;
+      Real w = weight[w_idx];
+      mu_w = permute_octant(mu_w, idx, mu[i], mu[j], mu[k], w);
+      idx += 8;
+      if (i == j && i == k)
+      {
+        // do nothing
+      }
+      else if (i == j)
+      {
+        mu_w = permute_octant(mu_w, idx, mu[k], mu[i], mu[i], w);
+        idx += 8;
+        mu_w = permute_octant(mu_w, idx, mu[i], mu[k], mu[i], w);
+        idx += 8;
+      }
+      else if (j == k)
+      {
+        mu_w = permute_octant(mu_w, idx, mu[j], mu[i], mu[j], w);
+        idx += 8;
+        mu_w = permute_octant(mu_w, idx, mu[j], mu[j], mu[i], w);
+        idx += 8;
+      }
+      else
+      {
+        mu_w = permute_octant(mu_w, idx, mu[k], mu[i], mu[j], w);
+        idx += 8;
+        mu_w = permute_octant(mu_w, idx, mu[j], mu[k], mu[i], w);
+        idx += 8;
+        mu_w = permute_octant(mu_w, idx, mu[k], mu[j], mu[i], w);
+        idx += 8;
+        mu_w = permute_octant(mu_w, idx, mu[i], mu[k], mu[j], w);
+        idx += 8;
+        mu_w = permute_octant(mu_w, idx, mu[j], mu[i], mu[k], w);
+        idx += 8;
+      }
+      w_idx += 1;
+    }
+  return mu_w;
+}
+
+unsigned int
+x_reflection_map(unsigned int i)
+{
+  std::vector<unsigned int> vec{1, 0, 4, 5, 2, 3, 7, 6};
+  return i - i % 8 + vec[i % 8];
+}
+
+unsigned int
+y_reflection_map(unsigned int i)
+{
+  std::vector<unsigned int> vec{2, 4, 0, 6, 1, 7, 3, 5};
+  return i - i % 8 + vec[i % 8];
+}
+
+unsigned int
+z_reflection_map(unsigned int i)
+{
+  std::vector<unsigned int> vec{3, 5, 6, 0, 7, 1, 2, 4};
+  return i - i % 8 + vec[i % 8];
+}
+
 Real
-sph_harmonics(unsigned int l, int m, Real eta, Real xi, Real mu)
+sph_harmonics(int l, int m, Real mu, Real eta, Real xi)
 {
   const Real sqrt2 = 1.4142135623730951;
   const int abs_m = std::abs(m);
   const Real C = std::sqrt(factorial(l - abs_m) / factorial(l + abs_m));
 
-  if (l == 0)
+  switch (l)
   {
-    return 1.;
-  }
-  else if (l == 1)
-  {
-    switch (m)
-    {
-      case 1:
-        return -sqrt2 * C * eta;
-      case 0:
-        return C * mu;
-      case -1:
-        return -sqrt2 * C * xi;
-      default:
-        mooseError("Invalid m value.");
-    }
-  }
-  else if (l == 2)
-  {
-    switch (m)
-    {
-      case 2:
-        return sqrt2 * C * 3 * (eta * eta - xi * xi);
-      case 1:
-        return -sqrt2 * C * 3 * mu * eta;
-      case 0:
-        return C * .5 * (3 * mu * mu - 1);
-      case -1:
-        return sqrt2 * C * .5 * mu * xi;
-      case -2:
-        return sqrt2 * C * .25 * eta * xi;
-      default:
-        mooseError("Invalid m value.");
-    }
-  }
-  else
-  {
-    mooseError("Invalid l value.");
+    case 0:
+      return 1.;
+    case 1:
+      switch (m)
+      {
+        case 1:
+          return -sqrt2 * C * eta;
+        case 0:
+          return C * mu;
+        case -1:
+          return -sqrt2 * C * xi;
+        default:
+          mooseError("Invalid m value.");
+      }
+    case 2:
+      switch (m)
+      {
+        case 2:
+          return sqrt2 * C * 3 * (eta * eta - xi * xi);
+        case 1:
+          return -sqrt2 * C * 3 * mu * eta;
+        case 0:
+          return C * .5 * (3 * mu * mu - 1);
+        case -1:
+          return -sqrt2 * C * 3 * mu * xi;
+        case -2:
+          return sqrt2 * C * 6 * eta * xi;
+        default:
+          mooseError("Invalid m value.");
+      }
+    default:
+      mooseError("Invalid l value.");
   }
 }
 
 int
 factorial(int n)
 {
-    if (n == 0 || n == 1)
-        return 1;
-    return n * factorial(n - 1);
+  if (n == 0 || n == 1)
+      return 1;
+  return n * factorial(n - 1);
 }
 
 } // namespace MoltresUtils
