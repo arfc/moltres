@@ -126,4 +126,6 @@ protected:
 
   /// optional object name suffix
   std::string _object_suffix;
+
+  bool _is_loopapp;
 };

@@ -73,7 +73,7 @@ InScatter::computeQpOffDiagJacobian(unsigned int jvar)
   Real jac = 0;
   for (unsigned int i = 0; i < _num_groups; ++i)
   {
-    if (jvar == _flux_ids[i] && jvar != _group)
+    if (jvar == _flux_ids[i])
     {
       if (_sss2_input)
         jac += -_test[_i][_qp] * _gtransfxs[_qp][i * _num_groups + _group] *
