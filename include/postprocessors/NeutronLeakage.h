@@ -3,7 +3,8 @@
 #include "SideIntegralVariablePostprocessor.h"
 
 /**
- * This postprocessor computes the neutron leakage rate along a boundary
+ * This postprocessor computes the neutron leakage rate of a given neutron group
+ * along a boundary
  */
 class NeutronLeakage : public SideIntegralVariablePostprocessor
 {

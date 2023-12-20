@@ -25,7 +25,7 @@ TotalNeutronLeakage::TotalNeutronLeakage(const InputParameters & parameters)
 {
   addMooseVariableDependency(_vars);
   unsigned int n = coupledComponents("group_fluxes");
-  if (!(n == _num_groups))
+  if (n != _num_groups)
   {
     mooseError("The number of coupled variables doesn't match the number of groups.");
   }
