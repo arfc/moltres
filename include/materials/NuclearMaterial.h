@@ -64,6 +64,13 @@ protected:
 
   const VariableValue & _temperature;
 
+  // Number of neutron groups
+  unsigned int _num_groups;
+
+  // Number of precursor groups
+  unsigned int _num_precursor_groups;
+
+  // Group constant MaterialProperty(s)
   MaterialProperty<std::vector<Real>> & _remxs;
   MaterialProperty<std::vector<Real>> & _fissxs;
   MaterialProperty<std::vector<Real>> & _nsf;
@@ -91,30 +98,37 @@ protected:
   MaterialProperty<Real> & _d_beta_d_temp;
   MaterialProperty<std::vector<Real>> & _d_decay_constant_d_temp;
 
+  // Group constant interpolation type
   MooseEnum _interp_type;
 
-  unsigned _num_groups;
-  unsigned _num_precursor_groups;
+  // Vector of group constant names
+  std::vector<std::string> _xsec_names{"REMXS",
+                                       "FISSXS",
+                                       "NSF",
+                                       "FISSE",
+                                       "DIFFCOEF",
+                                       "RECIPVEL",
+                                       "CHI_T",
+                                       "CHI_P",
+                                       "CHI_D",
+                                       "GTRANSFXS",
+                                       "BETA_EFF",
+                                       "DECAY_CONSTANT"};
+
+  // Map of group constant names to group constant values
   std::map<std::string, std::vector<std::vector<Real>>> _xsec_map;
+
+  // Group constant interpolators
   std::map<std::string, std::vector<SplineInterpolation>> _xsec_spline_interpolators;
   std::map<std::string, std::vector<MonotoneCubicInterpolation>> _xsec_monotone_cubic_interpolators;
   std::map<std::string, std::vector<LinearInterpolation>> _xsec_linear_interpolators;
   std::map<std::string, std::vector<BicubicSplineInterpolation>> _xsec_bicubic_spline_interpolators;
+
+  // Map of group constant names to number of neutron/precursor groups
   std::map<std::string, int> _vec_lengths;
-  std::map<std::string, std::string> _file_map;
+
+  // Vector of temperature values
   std::vector<double> _XsTemperature;
-  const std::vector<std::string> _xsec_names{"REMXS",
-                                             "FISSXS",
-                                             "NSF",
-                                             "FISSE",
-                                             "DIFFCOEF",
-                                             "RECIPVEL",
-                                             "CHI_T",
-                                             "CHI_P",
-                                             "CHI_D",
-                                             "GTRANSFXS",
-                                             "BETA_EFF",
-                                             "DECAY_CONSTANT"};
 
   std::vector<std::vector<Real>> _remxs_consts = std::vector<std::vector<Real>>(2);
   std::vector<std::vector<Real>> _fissxs_consts = std::vector<std::vector<Real>>(2);
