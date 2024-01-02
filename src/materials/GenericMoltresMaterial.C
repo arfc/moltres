@@ -47,8 +47,6 @@ GenericMoltresMaterial::GenericMoltresMaterial(const InputParameters & parameter
   else
     _perform_control = false;
 
-  _num_groups = getParam<unsigned>("num_groups");
-  _num_precursor_groups = getParam<unsigned>("num_precursor_groups");
   std::string property_tables_root = getParam<std::string>("property_tables_root");
 
   _file_map["REMXS"] = "REMXS";
