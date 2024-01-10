@@ -14,7 +14,11 @@ SNFission::validParams()
   params.addRequiredCoupledVar("group_angular_fluxes",
       "All the variables that hold the group angular fluxes. These MUST be listed by decreasing "
       "energy/increasing group number.");
+//  params.addCoupledVar("group_fluxes",
+//      "All the variables that hold the group fluxes. These MUST be listed by decreasing "
+//      "energy/increasing group number.");
   params.addRequiredParam<bool>("account_delayed", "Whether to account for delayed neutrons.");
+//  params.addParam<bool>("acceleration", false, "Whether an acceleration scheme is applied.");
   params.addCoupledVar("temperature", "The temperature used to interpolate material properties");
   return params;
 }
@@ -35,6 +39,7 @@ SNFission::SNFission(const InputParameters & parameters)
     _num_groups(getParam<unsigned int>("num_groups")),
     _temp_id(coupled("temperature")),
     _account_delayed(getParam<bool>("account_delayed"))
+//    _acceleration(getParam<bool>("acceleration"))
 {
   unsigned int n = coupledComponents("group_angular_fluxes");
   if (n != _num_groups)
@@ -46,6 +51,11 @@ SNFission::SNFission(const InputParameters & parameters)
     _group_fluxes[g] = &coupledArrayValue("group_angular_fluxes", g);
     _flux_ids[g] = coupled("group_angular_fluxes", g);
   }
+//  if (acceleration)
+//  {
+//    _group_fluxes.resize(n);
+//    _group_fluxes[g] = &coupledValue("group_fluxes", g);
+//  }
 
   // Level-symmetric quadrature points and weights
   RealEigenMatrix ords_weights = MoltresUtils::level_symmetric(_N);

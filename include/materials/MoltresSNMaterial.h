@@ -74,6 +74,9 @@ protected:
   MaterialProperty<std::vector<Real>> & _beta_eff;
   MaterialProperty<Real> & _beta;
   MaterialProperty<std::vector<Real>> & _decay_constant;
+  MaterialProperty<std::vector<Real>> & _diffcoef;
+  MaterialProperty<std::vector<Real>> & _gtransfxs;
+  MaterialProperty<std::vector<Real>> & _remxs;
   MaterialProperty<std::vector<Real>> & _d_totxs_d_temp;
   MaterialProperty<std::vector<Real>> & _d_fissxs_d_temp;
   MaterialProperty<std::vector<Real>> & _d_nsf_d_temp;
@@ -86,6 +89,9 @@ protected:
   MaterialProperty<std::vector<Real>> & _d_beta_eff_d_temp;
   MaterialProperty<Real> & _d_beta_d_temp;
   MaterialProperty<std::vector<Real>> & _d_decay_constant_d_temp;
+  MaterialProperty<std::vector<Real>> & _d_diffcoef_d_temp;
+  MaterialProperty<std::vector<Real>> & _d_gtransfxs_d_temp;
+  MaterialProperty<std::vector<Real>> & _d_remxs_d_temp;
 
   // Group constant interpolation type
   MooseEnum _interp_type;
@@ -116,7 +122,10 @@ protected:
                                        "CHI_D",
                                        "SPN",
                                        "BETA_EFF",
-                                       "DECAY_CONSTANT"};
+                                       "DECAY_CONSTANT",
+                                       "DIFFCOEF",
+                                       "GTRANSFXS",
+                                       "REMXS"};
 
   // Map of group constant names to group constant values
   std::map<std::string, std::vector<std::vector<Real>>> _xsec_map;

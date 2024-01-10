@@ -66,6 +66,8 @@ class openmc_xs:
                 self.xs_lib[i][j - 1][k]["FISSE"] = self.get_fisse(
                     sp, domain_dict[j]["fissionxs"],
                     domain_dict[j]["kappafissionxs"])
+                self.xs_lib[i][j - 1][k]["S0"] = self.get_scatter(
+                    sp, domain_dict[j]["scattermatrix"])
                 self.xs_lib[i][j - 1][k]["GTRANSFXS"] = self.get_nu_scatter(
                     sp, domain_dict[j]["nuscattermatrix"])
                 self.xs_lib[i][j - 1][k]["SPN"] = self.get_scatter_pn(
@@ -143,6 +145,26 @@ class openmc_xs:
         fisse = np.array(fisse)
         fisse[np.isnan(fisse)] = 0
         return list(fisse)
+
+    def get_scatter(self, sp, scatter_matrix):
+        """Returns scatter xs matrix values for each energy group.
+        The matrix is flattened into a list. It is taken from the P0 scatter
+        matrix xs without neutron multiplication from (n,xn) reactions.
+
+        Parameters
+        ----------
+        sp: openmc.Statepoint
+        scatter_matrix: OpenMC mgxs.ScatterMatrixXS object
+
+        Returns
+        -------
+        list
+            list of P0 scatter xs matrix values for each energy group
+        """
+
+        scatter_matrix.load_from_statepoint(sp)
+        scatter_matrix_df = scatter_matrix.get_pandas_dataframe()
+        return list(scatter_matrix_df["mean"])
 
     def get_nu_scatter(self, sp, nu_scatter_matrix):
         """Returns scatter xs matrix values for each energy group.
@@ -337,6 +359,12 @@ class openmc_xs:
                     energy_groups=groups,
                     name=str(id) +
                     "_diffusioncoefficient")
+            domain_dict[id]["scattermatrix"] = mgxs.ScatterMatrixXS(
+                domain=domain, energy_groups=groups,
+                name=str(id) + "_scattermatrix", nu=False)
+            domain_dict[id]["scattermatrix"].correction = None
+            domain_dict[id]["scattermatrix"].formulation = 'consistent'
+            domain_dict[id]["scattermatrix"].legendre_order = 0
             domain_dict[id]["nuscattermatrix"] = mgxs.ScatterMatrixXS(
                 domain=domain, energy_groups=groups,
                 name=str(id) + "_nuscattermatrix", nu=True)
@@ -375,6 +403,7 @@ class openmc_xs:
             tallies_file += domain_dict[id]["decayrate"].tallies.values()
             tallies_file += domain_dict[id]["diffusioncoefficient"] \
                 .tallies.values()
+            tallies_file += domain_dict[id]["scattermatrix"].tallies.values()
             tallies_file += domain_dict[id]["nuscattermatrix"].tallies.values()
             tallies_file += domain_dict[id]["inversevelocity"].tallies.values()
             tallies_file += domain_dict[id]["fissionxs"].tallies.values()
