@@ -11,18 +11,30 @@ MoltresJsonMaterial::validParams()
   params.addRequiredParam<std::string>("base_file", "The file containing macroscopic XS.");
   params.addRequiredParam<std::string>("material_key",
                                        "The file key where the macroscopic XS can be found.");
+  params.addParam<std::vector<std::string>>(
+      "group_constants",
+      std::vector<std::string>{"REMXS",
+                               "FISSXS",
+                               "NSF",
+                               "FISSE",
+                               "DIFFCOEF",
+                               "RECIPVEL",
+                               "CHI_T",
+                               "CHI_P",
+                               "CHI_D",
+                               "GTRANSFXS",
+                               "BETA_EFF",
+                               "DECAY_CONSTANT"},
+      "Group constants to be determined.");
   return params;
 }
 
 MoltresJsonMaterial::MoltresJsonMaterial(const InputParameters & parameters)
-  : NuclearMaterial(parameters)
-
+  : NuclearMaterial(parameters),
+    _group_consts(getParam<std::vector<std::string>>("group_constants")),
+    _material_key(getParam<std::string>("material_key"))
 {
-
-  _num_groups = getParam<unsigned>("num_groups");
-  _num_precursor_groups = getParam<unsigned>("num_precursor_groups");
   std::string base_file = getParam<std::string>("base_file");
-  _material_key = getParam<std::string>("material_key");
 
   const std::string & file_name_ref = base_file;
   std::ifstream myfile(file_name_ref.c_str());
@@ -48,11 +60,10 @@ MoltresJsonMaterial::MoltresJsonMaterial(const InputParameters & parameters)
 void
 MoltresJsonMaterial::Construct(nlohmann::json xs_root)
 {
-  auto xsec_interpolators = _xsec_linear_interpolators;
+  std::set<std::string> gc_set(_group_consts.begin(), _group_consts.end());
   bool oneInfo = false;
   for (unsigned int j = 0; j < _xsec_names.size(); ++j)
   {
-
     auto o = _vec_lengths[_xsec_names[j]];
     auto L = _XsTemperature.size();
 
@@ -62,39 +73,45 @@ MoltresJsonMaterial::Construct(nlohmann::json xs_root)
 
     _xsec_map[_xsec_names[j]].resize(o);
 
-    for (decltype(_XsTemperature.size()) l = 0; l < L; ++l)
+    if (gc_set.find(_xsec_names[j]) != gc_set.end())
     {
-      auto temp_key = std::to_string(static_cast<int>(_XsTemperature[l]));
-      auto dataset = xs_root[_material_key][temp_key][_xsec_names[j]];
-      if (_xsec_names[j] == "CHI_D" && dataset.empty())
+      for (decltype(_XsTemperature.size()) l = 0; l < L; ++l)
       {
-        for (decltype(_num_groups) k = 1; k < _num_groups; ++k)
-          _xsec_map["CHI_D"][k].push_back(0.0);
-        _xsec_map["CHI_D"][0].push_back(1.0);
-        mooseWarning(
-            "CHI_D data missing -> assume delayed neutrons born in top group for material " +
-            _name);
-        continue;
-      }
-      if (dataset.empty())
-        mooseError("Unable to open database " + _material_key + "/" + temp_key + "/" +
-                   _file_map[_xsec_names[j]]);
+        auto temp_key = std::to_string(static_cast<int>(_XsTemperature[l]));
+        auto dataset = xs_root[_material_key][temp_key][_xsec_names[j]];
+        if (_xsec_names[j] == "CHI_D" && dataset.empty())
+        {
+          for (decltype(_num_groups) k = 1; k < _num_groups; ++k)
+            _xsec_map["CHI_D"][k].push_back(0.0);
+          _xsec_map["CHI_D"][0].push_back(1.0);
+          mooseWarning(
+              "CHI_D data missing -> assume delayed neutrons born in top group for material " +
+              _name);
+          continue;
+        }
+        if (dataset.empty())
+          mooseError("Unable to open database " + _material_key + "/" + temp_key + "/" +
+                     _xsec_names[j]);
 
-      int dims = dataset.size();
-      if (o == 0 and !oneInfo)
-      {
-        mooseInfo("Only precursor material data initialized (num_groups = 0) for material " + _name);
-        oneInfo = true;
+        int dims = dataset.size();
+        if (o == 0 and !oneInfo)
+        {
+          mooseInfo("Only precursor material data initialized (num_groups = 0) for material " + _name);
+          oneInfo = true;
+        }
+        if (o != dims && o != 0)
+          mooseError("The number of " + _material_key + "/" + temp_key + "/" +
+                     _xsec_names[j] + " values does not match the "
+                     "num_groups/num_precursor_groups parameter. " +
+                     std::to_string(dims) + "!=" + std::to_string(o));
+        for (auto k = 0; k < o; ++k)
+          _xsec_map[_xsec_names[j]][k].push_back(dataset[k].get<double>());
       }
-      if (o != dims && o != 0)
-        mooseError("The number of " + _material_key + "/" + temp_key + "/" +
-                   _file_map[_xsec_names[j]] + " values does not match the "
-                   "num_groups/num_precursor_groups parameter. " +
-                   std::to_string(dims) + "!=" + std::to_string(o));
-      for (auto k = 0; k < o; ++k)
-      {
-        _xsec_map[_xsec_names[j]][k].push_back(dataset[k].get<double>());
-      }
+    } else
+    {
+      for (decltype(_XsTemperature.size()) l = 0; l < L; ++l)
+        for (auto k = 0; k < o; ++k)
+          _xsec_map[_xsec_names[j]][k].push_back(0.);
     }
     switch (_interp_type)
     {

@@ -43,6 +43,7 @@ void
 MoltresApp::registerApps()
 {
   registerApp(MoltresApp);
+  ModulesApp::registerApps();
 }
 
 /**************************************************************************************************

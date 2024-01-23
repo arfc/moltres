@@ -30,6 +30,9 @@ protected:
   Real _peak_power_density_set_point;
   Real _controller_gain;
 
+  // Map of group constant names to file group constant names
+  std::map<std::string, std::string> _file_map;
+
   std::string _material;
   bool _perform_control;
 };

@@ -8,19 +8,18 @@ InputParameters
 NuclearMaterial::validParams()
 {
   InputParameters params = GenericConstantMaterial::validParams();
-  params.addRequiredParam<unsigned>("num_groups",
+  params.addRequiredParam<unsigned int>("num_groups",
                                     "The number of groups the energy spectrum is divided into.");
-  params.addRequiredParam<unsigned>("num_precursor_groups",
+  params.addRequiredParam<unsigned int>("num_precursor_groups",
                                     "The number of delayed neutron precursor groups.");
   params.addCoupledVar(
       "temperature", 937, "The temperature field for determining group constants.");
   params.addRequiredParam<MooseEnum>("interp_type",
-                                     GenericMoltresMaterial::interpTypes(),
+                                     NuclearMaterial::interpTypes(),
                                      "The type of interpolation to perform.");
   params.addParam<bool>(
       "sss2_input", true, "Whether serpent 2 was used to generate the input files.");
   params.set<MooseEnum>("constant_on") = "NONE";
-
   // the following two lines esentially make the two parameters optional
   params.set<std::vector<std::string>>("prop_names") = std::vector<std::string>();
   params.set<std::vector<Real>>("prop_values") = std::vector<Real>();
@@ -30,6 +29,8 @@ NuclearMaterial::validParams()
 NuclearMaterial::NuclearMaterial(const InputParameters & parameters)
   : GenericConstantMaterial(parameters),
     _temperature(coupledValue("temperature")),
+    _num_groups(getParam<unsigned int>("num_groups")),
+    _num_precursor_groups(getParam<unsigned int>("num_precursor_groups")),
     _remxs(declareProperty<std::vector<Real>>("remxs")),
     _fissxs(declareProperty<std::vector<Real>>("fissxs")),
     _nsf(declareProperty<std::vector<Real>>("nsf")),
@@ -58,11 +59,7 @@ NuclearMaterial::NuclearMaterial(const InputParameters & parameters)
     _d_beta_d_temp(declareProperty<Real>("d_beta_d_temp")),
     _d_decay_constant_d_temp(declareProperty<std::vector<Real>>("d_decay_constant_d_temp")),
     _interp_type(getParam<MooseEnum>("interp_type"))
-
 {
-  _num_groups = getParam<unsigned>("num_groups");
-  _num_precursor_groups = getParam<unsigned>("num_precursor_groups");
-
   auto n = _xsec_names.size();
   for (decltype(n) j = 0; j < n; ++j)
   {
@@ -73,19 +70,6 @@ NuclearMaterial::NuclearMaterial(const InputParameters & parameters)
     else
       _vec_lengths[_xsec_names[j]] = _num_groups;
   }
-  _file_map["REMXS"] = "REMXS";
-  _file_map["NSF"] = "NSF";
-  _file_map["DIFFCOEF"] = "DIFFCOEF";
-  _file_map["BETA_EFF"] = "BETA_EFF";
-  _file_map["FLUX"] = "FLUX";
-  _file_map["FISSXS"] = "FISSXS";
-  _file_map["FISSE"] = "FISSE";
-  _file_map["RECIPVEL"] = "RECIPVEL";
-  _file_map["CHI_T"] = "CHI_T";
-  _file_map["CHI_P"] = "CHI_P";
-  _file_map["CHI_D"] = "CHI_D";
-  _file_map["GTRANSFXS"] = "GTRANSFXS";
-  _file_map["DECAY_CONSTANT"] = "DECAY_CONSTANT";
 }
 
 void
