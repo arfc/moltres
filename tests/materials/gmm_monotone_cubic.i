@@ -30,13 +30,10 @@
 []
 
 [Executioner]
-  type = InversePowerMethod
-  xdiff = 'group1diff'
-  bx_norm = 'bnorm'
-  k0 = 1
-  #solve_type = 'PJFNK'
+  type = Eigenvalue
+  initial_eigenvalue = 1
+  nl_abs_tol = 1e-12
   solve_type = 'NEWTON'
-  petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   petsc_options_iname = '-pc_type'
   petsc_options_value = 'lu'
 []
@@ -49,7 +46,13 @@
 []
 
 [Postprocessors]
-  [bnorm]
+  [k_eff]
+    type = VectorPostprocessorComponent
+    index = 0
+    vectorpostprocessor = k_vpp
+    vector_name = eigen_values_real
+  []
+  [fiss_neutrons]
     type = ElmIntegTotFissNtsPostprocessor
     execute_on = linear
   []
@@ -62,6 +65,13 @@
     variable = group1
     execute_on = 'linear timestep_end'
     use_displaced_mesh = false
+  []
+[]
+
+[VectorPostprocessors]
+  [k_vpp]
+    type = Eigenvalues
+    inverse_eigenvalue = true
   []
 []
 

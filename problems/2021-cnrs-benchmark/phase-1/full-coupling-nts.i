@@ -13,11 +13,11 @@
   type = GeneratedMesh
   dim = 2
 
-#  nx = 200
-#  ny = 200
-  ## Use a 40-by-40 mesh instead if running on a desktop/small cluster
-  nx = 40
-  ny = 40
+  nx = 200
+  ny = 200
+  ## Use a 40-by-40 mesh instead if running on a less capable computer
+  #    nx = 40
+  #    ny = 40
 
   xmin = 0
   xmax = 200
@@ -27,7 +27,8 @@
 []
 
 [Problem]
-#  type = FEProblem
+  type = EigenProblem
+  bx_norm = bnorm
 []
 
 [Nt]
@@ -35,7 +36,6 @@
   vacuum_boundaries = 'bottom left right top'
   create_temperature_var = false
   eigen = true
-#  scaling = 1e3
 []
 
 [Precursors]
@@ -43,15 +43,14 @@
     var_name_base = pre
     outlet_boundaries = ''
     constant_velocity_values = false
-    uvel = velx
-    vvel = vely
+    uvel = vel_x
+    vvel = vel_y
     nt_exp_form = false
     family = MONOMIAL
     order = CONSTANT
     loop_precursors = false
     transient = false
     eigen = true
-#    scaling = 1e3
   []
 []
 
@@ -61,11 +60,11 @@
     order = FIRST
     initial_condition = 900
   []
-  [velx]
+  [vel_x]
     family = LAGRANGE
     order = FIRST
   []
-  [vely]
+  [vel_y]
     family = LAGRANGE
     order = FIRST
   []
@@ -77,10 +76,10 @@
 
 [AuxKernels]
   [heat_source]
-    type = FissionHeatSourceTransientAux
+    type = FissionHeatSourceAux
     variable = heat
-#    tot_fission_heat = powernorm
-#    power = 1e7
+    tot_fission_heat = powernorm
+    power = 1e7
   []
 []
 
@@ -94,56 +93,34 @@
 
 [Executioner]
   type = Eigenvalue
-  eigen_problem_type = HERMITIAN
-  eigen_tol = 1e-6
-  l_max_its = 100
-  nl_abs_tol = 1e-12
+
+  # fission power normalization
   normalization = 'powernorm'
-  normal_factor = 1e7
+  normal_factor = 1e7 # Watts, 1e9 / 100
+
   automatic_scaling = true
   compute_scaling_once = false
-  resid_vs_jac_scaling_param = 0.1
-  scaling_group_variables = 'group1 group2 group3 group4 group5 group6; pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8'
+  off_diagonals_in_auto_scaling = true
+  resid_vs_jac_scaling_param = .1
+
+  initial_eigenvalue = 0.99600
+  nl_abs_tol = 1e-11
+  free_power_iterations = 2
+
   solve_type = 'PJFNK'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  petsc_options_iname = '-pc_type -pc_factor_mat_solver_type'
-  petsc_options_value = 'lu superlu_dist'
-#  type = InversePowerMethod
-#  max_power_iterations = 50
-#
-#  # fission power normalization
-#  # 1e7 corresponds to 1 GW / 100cm
-#  # Change to 2e6, 4e6, 6e6 or 8e6 for different power output
-#  # at 0.2GW, 0.4GW, 0.6GW or 0.8GW
-#  normalization = 'powernorm'
-#  normal_factor = 1e7 # Watts, 1e9 / 100
-#
-#  xdiff = 'group1diff'
-#  bx_norm = 'bnorm'
-#  k0 = 1.00400
-#  l_max_its = 100
-#  eig_check_tol = 1e-6
-#
-#  solve_type = 'NEWTON'
-#  petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-#  petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_gasm_overlap -sub_pc_factor_shift_type -pc_gasm_blocks -sub_pc_factor_mat_solver_type'
-#  petsc_options_value = 'gasm     lu           200                1                NONZERO                   16              superlu_dist'
-#
-#  ## Use the settings below instead if running on a desktop/small cluster
-#  #  petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type'
-#  #  petsc_options_value = 'asm      lu           200                1               NONZERO'
-#
-#  line_search = none
-[]
-
-[Preconditioning]
-  [SMP]
-    type = SMP
-    full = true
-  []
+  petsc_options_iname = '-pc_type -pc_hypre_type'
+  petsc_options_value = 'hypre boomeramg'
+  line_search = none
 []
 
 [Postprocessors]
+  [k_eff]
+    type = VectorPostprocessorComponent
+    index = 0
+    vectorpostprocessor = k_vpp
+    vector_name = eigen_values_real
+  []
   [max_temp]
     type = NodalExtremeValue
     value_type = max
@@ -198,6 +175,10 @@
 []
 
 [VectorPostprocessors]
+  [k_vpp]
+    type = Eigenvalues
+    inverse_eigenvalue = true
+  []
   [pre_elemental]
     type = ElementValueSampler
     variable = 'pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8'
@@ -215,8 +196,4 @@
   [csv]
     type = CSV
   []
-[]
-
-[Debug]
-  show_var_residual_norms = true
 []
