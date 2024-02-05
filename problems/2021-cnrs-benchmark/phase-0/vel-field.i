@@ -15,7 +15,7 @@ alpha = 1 # INS SUPG and PSPG stabilization parameter
 
     nx = 200
     ny = 200
-    ## Use a 40-by-40 mesh instead if running on a desktop/small cluster
+    ## Use a 40-by-40 mesh instead if running on a less capable computer
     #    nx = 40
     #    ny = 40
 
@@ -49,11 +49,11 @@ alpha = 1 # INS SUPG and PSPG stabilization parameter
 []
 
 [AuxVariables]
-  [vel_x]
+  [velx]
     family = LAGRANGE
     order = FIRST
   []
-  [vel_y]
+  [vely]
     family = LAGRANGE
     order = FIRST
   []
@@ -79,7 +79,7 @@ alpha = 1 # INS SUPG and PSPG stabilization parameter
   [momentum_pressure]
     type = INSADMomentumPressure
     variable = vel
-    p = p
+    pressure = p
   []
   [momentum_supg]
     type = INSADMomentumSUPG
@@ -89,15 +89,15 @@ alpha = 1 # INS SUPG and PSPG stabilization parameter
 []
 
 [AuxKernels]
-  [vel_x]
+  [velx]
     type = VectorVariableComponentAux
-    variable = vel_x
+    variable = velx
     vector_variable = vel
     component = 'x'
   []
-  [vel_y]
+  [vely]
     type = VectorVariableComponentAux
-    variable = vel_y
+    variable = vely
     vector_variable = vel
     component = 'y'
   []
@@ -160,7 +160,7 @@ alpha = 1 # INS SUPG and PSPG stabilization parameter
 [VectorPostprocessors]
   [aa]
     type = LineValueSampler
-    variable = 'vel_x vel_y'
+    variable = 'velx vely'
     start_point = '0 100 0'
     end_point = '200 100 0'
     num_points = 201
@@ -170,7 +170,7 @@ alpha = 1 # INS SUPG and PSPG stabilization parameter
   []
   [bb]
     type = LineValueSampler
-    variable = 'vel_x vel_y'
+    variable = 'velx vely'
     start_point = '100 0 0'
     end_point = '100 200 0'
     num_points = 201

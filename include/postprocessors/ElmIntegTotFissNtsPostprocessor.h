@@ -4,7 +4,12 @@
 #include "MooseVariableInterface.h"
 
 class ElmIntegTotFissNtsPostprocessor : public ElementIntegralPostprocessor
-/* public MooseVariableInterface */
+/**
+ * This class computes the postprocessor value for the total number of
+ * neutrons produced in one neutron generation from fission and delayed
+ * neutron precursors if specified.
+ * \f$ \sum_g \nu \Sigma_{g,f} \phi_g + \sum_i \lambda_i C_i \f$
+ */
 {
 public:
   ElmIntegTotFissNtsPostprocessor(const InputParameters & parameters);

@@ -30,7 +30,8 @@
 []
 
 [Problem]
-  type = FEProblem
+  type = EigenProblem
+  bx_norm = bnorm
 []
 
 [Nt]
@@ -52,6 +53,7 @@
     order = CONSTANT
     loop_precursors = false
     transient = false
+    eigen = true
   []
 []
 
@@ -100,8 +102,7 @@
 []
 
 [Executioner]
-  type = InversePowerMethod
-  max_power_iterations = 50
+  type = Eigenvalue
 
   # fission power normalization
   normalization = 'powernorm'
@@ -111,32 +112,30 @@
   # We divide the total power=1e9W by 100 because our length units are in cm.
   # Our domain = 2m x 2m x 0.01m
 
-  xdiff = 'group1diff'
-  bx_norm = 'bnorm'
-  k0 = 1.00400
-  l_max_its = 100
-  eig_check_tol = 1e-7
+  initial_eigenvalue = 0.99600
+  eigen_tol = 1e-7
 
-  solve_type = 'NEWTON'
+  solve_type = 'PJFNK'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_gasm_overlap -sub_pc_factor_shift_type -pc_gasm_blocks -sub_pc_factor_mat_solver_type'
-  petsc_options_value = 'gasm     lu           200                1                NONZERO                   16              superlu_dist'
+  petsc_options_iname = '-pc_type -pc_hypre_type'
+  petsc_options_value = 'hypre boomeramg'
 
-  ## Use the settings below instead if running on a desktop/small cluster
+  ## Alternative PETSc settings if Hypre BoomerAMG is not installed
+  #  petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_mat_solver_package'
+  #  petsc_options_value = 'lu NONZERO superlu_dist'
   #  petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type'
   #  petsc_options_value = 'asm      lu           200                1               NONZERO'
 
   line_search = none
 []
 
-[Preconditioning]
-  [SMP]
-    type = SMP
-    full = true
-  []
-[]
-
 [Postprocessors]
+  [k_eff]
+    type = VectorPostprocessorComponent
+    index = 0
+    vectorpostprocessor = k_vpp
+    vector_name = eigen_values_real
+  []
   [bnorm]
     type = ElmIntegTotFissNtsPostprocessor
     execute_on = linear
@@ -186,6 +185,10 @@
 []
 
 [VectorPostprocessors]
+  [k_vpp]
+    type = Eigenvalues
+    inverse_eigenvalue = true
+  []
   [pre_elemental]
     type = ElementValueSampler
     variable = 'pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8'
@@ -203,8 +206,4 @@
   [csv]
     type = CSV
   []
-[]
-
-[Debug]
-  show_var_residual_norms = true
 []

@@ -2,25 +2,17 @@
 
 The input files for the Phase 0 results in our journal article [2] were run on
 a 200-by-200 uniform structured mesh on the Blue Waters supercomputer with 256
-MPI processes on
-sixteen XK or eight XE computing nodes. We recommend having at least 32GB of
-RAM to run Steps 0.2 and 0.3 on a quad-core desktop with four MPI threads,
-possibly more if running on a cluster with more computing cores.
+MPI processes on sixteen XK or eight XE computing nodes. All three steps can
+also be easily run on general-purpose dual/quad-core computers with 16GB RAM.
 
 Sample command to run the input files:
 ```mpirun -n 4 $MOLTRES/moltres-opt -i nts.i```
 
-Otherwise, on a general dual/quad-core computer with 8GB of RAM, we recommend
-running on a coarser 40-by-40 mesh to reduce the memory requirements with the
-following preconditioner settings in the ```Executioner``` block of the input
-file on a dual-core/quad-core computer with 8GB of RAM:
+Otherwise, if you intend to run these input files on a less capable computer
+for tutorial purposes, we recommend running on a coarser 40-by-40 mesh to
+reduce the CPU and memory requirements.
 
-```
-petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type'
-petsc_options_value = 'asm      lu           200                1                NONZERO'
-```
-
-The Step 0.2 reactivity results on the different mesh resolutions are:
+The expected Step 0.2 reactivity results on the different mesh resolutions are:
 - 200-by-200 mesh: 465.6 pcm
 - 40-by-40 mesh: 460.7 pcm
 
@@ -68,6 +60,6 @@ centerline
 dedicated to molten salt fast reactors", Annals of Nuclear Energy, vol. 142,
 July 2020, 107428.
 
-[2] Park S. M., Munk M., & Huff K. D., "Verification of Moltres for Multiphysics
+[2] Park S. M. & Munk M., "Verification of Moltres for Multiphysics
 Simulations of Fast-Spectrum Molten Salt Reactors", Annals of Nuclear Energy, vol. 173,
 August 2022, 109111.

@@ -36,4 +36,36 @@ protected:
 
   /// number of energy groups
   unsigned int _num_groups;
+
+  /**
+  * Adds non-source neutronics kernel
+  *
+  * @param op The zero-based index for the precursor group the kernel acts on
+  * @param var_name The name of the variable the kernel acts on
+  * @param kernel_type The kernel type to be added
+  * @param all_var_names Vector of the names of all group flux variables
+  */
+  void addNtKernel(const unsigned & op,
+                   const std::string & var_name,
+                   const std::string & kernel_type,
+                   const std::vector<VariableName> & all_var_names);
+
+  /**
+  * Adds CoupledFissionKernel kernel
+  *
+  * @param op The zero-based index for the precursor group the kernel acts on
+  * @param var_name The name of the variable the kernel acts on
+  * @param all_var_names Vector of the names of all group flux variables
+  */
+  void addCoupledFissionKernel(const unsigned & op,
+                               const std::string & var_name,
+                               const std::vector<VariableName> & all_var_names);
+
+  /**
+  * Adds DelayedNeutronSource kernel
+  *
+  * @param op The zero-based index for the precursor group the kernel acts on
+  * @param var_name The name of the variable the kernel acts on
+  */
+  void addDelayedNeutronSource(const unsigned & op, const std::string & var_name);
 };

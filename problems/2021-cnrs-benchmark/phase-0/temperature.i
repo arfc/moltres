@@ -23,7 +23,7 @@ alpha = 1 # INS SUPG and PSPG stabilization parameter
 
     nx = 200
     ny = 200
-    ## Use a 40-by-40 mesh instead if running on a desktop/small cluster
+    ## Use a 40-by-40 mesh instead if running on a less capable computer
     #    nx = 40
     #    ny = 40
 
@@ -125,7 +125,7 @@ alpha = 1 # INS SUPG and PSPG stabilization parameter
   [vel_pressure]
     type = INSADMomentumPressure
     variable = vel
-    p = p
+    pressure = p
   []
   [vel_supg]
     type = INSADMomentumSUPG
@@ -278,9 +278,6 @@ alpha = 1 # INS SUPG and PSPG stabilization parameter
     type = SMP
     full = true
   []
-[]
-
-[Postprocessors]
 []
 
 [VectorPostprocessors]
