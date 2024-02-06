@@ -3,18 +3,13 @@
 ## 1. Install the Conda MOOSE Environment
 
 Moltres relies on the MOOSE framework. We suggest that users install the latest MOOSE environment
-using Conda packages by following the instructions in the "Install Mambaforge3" and "Install MOOSE
-Conda Packages" section of the MOOSE
+using Conda packages by following the instructions in the "Conda MOOSE Environment" and "Install
+MOOSE" sections of the MOOSE
 [installation guide](https://mooseframework.inl.gov/getting_started/installation/conda.html).
-We cannot guarantee compatibility with the older MOOSE builds and their corresponding Conda
+We cannot guarantee compatibility with older MOOSE builds and their corresponding Conda
 environments. The latest MOOSE Conda environment is usually compatible unless the MOOSE team
 introduces significant changes to the dependencies. We encourage you to post a GitHub issue if you
-encounter compatibility issues so that we can rectify it as soon as possible. Run the following
-command to install the latest package versions:
-
-```bash
-mamba install moose-tools moose-libmesh
-```
+encounter compatibility issues so that we can rectify it as soon as possible.
 
 ## 2. Clone Moltres
 
