@@ -42,7 +42,7 @@ INSADMomentumTurbulentViscous::qpAdditionalRZTerm()
   ADReal fv1 = Utility::pow<3>(chi) / (Utility::pow<3>(chi) + Utility::pow<3>(cv1));
 
   // Add the u_r / r^2 term. There is an extra factor of 2 for the traction form
-  ADReal resid = _mu_tilde[_qp] * fv1 * _u[_qp](_rz_radial_coord) * 2.;
+  ADReal resid = _mu_tilde[_qp] * fv1 * _u[_qp](_rz_radial_coord) * 2.0;
 
   if (_use_displaced_mesh)
     return resid / (_ad_q_point[_qp](_rz_radial_coord) * _ad_q_point[_qp](_rz_radial_coord));

@@ -6,7 +6,7 @@ InputParameters
 SATurbulentViscositySUPG::validParams()
 {
   InputParameters params = ADKernelSUPG::validParams();
-  params.addClassDescription("Adds the supg stabilization to the Spalart-Allmaras turbulent "
+  params.addClassDescription("Adds the SUPG stabilization to the Spalart-Allmaras turbulent "
                              "viscosity equation");
   params.set<MaterialPropertyName>("tau_name") = "tau_viscosity";
   return params;

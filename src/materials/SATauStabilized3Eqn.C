@@ -30,12 +30,12 @@ SATauStabilized3Eqn::computeQpProperties()
 
   const auto dissipation_coefficient =
     _k[_qp] / (_rho[_qp] * _cp[_qp]) + _mu_tilde[_qp] * fv1 / (_pr * _rho[_qp]);
-  const auto transient_part = _has_energy_transient ? 4. / (_dt * _dt) : 0.;
+  const auto transient_part = _has_energy_transient ? 4.0 / (_dt * _dt) : 0.0;
   const auto speed = NS::computeSpeed(_velocity[_qp]);
   _tau_energy[_qp] =
-    _alpha / std::sqrt(transient_part + (2. * speed / _hmax) * (2. * speed / _hmax) +
-                       9. * (4. * dissipation_coefficient / (_hmax * _hmax)) *
-                       (4. * dissipation_coefficient / (_hmax * _hmax)));
+    _alpha / std::sqrt(transient_part + (2.0 * speed / _hmax) * (2.0 * speed / _hmax) +
+                       9.0 * (4.0 * dissipation_coefficient / (_hmax * _hmax)) *
+                       (4.0 * dissipation_coefficient / (_hmax * _hmax)));
 
   // Turbulent diffusion
   _temperature_strong_residual[_qp] -=

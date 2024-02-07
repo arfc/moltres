@@ -53,11 +53,11 @@ DGTurbulentDiffusion::computeQpResidual(Moose::DGResidualType type)
   // Neighbor turbulent diffusion coefficient
   Real D_nb = raw_value(_mu_tilde_nb[_qp] / _rho_nb[_qp]) * fv1_nb / _sc;
 
-  Real r = 0.;
+  Real r = 0.0;
 
   const int elem_b_order = std::max(libMesh::Order(1), _var.order());
   const Real h_elem =
-    _current_elem_volume / _current_side_volume * 1. / Utility::pow<2>(elem_b_order);
+    _current_elem_volume / _current_side_volume * 1.0 / Utility::pow<2>(elem_b_order);
 
   switch (type)
   {

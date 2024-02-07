@@ -3,7 +3,7 @@ density = 1      # kg cm-3
 D = 1
 inlet = 1
 viscosity = '${fparse density * inlet * D / Re}'    # dynamic viscosity, mu = nu * rho, kg cm-1 s-1
-alpha = .33333           # INS SUPG and PSPG stabilization parameter
+alpha = 0.33333           # INS SUPG and PSPG stabilization parameter
 cp = 1
 k = '${fparse viscosity * cp / 0.85}'
 
@@ -19,8 +19,8 @@ k = '${fparse viscosity * cp / 0.85}'
   [channel]
     type = CartesianMeshGenerator
     dim = 2
-    dx = '.05 .2 19.75'
-    dy = '.3 .1 .05 .05'
+    dx = '0.05 0.2 19.75'
+    dy = '0.3 0.1 0.05 0.05'
     ix = '20 1 79'
     iy = '10 5 5 10'
   []
@@ -191,7 +191,7 @@ k = '${fparse viscosity * cp / 0.85}'
   []
   [mu_func]
     type = ParsedFunction
-    expression = 'if(y=.5, 0, ${fparse viscosity * 5})'
+    expression = 'if(y=0.5, 0, ${fparse viscosity * 5})'
   []
 []
 
@@ -308,7 +308,7 @@ k = '${fparse viscosity * cp / 0.85}'
 
   automatic_scaling = true
   compute_scaling_once = false
-  resid_vs_jac_scaling_param = .1
+  resid_vs_jac_scaling_param = 0.1
   off_diagonals_in_auto_scaling = true
 
   nl_rel_tol = 1e-8

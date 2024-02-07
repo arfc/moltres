@@ -20,16 +20,16 @@ SATauMaterialTempl<T>::validParams()
 template <typename T>
 SATauMaterialTempl<T>::SATauMaterialTempl(const InputParameters & parameters)
   : T(parameters),
-    _sigma(2./3.),
+    _sigma(2.0/3.0),
     _cb1(0.1355),
     _cb2(0.622),
     _kappa(0.41),
     _cw1(_cb1 / _kappa / _kappa + (1 + _cb2) / _sigma),
     _cw2(0.3),
-    _cw3(2.),
+    _cw3(2.0),
     _cv1(7.1),
-    _ct1(1.),
-    _ct2(2.),
+    _ct1(1.0),
+    _ct2(2.0),
     _ct3(1.2),
     _ct4(0.5),
     _mu_tilde(this->template adCoupledValue("mu_tilde")),
@@ -89,19 +89,19 @@ SATauMaterialTempl<T>::computeQpProperties()
   const Real d = std::max(_wall_dist[_qp], 1e-16); // Avoid potential division by zero
   const ADReal chi = _mu_tilde[_qp] / _mu[_qp];
   const ADReal fv1 = Utility::pow<3>(chi) / (Utility::pow<3>(chi) + Utility::pow<3>(_cv1));
-  const ADReal fv2 = 1. - chi / (1. + chi * fv1);
+  const ADReal fv2 = 1.0 - chi / (1. + chi * fv1);
   const ADReal S_tilde =
     vorticity_mag + _mu_tilde[_qp] * fv2 / (_kappa * _kappa * d * d * _rho[_qp]);
-  const ADReal S = S_tilde + 2 * std::min(0., _strain_mag[_qp] - vorticity_mag);
+  const ADReal S = S_tilde + 2 * std::min(0.0, _strain_mag[_qp] - vorticity_mag);
   ADReal r;
-  if (S_tilde <= 0.) // Avoid potential division by zero
+  if (S_tilde <= 0.0) // Avoid potential division by zero
     r = 10.;
   else
-    r = std::min(_mu_tilde[_qp] / (S_tilde * _kappa * _kappa * d * d * _rho[_qp]), 10.);
+    r = std::min(_mu_tilde[_qp] / (S_tilde * _kappa * _kappa * d * d * _rho[_qp]), 10.0);
   const ADReal g = r + _cw2 * (Utility::pow<6>(r) - r);
   const ADReal fw = g * std::pow((1. + Utility::pow<6>(_cw3)) /
                            (Utility::pow<6>(g) + Utility::pow<6>(_cw3)),
-                           1. / 6.);
+                           1.0 / 6.0);
 
   // Compute strong forms of the SA equation
   if (_use_ft2_term) // Whether to apply the f_t2 term in the SA equation
@@ -117,10 +117,10 @@ SATauMaterialTempl<T>::computeQpProperties()
     _source_strong_residual[_qp] = -_rho[_qp] * _cb1 * S * _mu_tilde[_qp];
   }
   _convection_strong_residual[_qp] = _rho[_qp] * _velocity[_qp] * _grad_mu[_qp];
-  _diffusion_strong_residual[_qp] = -1. / _sigma * _cb2 * (_grad_mu[_qp] * _grad_mu[_qp]);
+  _diffusion_strong_residual[_qp] = -1.0 / _sigma * _cb2 * (_grad_mu[_qp] * _grad_mu[_qp]);
   if (_has_transient)
     _time_strong_residual[_qp] = (*_visc_dot)[_qp] * _rho[_qp];
-  _visc_strong_residual[_qp] = _has_transient ? _time_strong_residual[_qp] : 0.;
+  _visc_strong_residual[_qp] = _has_transient ? _time_strong_residual[_qp] : 0.0;
   _visc_strong_residual[_qp] += (_convection_strong_residual[_qp] +
                                  _destruction_strong_residual[_qp] +
                                  _diffusion_strong_residual[_qp] +
@@ -128,19 +128,19 @@ SATauMaterialTempl<T>::computeQpProperties()
 
   // Compute the tau stabilization parameter for mu_tilde SUPG stabilization
   const auto nu_visc = (_mu[_qp] + _mu_tilde[_qp]) / _rho[_qp] / _sigma;
-  const auto transient_part = _has_transient ? 4. / (_dt * _dt) : 0.;
+  const auto transient_part = _has_transient ? 4.0 / (_dt * _dt) : 0.0;
   const auto speed = NS::computeSpeed(_velocity[_qp]);
   _tau_visc[_qp] = _alpha / std::sqrt(transient_part +
-                                      (2. * speed / _hmax) * (2. * speed / _hmax) +
-                                      9. * (4. * nu_visc / (_hmax * _hmax)) *
-                                      4. * (nu_visc / (_hmax * _hmax)));
+                                      (2.0 * speed / _hmax) * (2.0 * speed / _hmax) +
+                                      9.0 * (4.0 * nu_visc / (_hmax * _hmax)) *
+                                      4.0 * (nu_visc / (_hmax * _hmax)));
 
   // Replace the nu value in the tau stabilization parameter for INS SUPG stabilization
   const auto nu = (_mu[_qp] + _mu_tilde[_qp] * fv1) / _rho[_qp];
   _tau[_qp] = _alpha / std::sqrt(transient_part +
-                                 (2. * speed / _hmax) * (2. * speed / _hmax) +
-                                 9. * (4. * nu / (_hmax * _hmax)) *
-                                 4. * (nu / (_hmax * _hmax)));
+                                 (2.0 * speed / _hmax) * (2.0 * speed / _hmax) +
+                                 9.0 * (4.0 * nu / (_hmax * _hmax)) *
+                                 4.0 * (nu / (_hmax * _hmax)));
 }
 
 template class SATauMaterialTempl<INSADTauMaterial>;

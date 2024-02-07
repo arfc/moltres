@@ -26,9 +26,9 @@ SATurbulentViscosity::SATurbulentViscosity(const InputParameters & parameters)
 ADReal
 SATurbulentViscosity::computeQpResidual()
 {
-  Real sigma = 2. / 3.;
-  Real cb2 = .622;
-  ADReal diffusion_part = 1. / sigma * ((_mu[_qp] + _u[_qp]) * \
+  Real sigma = 2.0 / 3.0;
+  Real cb2 = 0.622;
+  ADReal diffusion_part = 1.0 / sigma * ((_mu[_qp] + _u[_qp]) * \
                         _grad_u[_qp] * _grad_test[_i][_qp] - cb2 * _grad_u[_qp] * _grad_u[_qp] * \
                         _test[_i][_qp]);
   return (_convection_strong_residual[_qp] + _destruction_strong_residual[_qp] + \

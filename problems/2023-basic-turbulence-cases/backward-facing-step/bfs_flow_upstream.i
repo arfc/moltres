@@ -3,7 +3,7 @@ density = 1      # kg cm-3
 D = 1
 inlet = 1
 viscosity = '${fparse density * inlet * D / Re}'    # dynamic viscosity, mu = nu * rho, kg cm-1 s-1
-alpha = .33333           # INS SUPG and PSPG stabilization parameter
+alpha = 0.33333           # INS SUPG and PSPG stabilization parameter
 
 [GlobalParams]
   integrate_p_by_parts = false
@@ -16,9 +16,9 @@ alpha = .33333           # INS SUPG and PSPG stabilization parameter
   [block]
     type = CartesianMeshGenerator
     dim = 2
-    dx = '.25 .75 103'
+    dx = '0.25 0.75 103'
     ix = '40   1    103'
-    dy = '.025 .025 .9 .025 .025 .025 .025 .2 1.25 1  2.5 1.5 1.25 .2 .025 .025'
+    dy = '0.025 0.025 0.9 0.025 0.025 0.025 0.025 0.2 1.25 1  2.5 1.5 1.25 0.2 0.025 0.025'
     iy = '16   8    36 5    10   20   5    10 25   20 5   30  25   10 5    20'
   []
   [rename]
@@ -268,7 +268,7 @@ alpha = .33333           # INS SUPG and PSPG stabilization parameter
 
   automatic_scaling = true
   compute_scaling_once = false
-  resid_vs_jac_scaling_param = .1
+  resid_vs_jac_scaling_param = 0.1
   scaling_group_variables = 'vel; p; mu_tilde'
   off_diagonals_in_auto_scaling = true
 

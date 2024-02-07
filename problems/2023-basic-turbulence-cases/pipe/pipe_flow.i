@@ -3,7 +3,7 @@ density = 1      # kg cm-3
 D = 1
 inlet = 1
 viscosity = '${fparse density * inlet * D / Re}'    # dynamic viscosity, mu = nu * rho, kg cm-1 s-1
-alpha = .33333           # INS SUPG and PSPG stabilization parameter
+alpha = 0.33333           # INS SUPG and PSPG stabilization parameter
 
 [GlobalParams]
   integrate_p_by_parts = false
@@ -17,8 +17,8 @@ alpha = .33333           # INS SUPG and PSPG stabilization parameter
   [pipe]
     type = CartesianMeshGenerator
     dim = 2
-    dx = '.3 .1 .05 .034 .016'
-    dy = '.025 .475 149.5'
+    dx = '0.3 0.1 0.05 0.034 0.016'
+    dy = '0.025 0.475 149.5'
     ix = '20 10 10 17 40'
     iy = '20 1 299'
   []
@@ -26,7 +26,7 @@ alpha = .33333           # INS SUPG and PSPG stabilization parameter
     type = ExtraNodesetGenerator
     input = pipe
     new_boundary = 'pinned_node'
-    coord = '.5 150'
+    coord = '0.5 150'
   []
 []
 
@@ -157,7 +157,7 @@ alpha = .33333           # INS SUPG and PSPG stabilization parameter
   []
   [mu_func]
     type = ParsedFunction
-    expression = 'if(x=.5, 0, ${fparse viscosity * 5})'
+    expression = 'if(x=0.5, 0, ${fparse viscosity * 5})'
   []
 []
 
@@ -275,7 +275,7 @@ alpha = .33333           # INS SUPG and PSPG stabilization parameter
 
   automatic_scaling = true
   compute_scaling_once = false
-  resid_vs_jac_scaling_param = .1
+  resid_vs_jac_scaling_param = 0.1
   scaling_group_variables = 'vel; p; mu_tilde'
   off_diagonals_in_auto_scaling = true
 

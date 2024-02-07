@@ -18,8 +18,8 @@ diff = '${fparse viscosity / density / 0.85}'
   [channel]
     type = CartesianMeshGenerator
     dim = 2
-    dx = '.05 .2 19.75'
-    dy = '.3 .1 .05 .05'
+    dx = '0.05 0.2 19.75'
+    dy = '0.3 0.1 0.05 0.05'
     ix = '20 1 79'
     iy = '10 5 5 10'
   []
@@ -196,7 +196,7 @@ diff = '${fparse viscosity / density / 0.85}'
   []
   [mu_func]
     type = ParsedFunction
-    expression = 'if(y=.5, 0, ${fparse viscosity * 5})'
+    expression = 'if(y=0.5, 0, ${fparse viscosity * 5})'
   []
 []
 
