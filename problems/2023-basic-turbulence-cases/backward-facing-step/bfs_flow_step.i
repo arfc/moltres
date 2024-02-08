@@ -3,7 +3,7 @@ density = 1      # kg cm-3
 D = 1
 inlet = 1
 viscosity = '${fparse density * inlet * D / Re}'    # dynamic viscosity, mu = nu * rho, kg cm-1 s-1
-alpha = .33333           # INS SUPG and PSPG stabilization parameter
+alpha = 0.33333           # INS SUPG and PSPG stabilization parameter
 
 [GlobalParams]
   integrate_p_by_parts = false
@@ -16,9 +16,9 @@ alpha = .33333           # INS SUPG and PSPG stabilization parameter
   [block]
     type = CartesianMeshGenerator
     dim = 2
-    dx = '4  .8 .4 1.6 .4 6.8 4  2  2  2.5 3  3.5 25'
+    dx = '4  0.8 0.4 1.6 0.4 6.8 4  2  2  2.5 3  3.5 25'
     ix = '64 16 10 50  10 136 64 25 20 20  20 20  125'
-    dy = '.025 .025 .9 .025 .025 .025 .025 .2 1.25 1  2.5 1.5 1.25 .2 .025 .025'
+    dy = '0.025 0.025 0.9 0.025 0.025 0.025 0.025 0.2 1.25 1  2.5 1.5 1.25 0.2 0.025 0.025'
     iy = '16   8    36 5    10   20   5    10 25   20 5   30  25   10 5    20'
   []
   [rename]
@@ -350,8 +350,8 @@ alpha = .33333           # INS SUPG and PSPG stabilization parameter
   [downstream]
     type = LineValueSampler
     variable = 'velx p'
-    start_point = '110 .0015625 0'
-    end_point = '160 .0015625 0'
+    start_point = '110 0.0015625 0'
+    end_point = '160 0.0015625 0'
     num_points = 60001
     sort_by = x
     execute_on = final
