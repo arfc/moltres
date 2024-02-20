@@ -1,13 +1,12 @@
-#include "GroupDrift.h"
-
+#include "GroupDriftAux.h"
 #include "MoltresUtils.h"
 
-registerMooseObject("MoltresApp", GroupDrift);
+registerMooseObject("MoltresApp", GroupDriftAux);
 
 InputParameters
-GroupDrift::validParams()
+GroupDriftAux::validParams()
 {
-  InputParameters params = Kernel::validParams();
+  InputParameters params = ArrayAuxKernel::validParams();
   params += ScalarTransportBase::validParams();
   params.addRequiredParam<unsigned int>("N", "Discrete ordinate order");
   params.addRequiredParam<unsigned int>("group_number",
@@ -21,8 +20,8 @@ GroupDrift::validParams()
   return params;
 }
 
-GroupDrift::GroupDrift(const InputParameters & parameters)
-  : Kernel(parameters),
+GroupDriftAux::GroupDriftAux(const InputParameters & parameters)
+  : ArrayAuxKernel(parameters),
     ScalarTransportBase(parameters),
     _tau_sn(getMaterialProperty<std::vector<Real>>("tau_sn")),
     _diffcoef(getMaterialProperty<std::vector<Real>>("diffcoef")),
@@ -36,6 +35,8 @@ GroupDrift::GroupDrift(const InputParameters & parameters)
     _num_groups(getParam<unsigned int>("num_groups")),
     _temp_id(coupled("temperature"))
 {
+  if (_var.count() != 3)
+    mooseError("The number of group drift array variables must be 3.");
   unsigned int n = coupledComponents("group_angular_fluxes");
   if (n != _num_groups)
     mooseError("The number of coupled variables doesn't match the number of groups.");
@@ -55,8 +56,8 @@ GroupDrift::GroupDrift(const InputParameters & parameters)
   _weights = ords_weights.col(3);
 }
 
-Real
-GroupDrift::computeQpResidual()
+RealEigenVector
+GroupDriftAux::computeValue()
 {
   Real denom = _weights.transpose() * (*_group_fluxes[_group])[_qp];
   RealEigenVector D = RealEigenVector::Zero(3);
@@ -77,9 +78,5 @@ GroupDrift::computeQpResidual()
       _weights.cwiseProduct((*_group_fluxes[g])[_qp]);
   }
   D /= (denom + 1e-9);
-  RealEigenVector array_grad_test(3);
-  array_grad_test << _grad_test[_i][_qp](0),
-                     _grad_test[_i][_qp](1),
-                     _grad_test[_i][_qp](2);
-  return (computeConcentration(_u, _qp) * array_grad_test * D)(0);
+  return D;
 }

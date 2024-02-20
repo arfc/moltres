@@ -1,17 +1,17 @@
 #pragma once
 
-#include "Kernel.h"
+#include "AuxKernel.h"
 #include "ScalarTransportBase.h"
 
-class GroupDrift : public Kernel, public ScalarTransportBase
+class GroupDriftAux : public ArrayAuxKernel, public ScalarTransportBase
 {
 public:
-  GroupDrift(const InputParameters & parameters);
-
   static InputParameters validParams();
 
+  GroupDriftAux(const InputParameters & parameters);
+
 protected:
-  virtual Real computeQpResidual() override;
+  virtual RealEigenVector computeValue() override;
 
   const MaterialProperty<std::vector<Real>> & _tau_sn;
   const MaterialProperty<std::vector<Real>> & _diffcoef;
