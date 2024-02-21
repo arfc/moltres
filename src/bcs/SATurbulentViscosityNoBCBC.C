@@ -22,5 +22,5 @@ ADReal
 SATurbulentViscosityNoBCBC::computeQpResidual()
 {
   Real sigma = 2.0 / 3.0;
-  return -1.0 / sigma * (_mu[_qp] + _u[_qp]) * (_grad_u[_qp] * _normals[_qp]) * _test[_i][_qp];
+  return (-1.0 / sigma) * (_mu[_qp] + _u[_qp]) * (_grad_u[_qp] * _normals[_qp]) * _test[_i][_qp];
 }
