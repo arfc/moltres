@@ -1,13 +1,6 @@
 #pragma once
 
-#include "InputParameters.h"
-#include "NonlinearSystemBase.h"
-#include "FEProblemBase.h"
-#include "MaterialProperty.h"
-#include "MooseArray.h"
 #include "INSADTauMaterial.h"
-
-#include "libmesh/elem.h"
 
 using MetaPhysicL::raw_value;
 
