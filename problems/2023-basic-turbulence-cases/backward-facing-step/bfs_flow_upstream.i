@@ -19,7 +19,7 @@ alpha = 0.33333           # INS SUPG and PSPG stabilization parameter
     dx = '0.25 0.75 103'
     ix = '40   1    103'
     dy = '0.025 0.025 0.9 0.025 0.025 0.025 0.025 0.2 1.25 1  2.5 1.5 1.25 0.2 0.025 0.025'
-    iy = '16   8    36 5    10   20   5    10 25   20 5   30  25   10 5    20'
+    iy = '16 8 36 5 10 20 5 10 25 20 5 30 25 10 5 20'
   []
   [rename]
     type = SubdomainBoundingBoxGenerator
