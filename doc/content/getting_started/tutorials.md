@@ -1,15 +1,6 @@
 # Tutorials
 
-The *two-step procedure* is a common approach for multiphysics full-core nuclear reactor analysis.
-These steps are:
-
-+Step 1:+ Generate neutron group constant data with a lattice or full-core reactor model on a
-high-fidelity, continuous/fine-energy neutronics software at various reactor states.
-
-+Step 2:+ Use an intermediate-fidelity, computationally cheaper neutronics software with the
-neutron group constant data to perform multiphysics reactor analysis.
-
-Moltres falls under Step 2 of the two-step procedure. The following sections cover
+The following sections cover
 various tutorials for group constant file generation and running various types of reactor
 simulations with Moltres. The tutorials assume that readers have a basic understanding of reactor
 analysis, molten salt reactors, and the [MOOSE framework](https://mooseframework.inl.gov/).
@@ -44,7 +35,7 @@ the existing tutorials below.
 
 +2b.+ [Eigenvalue Calculation](getting_started/eigenvalue.md)
 
-+2c.+ [Time-dependent Simulation with Thermal-Hydraulic Coupling and Precursor Looping](getting_started/transient.md)
++2c.+ [Time-Dependent Simulation with Thermal-Hydraulic Coupling and Precursor Looping](getting_started/transient.md)
 
 +Tip:+ [Recommended Executioner and Preconditioning Settings](getting_started/recommended.md)
 
