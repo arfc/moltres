@@ -20,10 +20,10 @@ protected:
   virtual Real computeQpIntegral() override;
 
   // The number of neutron energy groups.
-  int _num_groups;
+  unsigned int _num_groups;
 
   // The number of precursor groups.
-  int _num_precursor_groups;
+  unsigned int _num_precursor_groups;
 
   // Whether to account for delayed neutrons
   bool _account_delayed;
