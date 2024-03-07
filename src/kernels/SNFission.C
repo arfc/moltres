@@ -18,8 +18,10 @@ SNFission::validParams()
 //      "All the variables that hold the group fluxes. These MUST be listed by decreasing "
 //      "energy/increasing group number.");
   params.addRequiredParam<bool>("account_delayed", "Whether to account for delayed neutrons.");
-//  params.addParam<bool>("acceleration", false, "Whether an acceleration scheme is applied.");
   params.addCoupledVar("temperature", "The temperature used to interpolate material properties");
+  params.addParam<PostprocessorName>(
+      "eigenvalue_scaling", 1.0, "Artificial scaling factor for the fission source.");
+//  params.addParam<bool>("acceleration", false, "Whether an acceleration scheme is applied.");
   return params;
 }
 
@@ -38,7 +40,8 @@ SNFission::SNFission(const InputParameters & parameters)
     _group(getParam<unsigned int>("group_number") - 1),
     _num_groups(getParam<unsigned int>("num_groups")),
     _temp_id(coupled("temperature")),
-    _account_delayed(getParam<bool>("account_delayed"))
+    _account_delayed(getParam<bool>("account_delayed")),
+    _eigenvalue_scaling(getPostprocessorValue("eigenvalue_scaling"))
 //    _acceleration(getParam<bool>("acceleration"))
 {
   unsigned int n = coupledComponents("group_angular_fluxes");
@@ -74,7 +77,7 @@ SNFission::computeQpResidual(RealEigenVector & residual)
 
   Real fission = 0.;
   for (unsigned int g = 0; g < _num_groups; ++g)
-    fission += .125 * _nsf[_qp][g] * _weights.transpose() * (*_group_fluxes[g])[_qp];
+    fission += (_nsf[_qp][g] * _weights.transpose() * (*_group_fluxes[g])[_qp])(0) / 8.;
 
   residual = -_weights.cwiseProduct(lhs) * fission;
 
@@ -82,6 +85,9 @@ SNFission::computeQpResidual(RealEigenVector & residual)
     residual *= (1. - _beta[_qp]) * _chi_p[_qp][_group];
   else
     residual *= _chi_t[_qp][_group];
+
+  if (_eigenvalue_scaling != 1.0)
+    residual /= _eigenvalue_scaling;
 }
 
 RealEigenVector
@@ -99,6 +105,9 @@ SNFission::computeQpJacobian()
     jac *= (1. - _beta[_qp]) * _chi_p[_qp][_group];
   else
     jac *= _chi_t[_qp][_group];
+
+  if (_eigenvalue_scaling != 1.0)
+    jac /= _eigenvalue_scaling;
 
   return _weights.cwiseProduct(lhs).cwiseProduct(jac);
 }
@@ -125,6 +134,9 @@ SNFission::computeQpOffDiagJacobian(const MooseVariableFEBase & jvar)
         jac *= (1. - _beta[_qp]) * _chi_p[_qp][_group];
       else
         jac *= _chi_t[_qp][_group];
+
+      if (_eigenvalue_scaling != 1.0)
+        jac /= _eigenvalue_scaling;
 
       return jac;
     }

@@ -29,6 +29,7 @@ protected:
   const unsigned int _num_groups;
   const unsigned int _temp_id;
   const bool _account_delayed;
+  const PostprocessorValue & _eigenvalue_scaling;
   std::vector<const ArrayVariableValue *> _group_fluxes;
   std::vector<unsigned int> _flux_ids;
   RealEigenMatrix _ordinates;
