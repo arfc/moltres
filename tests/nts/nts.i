@@ -8,6 +8,11 @@
   account_delayed = false
 []
 
+[Problem]
+  type = EigenProblem
+  bx_norm = fiss_neutrons
+[]
+
 [Mesh]
   coord_type = RZ
   file = '2d_lattice_structured_smaller.msh'
@@ -38,6 +43,7 @@
 [Executioner]
   type = Eigenvalue
   eigen_tol = 1e-6
+  free_power_iterations = 2
   normalization = fiss_neutrons
   normal_factor = 1
   solve_type = 'PJFNK'

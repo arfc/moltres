@@ -11,6 +11,11 @@ flow_velocity = 21.7 # cm/s. See MSRE-properties.ods
   account_delayed = true
 []
 
+[Problem]
+  type = EigenProblem
+  bx_norm = fiss_neutrons
+[]
+
 [Mesh]
   coord_type = RZ
   file = '2d_lattice_structured.msh'
@@ -63,6 +68,7 @@ flow_velocity = 21.7 # cm/s. See MSRE-properties.ods
   initial_eigenvalue = 1
   l_max_its = 100
   eigen_tol = 1e-7
+  free_power_iterations = 2
   normalization = powernorm
   normal_factor = 1e7
   solve_type = 'PJFNK'
