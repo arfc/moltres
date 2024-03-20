@@ -11,6 +11,11 @@ flow_velocity = 21.7 # cm/s. See MSRE-properties.ods
   account_delayed = true
 []
 
+[Problem]
+  type = EigenProblem
+  bx_norm = fiss_neutrons
+[]
+
 [Mesh]
   coord_type = RZ
   file = '2d_lattice_structured.msh'
@@ -59,22 +64,18 @@ flow_velocity = 21.7 # cm/s. See MSRE-properties.ods
 []
 
 [Executioner]
-  type = InversePowerMethod
-  max_power_iterations = 50
-  xdiff = 'group1diff'
-
-  bx_norm = 'bnorm'
-  k0 = 1
+  type = Eigenvalue
+  initial_eigenvalue = 1
   l_max_its = 100
-  eig_check_tol = 1e-7
-
-  normal_factor = 1e7
+  eigen_tol = 1e-7
+  free_power_iterations = 2
   normalization = powernorm
-
+  normal_factor = 1e7
   solve_type = 'PJFNK'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  petsc_options_iname = '-pc_type -sub_pc_type'
-  petsc_options_value = 'asm lu'
+  petsc_options_iname = '-pc_type -pc_hypre_type'
+  petsc_options_value = 'hypre boomeramg'
+  line_search = none
 []
 
 [Preconditioning]
@@ -85,7 +86,13 @@ flow_velocity = 21.7 # cm/s. See MSRE-properties.ods
 []
 
 [Postprocessors]
-  [bnorm]
+  [k_eff]
+    type = VectorPostprocessorComponent
+    index = 0
+    vectorpostprocessor = k_vpp
+    vector_name = eigen_values_real
+  []
+  [fiss_neutrons]
     type = ElmIntegTotFissNtsPostprocessor
     block = 'fuel'
     execute_on = linear
@@ -134,6 +141,13 @@ flow_velocity = 21.7 # cm/s. See MSRE-properties.ods
   []
 []
 
+[VectorPostprocessors]
+  [k_vpp]
+    type = Eigenvalues
+    inverse_eigenvalue = true
+  []
+[]
+
 [Outputs]
   perf_graph = true
   print_linear_residuals = true
@@ -142,28 +156,3 @@ flow_velocity = 21.7 # cm/s. See MSRE-properties.ods
     file_base = 'coupled_eigenvalue'
   []
 []
-
-[Debug]
-  show_var_residual_norms = true
-[]
-
-# [ICs]
-#   [./temp_ic]
-#     type = RandomIC
-#     variable = temp
-#     min = 922
-#     max = 1022
-#   [../]
-#   [./group1_ic]
-#     type = RandomIC
-#     variable = group1
-#     min = .5
-#     max = 1.5
-#   [../]
-#   [./group2_ic]
-#     type = RandomIC
-#     variable = group2
-#     min = .5
-#     max = 1.5
-#   [../]
-# []

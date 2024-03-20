@@ -1,12 +1,10 @@
-# Step 0.2: Neutronics input file
-
 [GlobalParams]
   num_groups = 6
   num_precursor_groups = 8
   use_exp_form = false
   group_fluxes = 'group1 group2 group3 group4 group5 group6'
   pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8'
-  temperature = 900
+  temperature = temp
   sss2_input = true
   account_delayed = true
 []
@@ -15,8 +13,8 @@
   type = GeneratedMesh
   dim = 2
 
-  nx = 50
-  ny = 50
+  nx = 200
+  ny = 200
   ## Use a 40-by-40 mesh instead if running on a less capable computer
   #    nx = 40
   #    ny = 40
@@ -44,10 +42,9 @@
   [pres]
     var_name_base = pre
     outlet_boundaries = ''
-    constant_velocity_values = true
-    u_def = 0
-    v_def = 0
-    w_def = 0
+    constant_velocity_values = false
+    uvel = ux
+    vvel = uy
     nt_exp_form = false
     family = MONOMIAL
     order = CONSTANT
@@ -57,18 +54,82 @@
   []
 []
 
+[AuxVariables]
+  [temp]
+    family = LAGRANGE
+    order = FIRST
+    initial_condition = 900
+  []
+  [ux]
+    family = LAGRANGE
+    order = FIRST
+  []
+  [uy]
+    family = LAGRANGE
+    order = FIRST
+  []
+  [heat]
+    family = MONOMIAL
+    order = FIRST
+  []
+[]
+
+[UserObjects]
+  [velocities]
+    type = SolutionUserObject
+    mesh = '../phase-0/vel-field_exodus.e'
+    system_variables = 'vel_x vel_y'
+    timestep = LATEST
+    execute_on = INITIAL
+  []
+[]
+
+[AuxKernels]
+  [ux]
+    type = SolutionAux
+    variable = ux
+    from_variable = vel_x
+    solution = velocities
+  []
+  [uy]
+    type = SolutionAux
+    variable = uy
+    from_variable = vel_y
+    solution = velocities
+  []
+  [heat_source]
+    type = FissionHeatSourceAux
+    variable = heat
+    tot_fission_heat = powernorm
+    power = 1e7
+  []
+[]
+
+[Functions]
+  [velxf]
+    type = SolutionFunction
+    from_variable = vel_x
+    solution = velocities
+  []
+  [velyf]
+    type = SolutionFunction
+    from_variable = vel_y
+    solution = velocities
+  []
+[]
+
 [Materials]
   [fuel]
     type = GenericMoltresMaterial
     property_tables_root = '../../../property_file_dir/cnrs-benchmark/benchmark_'
-    interp_type = 'linear'
+    interp_type = 'spline'
   []
 []
 
 [Executioner]
   type = Eigenvalue
 
-  # fission power normalization settings
+  # fission power normalization
   normalization = 'powernorm'
   normal_factor = 1e7 # Watts, 1e9 / 100
   # Tiberga et al. assumes the depth of their 2D domain is 1m.
@@ -76,18 +137,21 @@
   # We divide the total power=1e9W by 100 because our length units are in cm.
   # Our domain = 2m x 2m x 0.01m
 
-  initial_eigenvalue = 0.99600
+  automatic_scaling = true
+  compute_scaling_once = false
+  off_diagonals_in_auto_scaling = true
+  resid_vs_jac_scaling_param = .1
+  scaling_group_variables = 'group1 group2 group3 group4 group5 group6;
+                             pre1 pre2 pre3 pre4 pre5 pre6 pre7 pre8'
+
+  initial_eigenvalue = 1.00
   free_power_iterations = 2
-  eigen_tol = 1e-7
 
   solve_type = 'PJFNK'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_mat_solver_package'
-  petsc_options_value = 'lu       NONZERO               superlu_dist'
+  petsc_options_iname = '-pc_type -pc_hypre_type'
+  petsc_options_value = 'hypre boomeramg'
 
-  ## Use the settings below instead if running on computing cluster/supercomputer with a finer mesh
-  #  petsc_options_iname = '-pc_type -pc_hypre_type'
-  #  petsc_options_value = 'hypre boomeramg'
   ## Alternative PETSc settings if Hypre BoomerAMG is not installed
   #  petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type'
   #  petsc_options_value = 'asm      lu           200                1               NONZERO'
@@ -155,7 +219,7 @@
     type = Eigenvalues
     inverse_eigenvalue = true
   []
-  [aa]
+  [flux_aa]
     type = LineValueSampler
     variable = 'group1 group2 group3 group4 group5 group6'
     start_point = '0 100 0'
@@ -163,6 +227,17 @@
     num_points = 201
     sort_by = x
     execute_on = FINAL
+    outputs = 'csv'
+  []
+  [flux_bb]
+    type = LineValueSampler
+    variable = 'group1 group2 group3 group4 group5 group6'
+    start_point = '100 0 0'
+    end_point = '100 200 0'
+    num_points = 201
+    sort_by = y
+    execute_on = FINAL
+    outputs = 'csv'
   []
 []
 

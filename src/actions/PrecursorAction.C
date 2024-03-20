@@ -193,33 +193,19 @@ PrecursorAction::act()
 void
 PrecursorAction::addPrecursorSource(const unsigned & op, const std::string & var_name)
 {
+  InputParameters params = _factory.getValidParams("PrecursorSource");
+  setVarNameAndBlock(params, var_name);
+  params.set<unsigned int>("num_groups") = _num_groups;
+  params.set<unsigned int>("precursor_group_number") = op;
+  std::vector<std::string> include = {"temperature", "group_fluxes"};
+  params.applySpecificParameters(parameters(), include);
+  params.set<bool>("use_exp_form") = getParam<bool>("nt_exp_form");
+  params.set<Real>("eigenvalue_scaling") = getParam<Real>("eigenvalue_scaling");
   if (getParam<bool>("eigen"))
-  {
-    InputParameters params = _factory.getValidParams("PrecursorEigenSource");
-    setVarNameAndBlock(params, var_name);
-    params.set<unsigned int>("num_groups") = _num_groups;
-    params.set<unsigned int>("precursor_group_number") = op;
-    std::vector<std::string> include = {"temperature", "group_fluxes"};
-    params.applySpecificParameters(parameters(), include);
-    params.set<bool>("use_exp_form") = getParam<bool>("nt_exp_form");
+    params.set<std::vector<TagName>>("extra_vector_tags") = {"eigen"};
 
-    std::string kernel_name = "PrecursorEigenSource_" + var_name + "_" + _object_suffix;
-    _problem->addKernel("PrecursorEigenSource", kernel_name, params);
-  }
-  else
-  {
-    InputParameters params = _factory.getValidParams("PrecursorSource");
-    setVarNameAndBlock(params, var_name);
-    params.set<unsigned int>("num_groups") = _num_groups;
-    params.set<unsigned int>("precursor_group_number") = op;
-    std::vector<std::string> include = {"temperature", "group_fluxes"};
-    params.applySpecificParameters(parameters(), include);
-    params.set<bool>("use_exp_form") = getParam<bool>("nt_exp_form");
-    params.set<Real>("eigenvalue_scaling") = getParam<Real>("eigenvalue_scaling");
-
-    std::string kernel_name = "PrecursorSource_" + var_name + "_" + _object_suffix;
-    _problem->addKernel("PrecursorSource", kernel_name, params);
-  }
+  std::string kernel_name = "PrecursorSource_" + var_name + "_" + _object_suffix;
+  _problem->addKernel("PrecursorSource", kernel_name, params);
 }
 
 void
