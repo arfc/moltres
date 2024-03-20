@@ -8,6 +8,11 @@
   account_delayed = false
 []
 
+[Problem]
+  type = EigenProblem
+  bx_norm = fiss_neutrons
+[]
+
 [Mesh]
   coord_type = RZ
   file = '2d_lattice_structured_smaller.msh'
@@ -36,16 +41,12 @@
 []
 
 [Executioner]
-  type = InversePowerMethod
-  max_power_iterations = 50
-  xdiff = 'group1diff'
-
-  bx_norm = 'bnorm'
-  k0 = 1.5
-  l_max_its = 100
-
-  # solve_type = 'PJFNK'
-  solve_type = 'NEWTON'
+  type = Eigenvalue
+  eigen_tol = 1e-6
+  free_power_iterations = 2
+  normalization = fiss_neutrons
+  normal_factor = 1
+  solve_type = 'PJFNK'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
   petsc_options_iname = '-pc_type -sub_pc_type'
   petsc_options_value = 'asm lu'
@@ -59,47 +60,35 @@
 []
 
 [Postprocessors]
-  [bnorm]
+  [k_eff]
+    type = VectorPostprocessorComponent
+    index = 0
+    vectorpostprocessor = k_vpp
+    vector_name = eigen_values_real
+  []
+  [fiss_neutrons]
     type = ElmIntegTotFissNtsPostprocessor
     execute_on = linear
   []
-  [tot_fissions]
+  [tot_fiss]
     type = ElmIntegTotFissPostprocessor
     execute_on = linear
   []
   [group1norm]
     type = ElementIntegralVariablePostprocessor
     variable = group1
-    execute_on = linear
-  []
-  [group1max]
-    type = NodalExtremeValue
-    value_type = max
-    variable = group1
-    execute_on = timestep_end
-  []
-  [group1diff]
-    type = ElementL2Diff
-    variable = group1
-    execute_on = 'linear timestep_end'
-    use_displaced_mesh = false
   []
   [group2norm]
     type = ElementIntegralVariablePostprocessor
     variable = group2
-    execute_on = linear
   []
-  [group2max]
-    type = NodalExtremeValue
-    value_type = max
-    variable = group2
-    execute_on = timestep_end
-  []
-  [group2diff]
-    type = ElementL2Diff
-    variable = group2
-    execute_on = 'linear timestep_end'
-    use_displaced_mesh = false
+[]
+
+[VectorPostprocessors]
+  [k_vpp]
+    type = Eigenvalues
+    inverse_eigenvalue = true
+    contains_complete_history = true
   []
 []
 

@@ -1,3 +1,5 @@
+# Step 1.4: Full coupling input file
+
 density = .002 # kg cm-3
 cp = 3075 # J kg-1 K-1, 6.15 / 2.0e-3
 k = .005 # W cm-1 K-1
@@ -18,7 +20,7 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
 
     nx = 200
     ny = 200
-    ## Use a 40-by-40 mesh instead if running on a desktop/small cluster
+    ## Use a 40-by-40 mesh instead if running on a less capable computer
     #    nx = 40
     #    ny = 40
 
@@ -44,7 +46,7 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
   [temp]
     family = LAGRANGE
     order = FIRST
-    scaling = 1e-3
+    initial_condition = 900
   []
   [vel]
     family = LAGRANGE_VEC
@@ -68,6 +70,7 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
   [heat]
     family = MONOMIAL
     order = FIRST
+    initial_condition = 250
   []
 []
 
@@ -184,7 +187,7 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
     type = VectorDirichletBC
     variable = vel
     boundary = 'top'
-    # '50 0 0' corresponds to vel_x = 50 cm s-1 along the top boundary.
+    # '50 0 0' corresponds to velx = 50 cm s-1 along the top boundary.
     # Change to 10, 20, 30, 40 for different velocity boundary conditions
     # at U_lid = 0.1, 0.2, 0.3, 0.4 m s-1.
     values = '50 0 0'
@@ -221,17 +224,18 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
   type = Transient
   end_time = 2000
 
-  solve_type = 'NEWTON'
+  solve_type = 'PJFNK'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_gasm_overlap -sub_pc_factor_shift_type -pc_gasm_blocks -sub_pc_factor_mat_solver_type'
-  petsc_options_value = 'gasm     lu           200                1                NONZERO                   16             superlu_dist'
+  petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type'
+  petsc_options_value = 'asm      lu           200                1               NONZERO'
   line_search = none
 
-  ## Use the settings below instead if running on a desktop/small cluster
-  #  petsc_options_iname = '-pc_type -sub_pc_type -ksp_gmres_restart -pc_asm_overlap -sub_pc_factor_shift_type'
-  #  petsc_options_value = 'asm      lu           200                1               NONZERO'
+  automatic_scaling = true
+  compute_scaling_once = false
+  off_diagonals_in_auto_scaling = true
+  resid_vs_jac_scaling_param = .1
 
-  nl_abs_tol = 1e-8
+  nl_abs_tol = 1e-10
 
   dtmin = 1e-1
   dtmax = 10
@@ -241,30 +245,17 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
     dt = 1e-1
     cutback_factor = .5
     growth_factor = 1.5
-    optimal_iterations = 10
+    optimal_iterations = 20
     iteration_window = 4
     linear_iteration_ratio = 1000
   []
-[]
-
-[Preconditioning]
-  [SMP]
-    type = SMP
-    full = true
-  []
-[]
-
-[Postprocessors]
-[]
-
-[VectorPostprocessors]
 []
 
 [MultiApps]
   [ntsApp]
     type = FullSolveMultiApp
     app_type = MoltresApp
-    execute_on = timestep_begin
+    execute_on = timestep_end
     positions = '0 0 0'
     input_files = 'full-coupling-nts.i'
   []
@@ -272,25 +263,25 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
 
 [Transfers]
   [to_sub_temp]
-    type = MultiAppProjectionTransfer
+    type = MultiAppCopyTransfer
     to_multi_app = ntsApp
     source_variable = temp
     variable = temp
   []
   [to_sub_vel_x]
-    type = MultiAppProjectionTransfer
+    type = MultiAppCopyTransfer
     to_multi_app = ntsApp
     source_variable = velx
     variable = vel_x
   []
   [to_sub_vel_y]
-    type = MultiAppProjectionTransfer
+    type = MultiAppCopyTransfer
     to_multi_app = ntsApp
     source_variable = vely
     variable = vel_y
   []
   [from_sub]
-    type = MultiAppProjectionTransfer
+    type = MultiAppCopyTransfer
     from_multi_app = ntsApp
     source_variable = heat
     variable = heat
@@ -303,8 +294,4 @@ t_alpha = 2e-4 # K-1, Thermal expansion coefficient
   [exodus]
     type = Exodus
   []
-[]
-
-[Debug]
-  show_var_residual_norms = true
 []

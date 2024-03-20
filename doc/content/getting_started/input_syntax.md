@@ -179,6 +179,21 @@ extension). To generate a mesh for use with Moltres, a typical bash command is
 dimension of the mesh, the argument following `-o` is the name of the output
 `.msh` file, and the last argument is the input `.geo` file.
 
+## Problem Block id=problem
+
+The `Problem` block is used to indicate the type of problem we are solving. MOOSE automatically
+identifies which problem class is suitable for your simulation type (e.g., `FEProblem` or
+`EigenProblem`). However, for this particular input file, we want to set the `bx_norm` parameter
+for determining the eigenvalue estimate during each iteration of the eigensolver. Therefore, this
+input file requires us to indicate the problem type and the `bx_norm` parameter.
+
+```
+[Problem]
+  type = EigenProblem
+  bx_norm = bnorm
+[]
+```
+
 ## Variables Block id=variables
 
 The `Variables` block is used to indicate the primary solution variables, or
@@ -195,12 +210,10 @@ kernel and BC term must be associated with one primary variable from the
   [group1]
     order = FIRST
     family = LAGRANGE
-    initial_condition = 1
   []
   [group2]
     order = FIRST
     family = LAGRANGE
-    initial_condition = 1
   []
 []
 ```
@@ -314,7 +327,7 @@ Kernels can be optionally restricted to specific subdomains within the model by 
 that is solved may differ in different mesh regions. The equations that are modeled
 are represented below, followed by the input required to construct these equations.
 In the `group1` and `group2` neutron flux equations below and in the input that
-follows, notice that the fission kernel (`CoupledFissionEigenKernel`)
+follows, notice that the fission kernel (`CoupledFissionKernel`)
 is only included in the fuel region ('0'), and is not included in the moderator region ('1')
 since there is no fuel in the moderator region. Also, the `DelayedNeutronSource`
 kernel, which contributes neutrons from the precursor group equations, is only
@@ -328,9 +341,13 @@ included as part of the `group1` or fast group equation.
   + \underbrace{\Sigma_g^r \phi_g}_{SigmaR}
   - \underbrace{\nabla \cdot D_g \nabla \phi_g}_{GroupDiffusion}
   - \underbrace{\sum_{g \ne g'}^G \Sigma_{g'\rightarrow g}^s \phi_{g'}}_{InScatter}
-  - \underbrace{\chi_g^p \sum_{g' = 1}^G (1 - \beta) \nu \Sigma_{f,g'} \phi_{g'}}_{\substack{CoupledFissionKernel\\ \textrm{'Fuel' region only}}}
+  - \underbrace{\chi_g^p \sum_{g' = 1}^G (1 - \beta) \frac{\nu \Sigma_{f,g'}}{k} \phi_{g'}}_{\substack{CoupledFissionKernel\\ \textrm{'Fuel' region only}}}
   - \underbrace{\chi_g^d \sum_i^I \lambda_i C_i}_{\substack{DelayedNeutronSource\\ \textrm{'Fuel' region only} \\ \textrm{Not in group2 Eqn}}}
   = 0
+
+The `extra_vector_tags = eigen` parameter indicates all kernels to be scaled by the $1/k$
+eigenvalue in this eigenvalue problem. This parameter is omitted for non-eigenvalue problems
+discussed in the other tutorial problems.
 
 ```
 [Kernels]
@@ -353,10 +370,11 @@ included as part of the `group1` or fast group equation.
     group_number = 1
   []
   [fission_source_group1]
-    type = CoupledFissionEigenKernel
+    type = CoupledFissionKernel
     variable = group1
     group_number = 1
     block = '0'
+    extra_vector_tags = 'eigen'
   []
   [delayed_group1]
     type = DelayedNeutronSource
@@ -379,10 +397,11 @@ included as part of the `group1` or fast group equation.
     group_number = 2
   []
   [fission_source_group2]
-    type = CoupledFissionEigenKernel
+    type = CoupledFissionKernel
     variable = group2
     group_number = 2
     block = '0'
+    extra_vector_tags = 'eigen'
   []
   [inscatter_group2]
     type = InScatter
@@ -479,36 +498,18 @@ basic instructions.
 
 ```
 [Executioner]
-  type = InversePowerMethod
-  max_power_iterations = 50
-
-  normalization = 'powernorm'
-  normal_factor = 8e6
-
-  xdiff = 'group1diff'
-  bx_norm = 'bnorm'
-  k0 = 1.
-  l_max_its = 100
-  eig_check_tol = 1e-7
+  type = Eigenvalue
+  initial_eigenvalue = 1
+  solve_type = 'PJFNK'
+  petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
+  petsc_options_iname = '-pc_type -pc_hypre_type'
+  petsc_options_value = 'hypre boomeramg'
 
   automatic_scaling = true
   compute_scaling_once = false
   resid_vs_jac_scaling_param = 0.1
-  off_diagonals_in_auto_scaling = false
-
-  solve_type = 'NEWTON'
-  petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  petsc_options_iname = '-pc_type -pc_factor_shift_type'
-  petsc_options_value = 'lu       NONZERO'
 
   line_search = none
-[]
-
-[Preconditioning]
-  [./SMP]
-    type = SMP
-    full = true
-  [../]
 []
 ```
 
@@ -518,17 +519,23 @@ A `PostProcessor` computes a single scalar value during the simulations.
 General postprocessor documentation can be found
 [here](https://www.mooseframework.org/syntax/Postprocessors/index.html). 
 
-The `bnorm`, `tot_fissions`, and `powernorm` parameters calculate the total number of fission
-neutrons, fission interactions, and fission heat, respectively. The `bnorm` parameter is required
-by the `InversePowerMethod` executioner as a normalization term for inverse power iterations. The
-other two may be used to normalize the flux solution at the end of the calculation through the
-`normalization` and `normal_factor` parameters in the `Executioner` block. The `group1diff`
-postprocessor is also required by the `InversePowerMethod` executioner for Chebyshev acceleration.
-The rest of the postprocessors calculate the integral sum or maximum values of the `group1` and
-`group2` flux variables.
+`k_eff` retrieves the real part of the computed eigenvalue which is taken to be the $k$
+multiplication factor. The `bnorm`, `tot_fissions`, and `powernorm` postprocessor objects calculate
+the total number of fission neutrons, fission interactions, and fission heat, respectively. The
+`bnorm` parameter is required by the `Eigenvalue` executioner as an estimate for $k$ in each
+iteration. The other two may be used to normalize the flux solution at the end of
+the calculation through the `normalization` and `normal_factor` parameters in the `Executioner`
+block. The rest of the postprocessors calculate the integral sum, diff, or maximum values
+of the `group1` and `group2` flux variables.
 
 ```
 [Postprocessors]
+  [k_eff]
+    type = VectorPostprocessorComponent
+    index = 0
+    vectorpostprocessor = k_vpp
+    vector_name = eigen_values_real
+  []
   [bnorm]
     type = ElmIntegTotFissNtsPostprocessor
     execute_on = linear
@@ -601,8 +608,9 @@ values during the simulation, which may be desired when running test runs.
 
 ## Debug Block id=debug
 
-This simply tells Moltres to print the variable residual norms during the
-non-linear solve.
+This parameter tells Moltres to print the variable residual norms during the
+non-linear solve. Residual information is useful for debugging convergence issues by identifying
+which variable is exhibiting slow or no convergence behavior.
 
 ```
 [Debug]
