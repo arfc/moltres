@@ -608,7 +608,7 @@ values during the simulation, which may be desired when running test runs.
 
 ## Debug Block id=debug
 
-This parameter simply tells Moltres to print the variable residual norms during the
+This parameter tells Moltres to print the variable residual norms during the
 non-linear solve. Residual information is useful for debugging convergence issues by identifying
 which variable is exhibiting slow or no convergence behavior.
 
