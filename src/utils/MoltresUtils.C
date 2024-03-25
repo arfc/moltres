@@ -4,6 +4,10 @@
 namespace MoltresUtils
 {
 
+/**
+ * Returns possible Cartesian direction vector components under the level-symmetric quadrature for
+ * a given order N.
+ */
 std::vector<Real>
 points(unsigned int N)
 {
@@ -68,6 +72,9 @@ points(unsigned int N)
   }
 }
 
+/**
+ * Returns possible weight values under the level-symmetric quadrature for a given order N.
+ */
 std::vector<Real>
 weights(unsigned int N)
 {
@@ -128,6 +135,9 @@ weights(unsigned int N)
   }
 }
 
+/**
+ * Returns all possible signed permutations of mu1,mu2,mu3.
+ */
 RealEigenMatrix
 permute_octant(RealEigenMatrix m, unsigned int idx, Real mu1, Real mu2, Real mu3, Real w)
 {
@@ -144,6 +154,10 @@ permute_octant(RealEigenMatrix m, unsigned int idx, Real mu1, Real mu2, Real mu3
   return m;
 }
 
+/**
+ * Returns a (N*(N+2))-by-4 RealEigenMatrix with each row consisting of the three components
+ * of the Cartesian direction vector and its associated level-symmetric weight.
+ */
 RealEigenMatrix
 level_symmetric(unsigned int N)
 {
@@ -152,16 +166,20 @@ level_symmetric(unsigned int N)
   std::vector<Real> weight = weights(N);
   unsigned int idx = 0;
   unsigned int w_idx = 0;
+  // Cycles through possible values for the x & y components of the direction vector.
+  // z component is fixed for given choices of x & y.
   for (unsigned int i = 0; i < (N+5)/6; ++i)
     for (unsigned int j = i; j < ((N/2-i)+1)/2; ++j)
     {
       unsigned int k = N / 2 - 1 - i - j;
       Real w = weight[w_idx];
+      // For each unique combination of x,y,z component magnitudes, permute through all possible
+      // permutations (including for positive and negative components).
       mu_w = permute_octant(mu_w, idx, mu[i], mu[j], mu[k], w);
       idx += 8;
       if (i == j && i == k)
       {
-        // do nothing
+        // No extra permutations. Do nothing
       }
       else if (i == j)
       {
@@ -195,6 +213,10 @@ level_symmetric(unsigned int N)
   return mu_w;
 }
 
+/**
+ * Cartesian reflected flux ID maps. Refer to permute_octant for the permutation order of all flux
+ * variables with the same direction vector components.
+ */
 unsigned int
 x_reflection_map(unsigned int i)
 {
@@ -216,6 +238,10 @@ z_reflection_map(unsigned int i)
   return i - i % 8 + vec[i % 8];
 }
 
+/**
+ * Returns the output of the real spherical harmonic function of degree l and order m, given an
+ * input Cartesian direction vector (mu, eta, xi).
+ */
 Real
 sph_harmonics(int l, int m, Real mu, Real eta, Real xi)
 {
