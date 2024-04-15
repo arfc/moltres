@@ -12,12 +12,9 @@ public:
 protected:
   virtual void computeQpResidual(RealEigenVector & residual) override;
   virtual RealEigenVector computeQpJacobian() override;
-  virtual RealEigenMatrix computeQpOffDiagJacobian(const MooseVariableFEBase & jvar) override;
 
   const MaterialProperty<std::vector<Real>> & _totxs;
-  const MaterialProperty<std::vector<Real>> & _d_totxs_d_temp;
   unsigned int _N;
   unsigned int _group;
-  unsigned int _temp_id;
   RealEigenVector _weights;
 };

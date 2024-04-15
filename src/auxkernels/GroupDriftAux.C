@@ -1,5 +1,7 @@
 #include "GroupDriftAux.h"
+
 #include "MoltresUtils.h"
+using MooseUtils::relativeFuzzyEqual;
 
 registerMooseObject("MoltresApp", GroupDriftAux);
 
@@ -25,15 +27,11 @@ GroupDriftAux::GroupDriftAux(const InputParameters & parameters)
     ScalarTransportBase(parameters),
     _tau_sn(getMaterialProperty<std::vector<Real>>("tau_sn")),
     _diffcoef(getMaterialProperty<std::vector<Real>>("diffcoef")),
-    _d_diffcoef_d_temp(getMaterialProperty<std::vector<Real>>("d_diffcoef_d_temp")),
     _totxs(getMaterialProperty<std::vector<Real>>("totxs")),
-    _d_totxs_d_temp(getMaterialProperty<std::vector<Real>>("d_totxs_d_temp")),
     _scatter(getMaterialProperty<std::vector<Real>>("scatter")),
-    _d_scatter_d_temp(getMaterialProperty<std::vector<Real>>("d_scatter_d_temp")),
     _N(getParam<unsigned int>("N")),
     _group(getParam<unsigned int>("group_number") - 1),
-    _num_groups(getParam<unsigned int>("num_groups")),
-    _temp_id(coupled("temperature"))
+    _num_groups(getParam<unsigned int>("num_groups"))
 {
   if (_var.count() != 3)
     mooseError("The number of group drift array variables must be 3.");
@@ -61,6 +59,8 @@ GroupDriftAux::computeValue()
 {
   Real denom = _weights.transpose() * (*_group_fluxes[_group])[_qp];
   RealEigenVector D = RealEigenVector::Zero(3);
+  if (relativeFuzzyEqual(denom, 0.0))
+    return D;
   for (unsigned int i = 0; i < (*_group_fluxes[_group])[_qp].size(); ++i)
   {
     D += _weights(i) * _tau_sn[_qp][_group] * (_ordinates.row(i).transpose() * _ordinates.row(i)) *
@@ -72,11 +72,11 @@ GroupDriftAux::computeValue()
   for (unsigned int g = 0; g < _num_groups; ++g)
   {
     unsigned int scatter_idx = _num_groups * _num_groups + g * _num_groups + _group;
-    if (_scatter[_qp][scatter_idx] == 0.)
+    if (relativeFuzzyEqual(_scatter[_qp][scatter_idx], 0.0))
       continue;
     D -= _tau_sn[_qp][_group] * _scatter[_qp][scatter_idx] * _ordinates.transpose() *
       _weights.cwiseProduct((*_group_fluxes[g])[_qp]);
   }
-  D /= (denom + 1e-9);
+  D /= denom;
   return D;
 }

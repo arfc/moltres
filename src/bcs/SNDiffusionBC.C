@@ -11,8 +11,6 @@ SNDiffusionBC::validParams()
   params.addRequiredParam<unsigned int>("group_number",
                                         "The group for which this bc acts on");
   params.addRequiredCoupledVar("diffusion_flux", "Neutron diffusion flux variable");
-  params.addCoupledVar("temperature",
-                       "The temperature used to interpolate the diffusion coefficient");
   return params;
 }
 
@@ -20,11 +18,9 @@ SNDiffusionBC::SNDiffusionBC(const InputParameters & parameters)
   : ArrayIntegratedBC(parameters),
     _N(getParam<unsigned int>("N")),
     _diffcoef(getMaterialProperty<std::vector<Real>>("diffcoef")),
-    _d_diffcoef_d_temp(getMaterialProperty<std::vector<Real>>("d_diffcoef_d_temp")),
     _group(getParam<unsigned int>("group_number") - 1),
     _diff_flux(coupledValue("diffusion_flux")),
-    _grad_diff_flux(coupledGradient("diffusion_flux")),
-    _temp_id(coupled("temperature"))
+    _grad_diff_flux(coupledGradient("diffusion_flux"))
 {
   // Level-symmetric quadrature points and weights
   RealEigenMatrix ords_weights = MoltresUtils::level_symmetric(_N);
@@ -38,15 +34,13 @@ SNDiffusionBC::computeQpResidual(RealEigenVector & residual)
   RealEigenVector normal_vec{{_normals[_qp](0), _normals[_qp](1), _normals[_qp](2)}};
   RealEigenVector ord_dot_n = _ordinates * normal_vec;
   residual = _test[_i][_qp] * ord_dot_n.cwiseProduct(_u[_qp]).cwiseProduct(_weights);
-  Real sum = 0.;
+  RealEigenVector grad_flux_vec{{_grad_diff_flux[_qp](0),
+                                 _grad_diff_flux[_qp](1),
+                                 _grad_diff_flux[_qp](2)}};
   for (unsigned int i = 0; i < _count; ++i)
     if (ord_dot_n(i) < 0.)
-      sum += ord_dot_n(i) * _weights(i);
-  sum /= 8.;
-  for (unsigned int i = 0; i < _count; ++i)
-    if (ord_dot_n(i) < 0.)
-      residual(i) = -_test[_i][_qp] * _weights(i) * ord_dot_n(i) * (_diff_flux[_qp] / 4. +
-          _diffcoef[_qp][_group] / 2. * (_grad_diff_flux[_qp] * _normals[_qp])) / sum;
+      residual(i) = _test[_i][_qp] * _weights(i) * ord_dot_n(i) * (_diff_flux[_qp] -
+          3. * _diffcoef[_qp][_group] * _ordinates.row(i) * grad_flux_vec);
 }
 
 RealEigenVector
