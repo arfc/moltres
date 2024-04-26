@@ -26,4 +26,5 @@ protected:
   std::vector<unsigned int> _flux_ids;
   RealEigenMatrix _ordinates;
   RealEigenVector _weights;
+  RealEigenMatrix _harmonics;
 };

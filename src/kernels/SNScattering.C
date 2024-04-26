@@ -54,10 +54,11 @@ SNScattering::SNScattering(const InputParameters & parameters)
     _flux_ids[g] = coupled("group_angular_fluxes", g);
   }
 
-  // Level-symmetric quadrature points and weights
+  // Level-symmetric quadrature points, weights, and harmonics
   RealEigenMatrix ords_weights = MoltresUtils::level_symmetric(_N);
   _ordinates = ords_weights.leftCols(3);
   _weights = ords_weights.col(3);
+  _harmonics = MoltresUtils::sph_harmonics_mat(_L, _ordinates);
 }
 
 void
@@ -69,7 +70,7 @@ SNScattering::computeQpResidual(RealEigenVector & residual)
   int start_idx = 0;
   if (_acceleration)
   {
-    start_idx++;
+    ++start_idx;
     for (unsigned int g = 0; g < _num_groups; ++g)
     {
       int scatter_idx = g * _num_groups + _group;
@@ -80,36 +81,41 @@ SNScattering::computeQpResidual(RealEigenVector & residual)
           _scatter[_qp][scatter_idx] * (*_group_fluxes[g])[_qp]);
     }
   }
+
   std::vector<std::vector<std::vector<Real>>>
     flux_moments(_num_groups, std::vector<std::vector<Real>>
         { {0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0, 0.0, 0.0} });
-  for (unsigned int g = 0; g < _num_groups; ++g)
-    for (int l = start_idx; l < _L+1; ++l)
+  int harmonics_idx = start_idx;
+  for (int l = start_idx; l < _L+1; ++l)
+    for (int m = -l; m < l+1; ++m)
     {
-      int scatter_idx = l * _num_groups * _num_groups + g * _num_groups + _group;
-      if (relativeFuzzyEqual(_scatter[_qp][scatter_idx], 0.0))
-        continue;
-      for (int m = -l; m < l+1; ++m)
-        for (unsigned int i = 0; i < _count; ++i)
-        {
-          flux_moments[g][l][m+l] +=
-            _weights(i) * MoltresUtils::sph_harmonics(l, m, _ordinates(i,0), _ordinates(i,1),
-            _ordinates(i,2)) * (*_group_angular_fluxes[g])[_qp](i);
-        }
+      for (unsigned int g = 0; g < _num_groups; ++g)
+      {
+        int scatter_idx = l * _num_groups * _num_groups + g * _num_groups + _group;
+        if (relativeFuzzyEqual(_scatter[_qp][scatter_idx], 0.0))
+          continue;
+        flux_moments[g][l][m+l] +=
+          _weights.cwiseProduct(_harmonics.col(harmonics_idx)).transpose() *
+          (*_group_angular_fluxes[g])[_qp];
+      }
+      ++harmonics_idx;
     }
 
-  for (unsigned int g = 0; g < _num_groups; ++g)
+  harmonics_idx = start_idx;
+  for (int l = start_idx; l < _L+1; ++l)
   {
-    for (int l = start_idx; l < _L+1; ++l)
+    for (int m = -l; m < l+1; ++m)
     {
-      int scatter_idx = l * _num_groups * _num_groups + g * _num_groups + _group;
-      if (relativeFuzzyEqual(_scatter[_qp][scatter_idx], 0.0))
-        continue;
-      for (int m = -l; m < l+1; ++m)
-        for (unsigned int i = 0; i < _count; ++i)
-          residual(i) -= _scatter[_qp][scatter_idx] * flux_moments[g][l][m+l] *
-            (2.0 * l + 1.0) / 8.0 * MoltresUtils::sph_harmonics(l, m,
-            _ordinates(i,0), _ordinates(i,1), _ordinates(i,2));
+      for (unsigned int g = 0; g < _num_groups; ++g)
+      {
+        int scatter_idx = l * _num_groups * _num_groups + g * _num_groups + _group;
+        if (relativeFuzzyEqual(_scatter[_qp][scatter_idx], 0.0))
+          continue;
+        residual -=
+          _scatter[_qp][scatter_idx] * flux_moments[g][l][m+l] *
+          (2.0 * l + 1.0) / 8.0 * _harmonics.col(harmonics_idx);
+      }
+      ++harmonics_idx;
     }
   }
   residual = _weights.cwiseProduct(lhs).cwiseProduct(residual);
@@ -119,25 +125,25 @@ RealEigenVector
 SNScattering::computeQpJacobian()
 {
   RealEigenVector jac = RealEigenVector::Zero(_count);
-
   RealEigenVector lhs = _tau_sn[_qp][_group] * _ordinates * _array_grad_test[_i][_qp] +
     RealEigenVector::Constant(_count, _test[_i][_qp]);
 
   int start_idx = 0;
   if (_acceleration)
-    start_idx++;
+    ++start_idx;
+  int harmonics_idx = start_idx;
   for (int l = start_idx; l < _L+1; ++l)
   {
     int scatter_idx = l * _num_groups * _num_groups + _group * _num_groups + _group;
     for (int m = -l; m < l+1; ++m)
-      for (unsigned int i = 0; i < _count; ++i)
-        jac(i) -= _scatter[_qp][scatter_idx] * Utility::pow<2>(_weights(i)) *
-          (2.0 * l + 1.0) / 8.0 * Utility::pow<2>(
-          MoltresUtils::sph_harmonics(l, m, _ordinates(i,0), _ordinates(i,1),
-          _ordinates(i,2))) * _phi[_j][_qp];
+    {
+      jac -= _scatter[_qp][scatter_idx] * (2.0 * l + 1.0) / 8.0 *
+        _harmonics.col(harmonics_idx).cwiseProduct(_harmonics.col(harmonics_idx));
+      ++harmonics_idx;
+    }
   }
 
-  return _weights.cwiseProduct(lhs).cwiseProduct(jac);
+  return lhs.cwiseProduct(_weights).cwiseProduct(_weights).cwiseProduct(jac) * _phi[_j][_qp];
 }
 
 RealEigenMatrix
@@ -154,7 +160,7 @@ SNScattering::computeQpOffDiagJacobian(const MooseVariableFEBase & jvar)
 
       int start_idx = 0;
       if (_acceleration)
-        start_idx++;
+        ++start_idx;
       for (int l = start_idx; l < _L+1; ++l)
       {
         int scatter_idx = l * _num_groups * _num_groups + g * _num_groups + _group;

@@ -286,6 +286,25 @@ sph_harmonics(int l, int m, Real mu, Real eta, Real xi)
   }
 }
 
+/**
+ * Returns the output of sph_harmonics for all combinations of l and m for an array of Cartesian
+ * direction vectors as a matrix.
+ */
+RealEigenMatrix
+sph_harmonics_mat(int L, RealEigenMatrix ordinates)
+{
+  RealEigenMatrix mat = RealEigenMatrix::Zero(ordinates.rows(), (L+1)*(L+1));
+  int idx = 0;
+  for (int l = 0; l < L+1; ++l)
+    for (int m = -l; m < l+1; ++m)
+    {
+      for (int i = 0; i < ordinates.rows(); ++i)
+        mat(i, idx) = sph_harmonics(l, m, ordinates(i,0), ordinates(i,1), ordinates(i,2));
+      ++idx;
+    }
+  return mat;
+}
+
 int
 factorial(int n)
 {
