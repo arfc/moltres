@@ -25,5 +25,16 @@ GroupDrift::computeQpResidual()
   array_grad_test << _grad_test[_i][_qp](0),
                      _grad_test[_i][_qp](1),
                      _grad_test[_i][_qp](2);
-  return (computeConcentration(_u, _qp) * array_grad_test.transpose() * _drift_var[_qp]);
+  return computeConcentration(_u, _qp) * array_grad_test.transpose() * _drift_var[_qp];
+}
+
+Real
+GroupDrift::computeQpJacobian()
+{
+  RealEigenVector array_grad_test(3);
+  array_grad_test << _grad_test[_i][_qp](0),
+                     _grad_test[_i][_qp](1),
+                     _grad_test[_i][_qp](2);
+  return computeConcentrationDerivative(_u, _phi, _j, _qp) * array_grad_test.transpose() *
+    _drift_var[_qp];
 }

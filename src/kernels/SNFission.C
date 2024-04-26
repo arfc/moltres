@@ -89,15 +89,15 @@ SNFission::computeQpResidual(RealEigenVector & residual)
         0.125 * (_nsf[_qp][g] * _weights.transpose() * (*_group_angular_fluxes[g])[_qp])(0);
   }
 
-  residual = -_weights.cwiseProduct(lhs) * fission;
-
   if (_account_delayed)
-    residual *= (1. - _beta[_qp]) * _chi_p[_qp][_group];
+    fission *= (1. - _beta[_qp]) * _chi_p[_qp][_group];
   else
-    residual *= _chi_t[_qp][_group];
+    fission *= _chi_t[_qp][_group];
 
   if (_eigenvalue_scaling != 1.0)
-    residual /= _eigenvalue_scaling;
+    fission /= _eigenvalue_scaling;
+
+  residual = -_weights.cwiseProduct(lhs) * fission;
 }
 
 RealEigenVector
@@ -113,17 +113,17 @@ SNFission::computeQpJacobian()
     RealEigenVector lhs = _tau_sn[_qp][_group] * _ordinates * _array_grad_test[_i][_qp] +
       RealEigenVector::Constant(_count, _test[_i][_qp]);
 
-    RealEigenVector jac = -0.125 * _nsf[_qp][_group] * _phi[_j][_qp] * _weights;
+    Real fission = -0.125 * _nsf[_qp][_group] * _phi[_j][_qp];
 
     if (_account_delayed)
-      jac *= (1. - _beta[_qp]) * _chi_p[_qp][_group];
+      fission *= (1. - _beta[_qp]) * _chi_p[_qp][_group];
     else
-      jac *= _chi_t[_qp][_group];
+      fission *= _chi_t[_qp][_group];
 
     if (_eigenvalue_scaling != 1.0)
-      jac /= _eigenvalue_scaling;
+      fission /= _eigenvalue_scaling;
 
-    return _weights.cwiseProduct(lhs).cwiseProduct(jac);
+    return _weights.cwiseProduct(lhs).cwiseProduct(_weights * fission);
   }
 }
 

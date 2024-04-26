@@ -17,8 +17,6 @@ GroupDriftAux::validParams()
   params.addRequiredCoupledVar("group_angular_fluxes",
       "All the variables that hold the group angular fluxes. These MUST be listed by decreasing "
       "energy/increasing group number.");
-  params.addCoupledVar("temperature",
-                       "The temperature used to interpolate the diffusion coefficient");
   return params;
 }
 
@@ -40,12 +38,10 @@ GroupDriftAux::GroupDriftAux(const InputParameters & parameters)
     mooseError("The number of coupled variables doesn't match the number of groups.");
   _group_fluxes.resize(n);
   _grad_group_fluxes.resize(n);
-  _flux_ids.resize(n);
   for (unsigned int g = 0; g < _num_groups; ++g)
   {
     _group_fluxes[g] = &coupledArrayValue("group_angular_fluxes", g);
     _grad_group_fluxes[g] = &coupledArrayGradient("group_angular_fluxes", g);
-    _flux_ids[g] = coupled("group_angular_fluxes", g);
   }
 
   // Level-symmetric quadrature points and weights
@@ -59,7 +55,7 @@ GroupDriftAux::computeValue()
 {
   Real denom = _weights.transpose() * (*_group_fluxes[_group])[_qp];
   RealEigenVector D = RealEigenVector::Zero(3);
-  if (relativeFuzzyEqual(denom, 0.0))
+  if (relativeFuzzyEqual(denom, 0.0) || denom < 0.0)
     return D;
   for (unsigned int i = 0; i < (*_group_fluxes[_group])[_qp].size(); ++i)
   {

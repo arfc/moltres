@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Kernel.h"
+#include "IntegratedBC.h"
 #include "ScalarTransportBase.h"
 
-class GroupDrift : public Kernel, public ScalarTransportBase
+class VacuumCorrectionBC : public IntegratedBC, public ScalarTransportBase
 {
 public:
-  GroupDrift(const InputParameters & parameters);
+  VacuumCorrectionBC(const InputParameters & parameters);
 
   static InputParameters validParams();
 
@@ -14,5 +14,5 @@ protected:
   virtual Real computeQpResidual() override;
   virtual Real computeQpJacobian() override;
 
-  const ArrayVariableValue & _drift_var;
+  const VariableValue & _coef_var;
 };

@@ -22,7 +22,6 @@ protected:
   const unsigned int _num_groups;
   std::vector<const ArrayVariableValue *> _group_fluxes;
   std::vector<const ArrayVariableGradient *> _grad_group_fluxes;
-  std::vector<unsigned int> _flux_ids;
   RealEigenMatrix _ordinates;
   RealEigenVector _weights;
 };
