@@ -24,12 +24,12 @@ PrecursorAction::validParams()
                                         "specifies the total number of precursors to create");
   params.addRequiredParam<std::string>("var_name_base", "specifies the base name of the variables");
   params.addRequiredCoupledVar("temperature", "Name of temperature variable");
+  MooseEnum vel_type("constant variable function", "constant");
+  params.addParam<MooseEnum>("velocity_type", vel_type,
+      "Whether the velocity components are provided by constants, variables, or functions");
   params.addParam<NonlinearVariableName>("uvel", "Name of x-component of velocity");
   params.addParam<NonlinearVariableName>("vvel", "Name of y-component of velocity");
   params.addParam<NonlinearVariableName>("wvel", "Name of z-component of velocity");
-  params.addParam<bool>("constant_velocity_values",
-                        true,
-                        "Whether the velocity components are constant with respect to space");
   params.addParam<Real>("u_def",
                         "Allows user to specify constant value for u component of velocity.");
   params.addParam<Real>("v_def",
@@ -93,7 +93,8 @@ PrecursorAction::PrecursorAction(const InputParameters & params)
     _var_name_base(getParam<std::string>("var_name_base")),
     _num_groups(getParam<unsigned int>("num_groups")),
     _object_suffix(getParam<std::string>("object_suffix")),
-    _is_loopapp(getParam<bool>("is_loopapp"))
+    _is_loopapp(getParam<bool>("is_loopapp")),
+    _vel_type(getParam<MooseEnum>("velocity_type"))
 {
   if (getParam<bool>("loop_precursors"))
   {
@@ -102,6 +103,16 @@ PrecursorAction::PrecursorAction(const InputParameters & params)
     if (!params.isParamValid("multi_app"))
       mooseError("Looping precursors requires a multiapp that governs the loop.");
   }
+
+  if (_vel_type == "constant" && !isParamValid("u_def"))
+    paramError("vel_type",
+        "vel_type set to 'constant', but 'u_def' is not set");
+  else if (_vel_type == "variable" && !isParamValid("uvel"))
+    paramError("vel_type",
+        "vel_type set to 'variable', but 'uvel' is not set");
+  else if (_vel_type == "function" && !isParamValid("u_func"))
+    paramError("vel_type"
+        "vel_type set to 'function', but 'u_func' is not set");
 }
 
 void
@@ -237,7 +248,7 @@ PrecursorAction::addTimeDerivative(const std::string & var_name)
 void
 PrecursorAction::addDGAdvection(const std::string & var_name)
 {
-  if (getParam<bool>("constant_velocity_values"))
+  if (_vel_type == "constant")
   {
     // if using constant and uniform velocity values
     InputParameters params = _factory.getValidParams("DGConvection");
@@ -249,7 +260,7 @@ PrecursorAction::addDGAdvection(const std::string & var_name)
     std::string kernel_name = "DGConvection_" + var_name + "_" + _object_suffix;
     _problem->addDGKernel("DGConvection", kernel_name, params);
   }
-  else if (isParamValid("uvel")) // checks if Navier-Stokes velocities are provided
+  else if (_vel_type == "variable")
   {
     // if using Navier-Stokes velocities to couple to: (u, v, w)
     InputParameters params = _factory.getValidParams("DGCoupledAdvection");
@@ -262,7 +273,7 @@ PrecursorAction::addDGAdvection(const std::string & var_name)
     std::string kernel_name = "DGCoupledAdvection_" + var_name + "_" + _object_suffix;
     _problem->addDGKernel("DGCoupledAdvection", kernel_name, params);
   }
-  else
+  else if (_vel_type == "function")
   {
     // if using prespecified functions
     InputParameters params = _factory.getValidParams("DGFunctionConvection");
@@ -278,7 +289,7 @@ PrecursorAction::addDGAdvection(const std::string & var_name)
 void
 PrecursorAction::addOutflowBC(const std::string & var_name)
 {
-  if (getParam<bool>("constant_velocity_values"))
+  if (_vel_type == "constant")
   {
     // if using constant and uniform velocity values
     InputParameters params = _factory.getValidParams("OutflowBC");
@@ -292,7 +303,7 @@ PrecursorAction::addOutflowBC(const std::string & var_name)
     std::string bc_name = "OutflowBC_" + var_name + "_" + _object_suffix;
     _problem->addBoundaryCondition("OutflowBC", bc_name, params);
   }
-  else if (isParamValid("uvel")) // checks if Navier-Stokes velocities are provided
+  else if (_vel_type == "variable")
   {
     // if using navier stokes velocities to couple to: (u, v, w)
     InputParameters params = _factory.getValidParams("CoupledOutflowBC");
@@ -308,7 +319,7 @@ PrecursorAction::addOutflowBC(const std::string & var_name)
     std::string bc_name = "CoupledOutflowBC_" + var_name + "_" + _object_suffix;
     _problem->addBoundaryCondition("CoupledOutflowBC", bc_name, params);
   }
-  else
+  else if (_vel_type == "function")
   {
     // if using prespecified functions
     InputParameters params = _factory.getValidParams("VelocityFunctionOutflowBC");
@@ -327,7 +338,7 @@ PrecursorAction::addOutflowBC(const std::string & var_name)
 void
 PrecursorAction::addInflowBC(const std::string & var_name)
 {
-  if (getParam<bool>("constant_velocity_values"))
+  if (_vel_type == "constant")
   {
     // if using constant and uniform velocity values
     InputParameters params = _factory.getValidParams("PostprocessorInflowBC");
@@ -343,7 +354,7 @@ PrecursorAction::addInflowBC(const std::string & var_name)
     std::string bc_name = "PostprocessorInflowBC_" + var_name + "_" + _object_suffix;
     _problem->addBoundaryCondition("PostprocessorInflowBC", bc_name, params);
   }
-  else if (isParamValid("uvel")) // checks if Navier-Stokes velocities are provided
+  else if (_vel_type == "variable")
   {
     // if using navier stokes velocities to couple to: (u, v, w)
     InputParameters params = _factory.getValidParams("PostprocessorCoupledInflowBC");
@@ -361,7 +372,7 @@ PrecursorAction::addInflowBC(const std::string & var_name)
     std::string bc_name = "PostprocessorCoupledInflowBC_" + var_name + "_" + _object_suffix;
     _problem->addBoundaryCondition("PostprocessorCoupledInflowBC", bc_name, params);
   }
-  else
+  else if (_vel_type == "function")
   {
     // if using prespecified functions
     InputParameters params = _factory.getValidParams("PostprocessorInflowBC");
@@ -403,7 +414,7 @@ PrecursorAction::addOutletPostprocessor(const std::string & var_name)
   // looping precursors requires connecting outlet of core problem
   // to the inlet of the loop subproblem. In addition, the outlet of the
   // loop must be connected to the core problem.
-  if (getParam<bool>("constant_velocity_values"))
+  if (_vel_type == "constant")
   {
     // Area-averaged precursor conc at outlet for constant and uniform flow
     std::string postproc_name = "Outlet_Average_" + var_name + "_" + _object_suffix;
@@ -416,7 +427,7 @@ PrecursorAction::addOutletPostprocessor(const std::string & var_name)
     params.set<std::vector<OutputName>>("outputs") = {"none"};
     _problem->addPostprocessor("SideAverageValue", postproc_name, params);
   }
-  else if (isParamValid("uvel")) // checks if Navier-Stokes velocities are provided
+  else if (_vel_type == "variable")
   {
     {
       // Total flow-weighted precursor conc at outlet

@@ -127,5 +127,9 @@ protected:
   /// optional object name suffix
   std::string _object_suffix;
 
+  /// whether input file is for the outer loop
   bool _is_loopapp;
+
+  /// velocity type
+  MooseEnum _vel_type;
 };
