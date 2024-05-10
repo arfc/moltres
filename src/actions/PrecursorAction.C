@@ -24,8 +24,8 @@ PrecursorAction::validParams()
                                         "specifies the total number of precursors to create");
   params.addRequiredParam<std::string>("var_name_base", "specifies the base name of the variables");
   params.addRequiredCoupledVar("temperature", "Name of temperature variable");
-  MooseEnum vel_type("constant variable function", "constant");
-  params.addParam<MooseEnum>("velocity_type", vel_type,
+  MooseEnum velocity_type("constant variable function", "constant");
+  params.addParam<MooseEnum>("velocity_type", velocity_type,
       "Whether the velocity components are provided by constants, variables, or functions");
   params.addParam<NonlinearVariableName>("uvel", "Name of x-component of velocity");
   params.addParam<NonlinearVariableName>("vvel", "Name of y-component of velocity");
@@ -84,6 +84,15 @@ PrecursorAction::validParams()
                                          "outlet for calculating the flow-averaged "
                                          "precursor concentration outflow when using "
                                          "Navier-Stokes flow.");
+  params.addParam<FunctionName>("outlet_vel_func",
+                                "Name of the velocity variable normal to the "
+                                "outlet for calculating the flow-averaged "
+                                "precursor concentration outflow when using "
+                                "Navier-Stokes flow.");
+  params.addParam<Real>("inlet_bc_penalty",
+                        0.0,
+                        "Penalty scalar for the inlet penalty BC to reduce unphysical numerical "
+                        "oscillations near the wall where flow velocity may be small.");
   return params;
 }
 
@@ -94,7 +103,7 @@ PrecursorAction::PrecursorAction(const InputParameters & params)
     _num_groups(getParam<unsigned int>("num_groups")),
     _object_suffix(getParam<std::string>("object_suffix")),
     _is_loopapp(getParam<bool>("is_loopapp")),
-    _vel_type(getParam<MooseEnum>("velocity_type"))
+    _velocity_type(getParam<MooseEnum>("velocity_type"))
 {
   if (getParam<bool>("loop_precursors"))
   {
@@ -104,15 +113,19 @@ PrecursorAction::PrecursorAction(const InputParameters & params)
       mooseError("Looping precursors requires a multiapp that governs the loop.");
   }
 
-  if (_vel_type == "constant" && !isParamValid("u_def"))
-    paramError("vel_type",
-        "vel_type set to 'constant', but 'u_def' is not set");
-  else if (_vel_type == "variable" && !isParamValid("uvel"))
-    paramError("vel_type",
-        "vel_type set to 'variable', but 'uvel' is not set");
-  else if (_vel_type == "function" && !isParamValid("u_func"))
-    paramError("vel_type"
-        "vel_type set to 'function', but 'u_func' is not set");
+  if (_velocity_type == "constant" && !isParamValid("u_def"))
+    paramError("velocity_type",
+        "velocity_type set to 'constant', but 'u_def' is not set");
+  else if (_velocity_type == "variable" && !isParamValid("uvel"))
+    paramError("velocity_type",
+        "velocity_type set to 'variable', but 'uvel' is not set");
+  else if (_velocity_type == "function" && !isParamValid("u_func"))
+    paramError("velocity_type",
+        "velocity_type set to 'function', but 'u_func' is not set");
+
+  if (getParam<Real>("inlet_bc_penalty") != 0.0 && getParam<MooseEnum>("order") == "CONSTANT")
+    paramError("inlet_bc_penalty", "Penalty BCs are not required for CONSTANT order variables and "
+                                   "may overconstrain the problem.");
 }
 
 void
@@ -154,7 +167,8 @@ PrecursorAction::act()
     {
       if (getParam<bool>("transient"))
         addTimeDerivative(var_name);
-
+      if (getParam<MooseEnum>("order") != "CONSTANT")
+        addAdvection(var_name);
       addPrecursorSource(op, var_name);
       addPrecursorDecay(op, var_name);
     }
@@ -169,7 +183,11 @@ PrecursorAction::act()
       addOutflowBC(var_name);
 
       if (getParam<bool>("loop_precursors"))
+      {
         addInflowBC(var_name);
+        if (getParam<Real>("inlet_bc_penalty") != 0.0)
+          addPenaltyBC(var_name);
+      }
     }
 
     // initial conditions
@@ -197,7 +215,7 @@ PrecursorAction::act()
   // Add outflow rate postprocessor for Navier-Stokes velocities in the main
   // app if precursors are looped
   if (_current_task == "add_postprocessor" && getParam<bool>("loop_precursors") &&
-      isParamValid("uvel") && (!_is_loopapp))
+      _velocity_type != "constant" && (!_is_loopapp))
     addCoolantOutflowPostprocessor();
 }
 
@@ -246,9 +264,52 @@ PrecursorAction::addTimeDerivative(const std::string & var_name)
 }
 
 void
+PrecursorAction::addAdvection(const std::string & var_name)
+{
+  if (_velocity_type == "constant")
+  {
+    // if using constant and uniform velocity values
+    InputParameters params = _factory.getValidParams("CoupledScalarAdvection");
+    setVarNameAndBlock(params, var_name);
+    params.set<Real>("u_def") = getParam<Real>("u_def");
+    params.set<Real>("v_def") = getParam<Real>("v_def");
+    params.set<Real>("w_def") = getParam<Real>("w_def");
+    params.set<bool>("use_exp_form") = getParam<bool>("nt_exp_form");
+    std::string kernel_name = "CoupledScalarAdvection_" + var_name + "_" + _object_suffix;
+    _problem->addKernel("CoupledScalarAdvection", kernel_name, params);
+  }
+  else if (_velocity_type == "variable")
+  {
+    // if using Navier-Stokes velocities to couple to: (u, v, w)
+    InputParameters params = _factory.getValidParams("CoupledScalarAdvection");
+    setVarNameAndBlock(params, var_name);
+    params.set<std::vector<VariableName>>("u") = {getParam<NonlinearVariableName>("uvel")};
+    if (isParamValid("vvel"))
+      params.set<std::vector<VariableName>>("v") = {getParam<NonlinearVariableName>("vvel")};
+    if (isParamValid("wvel"))
+      params.set<std::vector<VariableName>>("w") = {getParam<NonlinearVariableName>("wvel")};
+    params.set<bool>("use_exp_form") = getParam<bool>("nt_exp_form");
+    std::string kernel_name = "CoupledScalarAdvection_" + var_name + "_" + _object_suffix;
+    _problem->addKernel("CoupledScalarAdvection", kernel_name, params);
+  }
+  else if (_velocity_type == "function")
+  {
+    // if using prespecified functions
+    InputParameters params = _factory.getValidParams("VelocityFunctionConservativeAdvection");
+    setVarNameAndBlock(params, var_name);
+    params.set<FunctionName>("vel_x_func") = getParam<FunctionName>("u_func");
+    params.set<FunctionName>("vel_y_func") = getParam<FunctionName>("v_func");
+    params.set<FunctionName>("vel_z_func") = getParam<FunctionName>("w_func");
+    std::string kernel_name =
+      "VelocityFunctionConservativeAdvection_" + var_name + "_" + _object_suffix;
+    _problem->addKernel("VelocityFunctionConservativeAdvection", kernel_name, params);
+  }
+}
+
+void
 PrecursorAction::addDGAdvection(const std::string & var_name)
 {
-  if (_vel_type == "constant")
+  if (_velocity_type == "constant")
   {
     // if using constant and uniform velocity values
     InputParameters params = _factory.getValidParams("DGConvection");
@@ -260,7 +321,7 @@ PrecursorAction::addDGAdvection(const std::string & var_name)
     std::string kernel_name = "DGConvection_" + var_name + "_" + _object_suffix;
     _problem->addDGKernel("DGConvection", kernel_name, params);
   }
-  else if (_vel_type == "variable")
+  else if (_velocity_type == "variable")
   {
     // if using Navier-Stokes velocities to couple to: (u, v, w)
     InputParameters params = _factory.getValidParams("DGCoupledAdvection");
@@ -273,7 +334,7 @@ PrecursorAction::addDGAdvection(const std::string & var_name)
     std::string kernel_name = "DGCoupledAdvection_" + var_name + "_" + _object_suffix;
     _problem->addDGKernel("DGCoupledAdvection", kernel_name, params);
   }
-  else if (_vel_type == "function")
+  else if (_velocity_type == "function")
   {
     // if using prespecified functions
     InputParameters params = _factory.getValidParams("DGFunctionConvection");
@@ -289,7 +350,7 @@ PrecursorAction::addDGAdvection(const std::string & var_name)
 void
 PrecursorAction::addOutflowBC(const std::string & var_name)
 {
-  if (_vel_type == "constant")
+  if (_velocity_type == "constant")
   {
     // if using constant and uniform velocity values
     InputParameters params = _factory.getValidParams("OutflowBC");
@@ -303,7 +364,7 @@ PrecursorAction::addOutflowBC(const std::string & var_name)
     std::string bc_name = "OutflowBC_" + var_name + "_" + _object_suffix;
     _problem->addBoundaryCondition("OutflowBC", bc_name, params);
   }
-  else if (_vel_type == "variable")
+  else if (_velocity_type == "variable")
   {
     // if using navier stokes velocities to couple to: (u, v, w)
     InputParameters params = _factory.getValidParams("CoupledOutflowBC");
@@ -319,7 +380,7 @@ PrecursorAction::addOutflowBC(const std::string & var_name)
     std::string bc_name = "CoupledOutflowBC_" + var_name + "_" + _object_suffix;
     _problem->addBoundaryCondition("CoupledOutflowBC", bc_name, params);
   }
-  else if (_vel_type == "function")
+  else if (_velocity_type == "function")
   {
     // if using prespecified functions
     InputParameters params = _factory.getValidParams("VelocityFunctionOutflowBC");
@@ -338,7 +399,7 @@ PrecursorAction::addOutflowBC(const std::string & var_name)
 void
 PrecursorAction::addInflowBC(const std::string & var_name)
 {
-  if (_vel_type == "constant")
+  if (_velocity_type == "constant")
   {
     // if using constant and uniform velocity values
     InputParameters params = _factory.getValidParams("PostprocessorInflowBC");
@@ -354,7 +415,7 @@ PrecursorAction::addInflowBC(const std::string & var_name)
     std::string bc_name = "PostprocessorInflowBC_" + var_name + "_" + _object_suffix;
     _problem->addBoundaryCondition("PostprocessorInflowBC", bc_name, params);
   }
-  else if (_vel_type == "variable")
+  else if (_velocity_type == "variable")
   {
     // if using navier stokes velocities to couple to: (u, v, w)
     InputParameters params = _factory.getValidParams("PostprocessorCoupledInflowBC");
@@ -372,19 +433,38 @@ PrecursorAction::addInflowBC(const std::string & var_name)
     std::string bc_name = "PostprocessorCoupledInflowBC_" + var_name + "_" + _object_suffix;
     _problem->addBoundaryCondition("PostprocessorCoupledInflowBC", bc_name, params);
   }
-  else if (_vel_type == "function")
+  else if (_velocity_type == "function")
   {
     // if using prespecified functions
-    InputParameters params = _factory.getValidParams("PostprocessorInflowBC");
+    InputParameters params = _factory.getValidParams("PostprocessorVelocityFunctionInflowBC");
     params.set<NonlinearVariableName>("variable") = var_name;
     params.set<std::vector<BoundaryName>>("boundary") =
         getParam<std::vector<BoundaryName>>("inlet_boundaries");
+    params.set<FunctionName>("vel_x_func") = getParam<FunctionName>("u_func");
+    params.set<FunctionName>("vel_y_func") = getParam<FunctionName>("v_func");
+    params.set<FunctionName>("vel_z_func") = getParam<FunctionName>("w_func");
     params.set<PostprocessorName>("postprocessor") =
         "Inlet_Average_" + var_name + "_" + _object_suffix;
 
-    std::string bc_name = "PostprocessorInflowBC_" + var_name + "_" + _object_suffix;
-    _problem->addBoundaryCondition("PostprocessorInflowBC", bc_name, params);
+    std::string bc_name =
+      "PostprocessorVelocityFunctionInflowBC_" + var_name + "_" + _object_suffix;
+    _problem->addBoundaryCondition("PostprocessorVelocityFunctionInflowBC", bc_name, params);
   }
+}
+
+void
+PrecursorAction::addPenaltyBC(const std::string & var_name)
+{
+  InputParameters params = _factory.getValidParams("PostprocessorPenaltyDirichletBC");
+  params.set<NonlinearVariableName>("variable") = var_name;
+  params.set<std::vector<BoundaryName>>("boundary") =
+      getParam<std::vector<BoundaryName>>("inlet_boundaries");
+  params.set<PostprocessorName>("postprocessor") =
+      "Inlet_Average_" + var_name + "_" + _object_suffix;
+  params.set<Real>("penalty") = getParam<Real>("inlet_bc_penalty");
+
+  std::string bc_name = "PostprocessorPenaltyDirichletBC_" + var_name + "_" + _object_suffix;
+  _problem->addBoundaryCondition("PostprocessorPenaltyDirichletBC", bc_name, params);
 }
 
 void
@@ -414,7 +494,7 @@ PrecursorAction::addOutletPostprocessor(const std::string & var_name)
   // looping precursors requires connecting outlet of core problem
   // to the inlet of the loop subproblem. In addition, the outlet of the
   // loop must be connected to the core problem.
-  if (_vel_type == "constant")
+  if (_velocity_type == "constant")
   {
     // Area-averaged precursor conc at outlet for constant and uniform flow
     std::string postproc_name = "Outlet_Average_" + var_name + "_" + _object_suffix;
@@ -427,7 +507,7 @@ PrecursorAction::addOutletPostprocessor(const std::string & var_name)
     params.set<std::vector<OutputName>>("outputs") = {"none"};
     _problem->addPostprocessor("SideAverageValue", postproc_name, params);
   }
-  else if (_vel_type == "variable")
+  else if (_velocity_type == "variable")
   {
     {
       // Total flow-weighted precursor conc at outlet
@@ -447,6 +527,35 @@ PrecursorAction::addOutletPostprocessor(const std::string & var_name)
 
     {
       // Area-averaged flow-weighted precursor conc at outlet
+      std::string postproc_name = "Outlet_Average_" + var_name + "_" + _object_suffix;
+      InputParameters params = _factory.getValidParams("DivisionPostprocessor");
+      std::vector<VariableName> varvec(1);
+      varvec[0] = var_name;
+      params.set<PostprocessorName>("value1") = "Outlet_Total_" + var_name + "_" + _object_suffix;
+      params.set<PostprocessorName>("value2") = "Coolant_Outflow_" + _object_suffix;
+      params.set<std::vector<OutputName>>("outputs") = {"none"};
+      _problem->addPostprocessor("DivisionPostprocessor", postproc_name, params);
+    }
+  }
+  else if (_velocity_type == "function")
+  {
+    {
+      // Total flow-function-weighted precursor conc at outlet
+      std::string postproc_name = "Outlet_Total_" + var_name + "_" + _object_suffix;
+      InputParameters params = _factory.getValidParams("SideFunctionWeightedIntegralPostprocessor");
+      std::vector<VariableName> varvec(1);
+      varvec[0] = var_name;
+      params.set<std::vector<VariableName>>("variable") = varvec;
+      params.set<std::vector<BoundaryName>>("boundary") =
+          getParam<std::vector<BoundaryName>>("outlet_boundaries");
+      params.set<std::vector<OutputName>>("outputs") = {"none"};
+      params.set<FunctionName>("weight_func") = getParam<FunctionName>("outlet_vel_func");
+
+      _problem->addPostprocessor("SideFunctionWeightedIntegralPostprocessor", postproc_name, params);
+    }
+
+    {
+      // Area-averaged flow-function-weighted precursor conc at outlet
       std::string postproc_name = "Outlet_Average_" + var_name + "_" + _object_suffix;
       InputParameters params = _factory.getValidParams("DivisionPostprocessor");
       std::vector<VariableName> varvec(1);
@@ -505,15 +614,29 @@ PrecursorAction::addMultiAppTransfer(const std::string & var_name)
 void
 PrecursorAction::addCoolantOutflowPostprocessor()
 {
-  std::string postproc_name = "Coolant_Outflow_" + _object_suffix;
-  InputParameters params = _factory.getValidParams("SideWeightedIntegralPostprocessor");
-  params.set<std::vector<VariableName>>("variable") = {
-      getParam<NonlinearVariableName>("outlet_vel")};
-  params.set<std::vector<BoundaryName>>("boundary") =
-      getParam<std::vector<BoundaryName>>("outlet_boundaries");
-  params.set<std::vector<OutputName>>("outputs") = {"none"};
+  if (_velocity_type == "variable")
+  {
+    std::string postproc_name = "Coolant_Outflow_" + _object_suffix;
+    InputParameters params = _factory.getValidParams("SideIntegralVariablePostprocessor");
+    params.set<std::vector<VariableName>>("variable") = {
+        getParam<NonlinearVariableName>("outlet_vel")};
+    params.set<std::vector<BoundaryName>>("boundary") =
+        getParam<std::vector<BoundaryName>>("outlet_boundaries");
+    params.set<std::vector<OutputName>>("outputs") = {"none"};
 
-  _problem->addPostprocessor("SideWeightedIntegralPostprocessor", postproc_name, params);
+    _problem->addPostprocessor("SideIntegralVariablePostprocessor", postproc_name, params);
+  }
+  else if (_velocity_type == "function")
+  {
+    std::string postproc_name = "Coolant_Outflow_" + _object_suffix;
+    InputParameters params = _factory.getValidParams("FunctionSideIntegral");
+    params.set<std::vector<BoundaryName>>("boundary") =
+        getParam<std::vector<BoundaryName>>("outlet_boundaries");
+    params.set<std::vector<OutputName>>("outputs") = {"none"};
+    params.set<FunctionName>("function") = getParam<FunctionName>("outlet_vel_func");
+
+    _problem->addPostprocessor("FunctionSideIntegral", postproc_name, params);
+  }
 }
 
 void
