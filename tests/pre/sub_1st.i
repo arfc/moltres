@@ -1,4 +1,4 @@
-flow_velocity = 20
+flow_velocity = 21.7 # cm/s. See MSRE-properties.ods
 global_temperature = 922
 
 [GlobalParams]
@@ -12,8 +12,8 @@ global_temperature = 922
 [Mesh]
   type = GeneratedMesh
   dim = 1
-  nx = 20
-  xmax = 100
+  nx = 14
+  xmax = 150
   elem_type = EDGE2
 []
 
@@ -56,7 +56,7 @@ global_temperature = 922
   nl_max_its = 20
   l_max_its = 50
   dtmin = 1e-2
-  dtmax = 4
+  dtmax = 5
   [TimeStepper]
     type = IterationAdaptiveDT
     dt = 1e-2

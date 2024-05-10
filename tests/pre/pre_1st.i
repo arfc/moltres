@@ -1,69 +1,60 @@
-flow_velocity = 20
+flow_velocity = 21.7 # cm/s. See MSRE-properties.ods
 global_temperature = 922
 
 [GlobalParams]
-  num_groups = 0
+  num_groups = 2
   num_precursor_groups = 6
+  group_fluxes = '1 1'
   temperature = ${global_temperature}
-  group_fluxes = ''
   sss2_input = false
+  transient = false
 []
 
 [Mesh]
-  type = GeneratedMesh
-  dim = 1
-  nx = 20
-  xmax = 100
-  elem_type = EDGE2
+  coord_type = RZ
+  file = '2d_lattice_structured_smaller.msh'
+[]
+
+[Problem]
+  kernel_coverage_check = false
 []
 
 [Precursors]
-  [core]
+  [pres]
     var_name_base = pre
-    outlet_boundaries = 'right'
-    u_def = ${flow_velocity}
-    v_def = 0
+    outlet_boundaries = 'fuel_tops'
+    u_def = 0
+    v_def = ${flow_velocity}
     w_def = 0
     nt_exp_form = false
+    loop_precursors = false
     family = MONOMIAL
     order = FIRST
-    loop_precursors = true
-    multi_app = loopApp
-    is_loopapp = true
-    inlet_boundaries = 'left'
+    block = 'fuel'
   []
 []
 
 [Materials]
   [fuel]
     type = GenericMoltresMaterial
-    num_groups = 2
     property_tables_root = '../../property_file_dir/newt_msre_fuel_'
     interp_type = 'spline'
   []
 []
 
 [Executioner]
-  type = Transient
-  end_time = 400
+  type = Steady
+
   nl_rel_tol = 1e-6
   nl_abs_tol = 1e-5
+
   solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  petsc_options_iname = '-pc_type -pc_factor_shift_type'
-  petsc_options_value = 'lu       NONZERO'
-  line_search = 'none'
-  nl_max_its = 20
-  l_max_its = 50
-  dtmin = 1e-2
-  dtmax = 4
-  [TimeStepper]
-    type = IterationAdaptiveDT
-    dt = 1e-2
-    cutback_factor = 0.4
-    growth_factor = 1.2
-    optimal_iterations = 20
-  []
+  petsc_options_iname = '-pc_type -sub_pc_type -pc_asm_overlap -sub_ksp_type -snes_linesearch_minlambda'
+  petsc_options_value = 'asm      lu           1               preonly       1e-3'
+
+  nl_max_its = 30
+  l_max_its = 100
 []
 
 [Preconditioning]
@@ -73,15 +64,12 @@ global_temperature = 922
   []
 []
 
-[Postprocessors]
-[]
-
 [Outputs]
   perf_graph = true
   print_linear_residuals = true
+  csv = true
   [out]
     type = Exodus
-    execute_on = 'final'
     discontinuous = true
   []
 []

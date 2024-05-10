@@ -10,8 +10,6 @@ ymax = 100
   temperature = ${global_temperature}
   sss2_input = false
   transient = true
-  pspg = true
-  integrate_p_by_parts = true
 []
 
 [Mesh]
@@ -43,10 +41,11 @@ ymax = 100
   [pres]
     var_name_base = pre
     outlet_boundaries = 'top'
-    outlet_vel = uy
-    velocity_type = variable
-    uvel = ux
-    vvel = uy
+    outlet_vel_func = velFunc
+    velocity_type = function
+    u_func = 0
+    v_func = velFunc
+    w_func = 0
     nt_exp_form = false
     family = MONOMIAL
     order = FIRST
@@ -58,23 +57,6 @@ ymax = 100
   []
 []
 
-[Variables]
-  [ux]
-    family = LAGRANGE
-    order = FIRST
-    initial_condition = 0
-  []
-  [uy]
-    family = LAGRANGE
-    order = FIRST
-    initial_condition = ${flow_velocity}
-  []
-  [p]
-    family = LAGRANGE
-    order = FIRST
-  []
-[]
-
 [AuxVariables]
   [group1]
     family = LAGRANGE
@@ -83,33 +65,6 @@ ymax = 100
   [group2]
     family = LAGRANGE
     order = FIRST
-  []
-[]
-
-[Kernels]
-  # Use Navier-Stokes flow at steady state for quicker run
-  [mass]
-    type = INSMassRZ
-    variable = p
-    u = ux
-    v = uy
-    pressure = p
-  []
-  [ux_momentum]
-    type = INSMomentumLaplaceFormRZ
-    variable = ux
-    u = ux
-    v = uy
-    pressure = p
-    component = 0
-  []
-  [uy_momentum]
-    type = INSMomentumLaplaceFormRZ
-    variable = uy
-    u = ux
-    v = uy
-    pressure = p
-    component = 1
   []
 []
 
@@ -126,40 +81,8 @@ ymax = 100
   []
 []
 
-[BCs]
-  [ux_no_slip]
-    type = DirichletBC
-    variable = ux
-    boundary = 'right'
-    value = 0
-  []
-  [uy_no_slip]
-    type = DirichletBC
-    variable = uy
-    boundary = 'right'
-    value = 0
-  []
-  [ux_inlet]
-    type = DirichletBC
-    variable = ux
-    boundary = 'bottom'
-    value = 0
-  []
-  [uy_inlet]
-    type = FunctionDirichletBC
-    variable = uy
-    boundary = 'bottom'
-    function = velFunc
-  []
-  [p_pin]
-    type = DirichletBC
-    variable = p
-    boundary = 'corner'
-    value = 0
-  []
-[]
-
 [Functions]
+  # Parabolic laminar flow
   [velFunc]
     type = ParsedFunction
     expression = '2 * ${flow_velocity} * (1 - (x/${xmax})^2)'
@@ -176,8 +99,6 @@ ymax = 100
     type = GenericMoltresMaterial
     property_tables_root = '../../property_file_dir/newt_msre_fuel_'
     interp_type = 'spline'
-    prop_names = 'rho mu'
-    prop_values = '1e-3 1'
   []
 []
 
@@ -231,7 +152,7 @@ ymax = 100
     app_type = MoltresApp
     execute_on = timestep_begin
     positions = '200.0 200.0 0.0'
-    input_files = 'sub_ins.i'
+    input_files = 'sub_func.i'
   []
 []
 

@@ -1,43 +1,45 @@
-flow_velocity = 20
+flow_velocity = 21.7 # cm/s. See MSRE-properties.ods
 global_temperature = 922
 
 [GlobalParams]
-  num_groups = 0
+  num_groups = 2
   num_precursor_groups = 6
+  group_fluxes = '1 1'
   temperature = ${global_temperature}
-  group_fluxes = ''
   sss2_input = false
+  transient = true
 []
 
 [Mesh]
-  type = GeneratedMesh
-  dim = 1
-  nx = 20
-  xmax = 100
-  elem_type = EDGE2
+  coord_type = RZ
+  file = '2d_lattice_structured_smaller.msh'
+[]
+
+[Problem]
+  kernel_coverage_check = false
 []
 
 [Precursors]
-  [core]
+  [pres]
     var_name_base = pre
-    outlet_boundaries = 'right'
-    u_def = ${flow_velocity}
-    v_def = 0
+    outlet_boundaries = 'fuel_tops'
+    u_def = 0
+    v_def = ${flow_velocity}
     w_def = 0
     nt_exp_form = false
     family = MONOMIAL
     order = FIRST
     loop_precursors = true
     multi_app = loopApp
-    is_loopapp = true
-    inlet_boundaries = 'left'
+    is_loopapp = false
+    inlet_boundaries = 'fuel_bottoms'
+    block = 'fuel'
   []
 []
 
 [Materials]
   [fuel]
     type = GenericMoltresMaterial
-    num_groups = 2
     property_tables_root = '../../property_file_dir/newt_msre_fuel_'
     interp_type = 'spline'
   []
@@ -53,10 +55,13 @@ global_temperature = 922
   petsc_options_iname = '-pc_type -pc_factor_shift_type'
   petsc_options_value = 'lu       NONZERO'
   line_search = 'none'
-  nl_max_its = 20
-  l_max_its = 50
+  nl_max_its = 30
+  l_max_its = 100
+  fixed_point_max_its = 5
+  fixed_point_rel_tol = 1e-6
+  fixed_point_abs_tol = 1e-5
   dtmin = 1e-2
-  dtmax = 4
+  dtmax = 5
   [TimeStepper]
     type = IterationAdaptiveDT
     dt = 1e-2
@@ -73,16 +78,24 @@ global_temperature = 922
   []
 []
 
-[Postprocessors]
-[]
-
 [Outputs]
   perf_graph = true
   print_linear_residuals = true
+  csv = true
   [out]
     type = Exodus
     execute_on = 'final'
     discontinuous = true
+  []
+[]
+
+[MultiApps]
+  [loopApp]
+    type = TransientMultiApp
+    app_type = MoltresApp
+    execute_on = timestep_begin
+    positions = '200.0 200.0 0.0'
+    input_files = 'sub_1st.i'
   []
 []
 
