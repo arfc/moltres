@@ -22,16 +22,17 @@ The neutron diffusion equation is an approximation to the Boltzmann transport eq
 
 The general neutron diffusion equation has exceedingly few analytical solutions and thus, for real-world problems, is solved with numerical methods. A common method utilized is [Finite Element Method](https://mooseframework.inl.gov/help/faq/what_is_fem.html), which is the methodology employed in Moltres. To solve the diffusion equation over complex geometries, Moltres discretizes over space, time, and energy. Discretization through space is done with the use of volume meshes. Discretization with respect to time is accomplished with discrete time-steps. Finally, the energy spectrum of the scalar neutron flux is discretized into user defined bins, called energy groups. The energy discretization of the neutron diffusion equation is called the multi-group neutron diffusion equation and is presented below. Notably, there are two production terms of neutrons, the prompt fission source and delayed neutron precursor decay source. The first term describes the neutrons immediately born from fission, and the second term describes the neutrons born from the radioactive decay of neutron-emitting radionuclides, commonly called delayed neutron precursors. Importantly, the $\lambda_i$ in the delayed-precursor term is not the overall decay constant of the precursor group, but rather the decay constant for specifically neutron emission.
 
-&nbsp;
-&nbsp;
+
+\\ 
 
 The multi-group neutron diffusion equation:
 
 !equation
 \frac{1}{v_g} \frac{\partial\phi_g}{\partial t}-\nabla \cdot D_g \nabla \phi_g +\Sigma^R_{g} \phi_g =\sum^G_{g \neq g'} {\Sigma^s_{g'\rightarrow g} \phi_{g'}}+ \chi^p_{g} \sum^G_{g'=1} {\left(1- \beta \right) \nu_{g'} \Sigma^f_{g'}\phi_{g'} }+\chi^d_{g} \sum^I_i {\lambda_i C_i}
 
-&nbsp; 
+\\ 
 
+!table id=diff_table caption= Terms in multi-group neutron diffusion equation and their associated kernels
 |Term in Multi-Group Diffusion Equation | Associated Kernel |Definition of Term|
 | - | - | - |
 | [!eq](\frac{1}{v_g} \frac{\partial\phi_g}{\partial t}) | [NtTimeDerivative](https://arfc.github.io/moltres/source/kernels/NtTimeDerivative.html) | Time rate of change of energy group g |
@@ -41,16 +42,17 @@ The multi-group neutron diffusion equation:
 | [!eq](\chi^p_{g} \sum^G_{g'=1} {\left[1- \beta \right] \nu_{g'} \Sigma^f_{g'}\phi_{g'} } ) | [CoupledFissionKernel](https://arfc.github.io/moltres/source/kernels/CoupledFissionKernel.html) | Prompt fission neutron source |
 | [!eq](\chi^d_{g} \sum^I_i {\lambda_i C_i}) | [DelayedNeutronSource](https://arfc.github.io/moltres/source/kernels/DelayedNeutronSource.html) | Delayed fission neutron source |
 
-&nbsp;
-&nbsp; 
+ 
+\\  
 
 The governing equation for the delayed neutron precursor population:
 
 !equation
 \frac{\partial C_i}{\partial t}=\sum^G_{g'=1}{\beta_i \nu \Sigma^f_{g'}\phi_{g'}}-\lambda_i C_i-\vec{u} \cdot \nabla C_i
 
-&nbsp;
+\\ 
 
+!table id=prec_table caption= Terms in delayed neutron precursor equation and their associated kernels
 | Term in Delayed Precursor Equation | Definition of Term | Associated Kernel |
 | - | - | - |
 | [!eq](\frac{\partial C_i}{\partial t}) | [ScalarTransportTimeDerivative](https://arfc.github.io/moltres/source/kernels/ScalarTransportTimeDerivative.html) | Time rate of change of precursor population | 
