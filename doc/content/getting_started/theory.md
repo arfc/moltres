@@ -16,11 +16,23 @@ the MOOSE finite element framework, enabling highly flexible and scalable reacto
 
 ## Multigroup Neutron Diffusion
 
-The neutron diffusion equation is an approximation to the Boltzmann transport equation, and is derived by taking the zeroth and first moment with respect to $\hat\Omega$, the solid angle. A full derivation of the diffusion equation will not be presented here for the sake of conciceness. Importantly, when taking the first moment of the transport equation the angular flux is assumed to be linearly anisotropic. This assumption yields an equation with 2 fewer phase spaces, but also has reduced fidelity when compared to the transport equation, particularly in regions in which the neutron flux has strong angular dependence. A non-exhaustive list of regions in which the neutron flux strongly depends on angle is near material interfaces, external boundaries, strong absorbers, and weak scaterrers.
+The neutron diffusion equation is an approximation to the Boltzmann transport equation, and is derived by taking the zeroth and first moment with respect to $\hat\Omega$, the solid angle. 
+A full derivation of the diffusion equation will not be presented here for the sake of conciceness. Importantly, when taking the first moment of the transport equation the angular flux is assumed to be linearly anisotropic. 
+This assumption yields an equation with 2 fewer phase spaces, but also has reduced fidelity when compared to the transport equation, particularly in regions in which the neutron flux has strong angular dependence. 
+A non-exhaustive list of regions in which the neutron flux strongly depends on angle is near material interfaces, external boundaries, strong absorbers, and weak scaterrers.
 
 
 
-The general neutron diffusion equation has exceedingly few analytical solutions and thus, for real-world problems, is solved with numerical methods. A common method utilized is [Finite Element Method](https://mooseframework.inl.gov/help/faq/what_is_fem.html), which is the methodology employed in Moltres. To solve the diffusion equation over complex geometries, Moltres discretizes over space, time, and energy. Discretization through space is done with the use of volume meshes. Discretization with respect to time is accomplished with discrete time-steps. Finally, the energy spectrum of the scalar neutron flux is discretized into user defined bins, called energy groups. The energy discretization of the neutron diffusion equation is called the multi-group neutron diffusion equation and is presented below. Notably, there are two production terms of neutrons, the prompt fission source and delayed neutron precursor decay source. The first term describes the neutrons immediately born from fission, and the second term describes the neutrons born from the radioactive decay of neutron-emitting radionuclides, commonly called delayed neutron precursors. Importantly, the $\lambda_i$ in the delayed-precursor term is not the overall decay constant of the precursor group, but rather the decay constant for specifically neutron emission.
+The general neutron diffusion equation has exceedingly few analytical solutions and thus, for real-world problems, is solved with numerical methods. 
+A common method utilized is [Finite Element Method](https://mooseframework.inl.gov/help/faq/what_is_fem.html), which is the methodology employed in Moltres. 
+To solve the diffusion equation over complex geometries, Moltres discretizes over space, time, and energy. 
+Discretization through space is done with the use of volume meshes. 
+Discretization with respect to time is accomplished with discrete time-steps. 
+Finally, the energy spectrum of the scalar neutron flux is discretized into user defined bins, called energy groups. 
+The energy discretization of the neutron diffusion equation is called the multi-group neutron diffusion equation and is presented below. 
+Notably, there are two production terms of neutrons, the prompt fission source and delayed neutron precursor decay source. 
+The first term describes the neutrons immediately born from fission, and the second term describes the neutrons born from the radioactive decay of neutron-emitting radionuclides, commonly called delayed neutron precursors. 
+Importantly, the $\lambda_i$ in the delayed-precursor term is not the overall decay constant of the precursor group, but rather the decay constant for specifically neutron emission.
 
 
 \\ 
