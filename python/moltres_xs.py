@@ -19,9 +19,12 @@ class openmc_xs:
     Parameters
     ----------
     xs_filename: str
-        Name of file containing collapsed cross section data
+        Name of OpenMC Statepoint HDF5 file containing collapsed cross section
+        data
     file_num: int
         File number
+    xs_summary: str
+        Name of OpenMC Summary file associated with the Statepoint file
     Returns
     ----------
     xs_lib: dict
@@ -265,12 +268,14 @@ class openmc_xs:
         group_nums = list(totalxs_df["group in"])
         remxs = []
         for i in group_nums:
-            totxs = float(totalxs_df.loc[totalxs_df["group in"] == i]["mean"])
+            totxs = float(
+                totalxs_df.loc[totalxs_df["group in"] == i]["mean"].iloc[0])
             nu_self_scatter = float(
                 nu_scatter_matrix_df.loc[
                     (nu_scatter_matrix_df["group in"] == i) &
                     (nu_scatter_matrix_df["group out"] == i) &
-                    (nu_scatter_matrix_df["legendre"] == "P0")]["mean"])
+                    (nu_scatter_matrix_df["legendre"] == "P0")]["mean"].iloc[0]
+                )
             remxs.append(totxs - nu_self_scatter)
         return remxs
 
@@ -320,16 +325,19 @@ class openmc_xs:
         """
 
         import openmc
+        import warnings
         import openmc.mgxs as mgxs
-        if float(openmc.__version__[2:]) < 13.2:
+        version = float(openmc.__version__[2:])
+        if version < 13.2:
             raise Exception("moltres_xs.py is compatible with OpenMC " +
-                            "v0.13.2 or later only.")
+                            "version 0.13.2 or later only.")
+        elif version > 14.0:
+            warnings.warn("moltres_xs.py has not been tested for OpenMC " +
+                          "versions newer than 0.14.0.")
 
-        groups = mgxs.EnergyGroups()
-        groups.group_edges = np.array(energy_groups)
-        big_group = mgxs.EnergyGroups()
+        groups = mgxs.EnergyGroups(group_edges=energy_groups)
         big_energy_group = [energy_groups[0], energy_groups[-1]]
-        big_group.group_edges = np.array(big_energy_group)
+        big_group = mgxs.EnergyGroups(group_edges=big_energy_group)
         energy_filter = openmc.EnergyFilter(energy_groups)
         domain_dict = {}
         for id in domain_ids:
