@@ -25,9 +25,7 @@ VacuumConcBC::VacuumConcBC(const InputParameters & parameters)
       _alpha = std::sqrt(3.);
       break;
     case MILNE:
-      // Derived from the exact analytical solution to the Milne problem. See MooseDocs-based
-      // documentation for more information.
-      _alpha = 3 * 0.710446;
+      _alpha = _milne_extrapolation_coefficient;
       break;
   }
 }
