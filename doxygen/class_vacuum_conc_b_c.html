@@ -79,6 +79,7 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pro-types">Protected Types</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="class_vacuum_conc_b_c-members.html">List of all members</a>  </div>
@@ -127,6 +128,14 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a143a4b356efeb204c39fcf46f7c38988 inherit pub_static_methods_class_scalar_transport_base" id="r_a143a4b356efeb204c39fcf46f7c38988"><td class="memItemLeft" align="right" valign="top">static InputParameters&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_scalar_transport_base.html#a143a4b356efeb204c39fcf46f7c38988">validParams</a> ()</td></tr>
 <tr class="separator:a143a4b356efeb204c39fcf46f7c38988 inherit pub_static_methods_class_scalar_transport_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-types" name="pro-types"></a>
+Protected Types</h2></td></tr>
+<tr class="memitem:a68e7f917e26b27fe7cae3d4b82f245e4" id="r_a68e7f917e26b27fe7cae3d4b82f245e4"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_vacuum_conc_b_c.html#a68e7f917e26b27fe7cae3d4b82f245e4">BC_TYPE</a> { <a class="el" href="class_vacuum_conc_b_c.html#a68e7f917e26b27fe7cae3d4b82f245e4abc4d317b6d2cb978ebfef478499bdb5b">MARSHAK</a>
+, <a class="el" href="class_vacuum_conc_b_c.html#a68e7f917e26b27fe7cae3d4b82f245e4a18207c81a1bf1450617bd149dc6b63c1">MARK</a>
+, <a class="el" href="class_vacuum_conc_b_c.html#a68e7f917e26b27fe7cae3d4b82f245e4adfd4d152046d976f374f3b788f1babc9">MILNE</a>
+ }</td></tr>
+<tr class="separator:a68e7f917e26b27fe7cae3d4b82f245e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:af379bc84dd22e9ffcd88c0fe67d89f41" id="r_af379bc84dd22e9ffcd88c0fe67d89f41"><td class="memItemLeft" align="right" valign="top">virtual Real&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_vacuum_conc_b_c.html#af379bc84dd22e9ffcd88c0fe67d89f41">computeQpResidual</a> () override</td></tr>
@@ -137,12 +146,42 @@ Protected Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr class="memitem:adce5afe2ee66f35f4c4fc61d523fba4a" id="r_adce5afe2ee66f35f4c4fc61d523fba4a"><td class="memItemLeft" align="right" valign="top">Real&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_vacuum_conc_b_c.html#adce5afe2ee66f35f4c4fc61d523fba4a">_alpha</a></td></tr>
-<tr class="memdesc:adce5afe2ee66f35f4c4fc61d523fba4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ratio of u to du/dn.  <br /></td></tr>
 <tr class="separator:adce5afe2ee66f35f4c4fc61d523fba4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59e8a01c2db1a19fdac13da1a0e826d6" id="r_a59e8a01c2db1a19fdac13da1a0e826d6"><td class="memItemLeft" align="right" valign="top">Real&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_vacuum_conc_b_c.html#a59e8a01c2db1a19fdac13da1a0e826d6">_milne_extrapolation_coefficient</a> = 3 * 0.710446</td></tr>
+<tr class="separator:a59e8a01c2db1a19fdac13da1a0e826d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Implements a simple VacuumConc BC for neutron diffusion on the boundary. VacuumConc BC is defined as \( D\frac{du}{dn}+\frac{u}{2} = 0\), where u is neutron flux. Hence, \( D\frac{du}{dn}=-\frac{u}{2} \) and \( -\frac{u}{2} \) is substituted into the Neumann BC term produced from integrating the diffusion operator by parts. </p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<div class="textblock"><p>Implements a simple VacuumConc BC for neutron diffusion on vacuum boundaries. VacuumConc BC is defined as \( D\frac{du}{dn}+\frac{u}{\alpha} = 0\), where u is neutron flux. Hence, \( D\frac{du}{dn}=-\frac{u}{\alpha} \) and \( -\frac{u}{\alpha} \) is substituted into the Neumann BC term produced from integrating the diffusion operator by parts.</p>
+<p>The three types of vacuum BCs available are Marshak ($\alpha=2$), Mark ($\alpha=\sqrt{3}$), and Milne ($\alpha=3\times 0.710446$). <a class="el" href="class_vacuum_conc_b_c.html">VacuumConcBC</a> defaults to Marshak if <code>bc_type</code> is not set. </p>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="a68e7f917e26b27fe7cae3d4b82f245e4" name="a68e7f917e26b27fe7cae3d4b82f245e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68e7f917e26b27fe7cae3d4b82f245e4">&#9670;&#160;</a></span>BC_TYPE</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="class_vacuum_conc_b_c.html#a68e7f917e26b27fe7cae3d4b82f245e4">VacuumConcBC::BC_TYPE</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a68e7f917e26b27fe7cae3d4b82f245e4abc4d317b6d2cb978ebfef478499bdb5b" name="a68e7f917e26b27fe7cae3d4b82f245e4abc4d317b6d2cb978ebfef478499bdb5b"></a>MARSHAK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a68e7f917e26b27fe7cae3d4b82f245e4a18207c81a1bf1450617bd149dc6b63c1" name="a68e7f917e26b27fe7cae3d4b82f245e4a18207c81a1bf1450617bd149dc6b63c1"></a>MARK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a68e7f917e26b27fe7cae3d4b82f245e4adfd4d152046d976f374f3b788f1babc9" name="a68e7f917e26b27fe7cae3d4b82f245e4adfd4d152046d976f374f3b788f1babc9"></a>MILNE&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="afafff724cb049c73048b26443b21fb83" name="afafff724cb049c73048b26443b21fb83"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afafff724cb049c73048b26443b21fb83">&#9670;&#160;</a></span>VacuumConcBC()</h2>
 
@@ -259,7 +298,27 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Ratio of u to du/dn. </p>
+</div>
+</div>
+<a id="a59e8a01c2db1a19fdac13da1a0e826d6" name="a59e8a01c2db1a19fdac13da1a0e826d6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a59e8a01c2db1a19fdac13da1a0e826d6">&#9670;&#160;</a></span>_milne_extrapolation_coefficient</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Real VacuumConcBC::_milne_extrapolation_coefficient = 3 * 0.710446</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -270,7 +329,7 @@ Protected Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jun 5 2024 01:06:38 for moltres by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Tue Jun 11 2024 18:51:58 for moltres by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
