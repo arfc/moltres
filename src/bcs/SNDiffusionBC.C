@@ -40,7 +40,7 @@ SNDiffusionBC::computeQpResidual(RealEigenVector & residual)
   for (unsigned int i = 0; i < _count; ++i)
     if (ord_dot_n(i) < 0.)
       residual(i) = _test[_i][_qp] * _weights(i) * ord_dot_n(i) * (_diff_flux[_qp] -
-          3. * _diffcoef[_qp][_group] * _ordinates.row(i) * grad_flux_vec);
+          3. * _diffcoef[_qp][_group] * _ordinates.row(i) * grad_flux_vec) * 0.125;
 }
 
 RealEigenVector

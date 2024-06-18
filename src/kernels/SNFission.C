@@ -1,4 +1,5 @@
 #include "SNFission.h"
+#include "Executioner.h"
 
 using MooseUtils::relativeFuzzyEqual;
 
@@ -21,6 +22,8 @@ SNFission::validParams()
   params.addParam<PostprocessorName>(
       "eigenvalue_scaling", 1.0, "Artificial scaling factor for the fission source.");
   params.addParam<bool>("acceleration", false, "Whether an acceleration scheme is applied.");
+  params.addParam<bool>("use_initial_flux", false,
+      "Whether to use the diffusion flux as an initial condition");
   return params;
 }
 
@@ -36,9 +39,10 @@ SNFission::SNFission(const InputParameters & parameters)
     _num_groups(getParam<unsigned int>("num_groups")),
     _account_delayed(getParam<bool>("account_delayed")),
     _eigenvalue_scaling(getPostprocessorValue("eigenvalue_scaling")),
-    _acceleration(getParam<bool>("acceleration"))
+    _acceleration(getParam<bool>("acceleration")),
+    _use_initial_flux(getParam<bool>("use_initial_flux"))
 {
-  if (_acceleration)
+  if (_acceleration || _use_initial_flux)
   {
     unsigned int n = coupledComponents("group_fluxes");
     if (n != _num_groups)
@@ -47,7 +51,8 @@ SNFission::SNFission(const InputParameters & parameters)
     for (unsigned int g = 0; g < _num_groups; ++g)
       _group_fluxes[g] = &coupledValue("group_fluxes", g);
   }
-  else
+
+  if (!(_acceleration))
   {
     unsigned int n = coupledComponents("group_angular_fluxes");
     if (n != _num_groups)
@@ -77,7 +82,7 @@ SNFission::computeQpResidual(RealEigenVector & residual)
     RealEigenVector::Constant(_count, _test[_i][_qp]);
 
   Real fission = 0.;
-  if (_acceleration)
+  if (_acceleration || (_use_initial_flux && _app.getExecutioner()->fixedPointSolve().numFixedPointIts() == 1))
   {
     for (unsigned int g = 0; g < _num_groups; ++g)
       fission += _nsf[_qp][g] * (*_group_fluxes[g])[_qp];
@@ -106,7 +111,7 @@ SNFission::computeQpJacobian()
   if (relativeFuzzyEqual(_chi_p[_qp][_group], 0.0) && relativeFuzzyEqual(_chi_t[_qp][_group], 0.0))
     return ArrayKernel::computeQpJacobian();
 
-  if (_acceleration)
+  if (_acceleration || (_use_initial_flux && _app.getExecutioner()->fixedPointSolve().numFixedPointIts() == 1))
     return ArrayKernel::computeQpJacobian();
   else
   {
@@ -133,7 +138,7 @@ SNFission::computeQpOffDiagJacobian(const MooseVariableFEBase & jvar)
   if (relativeFuzzyEqual(_chi_p[_qp][_group], 0.0) && relativeFuzzyEqual(_chi_t[_qp][_group], 0.0))
     return ArrayKernel::computeQpOffDiagJacobian(jvar);
 
-  if (_acceleration)
+  if (_acceleration || (_use_initial_flux && _app.getExecutioner()->fixedPointSolve().numFixedPointIts() == 1))
     return ArrayKernel::computeQpOffDiagJacobian(jvar);
   else
   {

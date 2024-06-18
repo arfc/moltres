@@ -25,5 +25,5 @@ SNScalarFluxAux::SNScalarFluxAux(const InputParameters & parameters)
 Real
 SNScalarFluxAux::computeValue()
 {
-  return 0.125 * _weights.transpose() * _psi[_qp]; // divide by 8
+  return _weights.transpose() * _psi[_qp];
 }

@@ -26,6 +26,7 @@ protected:
   const bool _account_delayed;
   const PostprocessorValue & _eigenvalue_scaling;
   const bool _acceleration;
+  const bool _use_initial_flux;
   std::vector<const VariableValue *> _group_fluxes;
   std::vector<const ArrayVariableValue *> _group_angular_fluxes;
   std::vector<unsigned int> _flux_ids;
