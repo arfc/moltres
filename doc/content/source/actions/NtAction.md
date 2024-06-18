@@ -2,7 +2,7 @@
 
 !alert note
 This action sets up ONLY the variables, kernels, and BCs for neutron diffusion,
-NOT the variables, kernels, and BCs for precursor tracking. 
+NOT the variables, kernels, and BCs for precursor tracking.
 To generate these, see [PrecursorAction](PrecursorAction.md).
 
 !syntax description /Nt/NtAction
@@ -29,11 +29,11 @@ Simulations+ section.
 An example input file without the ```NtAction```, showing only the portion
 affected by the action:
 
-!listing tutorial/eigenvalue/nts.i 
+!listing tutorial/eigenvalue/nts.i
 	start=Variables end=Materials remove=Precursors
 
 
-And then the same information created with the ```NtAction```: 
+And then the same information created with the ```NtAction```:
 
 !listing tutorial/eigenvalue/nts-action.i
 	block=Nt
