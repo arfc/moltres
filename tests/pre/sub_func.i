@@ -21,9 +21,11 @@ global_temperature = 922
   [core]
     var_name_base = pre
     outlet_boundaries = 'right'
-    u_def = ${flow_velocity}
-    v_def = 0
-    w_def = 0
+    outlet_vel_func = velFunc
+    velocity_type = function
+    u_func = velFunc
+    v_func = 0
+    w_func = 0
     nt_exp_form = false
     family = MONOMIAL
     order = FIRST
@@ -31,6 +33,14 @@ global_temperature = 922
     multi_app = loopApp
     is_loopapp = true
     inlet_boundaries = 'left'
+  []
+[]
+
+[Functions]
+  # 1-D flow exponentially converging in time
+  [velFunc]
+    type = ParsedFunction
+    expression = '${flow_velocity} * (1 - exp(-t/10))'
   []
 []
 

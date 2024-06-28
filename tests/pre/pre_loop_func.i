@@ -82,10 +82,10 @@ ymax = 100
 []
 
 [Functions]
-  # Parabolic laminar flow
+  # Parabolic laminar flow exponentially converging in time
   [velFunc]
     type = ParsedFunction
-    expression = '2 * ${flow_velocity} * (1 - (x/${xmax})^2)'
+    expression = '2 * ${flow_velocity} * (1 - (x/${xmax})^2) * (1 - exp(-t/10))'
   []
   # Cosine-shaped flux source with extrapolations at the boundaries
   [fluxFunc]

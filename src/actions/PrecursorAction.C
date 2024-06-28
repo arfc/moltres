@@ -494,7 +494,7 @@ PrecursorAction::addOutletPostprocessor(const std::string & var_name)
   // looping precursors requires connecting outlet of core problem
   // to the inlet of the loop subproblem. In addition, the outlet of the
   // loop must be connected to the core problem.
-  if (_velocity_type == "constant")
+  if (_velocity_type == "constant" || _is_loopapp)
   {
     // Area-averaged precursor conc at outlet for constant and uniform flow
     std::string postproc_name = "Outlet_Average_" + var_name + "_" + _object_suffix;
