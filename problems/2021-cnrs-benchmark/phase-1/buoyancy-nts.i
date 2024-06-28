@@ -42,7 +42,7 @@
   [pres]
     var_name_base = pre
     outlet_boundaries = ''
-    constant_velocity_values = false
+    velocity_type = variable
     uvel = vel_x
     vvel = vel_y
     nt_exp_form = false
