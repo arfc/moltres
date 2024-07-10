@@ -22,6 +22,8 @@ SNScattering::validParams()
   params.addParam<bool>("acceleration", false, "Whether an acceleration scheme is applied.");
   params.addParam<bool>("use_initial_flux", false,
       "Whether to use the diffusion flux as an initial condition");
+  params.addParam<PostprocessorName>("iteration_postprocessor", 0,
+      "Name of postprocessor with fixed point iteration number");
   return params;
 }
 
@@ -34,7 +36,8 @@ SNScattering::SNScattering(const InputParameters & parameters)
     _num_groups(getParam<unsigned int>("num_groups")),
     _L(getParam<int>("L")),
     _acceleration(getParam<bool>("acceleration")),
-    _use_initial_flux(getParam<bool>("use_initial_flux"))
+    _use_initial_flux(getParam<bool>("use_initial_flux")),
+    _iteration_postprocessor(getPostprocessorValue("iteration_postprocessor"))
 {
   if (_acceleration || _use_initial_flux)
   {
@@ -71,17 +74,17 @@ SNScattering::computeQpResidual(RealEigenVector & residual)
     RealEigenVector::Constant(_count, _test[_i][_qp]);
 
   int start_idx = 0;
-  if (_acceleration || (_use_initial_flux && _app.getExecutioner()->fixedPointSolve().numFixedPointIts() == 1))
+  if (_acceleration || (_use_initial_flux && relativeFuzzyEqual(_iteration_postprocessor, 1.0)))
   {
     ++start_idx;
     for (unsigned int g = 0; g < _num_groups; ++g)
     {
       int scatter_idx = g * _num_groups + _group;
-      if (relativeFuzzyEqual(_scatter[_qp][scatter_idx], 0.0))
+      if (_scatter[_qp][scatter_idx] == 0.0)
         continue;
       residual -= RealEigenVector::Constant(
           _count,
-          _scatter[_qp][scatter_idx] * (*_group_fluxes[g])[_qp]);
+          _scatter[_qp][scatter_idx] * (*_group_fluxes[g])[_qp]) * 0.125;
     }
   }
 
@@ -95,7 +98,7 @@ SNScattering::computeQpResidual(RealEigenVector & residual)
       for (unsigned int g = 0; g < _num_groups; ++g)
       {
         int scatter_idx = l * _num_groups * _num_groups + g * _num_groups + _group;
-        if (relativeFuzzyEqual(_scatter[_qp][scatter_idx], 0.0))
+        if (_scatter[_qp][scatter_idx] == 0.0)
           continue;
         flux_moments[g][l][m+l] +=
           _weights.cwiseProduct(_harmonics.col(harmonics_idx)).transpose() *
@@ -112,7 +115,7 @@ SNScattering::computeQpResidual(RealEigenVector & residual)
       for (unsigned int g = 0; g < _num_groups; ++g)
       {
         int scatter_idx = l * _num_groups * _num_groups + g * _num_groups + _group;
-        if (relativeFuzzyEqual(_scatter[_qp][scatter_idx], 0.0))
+        if (_scatter[_qp][scatter_idx] == 0.0)
           continue;
         residual -=
           _scatter[_qp][scatter_idx] * flux_moments[g][l][m+l] *
@@ -132,7 +135,7 @@ SNScattering::computeQpJacobian()
     RealEigenVector::Constant(_count, _test[_i][_qp]);
 
   int start_idx = 0;
-  if (_acceleration || (_use_initial_flux && _app.getExecutioner()->fixedPointSolve().numFixedPointIts() == 1))
+  if (_acceleration || (_use_initial_flux && relativeFuzzyEqual(_iteration_postprocessor, 1.0)))
     ++start_idx;
   int harmonics_idx = start_idx;
   for (int l = start_idx; l < _L+1; ++l)
@@ -162,12 +165,12 @@ SNScattering::computeQpOffDiagJacobian(const MooseVariableFEBase & jvar)
       RealEigenMatrix jac = RealEigenMatrix::Zero(_count, _count);
 
       int start_idx = 0;
-      if (_acceleration || (_use_initial_flux && _app.getExecutioner()->fixedPointSolve().numFixedPointIts() == 1))
+      if (_acceleration || (_use_initial_flux && relativeFuzzyEqual(_iteration_postprocessor, 1.0)))
         ++start_idx;
       for (int l = start_idx; l < _L+1; ++l)
       {
         int scatter_idx = l * _num_groups * _num_groups + g * _num_groups + _group;
-        if (relativeFuzzyEqual(_scatter[_qp][scatter_idx], 0.0))
+        if (_scatter[_qp][scatter_idx] == 0.0)
           continue;
         for (int m = -l; m < l+1; ++m)
           for (unsigned int i = 0; i < _count; ++i)

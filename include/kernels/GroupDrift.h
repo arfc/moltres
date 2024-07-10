@@ -15,4 +15,7 @@ protected:
   virtual Real computeQpJacobian() override;
 
   const ArrayVariableValue & _drift_var;
+  const ArrayVariableGradient & _drift_grad;
+  const bool _adaptive;
+  Point _center;
 };

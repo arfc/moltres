@@ -17,6 +17,10 @@ GroupDriftAux::validParams()
   params.addRequiredCoupledVar("group_angular_fluxes",
       "All the variables that hold the group angular fluxes. These MUST be listed by decreasing "
       "energy/increasing group number.");
+  params.addParam<bool>("set_diffcoef_limit",
+      false,
+      "Replaces all diffusion coefficient values above 5.0 to 5.0. "
+      "Primarily helps with stabilizing drift coefficients in void regions.");
   return params;
 }
 
@@ -29,7 +33,8 @@ GroupDriftAux::GroupDriftAux(const InputParameters & parameters)
     _scatter(getMaterialProperty<std::vector<Real>>("scatter")),
     _N(getParam<unsigned int>("N")),
     _group(getParam<unsigned int>("group_number") - 1),
-    _num_groups(getParam<unsigned int>("num_groups"))
+    _num_groups(getParam<unsigned int>("num_groups")),
+    _limit(getParam<bool>("set_diffcoef_limit"))
 {
   if (_var.count() != 3)
     mooseError("The number of group drift array variables must be 3.");
@@ -53,6 +58,12 @@ GroupDriftAux::GroupDriftAux(const InputParameters & parameters)
 RealEigenVector
 GroupDriftAux::computeValue()
 {
+  Real diffcoef;
+  if (_limit && _diffcoef[_qp][_group] > 5.0)
+    diffcoef = 5.0;
+  else
+    diffcoef = _diffcoef[_qp][_group];
+
   Real denom = _weights.transpose() * (*_group_fluxes[_group])[_qp];
   RealEigenVector D = RealEigenVector::Zero(3);
   if (relativeFuzzyEqual(denom, 0.0) || denom < 0.0)
@@ -64,7 +75,7 @@ GroupDriftAux::computeValue()
   }
   D += (_tau_sn[_qp][_group] * _totxs[_qp][_group] - 1) * _ordinates.transpose() *
     _weights.cwiseProduct((*_group_fluxes[_group])[_qp]) -
-    _diffcoef[_qp][_group] * (*_grad_group_fluxes[_group])[_qp].transpose() * _weights;
+    diffcoef * (*_grad_group_fluxes[_group])[_qp].transpose() * _weights;
   for (unsigned int g = 0; g < _num_groups; ++g)
   {
     unsigned int scatter_idx = _num_groups * _num_groups + g * _num_groups + _group;
