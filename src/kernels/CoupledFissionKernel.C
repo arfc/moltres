@@ -75,15 +75,8 @@ CoupledFissionKernel::computeQpResidual()
 Real
 CoupledFissionKernel::computeQpJacobian()
 {
-  Real jac = 0;
-  for (unsigned int i = 0; i < _num_groups; ++i)
-  {
-    if (i == _group)
-    {
-      jac = -_nsf[_qp][i] * computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp);
-      break;
-    }
-  }
+  Real jac = -_nsf[_qp][_group] *
+    computeConcentrationDerivative((*_group_fluxes[_group]), _phi, _j, _qp);
 
   if (_account_delayed)
     jac *= (1. - _beta[_qp]) * _chi_p[_qp][_group];

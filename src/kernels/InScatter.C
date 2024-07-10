@@ -35,10 +35,15 @@ InScatter::InScatter(const InputParameters & parameters)
   }
   _group_fluxes.resize(n);
   _flux_ids.resize(n);
+  _idx.resize(n);
   for (unsigned int i = 0; i < _group_fluxes.size(); ++i)
   {
     _group_fluxes[i] = &coupledValue("group_fluxes", i);
     _flux_ids[i] = coupled("group_fluxes", i);
+    if (_sss2_input)
+      _idx[i] = i * _num_groups + _group;
+    else
+      _idx[i] = i + _group * _num_groups;
   }
 }
 
@@ -48,13 +53,10 @@ InScatter::computeQpResidual()
   Real r = 0;
   for (unsigned int i = 0; i < _num_groups; ++i)
   {
-    if (i == _group)
+    if (i == _group || _gtransfxs[_qp][_idx[i]] == 0.)
       continue;
-    if (_sss2_input)
-      r += -_test[_i][_qp] * _gtransfxs[_qp][i * _num_groups + _group] *
-           computeConcentration((*_group_fluxes[i]), _qp);
     else
-      r += -_test[_i][_qp] * _gtransfxs[_qp][i + _group * _num_groups] *
+      r += -_test[_i][_qp] * _gtransfxs[_qp][_idx[i]] *
            computeConcentration((*_group_fluxes[i]), _qp);
   }
 
@@ -75,12 +77,8 @@ InScatter::computeQpOffDiagJacobian(unsigned int jvar)
   {
     if (jvar == _flux_ids[i])
     {
-      if (_sss2_input)
-        jac += -_test[_i][_qp] * _gtransfxs[_qp][i * _num_groups + _group] *
-               computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp);
-      else
-        jac += -_test[_i][_qp] * _gtransfxs[_qp][i + _group * _num_groups] *
-               computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp);
+      jac += -_test[_i][_qp] * _gtransfxs[_qp][_idx[i]] *
+             computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp);
       break;
     }
   }
@@ -89,14 +87,10 @@ InScatter::computeQpOffDiagJacobian(unsigned int jvar)
   {
     for (unsigned int i = 0; i < _num_groups; ++i)
     {
-      if (i == _group)
+      if (i == _group || _gtransfxs[_qp][_idx[i]] == 0.)
         continue;
-      if (_sss2_input)
-        jac += -_test[_i][_qp] * _d_gtransfxs_d_temp[_qp][i * _num_groups + _group] * _phi[_j][_qp] *
-               computeConcentration((*_group_fluxes[i]), _qp);
-      else
-        jac += -_test[_i][_qp] * _d_gtransfxs_d_temp[_qp][i + _group * _num_groups] * _phi[_j][_qp] *
-               computeConcentration((*_group_fluxes[i]), _qp);
+      jac += -_test[_i][_qp] * _d_gtransfxs_d_temp[_qp][_idx[i]] * _phi[_j][_qp] *
+             computeConcentration((*_group_fluxes[i]), _qp);
     }
   }
 

@@ -27,12 +27,12 @@ protected:
   const MaterialProperty<std::vector<Real>> & _d_chi_p_d_temp;
   const MaterialProperty<Real> & _beta;
   const MaterialProperty<Real> & _d_beta_d_temp;
-  unsigned int _group;
-  unsigned int _num_groups;
-  unsigned int _temp_id;
+  const unsigned int _group;
+  const unsigned int _num_groups;
+  const unsigned int _temp_id;
   const VariableValue & _temp;
   std::vector<const VariableValue *> _group_fluxes;
   std::vector<unsigned int> _flux_ids;
-  bool _account_delayed;
-  Real _eigenvalue_scaling;
+  const bool _account_delayed;
+  const Real _eigenvalue_scaling;
 };

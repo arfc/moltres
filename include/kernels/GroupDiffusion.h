@@ -17,6 +17,7 @@ protected:
 
   const MaterialProperty<std::vector<Real>> & _diffcoef;
   const MaterialProperty<std::vector<Real>> & _d_diffcoef_d_temp;
-  unsigned int _group;
-  unsigned int _temp_id;
+  const unsigned int _group;
+  const unsigned int _temp_id;
+  const bool _limit;
 };
