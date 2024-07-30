@@ -88,9 +88,17 @@ SNScattering::computeQpResidual(RealEigenVector & residual)
     }
   }
 
+// Create variable to store flux moment values
+// e.g., If L = 3 (maximum), then flux_moments initialization is equivalent to:
+// std::vector<std::vector<std::vector<Real>>>
+//   flux_moments(_num_groups, std::vector<std::vector<Real>>
+//     { {0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0, 0.0, 0.0}, {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0} });
+  std::vector<std::vector<Real>> flux_moments_vec;
+  for (int l = 0; l < _L+1; ++l)
+    flux_moments_vec.push_back(std::vector<Real>((_L+1)*2-1, 0.0));
   std::vector<std::vector<std::vector<Real>>>
-    flux_moments(_num_groups, std::vector<std::vector<Real>>
-        { {0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0, 0.0, 0.0} });
+    flux_moments(_num_groups, flux_moments_vec);
+
   int harmonics_idx = start_idx;
   for (int l = start_idx; l < _L+1; ++l)
     for (int m = -l; m < l+1; ++m)

@@ -105,6 +105,9 @@ protected:
   // Discrete ordinate order
   unsigned int _N;
 
+  // Maximum scattering Legendre moment
+  unsigned int _L;
+
   const Real _sigma;
 
   const MooseEnum _h_type;
