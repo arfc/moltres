@@ -40,7 +40,7 @@
     order = CONSTANT
     block = 0
     outlet_boundaries = 'fuel_top'
-    constant_velocity_values = true
+    velocity_type = constant
     u_def = 0
     v_def = 18.085
     w_def = 0
