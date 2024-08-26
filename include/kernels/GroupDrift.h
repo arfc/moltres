@@ -17,5 +17,6 @@ protected:
   const ArrayVariableValue & _drift_var;
   const ArrayVariableGradient & _drift_grad;
   const bool _adaptive;
-  Point _center;
+  Point _bot_left;
+  Point _top_right;
 };

@@ -9,7 +9,10 @@ GroupDrift::validParams()
   params += ScalarTransportBase::validParams();
   params.addRequiredCoupledVar("group_drift_var", "The group drift array variable name.");
   params.addParam<bool>("adaptive", false, "Adaptive drift");
-  params.addParam<Point>("center", "Center of correction region for reference for adaptive drift");
+  params.addParam<Point>("bottom_left",
+      "The bottom-left point of the interior of the adaptive drift region");
+  params.addParam<Point>("top_right",
+      "The top-right point of the interior of the adaptive drift region");
   return params;
 }
 
@@ -22,10 +25,8 @@ GroupDrift::GroupDrift(const InputParameters & parameters)
 {
   if (_adaptive)
   {
-    if (isParamValid("center"))
-      _center = getParam<Point>("center");
-    else
-      paramError("center", "Need center point of correction region for adaptive drift.");
+    _bot_left = getParam<Point>("bottom_left");
+    _top_right = getParam<Point>("top_right");
   }
 }
 
@@ -38,23 +39,25 @@ GroupDrift::computeQpResidual()
                      _grad_test[_i][_qp](2);
   if (_adaptive)
   {
-    RealEigenVector drift = _drift_var[_qp];
-    Point location = _q_point[_qp] - _center;
-    int idx = std::abs(location(0)) > std::abs(location(1)) ? 0 : 1;
-    Real sign = location(idx) / std::abs(location(idx));
-    if (_drift_var[_qp](idx) * _drift_grad[_qp](idx,idx) * sign > 0)
-      drift(idx) = 0.;
-    return computeConcentration(_u, _qp) * array_grad_test.transpose() * drift;
+    Real tol = 1e-8;
+    Real z_coord = _q_point[_qp](2);
+    Real sign;
+    if (z_coord < _bot_left(2) - tol || z_coord > _top_right(2) + tol)
+    {
+      sign = z_coord < _bot_left(2) - tol ? -1.0 : 1.0;
+      if (_drift_var[_qp](2) * _drift_grad[_qp](2,2) * sign > 0)
+        return 0.0;
+    }
+    else
+    {
+      Point center = (_bot_left + _top_right) / 2.0;
+      Point location = _q_point[_qp] - center;
+      int idx = std::abs(location(0)) > std::abs(location(1)) ? 0 : 1;
+      sign = location(idx) / std::abs(location(idx));
+      if (_drift_var[_qp](idx) * _drift_grad[_qp](idx,idx) * sign > 0)
+        return 0.0;
+    }
   }
-
-//  if (_adaptive)
-//  {
-//    if ((_drift_var[_qp](0) > 0 && _drift_grad[_qp](0,0) < 0) ||
-//        (_drift_var[_qp](0) < 0 && _drift_grad[_qp](0,0) > 0))
-//      return computeConcentration(_u, _qp) * array_grad_test.transpose() * _drift_var[_qp];
-//    else
-//      return 0;
-//  }
   return computeConcentration(_u, _qp) * array_grad_test.transpose() * _drift_var[_qp];
 }
 
@@ -67,23 +70,25 @@ GroupDrift::computeQpJacobian()
                      _grad_test[_i][_qp](2);
   if (_adaptive)
   {
-    RealEigenVector drift = _drift_var[_qp];
-    Point location = _q_point[_qp] - _center;
-    int idx = std::abs(location(0)) > std::abs(location(1)) ? 0 : 1;
-    Real sign = location(idx) / std::abs(location(idx));
-    if (_drift_var[_qp](idx) * _drift_grad[_qp](idx,idx) * sign > 0)
-      drift(idx) = 0.;
-    return computeConcentrationDerivative(_u, _phi, _j, _qp) * array_grad_test.transpose() * drift;
+    Real tol = 1e-8;
+    Real z_coord = _q_point[_qp](2);
+    Real sign;
+    if (z_coord < _bot_left(2) - tol || z_coord > _top_right(2) + tol)
+    {
+      sign = z_coord < _bot_left(2) - tol ? -1.0 : 1.0;
+      if (_drift_var[_qp](2) * _drift_grad[_qp](2,2) * sign > 0)
+        return 0.0;
+    }
+    else
+    {
+      Point center = (_bot_left + _top_right) / 2.0;
+      Point location = _q_point[_qp] - center;
+      int idx = std::abs(location(0)) > std::abs(location(1)) ? 0 : 1;
+      sign = location(idx) / std::abs(location(idx));
+      if (_drift_var[_qp](idx) * _drift_grad[_qp](idx,idx) * sign > 0)
+        return 0.0;
+    }
   }
-//  if (_adaptive)
-//  {
-//    if ((_drift_var[_qp](0) > 0 && _drift_grad[_qp](0,0) < 0) || 
-//        (_drift_var[_qp](0) < 0 && _drift_grad[_qp](0,0) > 0))
-//      return computeConcentrationDerivative(_u, _phi, _j, _qp) * array_grad_test.transpose() *
-//        _drift_var[_qp];
-//    else
-//      return 0;
-//  }
   return computeConcentrationDerivative(_u, _phi, _j, _qp) * array_grad_test.transpose() *
     _drift_var[_qp];
 }
