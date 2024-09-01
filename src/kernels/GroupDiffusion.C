@@ -13,8 +13,9 @@ GroupDiffusion::validParams()
                        "The temperature used to interpolate the diffusion coefficient");
   params.addParam<bool>("set_diffcoef_limit",
       false,
-      "Replaces all diffusion coefficient values above 5.0 to 5.0. "
+      "Replaces all diffusion coefficient values above the specified limit to the limit value. "
       "Primarily helps with stabilizing drift coefficients in void regions.");
+  params.addParam<Real>("diffcoef_limit", 5.0, "Maximum diffusion coefficient value limit.");
   return params;
 }
 
@@ -25,7 +26,8 @@ GroupDiffusion::GroupDiffusion(const InputParameters & parameters)
     _d_diffcoef_d_temp(getMaterialProperty<std::vector<Real>>("d_diffcoef_d_temp")),
     _group(getParam<unsigned int>("group_number") - 1),
     _temp_id(coupled("temperature")),
-    _limit(getParam<bool>("set_diffcoef_limit"))
+    _set_limit(getParam<bool>("set_diffcoef_limit")),
+    _limit(getParam<Real>("diffcoef_limit"))
 {
 }
 
@@ -33,8 +35,8 @@ Real
 GroupDiffusion::computeQpResidual()
 {
   Real diffcoef;
-  if (_limit && _diffcoef[_qp][_group] > 5.0)
-    diffcoef = 5.0;
+  if (_set_limit && _diffcoef[_qp][_group] > _limit)
+    diffcoef = _limit;
   else
     diffcoef = _diffcoef[_qp][_group];
   return diffcoef * _grad_test[_i][_qp] *
@@ -45,8 +47,8 @@ Real
 GroupDiffusion::computeQpJacobian()
 {
   Real diffcoef;
-  if (_limit && _diffcoef[_qp][_group] > 5.0)
-    diffcoef = 5.0;
+  if (_set_limit && _diffcoef[_qp][_group] > _limit)
+    diffcoef = _limit;
   else
     diffcoef = _diffcoef[_qp][_group];
   return diffcoef * _grad_test[_i][_qp] *
@@ -56,7 +58,7 @@ GroupDiffusion::computeQpJacobian()
 Real
 GroupDiffusion::computeQpOffDiagJacobian(unsigned int jvar)
 {
-  if (_limit && _diffcoef[_qp][_group] > 5.0)
+  if (_set_limit && _diffcoef[_qp][_group] > _limit)
     return 0;
   if (jvar == _temp_id)
     return _d_diffcoef_d_temp[_qp][_group] * _phi[_j][_qp] * _grad_test[_i][_qp] *
