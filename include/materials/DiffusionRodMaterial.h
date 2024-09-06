@@ -1,7 +1,6 @@
 #pragma once
 
 #include "MoltresJsonMaterial.h"
-#include "NeighborCoupleable.h"
 
 class DiffusionRodMaterial : public MoltresJsonMaterial
 {
@@ -16,12 +15,14 @@ protected:
   virtual void splineComputeQpProperties() override;
   virtual void monotoneCubicComputeQpProperties() override;
   virtual void linearComputeQpProperties() override;
-  std::vector<Real> fluxVolumeFraction();
+  Real volumeFraction();
 
   // Non-rod material key associated with the group constants to be loaded
   std::string _nonrod_material_key;
 
   // Rod height function
   const Function & _rod_height;
-  std::vector<const VariableValue *> _group_fluxes;
+
+  // Rod cusping correction factor
+  const Real _cusp_correction;
 };

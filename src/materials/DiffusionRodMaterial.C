@@ -14,16 +14,16 @@ DiffusionRodMaterial::validParams()
                                        "The material key for the non-rod material.");
   params.addRequiredParam<FunctionName>("rod_height_func",
       "Name of function that provides the rod interface height");
-  params.addRequiredCoupledVar("group_fluxes", "All the variables that hold the group fluxes. "
-                                               "These MUST be listed by decreasing "
-                                               "energy/increasing group number.");
+  params.addParam<Real>("cusp_correction", 1,
+      "Rod cusping correction factor. The power to which the rod volume fraction is raised to.");
   return params;
 }
 
 DiffusionRodMaterial::DiffusionRodMaterial(const InputParameters & parameters)
   : MoltresJsonMaterial(parameters),
     _nonrod_material_key(getParam<std::string>("nonrod_material_key")),
-    _rod_height(getFunction("rod_height_func"))
+    _rod_height(getFunction("rod_height_func")),
+    _cusp_correction(getParam<Real>("cusp_correction"))
 {
   std::string base_file = getParam<std::string>("base_file");
 
@@ -45,13 +45,6 @@ DiffusionRodMaterial::DiffusionRodMaterial(const InputParameters & parameters)
   }
 
   Construct(xs_root);
-
-  addMooseVariableDependency(getCoupledMooseVars());
-  _group_fluxes.resize(_num_groups);
-  for (unsigned int i = 0; i < _group_fluxes.size(); ++i)
-  {
-    _group_fluxes[i] = &coupledValue("group_fluxes", i);
-  }
 }
 
 void
@@ -183,28 +176,28 @@ void
 DiffusionRodMaterial::dummyComputeQpProperties()
 {
   std::string nr = "nonrod_";
-  std::vector<Real> flux_vol_frac = fluxVolumeFraction();
+  Real vol_frac = volumeFraction();
   for (decltype(_num_groups) i = 0; i < _num_groups; ++i)
   {
     _remxs[_qp][i] =
-      _xsec_map["REMXS"][i][0] * flux_vol_frac[i] + _xsec_map[nr + "REMXS"][i][0] * (1 - flux_vol_frac[i]);
+      _xsec_map["REMXS"][i][0] * vol_frac + _xsec_map[nr + "REMXS"][i][0] * (1 - vol_frac);
     _fissxs[_qp][i] =
-      _xsec_map["FISSXS"][i][0] * flux_vol_frac[i] + _xsec_map[nr + "FISSXS"][i][0] * (1 - flux_vol_frac[i]);
+      _xsec_map["FISSXS"][i][0] * vol_frac + _xsec_map[nr + "FISSXS"][i][0] * (1 - vol_frac);
     _nsf[_qp][i] =
-      _xsec_map["NSF"][i][0] * flux_vol_frac[i] + _xsec_map[nr + "NSF"][i][0] * (1 - flux_vol_frac[i]);
+      _xsec_map["NSF"][i][0] * vol_frac + _xsec_map[nr + "NSF"][i][0] * (1 - vol_frac);
     _fisse[_qp][i] =
-      (_xsec_map["FISSE"][i][0] * flux_vol_frac[i] + _xsec_map[nr + "FISSE"][i][0] * (1 - flux_vol_frac[i])) *
+      (_xsec_map["FISSE"][i][0] * vol_frac + _xsec_map[nr + "FISSE"][i][0] * (1 - vol_frac)) *
       1e6 * 1.6e-19; // convert from MeV to Joules
     _diffcoef[_qp][i] =
-      _xsec_map["DIFFCOEF"][i][0] * flux_vol_frac[i] + _xsec_map[nr + "DIFFCOEF"][i][0] * (1 - flux_vol_frac[i]);
+      _xsec_map["DIFFCOEF"][i][0] * vol_frac + _xsec_map[nr + "DIFFCOEF"][i][0] * (1 - vol_frac);
     _recipvel[_qp][i] =
-      _xsec_map["RECIPVEL"][i][0] * flux_vol_frac[i] + _xsec_map[nr + "RECIPVEL"][i][0] * (1 - flux_vol_frac[i]);
+      _xsec_map["RECIPVEL"][i][0] * vol_frac + _xsec_map[nr + "RECIPVEL"][i][0] * (1 - vol_frac);
     _chi_t[_qp][i] =
-      _xsec_map["CHI_T"][i][0] * flux_vol_frac[i] + _xsec_map[nr + "CHI_T"][i][0] * (1 - flux_vol_frac[i]);
+      _xsec_map["CHI_T"][i][0] * vol_frac + _xsec_map[nr + "CHI_T"][i][0] * (1 - vol_frac);
     _chi_p[_qp][i] =
-      _xsec_map["CHI_P"][i][0] * flux_vol_frac[i] + _xsec_map[nr + "CHI_P"][i][0] * (1 - flux_vol_frac[i]);
+      _xsec_map["CHI_P"][i][0] * vol_frac + _xsec_map[nr + "CHI_P"][i][0] * (1 - vol_frac);
     _chi_d[_qp][i] =
-      _xsec_map["CHI_D"][i][0] * flux_vol_frac[i] + _xsec_map[nr + "CHI_D"][i][0] * (1 - flux_vol_frac[i]);
+      _xsec_map["CHI_D"][i][0] * vol_frac + _xsec_map[nr + "CHI_D"][i][0] * (1 - vol_frac);
     _d_remxs_d_temp[_qp][i] = 0;
     _d_fissxs_d_temp[_qp][i] = 0;
     _d_nsf_d_temp[_qp][i] = 0;
@@ -218,7 +211,7 @@ DiffusionRodMaterial::dummyComputeQpProperties()
   for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
   {
     _gtransfxs[_qp][i] =
-      _xsec_map["GTRANSFXS"][i][0] * flux_vol_frac[i/_num_groups] + _xsec_map[nr + "GTRANSFXS"][i][0] * (1 - flux_vol_frac[i/_num_groups]);
+      _xsec_map["GTRANSFXS"][i][0] * vol_frac + _xsec_map[nr + "GTRANSFXS"][i][0] * (1 - vol_frac);
     _d_gtransfxs_d_temp[_qp][i] = 0;
   }
   _beta[_qp] = 0;
@@ -226,11 +219,11 @@ DiffusionRodMaterial::dummyComputeQpProperties()
   for (decltype(_num_groups) i = 0; i < _num_precursor_groups; ++i)
   {
     _beta_eff[_qp][i] =
-      _xsec_map["BETA_EFF"][i][0]; // * flux_vol_frac[i] + _xsec_map[nr + "BETA_EFF"][i][0] * (1 - flux_vol_frac[i]);
+      _xsec_map["BETA_EFF"][i][0] * vol_frac + _xsec_map[nr + "BETA_EFF"][i][0] * (1 - vol_frac);
     _d_beta_eff_d_temp[_qp][i] = 0;
     _beta[_qp] += _beta_eff[_qp][i];
-    _decay_constant[_qp][i] = _xsec_map["DECAY_CONSTANT"][i][0]; // * flux_vol_frac[i] +
-      // _xsec_map[nr + "DECAY_CONSTANT"][i][0] * (1 - flux_vol_frac[i]);
+    _decay_constant[_qp][i] = _xsec_map["DECAY_CONSTANT"][i][0] * vol_frac +
+      _xsec_map[nr + "DECAY_CONSTANT"][i][0] * (1 - vol_frac);
     _d_decay_constant_d_temp[_qp][i] = 0;
   }
 }
@@ -239,106 +232,106 @@ void
 DiffusionRodMaterial::splineComputeQpProperties()
 {
   std::string nr = "nonrod_";
-  std::vector<Real> flux_vol_frac = fluxVolumeFraction();
+  Real vol_frac = volumeFraction();
   for (decltype(_num_groups) i = 0; i < _num_groups; ++i)
   {
     _remxs[_qp][i] =
-      _xsec_spline_interpolators["REMXS"][i].sample(_temperature[_qp]) * flux_vol_frac[i] +
-      _xsec_spline_interpolators[nr + "REMXS"][i].sample(_temperature[_qp]) * (1 - flux_vol_frac[i]);
+      _xsec_spline_interpolators["REMXS"][i].sample(_temperature[_qp]) * vol_frac +
+      _xsec_spline_interpolators[nr + "REMXS"][i].sample(_temperature[_qp]) * (1 - vol_frac);
     _fissxs[_qp][i] =
-      _xsec_spline_interpolators["FISSXS"][i].sample(_temperature[_qp]) * flux_vol_frac[i] +
-      _xsec_spline_interpolators[nr + "FISSXS"][i].sample(_temperature[_qp]) * (1 - flux_vol_frac[i]);
+      _xsec_spline_interpolators["FISSXS"][i].sample(_temperature[_qp]) * vol_frac +
+      _xsec_spline_interpolators[nr + "FISSXS"][i].sample(_temperature[_qp]) * (1 - vol_frac);
     _nsf[_qp][i] =
-      _xsec_spline_interpolators["NSF"][i].sample(_temperature[_qp]) * flux_vol_frac[i] +
-      _xsec_spline_interpolators[nr + "NSF"][i].sample(_temperature[_qp]) * (1 - flux_vol_frac[i]);
+      _xsec_spline_interpolators["NSF"][i].sample(_temperature[_qp]) * vol_frac +
+      _xsec_spline_interpolators[nr + "NSF"][i].sample(_temperature[_qp]) * (1 - vol_frac);
     _fisse[_qp][i] =
-      (_xsec_spline_interpolators["FISSE"][i].sample(_temperature[_qp]) * flux_vol_frac[i] +
-      _xsec_spline_interpolators[nr + "FISSE"][i].sample(_temperature[_qp]) * (1 - flux_vol_frac[i]))
+      (_xsec_spline_interpolators["FISSE"][i].sample(_temperature[_qp]) * vol_frac +
+      _xsec_spline_interpolators[nr + "FISSE"][i].sample(_temperature[_qp]) * (1 - vol_frac))
       * 1e6 * 1.6e-19; // convert from MeV to Joules
     _diffcoef[_qp][i] =
-      _xsec_spline_interpolators["DIFFCOEF"][i].sample(_temperature[_qp]) * flux_vol_frac[i] +
-      _xsec_spline_interpolators[nr + "DIFFCOEF"][i].sample(_temperature[_qp]) * (1 - flux_vol_frac[i]);
+      _xsec_spline_interpolators["DIFFCOEF"][i].sample(_temperature[_qp]) * vol_frac +
+      _xsec_spline_interpolators[nr + "DIFFCOEF"][i].sample(_temperature[_qp]) * (1 - vol_frac);
     _recipvel[_qp][i] =
-      _xsec_spline_interpolators["RECIPVEL"][i].sample(_temperature[_qp]) * flux_vol_frac[i] +
-      _xsec_spline_interpolators[nr + "RECIPVEL"][i].sample(_temperature[_qp]) * (1 - flux_vol_frac[i]);
+      _xsec_spline_interpolators["RECIPVEL"][i].sample(_temperature[_qp]) * vol_frac +
+      _xsec_spline_interpolators[nr + "RECIPVEL"][i].sample(_temperature[_qp]) * (1 - vol_frac);
     _chi_t[_qp][i] =
-      _xsec_spline_interpolators["CHI_T"][i].sample(_temperature[_qp]) * flux_vol_frac[i] +
-      _xsec_spline_interpolators[nr + "CHI_T"][i].sample(_temperature[_qp]) * (1 - flux_vol_frac[i]);
+      _xsec_spline_interpolators["CHI_T"][i].sample(_temperature[_qp]) * vol_frac +
+      _xsec_spline_interpolators[nr + "CHI_T"][i].sample(_temperature[_qp]) * (1 - vol_frac);
     _chi_p[_qp][i] =
-      _xsec_spline_interpolators["CHI_P"][i].sample(_temperature[_qp]) * flux_vol_frac[i] +
-      _xsec_spline_interpolators[nr + "CHI_P"][i].sample(_temperature[_qp]) * (1 - flux_vol_frac[i]);
+      _xsec_spline_interpolators["CHI_P"][i].sample(_temperature[_qp]) * vol_frac +
+      _xsec_spline_interpolators[nr + "CHI_P"][i].sample(_temperature[_qp]) * (1 - vol_frac);
     _chi_d[_qp][i] =
-      _xsec_spline_interpolators["CHI_D"][i].sample(_temperature[_qp]) * flux_vol_frac[i] +
-      _xsec_spline_interpolators[nr + "CHI_D"][i].sample(_temperature[_qp]) * (1 - flux_vol_frac[i]);
+      _xsec_spline_interpolators["CHI_D"][i].sample(_temperature[_qp]) * vol_frac +
+      _xsec_spline_interpolators[nr + "CHI_D"][i].sample(_temperature[_qp]) * (1 - vol_frac);
     _d_remxs_d_temp[_qp][i] =
-      _xsec_spline_interpolators["REMXS"][i].sampleDerivative(_temperature[_qp]) * flux_vol_frac[i] +
+      _xsec_spline_interpolators["REMXS"][i].sampleDerivative(_temperature[_qp]) * vol_frac +
       _xsec_spline_interpolators[nr + "REMXS"][i].sampleDerivative(_temperature[_qp]) *
-      (1 - flux_vol_frac[i]);
+      (1 - vol_frac);
     _d_fissxs_d_temp[_qp][i] =
-      _xsec_spline_interpolators["FISSXS"][i].sampleDerivative(_temperature[_qp]) * flux_vol_frac[i] +
+      _xsec_spline_interpolators["FISSXS"][i].sampleDerivative(_temperature[_qp]) * vol_frac +
       _xsec_spline_interpolators[nr + "FISSXS"][i].sampleDerivative(_temperature[_qp]) *
-      (1 - flux_vol_frac[i]);
+      (1 - vol_frac);
     _d_nsf_d_temp[_qp][i] =
-        _xsec_spline_interpolators["NSF"][i].sampleDerivative(_temperature[_qp]) * flux_vol_frac[i] +
+        _xsec_spline_interpolators["NSF"][i].sampleDerivative(_temperature[_qp]) * vol_frac +
       _xsec_spline_interpolators[nr + "NSF"][i].sampleDerivative(_temperature[_qp]) *
-      (1 - flux_vol_frac[i]);
+      (1 - vol_frac);
     _d_fisse_d_temp[_qp][i] =
-      (_xsec_spline_interpolators["FISSE"][i].sampleDerivative(_temperature[_qp]) * flux_vol_frac[i] +
+      (_xsec_spline_interpolators["FISSE"][i].sampleDerivative(_temperature[_qp]) * vol_frac +
       _xsec_spline_interpolators[nr + "FISSE"][i].sampleDerivative(_temperature[_qp]) *
-      (1 - flux_vol_frac[i])) * 1e6 * 1.6e-19; // convert from MeV to Joules
+      (1 - vol_frac)) * 1e6 * 1.6e-19; // convert from MeV to Joules
     _d_diffcoef_d_temp[_qp][i] =
-      _xsec_spline_interpolators["DIFFCOEF"][i].sampleDerivative(_temperature[_qp]) * flux_vol_frac[i] +
+      _xsec_spline_interpolators["DIFFCOEF"][i].sampleDerivative(_temperature[_qp]) * vol_frac +
       _xsec_spline_interpolators[nr + "DIFFCOEF"][i].sampleDerivative(_temperature[_qp]) *
-      (1 - flux_vol_frac[i]);
+      (1 - vol_frac);
     _d_recipvel_d_temp[_qp][i] =
-      _xsec_spline_interpolators["RECIPVEL"][i].sampleDerivative(_temperature[_qp]) * flux_vol_frac[i] +
+      _xsec_spline_interpolators["RECIPVEL"][i].sampleDerivative(_temperature[_qp]) * vol_frac +
       _xsec_spline_interpolators[nr + "RECIPVEL"][i].sampleDerivative(_temperature[_qp]) *
-      (1 - flux_vol_frac[i]);
+      (1 - vol_frac);
     _d_chi_t_d_temp[_qp][i] =
-      _xsec_spline_interpolators["CHI_T"][i].sampleDerivative(_temperature[_qp]) * flux_vol_frac[i] +
+      _xsec_spline_interpolators["CHI_T"][i].sampleDerivative(_temperature[_qp]) * vol_frac +
       _xsec_spline_interpolators[nr + "CHI_T"][i].sampleDerivative(_temperature[_qp]) *
-      (1 - flux_vol_frac[i]);
+      (1 - vol_frac);
     _d_chi_p_d_temp[_qp][i] =
-      _xsec_spline_interpolators["CHI_P"][i].sampleDerivative(_temperature[_qp]) * flux_vol_frac[i] +
+      _xsec_spline_interpolators["CHI_P"][i].sampleDerivative(_temperature[_qp]) * vol_frac +
       _xsec_spline_interpolators[nr + "CHI_P"][i].sampleDerivative(_temperature[_qp]) *
-      (1 - flux_vol_frac[i]);
+      (1 - vol_frac);
     _d_chi_d_d_temp[_qp][i] =
-      _xsec_spline_interpolators["CHI_D"][i].sampleDerivative(_temperature[_qp]) * flux_vol_frac[i] +
+      _xsec_spline_interpolators["CHI_D"][i].sampleDerivative(_temperature[_qp]) * vol_frac +
       _xsec_spline_interpolators[nr + "CHI_D"][i].sampleDerivative(_temperature[_qp]) *
-      (1 - flux_vol_frac[i]);
+      (1 - vol_frac);
   }
   for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
   {
     _gtransfxs[_qp][i] =
-      _xsec_spline_interpolators["GTRANSFXS"][i].sample(_temperature[_qp]) * flux_vol_frac[i/_num_groups] +
+      _xsec_spline_interpolators["GTRANSFXS"][i].sample(_temperature[_qp]) * vol_frac +
       _xsec_spline_interpolators[nr + "GTRANSFXS"][i].sample(_temperature[_qp]) *
-      (1 - flux_vol_frac[i/_num_groups]);
+      (1 - vol_frac);
     _d_gtransfxs_d_temp[_qp][i] =
-      _xsec_spline_interpolators["GTRANSFXS"][i].sampleDerivative(_temperature[_qp]) * flux_vol_frac[i/_num_groups] +
+      _xsec_spline_interpolators["GTRANSFXS"][i].sampleDerivative(_temperature[_qp]) * vol_frac +
       _xsec_spline_interpolators[nr + "GTRANSFXS"][i].sampleDerivative(_temperature[_qp]) *
-      (1 - flux_vol_frac[i/_num_groups]);
+      (1 - vol_frac);
   }
   _beta[_qp] = 0;
   _d_beta_d_temp[_qp] = 0;
   for (decltype(_num_groups) i = 0; i < _num_precursor_groups; ++i)
   {
     _beta_eff[_qp][i] =
-      _xsec_spline_interpolators["BETA_EFF"][i].sample(_temperature[_qp]);// * flux_vol_frac[i] +
-      //_xsec_spline_interpolators[nr + "BETA_EFF"][i].sample(_temperature[_qp]) * (1 - flux_vol_frac[i]);
+      _xsec_spline_interpolators["BETA_EFF"][i].sample(_temperature[_qp]) * vol_frac +
+      _xsec_spline_interpolators[nr + "BETA_EFF"][i].sample(_temperature[_qp]) * (1 - vol_frac);
     _d_beta_eff_d_temp[_qp][i] =
-      _xsec_spline_interpolators["BETA_EFF"][i].sampleDerivative(_temperature[_qp]);// * flux_vol_frac[i] +
-      //_xsec_spline_interpolators[nr + "BETA_EFF"][i].sampleDerivative(_temperature[_qp]) *
-      //(1 - flux_vol_frac[i]);
+      _xsec_spline_interpolators["BETA_EFF"][i].sampleDerivative(_temperature[_qp]) * vol_frac +
+      _xsec_spline_interpolators[nr + "BETA_EFF"][i].sampleDerivative(_temperature[_qp]) *
+      (1 - vol_frac);
     _beta[_qp] += _beta_eff[_qp][i];
     _d_beta_d_temp[_qp] += _d_beta_eff_d_temp[_qp][i];
     _decay_constant[_qp][i] =
-      _xsec_spline_interpolators["DECAY_CONSTANT"][i].sample(_temperature[_qp]);// * flux_vol_frac[i] +
-      //_xsec_spline_interpolators[nr + "DECAY_CONSTANT"][i].sample(_temperature[_qp]) *
-      //(1 - flux_vol_frac[i]);
+      _xsec_spline_interpolators["DECAY_CONSTANT"][i].sample(_temperature[_qp]) * vol_frac +
+      _xsec_spline_interpolators[nr + "DECAY_CONSTANT"][i].sample(_temperature[_qp]) *
+      (1 - vol_frac);
     _d_decay_constant_d_temp[_qp][i] =
-      _xsec_spline_interpolators["DECAY_CONSTANT"][i].sampleDerivative(_temperature[_qp]);// * flux_vol_frac[i]
-      //+ _xsec_spline_interpolators[nr + "DECAY_CONSTANT"][i].sampleDerivative(_temperature[_qp]) *
-      //(1 - flux_vol_frac[i]);
+      _xsec_spline_interpolators["DECAY_CONSTANT"][i].sampleDerivative(_temperature[_qp]) * vol_frac
+      + _xsec_spline_interpolators[nr + "DECAY_CONSTANT"][i].sampleDerivative(_temperature[_qp]) *
+      (1 - vol_frac);
   }
 }
 
@@ -457,8 +450,8 @@ DiffusionRodMaterial::linearComputeQpProperties()
   }
 }
 
-std::vector<Real>
-DiffusionRodMaterial::fluxVolumeFraction()
+Real
+DiffusionRodMaterial::volumeFraction()
 {
   const unsigned int num_nodes = _current_elem->n_nodes();
   const Node * const * elem_nodes = _current_elem->get_nodes();
@@ -473,27 +466,10 @@ DiffusionRodMaterial::fluxVolumeFraction()
       elem_z_min = (*elem_nodes[i])(2);
   }
   if (rod_height < elem_z_min)
-    return std::vector<Real>(_num_groups, 1.0);
+    return 1.0;
   else if (rod_height > elem_z_max)
-    return std::vector<Real>(_num_groups, 0.0);
-  Real vol_frac = (elem_z_max - rod_height) / (elem_z_max - elem_z_min);
-  std::vector<Real> flux_vol_frac(_num_groups);
-  for (unsigned g = 0; g < _num_groups; g++)
-  {
-    std::vector<Real> flux(2, 0.0);
-    for (unsigned i = 0; i < _qrule->n_points(); i++)
-    {
-      if (relativeFuzzyEqual(_q_point[i](2), elem_z_max))
-        flux[0] += (*_group_fluxes[g])[i];
-      else if (relativeFuzzyEqual(_q_point[i](2), elem_z_min))
-        flux[1] += (*_group_fluxes[g])[i];
-    }
-    if (flux[0] <= 0.0 || flux[1] <= 0.0)
-    {
-      return std::vector<Real>(_num_groups, vol_frac);
-    }
-    flux_vol_frac[g] = //std::pow(vol_frac, 1.5);
-//      vol_frac * flux[0] / (vol_frac * flux[0] + (1 - vol_frac) * flux[1]);
-  }
-  return flux_vol_frac;
+    return 0.0;
+  Real corrected_vol_frac =
+    std::pow((elem_z_max - rod_height) / (elem_z_max - elem_z_min), _cusp_correction);
+  return corrected_vol_frac;
 }
