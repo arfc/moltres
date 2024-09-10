@@ -20,7 +20,8 @@ protected:
   const unsigned int _N;
   const unsigned int _group;
   const unsigned int _num_groups;
-  const bool _limit;
+  const bool _set_limit;
+  const Real _limit;
   std::vector<const ArrayVariableValue *> _group_fluxes;
   std::vector<const ArrayVariableGradient *> _grad_group_fluxes;
   RealEigenMatrix _ordinates;

@@ -19,8 +19,9 @@ GroupDriftAux::validParams()
       "energy/increasing group number.");
   params.addParam<bool>("set_diffcoef_limit",
       false,
-      "Replaces all diffusion coefficient values above 5.0 to 5.0. "
+      "Replaces all diffusion coefficient values above the specified limit to the limit value. "
       "Primarily helps with stabilizing drift coefficients in void regions.");
+  params.addParam<Real>("diffcoef_limit", 5.0, "Maximum diffusion coefficient value limit.");
   return params;
 }
 
@@ -34,7 +35,8 @@ GroupDriftAux::GroupDriftAux(const InputParameters & parameters)
     _N(getParam<unsigned int>("N")),
     _group(getParam<unsigned int>("group_number") - 1),
     _num_groups(getParam<unsigned int>("num_groups")),
-    _limit(getParam<bool>("set_diffcoef_limit"))
+    _set_limit(getParam<bool>("set_diffcoef_limit")),
+    _limit(getParam<Real>("diffcoef_limit"))
 {
   if (_var.count() != 3)
     mooseError("The number of group drift array variables must be 3.");
@@ -59,8 +61,8 @@ RealEigenVector
 GroupDriftAux::computeValue()
 {
   Real diffcoef;
-  if (_limit && _diffcoef[_qp][_group] > 5.0)
-    diffcoef = 5.0;
+  if (_set_limit && _diffcoef[_qp][_group] > _limit)
+    diffcoef = _limit;
   else
     diffcoef = _diffcoef[_qp][_group];
 
