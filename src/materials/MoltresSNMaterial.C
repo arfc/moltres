@@ -38,6 +38,8 @@ MoltresSNMaterial::validParams()
   params.addParam<int>("L", 2, "Maximum scattering moment");
   params.addParam<Real>("void_constant", 0.,
       "The limit under which stabilization is applied for near-void and void regions");
+  params.addParam<Real>("stabilization_constant", 1.,
+      "Maximum stabilization multiplier.");
   MooseEnum h_type("max min", "max");
   params.addParam<MooseEnum>("h_type", h_type,
       "Whether to use the maximum or minimum vertex separation in calculating the stabilization "
@@ -90,6 +92,7 @@ MoltresSNMaterial::MoltresSNMaterial(const InputParameters & parameters)
     _N(getParam<unsigned int>("N")),
     _L(getParam<int>("L")),
     _sigma(getParam<Real>("void_constant")),
+    _c(getParam<Real>("stabilization_constant")),
     _h_type(getParam<MooseEnum>("h_type")),
     _tau_sn(declareProperty<std::vector<Real>>("tau_sn"))
 {
@@ -565,8 +568,8 @@ MoltresSNMaterial::computeQpProperties()
     h = _current_elem->hmin();
   for (unsigned int i = 0; i < _num_groups; ++i)
   {
-    if (h * _totxs[_qp][i] > _sigma)
-      _tau_sn[_qp][i] = 1. / _totxs[_qp][i];
+    if (_c * h * _totxs[_qp][i] > _sigma)
+      _tau_sn[_qp][i] = 1. / (_c * _totxs[_qp][i]);
     else
       _tau_sn[_qp][i] = h / _sigma;
   } 
