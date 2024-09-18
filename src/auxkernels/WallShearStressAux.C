@@ -40,5 +40,5 @@ WallShearStressAux::computeValue()
   // Parallel component of prior velocity gradient
   grad_vel_wall -= (_normals[_qp] * grad_vel_wall) * _normals[_qp];
 
-  return raw_value(_mu[_qp]) * std::norm(grad_vel_wall);
+  return raw_value(_mu[_qp]) * grad_vel_wall.norm();
 }
