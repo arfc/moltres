@@ -13,6 +13,7 @@ GroupDrift::validParams()
       "The bottom-left point of the interior of the adaptive drift region");
   params.addParam<Point>("top_right",
       "The top-right point of the interior of the adaptive drift region");
+  params.addParam<bool>("use_jacobian", true, "Whether to compute the Jacobian for preconditioning");
   return params;
 }
 
@@ -21,7 +22,8 @@ GroupDrift::GroupDrift(const InputParameters & parameters)
     ScalarTransportBase(parameters),
     _drift_var(coupledArrayValue("group_drift_var")),
     _drift_grad(coupledArrayGradient("group_drift_var")),
-    _adaptive(getParam<bool>("adaptive"))
+    _adaptive(getParam<bool>("adaptive")),
+    _use_jacobian(getParam<bool>("use_jacobian"))
 {
   if (_adaptive)
   {
@@ -64,6 +66,8 @@ GroupDrift::computeQpResidual()
 Real
 GroupDrift::computeQpJacobian()
 {
+  if (!(_use_jacobian))
+    return 0;
   RealEigenVector array_grad_test(3);
   array_grad_test << _grad_test[_i][_qp](0),
                      _grad_test[_i][_qp](1),

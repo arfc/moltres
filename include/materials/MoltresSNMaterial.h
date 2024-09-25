@@ -108,7 +108,11 @@ protected:
   // Maximum scattering Legendre moment
   unsigned int _L;
 
+  // Void constant for stabilization scheme in voids
   const Real _sigma;
+
+  // Stabilization constant for stabilization scheme in voids
+  const Real _c;
 
   const MooseEnum _h_type;
 

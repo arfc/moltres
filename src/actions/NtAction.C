@@ -78,8 +78,9 @@ NtAction::validParams()
                         "exactly critical or to simulate reactivity insertions/withdrawals.");
   params.addParam<bool>("set_diffcoef_limit",
       false,
-      "Replaces all diffusion coefficient values above 5.0 to 5.0. "
+      "Replaces all diffusion coefficient values above the specified limit to the limit value. "
       "Primarily helps with stabilizing drift coefficients in void regions.");
+  params.addParam<Real>("diffcoef_limit", 5.0, "Maximum diffusion coefficient value limit.");
   return params;
 }
 
@@ -298,6 +299,7 @@ NtAction::addNtKernel(const unsigned & op,
   } else if (kernel_type == "GroupDiffusion")
   {
     params.set<bool>("set_diffcoef_limit") = getParam<bool>("set_diffcoef_limit");
+    params.set<Real>("diffcoef_limit") = getParam<Real>("diffcoef_limit");
   }
   std::string kernel_name = kernel_type + "_" + var_name;
   _problem->addKernel(kernel_type, kernel_name, params);

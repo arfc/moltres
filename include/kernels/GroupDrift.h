@@ -17,6 +17,7 @@ protected:
   const ArrayVariableValue & _drift_var;
   const ArrayVariableGradient & _drift_grad;
   const bool _adaptive;
+  const bool _use_jacobian;
   Point _bot_left;
   Point _top_right;
 };
