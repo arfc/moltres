@@ -1,15 +1,15 @@
-#include "DiffusionRodMaterial.h"
+#include "SNRodMaterial.h"
 #include "Function.h"
 #include "MooseUtils.h"
 
 using MooseUtils::relativeFuzzyEqual;
 
-registerMooseObject("MoltresApp", DiffusionRodMaterial);
+registerMooseObject("MoltresApp", SNRodMaterial);
 
 InputParameters
-DiffusionRodMaterial::validParams()
+SNRodMaterial::validParams()
 {
-  InputParameters params = MoltresJsonMaterial::validParams();
+  InputParameters params = MoltresSNMaterial::validParams();
   params.addRequiredParam<std::string>("nonrod_material_key",
                                        "The material key for the non-rod material.");
   params.addRequiredParam<FunctionName>("rod_height_func",
@@ -19,8 +19,8 @@ DiffusionRodMaterial::validParams()
   return params;
 }
 
-DiffusionRodMaterial::DiffusionRodMaterial(const InputParameters & parameters)
-  : MoltresJsonMaterial(parameters),
+SNRodMaterial::SNRodMaterial(const InputParameters & parameters)
+  : MoltresSNMaterial(parameters),
     _nonrod_material_key(getParam<std::string>("nonrod_material_key")),
     _rod_height(getFunction("rod_height_func")),
     _cusp_correction(getParam<Real>("cusp_correction"))
@@ -48,7 +48,7 @@ DiffusionRodMaterial::DiffusionRodMaterial(const InputParameters & parameters)
 }
 
 void
-DiffusionRodMaterial::Construct(nlohmann::json xs_root)
+SNRodMaterial::Construct(nlohmann::json xs_root)
 {
   std::set<std::string> gc_set(_group_consts.begin(), _group_consts.end());
   bool oneInfo = false;
@@ -58,6 +58,7 @@ DiffusionRodMaterial::Construct(nlohmann::json xs_root)
     auto o = _vec_lengths[_xsec_names[j]];
     auto L = _XsTemperature.size();
 
+    // Rod group constant interpolators
     _xsec_linear_interpolators[_xsec_names[j]].resize(o);
     _xsec_spline_interpolators[_xsec_names[j]].resize(o);
     _xsec_monotone_cubic_interpolators[_xsec_names[j]].resize(o);
@@ -99,19 +100,28 @@ DiffusionRodMaterial::Construct(nlohmann::json xs_root)
           mooseInfo("Only precursor material data initialized (num_groups = 0) for material " + _name);
           oneInfo = true;
         }
-        if (o != dims && o != 0)
+        if ((o!=dims && o!=0 && _xsec_names[j] != "SPN") || (dims<(_L+1) && _xsec_names[j] == "SPN"))
           mooseError("The number of " + _material_key + "/" + temp_key + "/" +
                      _xsec_names[j] + " values does not match the "
                      "num_groups/num_precursor_groups parameter. " +
                      std::to_string(dims) + "!=" + std::to_string(o));
-        for (auto k = 0; k < o; ++k)
-        {
-          _xsec_map[_xsec_names[j]][k].push_back(dataset[k].get<double>());
-          _xsec_map[nr + _xsec_names[j]][k].push_back(nonrod_dataset[k].get<double>());
-        }
+        if (_xsec_names[j] == "SPN")
+          for (auto i = 0; i < (_L+1); ++i)
+            for (auto k = 0; k < o/(_L+1); ++k)
+            {
+              _xsec_map[_xsec_names[j]][i*o/(_L+1)+k].push_back(dataset[i][k].get<double>());
+              _xsec_map[nr + _xsec_names[j]][i*o/(_L+1)+k].push_back(nonrod_dataset[i][k].get<double>());
+            }
+        else
+          for (auto k = 0; k < o; ++k)
+          {
+            _xsec_map[_xsec_names[j]][k].push_back(dataset[k].get<double>());
+            _xsec_map[nr + _xsec_names[j]][k].push_back(nonrod_dataset[k].get<double>());
+          }
       }
     } else
     {
+      // Initialize excluded group constants as zero values
       for (decltype(_XsTemperature.size()) l = 0; l < L; ++l)
         for (auto k = 0; k < o; ++k)
         {
@@ -121,12 +131,6 @@ DiffusionRodMaterial::Construct(nlohmann::json xs_root)
     }
     switch (_interp_type)
     {
-      case LSQ:
-        mooseError("Least Squares not supported, please select \
-          NONE, LINEAR, SPLINE, or MONOTONE_CUBIC ");
-      case BICUBIC:
-        mooseError("BICUBIC not supported, please select \
-          NONE, LINEAR, SPLINE, or MONOTONE_CUBIC ");
       case NONE:
         if (L > 1)
             mooseError(
@@ -137,19 +141,41 @@ DiffusionRodMaterial::Construct(nlohmann::json xs_root)
       case LINEAR:
         for (auto k = 0; k < o; ++k)
         {
-          _xsec_linear_interpolators[_xsec_names[j]][k].setData(_XsTemperature,
-                                                                _xsec_map[_xsec_names[j]][k]);
-          _xsec_linear_interpolators[nr + _xsec_names[j]][k].setData(_XsTemperature,
-              _xsec_map[nr + _xsec_names[j]][k]);
+          if (_xsec_names[j] == "SPN")
+            for (auto i = 0; i < (_L+1); ++i)
+            {
+              _xsec_linear_interpolators[_xsec_names[j]][i*o+k].setData(
+                _XsTemperature, _xsec_map[_xsec_names[j]][i*o+k]);
+              _xsec_linear_interpolators[nr + _xsec_names[j]][i*o+k].setData(
+                _XsTemperature, _xsec_map[nr + _xsec_names[j]][i*o+k]);
+            }
+          else
+          {
+            _xsec_linear_interpolators[_xsec_names[j]][k].setData(_XsTemperature,
+                                                                  _xsec_map[_xsec_names[j]][k]);
+            _xsec_linear_interpolators[nr + _xsec_names[j]][k].setData(_XsTemperature,
+                _xsec_map[nr + _xsec_names[j]][k]);
+          }
         }
         break;
       case SPLINE:
         for (auto k = 0; k < o; ++k)
         {
-          _xsec_spline_interpolators[_xsec_names[j]][k].setData(_XsTemperature,
-                                                                _xsec_map[_xsec_names[j]][k]);
-          _xsec_spline_interpolators[nr + _xsec_names[j]][k].setData(_XsTemperature,
-              _xsec_map[nr + _xsec_names[j]][k]);
+          if (_xsec_names[j] == "SPN")
+            for (auto i = 0; i < (_L+1); ++i)
+            {
+              _xsec_spline_interpolators[_xsec_names[j]][i*o+k].setData(
+                _XsTemperature, _xsec_map[_xsec_names[j]][i*o+k]);
+              _xsec_spline_interpolators[nr + _xsec_names[j]][i*o+k].setData(
+                _XsTemperature, _xsec_map[nr + _xsec_names[j]][i*o+k]);
+            }
+          else
+          {
+            _xsec_spline_interpolators[_xsec_names[j]][k].setData(_XsTemperature,
+                                                                  _xsec_map[_xsec_names[j]][k]);
+            _xsec_spline_interpolators[nr + _xsec_names[j]][k].setData(_XsTemperature,
+                _xsec_map[nr + _xsec_names[j]][k]);
+          }
         }
         break;
       case MONOTONE_CUBIC:
@@ -157,12 +183,21 @@ DiffusionRodMaterial::Construct(nlohmann::json xs_root)
           mooseError("Monotone cubic interpolation requires at least three data points.");
         for (auto k = 0; k < o; ++k)
         {
-          _xsec_monotone_cubic_interpolators[_xsec_names[j]][k].setData(
-              _XsTemperature,
-              _xsec_map[_xsec_names[j]][k]);
-          _xsec_monotone_cubic_interpolators[nr + _xsec_names[j]][k].setData(
-              _XsTemperature,
-              _xsec_map[nr + _xsec_names[j]][k]);
+          if (_xsec_names[j] == "SPN")
+            for (auto i = 0; i < (_L+1); ++i)
+            {
+              _xsec_monotone_cubic_interpolators[_xsec_names[j]][i*o+k].setData(
+                _XsTemperature, _xsec_map[_xsec_names[j]][i*o+k]);
+              _xsec_monotone_cubic_interpolators[nr + _xsec_names[j]][i*o+k].setData(
+                _XsTemperature, _xsec_map[nr + _xsec_names[j]][i*o+k]);
+            }
+          else
+          {
+            _xsec_monotone_cubic_interpolators[_xsec_names[j]][k].setData(
+                _XsTemperature, _xsec_map[_xsec_names[j]][k]);
+            _xsec_monotone_cubic_interpolators[nr + _xsec_names[j]][k].setData(
+                _XsTemperature, _xsec_map[nr + _xsec_names[j]][k]);
+          }
         }
         break;
       default:
@@ -173,14 +208,14 @@ DiffusionRodMaterial::Construct(nlohmann::json xs_root)
 }
 
 void
-DiffusionRodMaterial::dummyComputeQpProperties()
+SNRodMaterial::dummyComputeQpProperties()
 {
   std::string nr = "nonrod_";
   Real vol_frac = volumeFraction();
   for (decltype(_num_groups) i = 0; i < _num_groups; ++i)
   {
-    _remxs[_qp][i] =
-      _xsec_map["REMXS"][i][0] * vol_frac + _xsec_map[nr + "REMXS"][i][0] * (1 - vol_frac);
+    _totxs[_qp][i] =
+      _xsec_map["TOTXS"][i][0] * vol_frac + _xsec_map[nr + "TOTXS"][i][0] * (1 - vol_frac);
     _fissxs[_qp][i] =
       _xsec_map["FISSXS"][i][0] * vol_frac + _xsec_map[nr + "FISSXS"][i][0] * (1 - vol_frac);
     _nsf[_qp][i] =
@@ -198,21 +233,21 @@ DiffusionRodMaterial::dummyComputeQpProperties()
       _xsec_map["CHI_P"][i][0] * vol_frac + _xsec_map[nr + "CHI_P"][i][0] * (1 - vol_frac);
     _chi_d[_qp][i] =
       _xsec_map["CHI_D"][i][0] * vol_frac + _xsec_map[nr + "CHI_D"][i][0] * (1 - vol_frac);
-    _d_remxs_d_temp[_qp][i] = 0;
+    _d_totxs_d_temp[_qp][i] = 0;
     _d_fissxs_d_temp[_qp][i] = 0;
     _d_nsf_d_temp[_qp][i] = 0;
-    _d_fisse_d_temp[_qp][i] = 0; // convert from MeV to Joules
+    _d_fisse_d_temp[_qp][i] = 0;
     _d_diffcoef_d_temp[_qp][i] = 0;
     _d_recipvel_d_temp[_qp][i] = 0;
     _d_chi_t_d_temp[_qp][i] = 0;
     _d_chi_p_d_temp[_qp][i] = 0;
     _d_chi_d_d_temp[_qp][i] = 0;
   }
-  for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
+  for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups * (_L+1); ++i)
   {
-    _gtransfxs[_qp][i] =
-      _xsec_map["GTRANSFXS"][i][0] * vol_frac + _xsec_map[nr + "GTRANSFXS"][i][0] * (1 - vol_frac);
-    _d_gtransfxs_d_temp[_qp][i] = 0;
+    _scatter[_qp][i] =
+      _xsec_map["SPN"][i][0] * vol_frac + _xsec_map[nr + "SPN"][i][0] * (1 - vol_frac);
+    _d_scatter_d_temp[_qp][i] = 0;
   }
   _beta[_qp] = 0;
   _d_beta_d_temp[_qp] = 0;
@@ -229,13 +264,13 @@ DiffusionRodMaterial::dummyComputeQpProperties()
 }
 
 void
-DiffusionRodMaterial::splineComputeQpProperties()
+SNRodMaterial::splineComputeQpProperties()
 {
   std::string nr = "nonrod_";
   Real vol_frac = volumeFraction();
   for (decltype(_num_groups) i = 0; i < _num_groups; ++i)
   {
-    _remxs[_qp][i] =
+    _totxs[_qp][i] =
       _xsec_spline_interpolators["REMXS"][i].sample(_temperature[_qp]) * vol_frac +
       _xsec_spline_interpolators[nr + "REMXS"][i].sample(_temperature[_qp]) * (1 - vol_frac);
     _fissxs[_qp][i] =
@@ -263,7 +298,7 @@ DiffusionRodMaterial::splineComputeQpProperties()
     _chi_d[_qp][i] =
       _xsec_spline_interpolators["CHI_D"][i].sample(_temperature[_qp]) * vol_frac +
       _xsec_spline_interpolators[nr + "CHI_D"][i].sample(_temperature[_qp]) * (1 - vol_frac);
-    _d_remxs_d_temp[_qp][i] =
+    _d_totxs_d_temp[_qp][i] =
       _xsec_spline_interpolators["REMXS"][i].sampleDerivative(_temperature[_qp]) * vol_frac +
       _xsec_spline_interpolators[nr + "REMXS"][i].sampleDerivative(_temperature[_qp]) *
       (1 - vol_frac);
@@ -300,15 +335,15 @@ DiffusionRodMaterial::splineComputeQpProperties()
       _xsec_spline_interpolators[nr + "CHI_D"][i].sampleDerivative(_temperature[_qp]) *
       (1 - vol_frac);
   }
-  for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
+  for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups * (_L+1); ++i)
   {
-    _gtransfxs[_qp][i] =
-      _xsec_spline_interpolators["GTRANSFXS"][i].sample(_temperature[_qp]) * vol_frac +
-      _xsec_spline_interpolators[nr + "GTRANSFXS"][i].sample(_temperature[_qp]) *
+    _scatter[_qp][i] =
+      _xsec_spline_interpolators["SPN"][i].sample(_temperature[_qp]) * vol_frac +
+      _xsec_spline_interpolators[nr + "SPN"][i].sample(_temperature[_qp]) *
       (1 - vol_frac);
-    _d_gtransfxs_d_temp[_qp][i] =
-      _xsec_spline_interpolators["GTRANSFXS"][i].sampleDerivative(_temperature[_qp]) * vol_frac +
-      _xsec_spline_interpolators[nr + "GTRANSFXS"][i].sampleDerivative(_temperature[_qp]) *
+    _d_scatter_d_temp[_qp][i] =
+      _xsec_spline_interpolators["SPN"][i].sampleDerivative(_temperature[_qp]) * vol_frac +
+      _xsec_spline_interpolators[nr + "SPN"][i].sampleDerivative(_temperature[_qp]) *
       (1 - vol_frac);
   }
   _beta[_qp] = 0;
@@ -336,13 +371,13 @@ DiffusionRodMaterial::splineComputeQpProperties()
 }
 
 void
-DiffusionRodMaterial::monotoneCubicComputeQpProperties()
+SNRodMaterial::monotoneCubicComputeQpProperties()
 {
   std::string nr = "nonrod_";
   Real vol_frac = volumeFraction();
   for (decltype(_num_groups) i = 0; i < _num_groups; ++i)
   {
-    _remxs[_qp][i] =
+    _totxs[_qp][i] =
       _xsec_monotone_cubic_interpolators["REMXS"][i].sample(_temperature[_qp]) * vol_frac +
       _xsec_monotone_cubic_interpolators[nr + "REMXS"][i].sample(_temperature[_qp]) * (1 - vol_frac);
     _fissxs[_qp][i] =
@@ -370,7 +405,7 @@ DiffusionRodMaterial::monotoneCubicComputeQpProperties()
     _chi_d[_qp][i] =
       _xsec_monotone_cubic_interpolators["CHI_D"][i].sample(_temperature[_qp]) * vol_frac +
       _xsec_monotone_cubic_interpolators[nr + "CHI_D"][i].sample(_temperature[_qp]) * (1 - vol_frac);
-    _d_remxs_d_temp[_qp][i] =
+    _d_totxs_d_temp[_qp][i] =
       _xsec_monotone_cubic_interpolators["REMXS"][i].sampleDerivative(_temperature[_qp]) * vol_frac +
       _xsec_monotone_cubic_interpolators[nr + "REMXS"][i].sampleDerivative(_temperature[_qp]) *
       (1 - vol_frac);
@@ -407,15 +442,15 @@ DiffusionRodMaterial::monotoneCubicComputeQpProperties()
       _xsec_monotone_cubic_interpolators[nr + "CHI_D"][i].sampleDerivative(_temperature[_qp]) *
       (1 - vol_frac);
   }
-  for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
+  for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups * (_L+1); ++i)
   {
-    _gtransfxs[_qp][i] =
-      _xsec_monotone_cubic_interpolators["GTRANSFXS"][i].sample(_temperature[_qp]) * vol_frac +
-      _xsec_monotone_cubic_interpolators[nr + "GTRANSFXS"][i].sample(_temperature[_qp]) *
+    _scatter[_qp][i] =
+      _xsec_monotone_cubic_interpolators["SPN"][i].sample(_temperature[_qp]) * vol_frac +
+      _xsec_monotone_cubic_interpolators[nr + "SPN"][i].sample(_temperature[_qp]) *
       (1 - vol_frac);
-    _d_gtransfxs_d_temp[_qp][i] =
-      _xsec_monotone_cubic_interpolators["GTRANSFXS"][i].sampleDerivative(_temperature[_qp]) * vol_frac +
-      _xsec_monotone_cubic_interpolators[nr + "GTRANSFXS"][i].sampleDerivative(_temperature[_qp]) *
+    _d_scatter_d_temp[_qp][i] =
+      _xsec_monotone_cubic_interpolators["SPN"][i].sampleDerivative(_temperature[_qp]) * vol_frac +
+      _xsec_monotone_cubic_interpolators[nr + "SPN"][i].sampleDerivative(_temperature[_qp]) *
       (1 - vol_frac);
   }
   _beta[_qp] = 0;
@@ -443,13 +478,13 @@ DiffusionRodMaterial::monotoneCubicComputeQpProperties()
 }
 
 void
-DiffusionRodMaterial::linearComputeQpProperties()
+SNRodMaterial::linearComputeQpProperties()
 {
   std::string nr = "nonrod_";
   Real vol_frac = volumeFraction();
   for (decltype(_num_groups) i = 0; i < _num_groups; ++i)
   {
-    _remxs[_qp][i] =
+    _totxs[_qp][i] =
       _xsec_linear_interpolators["REMXS"][i].sample(_temperature[_qp]) * vol_frac +
       _xsec_linear_interpolators[nr + "REMXS"][i].sample(_temperature[_qp]) * (1 - vol_frac);
     _fissxs[_qp][i] =
@@ -477,7 +512,7 @@ DiffusionRodMaterial::linearComputeQpProperties()
     _chi_d[_qp][i] =
       _xsec_linear_interpolators["CHI_D"][i].sample(_temperature[_qp]) * vol_frac +
       _xsec_linear_interpolators[nr + "CHI_D"][i].sample(_temperature[_qp]) * (1 - vol_frac);
-    _d_remxs_d_temp[_qp][i] =
+    _d_totxs_d_temp[_qp][i] =
       _xsec_linear_interpolators["REMXS"][i].sampleDerivative(_temperature[_qp]) * vol_frac +
       _xsec_linear_interpolators[nr + "REMXS"][i].sampleDerivative(_temperature[_qp]) *
       (1 - vol_frac);
@@ -514,15 +549,15 @@ DiffusionRodMaterial::linearComputeQpProperties()
       _xsec_linear_interpolators[nr + "CHI_D"][i].sampleDerivative(_temperature[_qp]) *
       (1 - vol_frac);
   }
-  for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
+  for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups * (_L+1); ++i)
   {
-    _gtransfxs[_qp][i] =
-      _xsec_linear_interpolators["GTRANSFXS"][i].sample(_temperature[_qp]) * vol_frac +
-      _xsec_linear_interpolators[nr + "GTRANSFXS"][i].sample(_temperature[_qp]) *
+    _scatter[_qp][i] =
+      _xsec_linear_interpolators["SPN"][i].sample(_temperature[_qp]) * vol_frac +
+      _xsec_linear_interpolators[nr + "SPN"][i].sample(_temperature[_qp]) *
       (1 - vol_frac);
-    _d_gtransfxs_d_temp[_qp][i] =
-      _xsec_linear_interpolators["GTRANSFXS"][i].sampleDerivative(_temperature[_qp]) * vol_frac +
-      _xsec_linear_interpolators[nr + "GTRANSFXS"][i].sampleDerivative(_temperature[_qp]) *
+    _d_scatter_d_temp[_qp][i] =
+      _xsec_linear_interpolators["SPN"][i].sampleDerivative(_temperature[_qp]) * vol_frac +
+      _xsec_linear_interpolators[nr + "SPN"][i].sampleDerivative(_temperature[_qp]) *
       (1 - vol_frac);
   }
   _beta[_qp] = 0;
@@ -549,8 +584,49 @@ DiffusionRodMaterial::linearComputeQpProperties()
   }
 }
 
+void
+SNRodMaterial::computeQpProperties()
+{
+  preComputeQpProperties();
+
+  switch (_interp_type)
+  {
+    case NONE:
+      dummyComputeQpProperties();
+      break;
+    case LINEAR:
+      linearComputeQpProperties();
+      break;
+    case SPLINE:
+      splineComputeQpProperties();
+      break;
+    case MONOTONE_CUBIC:
+      monotoneCubicComputeQpProperties();
+      break;
+    default:
+      mooseError("Invalid enum type for interp_type");
+      break;
+  }
+
+  Real h;
+  if (_h_type == "max")
+    h = _current_elem->hmax();
+  else
+    h = _current_elem->hmin();
+  Real vol_frac = volumeFraction();
+  for (unsigned int i = 0; i < _num_groups; ++i)
+  {
+    if (vol_frac > 0.5)
+      _tau_sn[_qp][i] = 1. / _totxs[_qp][i];
+    else if (_c * h * _totxs[_qp][i] > _sigma)
+      _tau_sn[_qp][i] = 1. / (_c * _totxs[_qp][i]);
+    else
+      _tau_sn[_qp][i] = h / _sigma;
+  } 
+}
+
 Real
-DiffusionRodMaterial::volumeFraction()
+SNRodMaterial::volumeFraction()
 {
   const unsigned int num_nodes = _current_elem->n_nodes();
   const Node * const * elem_nodes = _current_elem->get_nodes();
