@@ -69,8 +69,6 @@ MoltresSNMaterial::MoltresSNMaterial(const InputParameters & parameters)
     _beta(declareProperty<Real>("beta")),
     _decay_constant(declareProperty<std::vector<Real>>("decay_constant")),
     _diffcoef(declareProperty<std::vector<Real>>("diffcoef")),
-    _gtransfxs(declareProperty<std::vector<Real>>("gtransfxs")),
-    _remxs(declareProperty<std::vector<Real>>("remxs")),
     _d_totxs_d_temp(declareProperty<std::vector<Real>>("d_totxs_d_temp")),
     _d_fissxs_d_temp(declareProperty<std::vector<Real>>("d_fissxs_d_temp")),
     _d_nsf_d_temp(declareProperty<std::vector<Real>>("d_nsf_d_temp")),
@@ -84,8 +82,6 @@ MoltresSNMaterial::MoltresSNMaterial(const InputParameters & parameters)
     _d_beta_d_temp(declareProperty<Real>("d_beta_d_temp")),
     _d_decay_constant_d_temp(declareProperty<std::vector<Real>>("d_decay_constant_d_temp")),
     _d_diffcoef_d_temp(declareProperty<std::vector<Real>>("d_diffcoef_d_temp")),
-    _d_gtransfxs_d_temp(declareProperty<std::vector<Real>>("d_gtransfxs_d_temp")),
-    _d_remxs_d_temp(declareProperty<std::vector<Real>>("d_remxs_d_temp")),
     _interp_type(getParam<MooseEnum>("interp_type")),
     _group_consts(getParam<std::vector<std::string>>("group_constants")),
     _material_key(getParam<std::string>("material_key")),
@@ -144,38 +140,30 @@ MoltresSNMaterial::dummyComputeQpProperties()
     _chi_p[_qp][i] = _xsec_map["CHI_P"][i][0];
     _chi_d[_qp][i] = _xsec_map["CHI_D"][i][0];
     _diffcoef[_qp][i] = _xsec_map["DIFFCOEF"][i][0];
-    _remxs[_qp][i] = _xsec_map["REMXS"][i][0];
-    _d_totxs_d_temp[_qp][i] = _xsec_map["TOTXS"][i][0];
-    _d_fissxs_d_temp[_qp][i] = _xsec_map["FISSXS"][i][0];
-    _d_nsf_d_temp[_qp][i] = _xsec_map["NSF"][i][0];
-    _d_fisse_d_temp[_qp][i] = _xsec_map["FISSE"][i][0] * 1e6 * 1.6e-19; // convert from MeV to Joules
-    _d_recipvel_d_temp[_qp][i] = _xsec_map["RECIPVEL"][i][0];
-    _d_chi_t_d_temp[_qp][i] = _xsec_map["CHI_T"][i][0];
-    _d_chi_p_d_temp[_qp][i] = _xsec_map["CHI_P"][i][0];
-    _d_chi_d_d_temp[_qp][i] = _xsec_map["CHI_D"][i][0];
-    _d_diffcoef_d_temp[_qp][i] = _xsec_map["DIFFCOEF"][i][0];
-    _d_remxs_d_temp[_qp][i] = _xsec_map["REMXS"][i][0];
+    _d_totxs_d_temp[_qp][i] = 0;
+    _d_fissxs_d_temp[_qp][i] = 0;
+    _d_nsf_d_temp[_qp][i] = 0;
+    _d_fisse_d_temp[_qp][i] = 0;
+    _d_recipvel_d_temp[_qp][i] = 0;
+    _d_chi_t_d_temp[_qp][i] = 0;
+    _d_chi_p_d_temp[_qp][i] = 0;
+    _d_chi_d_d_temp[_qp][i] = 0;
+    _d_diffcoef_d_temp[_qp][i] = 0;
   }
   for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups * (_L+1); ++i)
   {
     _scatter[_qp][i] = _xsec_map["SPN"][i][0];
-    _d_scatter_d_temp[_qp][i] = _xsec_map["SPN"][i][0];
-  }
-  for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
-  {
-    _gtransfxs[_qp][i] = _xsec_map["GTRANSFXS"][i][0];
-    _d_gtransfxs_d_temp[_qp][i] = _xsec_map["GTRANSFXS"][i][0];
+    _d_scatter_d_temp[_qp][i] = 0;
   }
   _beta[_qp] = 0;
   _d_beta_d_temp[_qp] = 0;
   for (decltype(_num_groups) i = 0; i < _num_precursor_groups; ++i)
   {
     _beta_eff[_qp][i] = _xsec_map["BETA_EFF"][i][0];
-    _d_beta_eff_d_temp[_qp][i] = _xsec_map["BETA_EFF"][i][0];
+    _d_beta_eff_d_temp[_qp][i] = 0;
     _beta[_qp] += _beta_eff[_qp][i];
-    _d_beta_d_temp[_qp] += _d_beta_eff_d_temp[_qp][i];
     _decay_constant[_qp][i] = _xsec_map["DECAY_CONSTANT"][i][0];
-    _d_decay_constant_d_temp[_qp][i] = _xsec_map["DECAY_CONSTANT"][i][0];
+    _d_decay_constant_d_temp[_qp][i] = 0;
   }
 }
 
@@ -194,7 +182,6 @@ MoltresSNMaterial::splineComputeQpProperties()
     _chi_p[_qp][i] = _xsec_spline_interpolators["CHI_P"][i].sample(_temperature[_qp]);
     _chi_d[_qp][i] = _xsec_spline_interpolators["CHI_D"][i].sample(_temperature[_qp]);
     _diffcoef[_qp][i] = _xsec_spline_interpolators["DIFFCOEF"][i].sample(_temperature[_qp]);
-    _remxs[_qp][i] = _xsec_spline_interpolators["REMXS"][i].sample(_temperature[_qp]);
     _d_totxs_d_temp[_qp][i] =
         _xsec_spline_interpolators["TOTXS"][i].sampleDerivative(_temperature[_qp]);
     _d_fissxs_d_temp[_qp][i] =
@@ -214,20 +201,12 @@ MoltresSNMaterial::splineComputeQpProperties()
         _xsec_spline_interpolators["CHI_D"][i].sampleDerivative(_temperature[_qp]);
     _d_diffcoef_d_temp[_qp][i] =
         _xsec_spline_interpolators["DIFFCOEF"][i].sampleDerivative(_temperature[_qp]);
-    _d_remxs_d_temp[_qp][i] =
-        _xsec_spline_interpolators["REMXS"][i].sampleDerivative(_temperature[_qp]);
   }
   for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups * (_L+1); ++i)
   {
     _scatter[_qp][i] = _xsec_spline_interpolators["SPN"][i].sample(_temperature[_qp]);
     _d_scatter_d_temp[_qp][i] =
         _xsec_spline_interpolators["SPN"][i].sampleDerivative(_temperature[_qp]);
-  }
-  for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
-  {
-    _gtransfxs[_qp][i] = _xsec_spline_interpolators["GTRANSFXS"][i].sample(_temperature[_qp]);
-    _d_gtransfxs_d_temp[_qp][i] =
-        _xsec_spline_interpolators["GTRANSFXS"][i].sampleDerivative(_temperature[_qp]);
   }
   _beta[_qp] = 0;
   _d_beta_d_temp[_qp] = 0;
@@ -260,7 +239,6 @@ MoltresSNMaterial::monotoneCubicComputeQpProperties()
     _chi_p[_qp][i] = _xsec_monotone_cubic_interpolators["CHI_P"][i].sample(_temperature[_qp]);
     _chi_d[_qp][i] = _xsec_monotone_cubic_interpolators["CHI_D"][i].sample(_temperature[_qp]);
     _diffcoef[_qp][i] = _xsec_monotone_cubic_interpolators["DIFFCOEF"][i].sample(_temperature[_qp]);
-    _remxs[_qp][i] = _xsec_monotone_cubic_interpolators["REMXS"][i].sample(_temperature[_qp]);
     _d_totxs_d_temp[_qp][i] =
         _xsec_monotone_cubic_interpolators["TOTXS"][i].sampleDerivative(_temperature[_qp]);
     _d_fissxs_d_temp[_qp][i] =
@@ -280,8 +258,6 @@ MoltresSNMaterial::monotoneCubicComputeQpProperties()
         _xsec_monotone_cubic_interpolators["CHI_D"][i].sampleDerivative(_temperature[_qp]);
     _d_diffcoef_d_temp[_qp][i] =
         _xsec_monotone_cubic_interpolators["DIFFCOEF"][i].sampleDerivative(_temperature[_qp]);
-    _d_remxs_d_temp[_qp][i] =
-        _xsec_monotone_cubic_interpolators["REMXS"][i].sampleDerivative(_temperature[_qp]);
   }
   for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups * (_L+1); ++i)
   {
@@ -289,13 +265,6 @@ MoltresSNMaterial::monotoneCubicComputeQpProperties()
         _xsec_monotone_cubic_interpolators["SPN"][i].sample(_temperature[_qp]);
     _d_scatter_d_temp[_qp][i] =
         _xsec_monotone_cubic_interpolators["SPN"][i].sampleDerivative(_temperature[_qp]);
-  }
-  for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
-  {
-    _gtransfxs[_qp][i] =
-        _xsec_monotone_cubic_interpolators["GTRANSFXS"][i].sample(_temperature[_qp]);
-    _d_gtransfxs_d_temp[_qp][i] =
-        _xsec_monotone_cubic_interpolators["GTRANSFXS"][i].sampleDerivative(_temperature[_qp]);
   }
   _beta[_qp] = 0;
   _d_beta_d_temp[_qp] = 0;
@@ -328,7 +297,6 @@ MoltresSNMaterial::linearComputeQpProperties()
     _chi_p[_qp][i] = _xsec_linear_interpolators["CHI_P"][i].sample(_temperature[_qp]);
     _chi_d[_qp][i] = _xsec_linear_interpolators["CHI_D"][i].sample(_temperature[_qp]);
     _diffcoef[_qp][i] = _xsec_linear_interpolators["DIFFCOEF"][i].sample(_temperature[_qp]);
-    _remxs[_qp][i] = _xsec_linear_interpolators["REMXS"][i].sample(_temperature[_qp]);
     _d_totxs_d_temp[_qp][i] =
         _xsec_linear_interpolators["TOTXS"][i].sampleDerivative(_temperature[_qp]);
     _d_fissxs_d_temp[_qp][i] =
@@ -348,20 +316,12 @@ MoltresSNMaterial::linearComputeQpProperties()
         _xsec_linear_interpolators["CHI_D"][i].sampleDerivative(_temperature[_qp]);
     _d_diffcoef_d_temp[_qp][i] =
         _xsec_linear_interpolators["DIFFCOEF"][i].sampleDerivative(_temperature[_qp]);
-    _d_remxs_d_temp[_qp][i] =
-        _xsec_linear_interpolators["REMXS"][i].sampleDerivative(_temperature[_qp]);
   }
   for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups * (_L+1); ++i)
   {
     _scatter[_qp][i] = _xsec_linear_interpolators["SPN"][i].sample(_temperature[_qp]);
     _d_scatter_d_temp[_qp][i] =
         _xsec_linear_interpolators["SPN"][i].sampleDerivative(_temperature[_qp]);
-  }
-  for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
-  {
-    _gtransfxs[_qp][i] = _xsec_linear_interpolators["GTRANSFXS"][i].sample(_temperature[_qp]);
-    _d_gtransfxs_d_temp[_qp][i] =
-        _xsec_linear_interpolators["GTRANSFXS"][i].sampleDerivative(_temperature[_qp]);
   }
   _beta[_qp] = 0;
   _d_beta_d_temp[_qp] = 0;
@@ -396,8 +356,6 @@ MoltresSNMaterial::preComputeQpProperties()
   _beta_eff[_qp].resize(_num_precursor_groups);
   _decay_constant[_qp].resize(_num_precursor_groups);
   _diffcoef[_qp].resize(_num_groups);
-  _gtransfxs[_qp].resize(_num_groups * _num_groups);
-  _remxs[_qp].resize(_num_groups);
 
   _d_totxs_d_temp[_qp].resize(_num_groups);
   _d_fissxs_d_temp[_qp].resize(_num_groups);
@@ -411,8 +369,6 @@ MoltresSNMaterial::preComputeQpProperties()
   _d_beta_eff_d_temp[_qp].resize(_num_precursor_groups);
   _d_decay_constant_d_temp[_qp].resize(_num_precursor_groups);
   _d_diffcoef_d_temp[_qp].resize(_num_groups);
-  _d_gtransfxs_d_temp[_qp].resize(_num_groups * _num_groups);
-  _d_remxs_d_temp[_qp].resize(_num_groups);
 
   _tau_sn[_qp].resize(_num_groups);
 }
