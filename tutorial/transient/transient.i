@@ -241,13 +241,6 @@
     type = FunctionDT
     function = dt_func
   []
-  #  [TimeStepper]
-  #    type = IterationAdaptiveDT
-  #    dt = .2
-  #    cutback_factor = 0.4
-  #    growth_factor = 1.2
-  #    optimal_iterations = 20
-  #  []
 []
 
 [Preconditioning]
@@ -306,7 +299,6 @@
 
 [Outputs]
   perf_graph = true
-  #  print_linear_residuals = true
   [exodus]
     type = Exodus
   []
@@ -317,5 +309,4 @@
 []
 
 [Debug]
-  #  show_var_residual_norms = true
 []
