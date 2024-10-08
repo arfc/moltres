@@ -87,9 +87,17 @@ GroupDriftAux::computeValue()
       _weights.cwiseProduct((*_group_fluxes[g])[_qp]);
   }
   D /= denom;
-  // Avoid excessively high drift values in near-void regions to maintain solver stability
-  // This occurs when there are very small fluxes in near-void and control rod regions.
-  if ((_totxs[_qp][_group] < 1e-2 || _totxs[_qp][_group] > 10) && (D.cwiseAbs().maxCoeff() > 1e2))
-    return RealEigenVector::Zero(3);
+  // Avoid excessively high drift values to maintain solver stability in coarse meshes.
+  // This occurs when there are very small fluxes near void and control rod regions.
+//  if ((_totxs[_qp][_group] < 1e-2 || _totxs[_qp][_group] > 10) && (D.cwiseAbs().maxCoeff() > 1e2))
+//    return RealEigenVector::Zero(3);
+  for (unsigned int i = 0; i < 3; ++i)
+  {
+    Real abs_val = std::abs(D(i));
+    if (_totxs[_qp][_group] < 1e-2 && abs_val > 2.) // void regions
+      D(i) *= 2. / abs_val;
+    else if (abs_val > 1.) // other regions
+      D(i) *= 1. / abs_val;
+  }
   return D;
 }
