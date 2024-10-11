@@ -33,6 +33,7 @@ NtAction::validParams()
   params.addCoupledVar("pre_concs",
                        "All the variables that hold the precursor concentrations. "
                        "These MUST be listed by increasing group number.");
+  params.addCoupledVar("delayed_neutron_source", "Delayed neutron source term variable name");
   params.addParam<Real>("temp_scaling", "The amount by which to scale the temperature variable.");
   params.addRequiredParam<unsigned int>("num_groups", "The total number of energy groups.");
   params.addRequiredParam<bool>(
@@ -347,6 +348,9 @@ NtAction::addDelayedNeutronSource(const unsigned & op, const std::string & var_n
         getParam<std::vector<SubdomainName>>("block");
   if (isParamValid("use_exp_form"))
     params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
+  if (isParamValid("delayed_neutron_source"))
+    params.set<VariableName>("delayed_neutron_source") =
+      getParam<VariableName>("delayed_neutron_source");
   std::vector<std::string> include = {"temperature", "pre_concs"};
   params.applySpecificParameters(parameters(), include);
   params.set<unsigned int>("num_precursor_groups") = _num_precursor_groups;

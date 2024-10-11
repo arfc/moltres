@@ -23,6 +23,7 @@ protected:
   const unsigned int _num_precursor_groups;
   const unsigned int _temp_id;
   const VariableValue & _temp;
+  const VariableValue & _delayed_source;
   std::vector<const VariableValue *> _pre_concs;
   std::vector<unsigned int> _pre_ids;
 };
