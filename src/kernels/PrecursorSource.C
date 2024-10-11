@@ -16,7 +16,7 @@ PrecursorSource::validParams()
   params.addCoupledVar(
       "temperature", 800, "The temperature used to interpolate material properties.");
   params.addParam<Real>("prec_scale", 1, "The factor by which the neutron fluxes are scaled.");
-  params.addParam<Real>("eigenvalue_scaling",
+  params.addParam<PostprocessorName>("eigenvalue_scaling",
                         1.0,
                         "Artificial scaling factor for the fission source. Primarily for "
                         "introducing artificial reactivity to make super/subcritical systems "
@@ -36,7 +36,7 @@ PrecursorSource::PrecursorSource(const InputParameters & parameters)
     _temp(coupledValue("temperature")),
     _temp_id(coupled("temperature")),
     _prec_scale(getParam<Real>("prec_scale")),
-    _eigenvalue_scaling(getParam<Real>("eigenvalue_scaling"))
+    _eigenvalue_scaling(getPostprocessorValue("eigenvalue_scaling"))
 {
   _group_fluxes.resize(_num_groups);
   _flux_ids.resize(_num_groups);

@@ -72,7 +72,7 @@ NtAction::validParams()
   params.addParam<std::vector<SubdomainName>>("fission_blocks",
                                               "The blocks containing fissile material.");
   params.addParam<std::vector<SubdomainName>>("pre_blocks", "The blocks the precursors live on.");
-  params.addParam<Real>("eigenvalue_scaling",
+  params.addParam<PostprocessorName>("eigenvalue_scaling",
                         1.0,
                         "Artificial scaling factor for the fission source. Primarily for "
                         "introducing artificial reactivity to make super/subcritical systems "
@@ -327,7 +327,7 @@ NtAction::addCoupledFissionKernel(const unsigned & op,
   params.set<unsigned int>("num_groups") = _num_groups;
   params.set<std::vector<VariableName>>("group_fluxes") = all_var_names;
   params.set<bool>("account_delayed") = getParam<bool>("account_delayed");
-  params.set<Real>("eigenvalue_scaling") = getParam<Real>("eigenvalue_scaling");
+  params.set<PostprocessorName>("eigenvalue_scaling") = getParam<PostprocessorName>("eigenvalue_scaling");
   if (getParam<bool>("eigen"))
     params.set<std::vector<TagName>>("extra_vector_tags") = {"eigen"};
   std::string kernel_name = "CoupledFissionKernel_" + var_name;

@@ -52,7 +52,7 @@ PrecursorAction::validParams()
   params.addParam<bool>("nt_exp_form",
                         false,
                         "Whether concentrations should be in an expotential/logarithmic format.");
-  params.addParam<Real>("eigenvalue_scaling",
+  params.addParam<PostprocessorName>("eigenvalue_scaling",
                         1.0,
                         "Artificial scaling factor for the fission source. Primarily for "
                         "introducing artificial reactivity to make super/subcritical systems "
@@ -229,7 +229,7 @@ PrecursorAction::addPrecursorSource(const unsigned & op, const std::string & var
   std::vector<std::string> include = {"temperature", "group_fluxes"};
   params.applySpecificParameters(parameters(), include);
   params.set<bool>("use_exp_form") = getParam<bool>("nt_exp_form");
-  params.set<Real>("eigenvalue_scaling") = getParam<Real>("eigenvalue_scaling");
+  params.set<PostprocessorName>("eigenvalue_scaling") = getParam<PostprocessorName>("eigenvalue_scaling");
   if (getParam<bool>("eigen"))
     params.set<std::vector<TagName>>("extra_vector_tags") = {"eigen"};
 
