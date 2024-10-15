@@ -32,7 +32,6 @@ GroupDriftAux::GroupDriftAux(const InputParameters & parameters)
     _diffcoef(getMaterialProperty<std::vector<Real>>("diffcoef")),
     _totxs(getMaterialProperty<std::vector<Real>>("totxs")),
     _scatter(getMaterialProperty<std::vector<Real>>("scatter")),
-    _recipvel(getMaterialProperty<std::vector<Real>>("recipvel")),
     _N(getParam<unsigned int>("N")),
     _group(getParam<unsigned int>("group_number") - 1),
     _num_groups(getParam<unsigned int>("num_groups")),
@@ -46,13 +45,10 @@ GroupDriftAux::GroupDriftAux(const InputParameters & parameters)
     mooseError("The number of coupled variables doesn't match the number of groups.");
   _group_fluxes.resize(n);
   _grad_group_fluxes.resize(n);
-  _group_fluxes_dot.resize(n);
   for (unsigned int g = 0; g < _num_groups; ++g)
   {
     _group_fluxes[g] = &coupledArrayValue("group_angular_fluxes", g);
     _grad_group_fluxes[g] = &coupledArrayGradient("group_angular_fluxes", g);
-    if (_is_transient)
-      _group_fluxes_dot[g] = &coupledArrayDot("group_angular_fluxes", g);
   }
 
   // Level-symmetric quadrature points and weights
@@ -94,10 +90,6 @@ GroupDriftAux::computeValue()
     D -= _tau_sn[_qp][_group] * _scatter[_qp][scatter_idx] * _ordinates.transpose() *
       _weights.cwiseProduct((*_group_fluxes[g])[_qp]);
   }
-  // Time-derivative term: \sum_d (w_d (tau_g / v_g * \Omega_d * d\Psi/dt))
-  if (_is_transient)
-    D += _tau_sn[_qp][_group] / _recipvel[_qp][_group] * _ordinates.transpose() *
-      _weights.cwiseProduct((*_group_fluxes_dot[_group])[_qp]);
   // Normalized by scalar flux
   D /= denom;
   // Avoid excessively high drift values to maintain solver stability in coarse meshes.

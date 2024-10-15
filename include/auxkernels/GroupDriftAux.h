@@ -17,7 +17,6 @@ protected:
   const MaterialProperty<std::vector<Real>> & _diffcoef;
   const MaterialProperty<std::vector<Real>> & _totxs;
   const MaterialProperty<std::vector<Real>> & _scatter;
-  const MaterialProperty<std::vector<Real>> & _recipvel;
   const unsigned int _N;
   const unsigned int _group;
   const unsigned int _num_groups;
@@ -25,7 +24,6 @@ protected:
   const Real _limit;
   std::vector<const ArrayVariableValue *> _group_fluxes;
   std::vector<const ArrayVariableGradient *> _grad_group_fluxes;
-  std::vector<const ArrayVariableValue *> _group_fluxes_dot;
   RealEigenMatrix _ordinates;
   RealEigenVector _weights;
 };
