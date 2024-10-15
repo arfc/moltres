@@ -348,10 +348,9 @@ NtAction::addDelayedNeutronSource(const unsigned & op, const std::string & var_n
         getParam<std::vector<SubdomainName>>("block");
   if (isParamValid("use_exp_form"))
     params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
-  if (isParamValid("delayed_neutron_source"))
-    params.set<VariableName>("delayed_neutron_source") =
-      getParam<VariableName>("delayed_neutron_source");
   std::vector<std::string> include = {"temperature", "pre_concs"};
+  if (isParamValid("delayed_neutron_source"))
+    include.push_back("delayed_neutron_source");
   params.applySpecificParameters(parameters(), include);
   params.set<unsigned int>("num_precursor_groups") = _num_precursor_groups;
   std::string kernel_name = "DelayedNeutronSource_" + var_name;

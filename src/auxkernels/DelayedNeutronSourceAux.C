@@ -39,7 +39,7 @@ DelayedNeutronSourceAux::computeValue()
 {
   Real r = 0;
   for (unsigned int i = 0; i < _num_precursor_groups; ++i)
-    r += -_decay_constant[_qp][i] * computeConcentration((*_pre_concs[i]), _qp);
+    r += _decay_constant[_qp][i] * computeConcentration((*_pre_concs[i]), _qp);
 
   return r;
 }
