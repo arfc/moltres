@@ -46,6 +46,7 @@ PrecursorAction::validParams()
                                "All the variables that hold the group fluxes. "
                                "These MUST be listed by decreasing "
                                "energy/increasing group number.");
+  params.addCoupledVar("neutron_source", "Neutron source variable name");
   params.addRequiredParam<unsigned int>("num_groups", "The total number of energy groups.");
   params.addRequiredParam<std::vector<BoundaryName>>("outlet_boundaries", "Outflow boundaries.");
   params.addParam<std::vector<BoundaryName>>("inlet_boundaries", "Inflow boundaries.");
@@ -93,6 +94,7 @@ PrecursorAction::validParams()
                         0.0,
                         "Penalty scalar for the inlet penalty BC to reduce unphysical numerical "
                         "oscillations near the wall where flow velocity may be small.");
+  params.addParam<Real>("inlet_scale", "The amount to scale the inlet precursor concentration by");
   return params;
 }
 
@@ -227,6 +229,8 @@ PrecursorAction::addPrecursorSource(const unsigned & op, const std::string & var
   params.set<unsigned int>("num_groups") = _num_groups;
   params.set<unsigned int>("precursor_group_number") = op;
   std::vector<std::string> include = {"temperature", "group_fluxes"};
+  if (isParamValid("neutron_source"))
+    include.push_back("neutron_source");
   params.applySpecificParameters(parameters(), include);
   params.set<bool>("use_exp_form") = getParam<bool>("nt_exp_form");
   params.set<PostprocessorName>("eigenvalue_scaling") = getParam<PostprocessorName>("eigenvalue_scaling");
@@ -411,6 +415,8 @@ PrecursorAction::addInflowBC(const std::string & var_name)
     params.set<Real>("ww") = getParam<Real>("w_def");
     params.set<PostprocessorName>("postprocessor") =
         "Inlet_Average_" + var_name + "_" + _object_suffix;
+    if (isParamValid("inlet_scale"))
+      params.set<Real>("scale") = getParam<Real>("inlet_scale");
 
     std::string bc_name = "PostprocessorInflowBC_" + var_name + "_" + _object_suffix;
     _problem->addBoundaryCondition("PostprocessorInflowBC", bc_name, params);
@@ -429,6 +435,8 @@ PrecursorAction::addInflowBC(const std::string & var_name)
       params.set<std::vector<VariableName>>("wvel") = {getParam<NonlinearVariableName>("wvel")};
     params.set<PostprocessorName>("postprocessor") =
         "Inlet_Average_" + var_name + "_" + _object_suffix;
+    if (isParamValid("inlet_scale"))
+      params.set<Real>("scale") = getParam<Real>("inlet_scale");
 
     std::string bc_name = "PostprocessorCoupledInflowBC_" + var_name + "_" + _object_suffix;
     _problem->addBoundaryCondition("PostprocessorCoupledInflowBC", bc_name, params);
@@ -445,6 +453,8 @@ PrecursorAction::addInflowBC(const std::string & var_name)
     params.set<FunctionName>("vel_z_func") = getParam<FunctionName>("w_func");
     params.set<PostprocessorName>("postprocessor") =
         "Inlet_Average_" + var_name + "_" + _object_suffix;
+    if (isParamValid("inlet_scale"))
+      params.set<Real>("scale") = getParam<Real>("inlet_scale");
 
     std::string bc_name =
       "PostprocessorVelocityFunctionInflowBC_" + var_name + "_" + _object_suffix;

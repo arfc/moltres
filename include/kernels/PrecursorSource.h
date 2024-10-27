@@ -27,4 +27,6 @@ protected:
   std::vector<unsigned int> _flux_ids;
   Real _prec_scale;
   const PostprocessorValue & _eigenvalue_scaling;
+  const bool _has_neutron_source;
+  const VariableValue & _neutron_source;
 };
