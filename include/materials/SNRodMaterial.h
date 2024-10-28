@@ -24,6 +24,9 @@ protected:
   // Rod height function
   const Function & _rod_height;
 
-  // Rod cusping correction factor
-  const Real _cusp_correction;
+  // Rod cusping correction power factor
+  const Real _cusp_power;
+
+  // Rod cusping correction coefficient
+  const Real _cusp_coeff;
 };

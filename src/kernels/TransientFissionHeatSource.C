@@ -38,7 +38,7 @@ TransientFissionHeatSource::TransientFissionHeatSource(const InputParameters & p
     _decay_heat_frac(getParam<std::vector<Real>>("decay_heat_fractions")),
     _decay_heat_const(getParam<std::vector<Real>>("decay_heat_constants")),
     _has_heat_source(isCoupled("heat_source")),
-    _heat_source(isCoupled("heat_source") ? coupledValue("heat") : _zero),
+    _heat_source(isCoupled("heat_source") ? coupledValue("heat_source") : _zero),
     _gamma_frac(getParam<Real>("gamma_frac"))
 {
   if (!_has_heat_source)

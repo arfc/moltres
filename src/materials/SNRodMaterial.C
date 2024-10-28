@@ -14,8 +14,12 @@ SNRodMaterial::validParams()
                                        "The material key for the non-rod material.");
   params.addRequiredParam<FunctionName>("rod_height_func",
       "Name of function that provides the rod interface height");
-  params.addParam<Real>("cusp_correction", 1,
-      "Rod cusping correction factor. The power to which the rod volume fraction is raised to.");
+  params.addParam<Real>("cusp_correction_power", 1,
+      "Rod cusping correction power factor. "
+      "The power to which the rod volume fraction is raised to.");
+  params.addParam<Real>("cusp_correction_coefficient", 1,
+      "Rod cusping correction coefficient. "
+      "The coefficient to which the rod volume fraction is multiplied with.");
   return params;
 }
 
@@ -23,7 +27,8 @@ SNRodMaterial::SNRodMaterial(const InputParameters & parameters)
   : MoltresSNMaterial(parameters),
     _nonrod_material_key(getParam<std::string>("nonrod_material_key")),
     _rod_height(getFunction("rod_height_func")),
-    _cusp_correction(getParam<Real>("cusp_correction"))
+    _cusp_power(getParam<Real>("cusp_correction_power")),
+    _cusp_coeff(getParam<Real>("cusp_correction_coefficient"))
 {
   std::string base_file = getParam<std::string>("base_file");
 
@@ -616,13 +621,18 @@ SNRodMaterial::computeQpProperties()
   Real vol_frac = volumeFraction();
   for (unsigned int i = 0; i < _num_groups; ++i)
   {
-    if (vol_frac > 0.5)
-      _tau_sn[_qp][i] = 1. / _totxs[_qp][i];
+    if (vol_frac > 0.0)
+    {
+      if (h * _totxs[_qp][i] > _sigma)
+        _tau_sn[_qp][i] = 1. / _totxs[_qp][i];
+      else
+        _tau_sn[_qp][i] = h / _sigma;
+    }
     else if (_c * h * _totxs[_qp][i] > _sigma)
       _tau_sn[_qp][i] = 1. / (_c * _totxs[_qp][i]);
     else
       _tau_sn[_qp][i] = h / _sigma;
-  } 
+  }
 }
 
 Real
@@ -645,6 +655,8 @@ SNRodMaterial::volumeFraction()
   else if (rod_height > elem_z_max)
     return 0.0;
   Real corrected_vol_frac =
-    std::pow((elem_z_max - rod_height) / (elem_z_max - elem_z_min), _cusp_correction);
+    std::min(
+      std::pow((elem_z_max - rod_height) / (elem_z_max - elem_z_min), _cusp_power) * _cusp_coeff,
+      1.0);
   return corrected_vol_frac;
 }
