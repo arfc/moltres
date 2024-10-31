@@ -445,46 +445,42 @@ MoltresSNMaterial::Construct(nlohmann::json xs_root)
                 "change interpolation scheme.");
         break;
       case LINEAR:
-        for (auto k = 0; k < o; ++k)
-        {
-          if (_xsec_names[j] == "SPN")
-            for (auto i = 0; i < (_L+1); ++i)
-              _xsec_linear_interpolators[_xsec_names[j]][i*o+k].setData(
+        if (_xsec_names[j] == "SPN")
+          for (auto i = 0; i < (_L+1); ++i)
+            for (auto k = 0; k < o/(_L+1); ++k)
+              _xsec_linear_interpolators[_xsec_names[j]][i*o/(_L+1)+k].setData(
                 _XsTemperature,
-                _xsec_map[_xsec_names[j]][i*o+k]);
-          else
+                _xsec_map[_xsec_names[j]][i*o/(_L+1)+k]);
+        else
+          for (auto k = 0; k < o; ++k)
             _xsec_linear_interpolators[_xsec_names[j]][k].setData(_XsTemperature,
                                                                   _xsec_map[_xsec_names[j]][k]);
-        }
         break;
       case SPLINE:
-        for (auto k = 0; k < o; ++k)
-        {
-          if (_xsec_names[j] == "SPN")
-            for (auto i = 0; i < (_L+1); ++i)
-              _xsec_spline_interpolators[_xsec_names[j]][i*o+k].setData(
+        if (_xsec_names[j] == "SPN")
+          for (auto i = 0; i < (_L+1); ++i)
+            for (auto k = 0; k < o/(_L+1); ++k)
+              _xsec_spline_interpolators[_xsec_names[j]][i*o/(_L+1)+k].setData(
                 _XsTemperature,
-                _xsec_map[_xsec_names[j]][i*o+k]);
-          else
+                _xsec_map[_xsec_names[j]][i*o/(_L+1)+k]);
+        else
+          for (auto k = 0; k < o; ++k)
             _xsec_spline_interpolators[_xsec_names[j]][k].setData(_XsTemperature,
                                                                   _xsec_map[_xsec_names[j]][k]);
-        }
         break;
       case MONOTONE_CUBIC:
         if (L < 3)
           mooseError("Monotone cubic interpolation requires at least three data points.");
-        for (auto k = 0; k < o; ++k)
-        {
-          if (_xsec_names[j] == "SPN")
-            for (auto i = 0; i < (_L+1); ++i)
-              _xsec_monotone_cubic_interpolators[_xsec_names[j]][i*o+k].setData(
+        if (_xsec_names[j] == "SPN")
+          for (auto i = 0; i < (_L+1); ++i)
+            for (auto k = 0; k < o/(_L+1); ++k)
+              _xsec_monotone_cubic_interpolators[_xsec_names[j]][i*o/(_L+1)+k].setData(
                 _XsTemperature,
-                _xsec_map[_xsec_names[j]][i*o+k]);
-          else
-            _xsec_monotone_cubic_interpolators[_xsec_names[j]][k].setData(
-              _XsTemperature,
-              _xsec_map[_xsec_names[j]][k]);
-        }
+                _xsec_map[_xsec_names[j]][i*o/(_L+1)+k]);
+        else
+          for (auto k = 0; k < o; ++k)
+            _xsec_monotone_cubic_interpolators[_xsec_names[j]][k].setData(_XsTemperature,
+                                                                  _xsec_map[_xsec_names[j]][k]);
         break;
       default:
         mooseError("Invalid enum type for interp_type");
