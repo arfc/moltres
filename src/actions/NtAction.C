@@ -27,7 +27,8 @@ NtAction::validParams()
 
   params.addRequiredParam<unsigned int>("num_precursor_groups",
                                         "specifies the total number of precursors to create");
-  params.addRequiredParam<std::string>("var_name_base", "specifies the base name of the variables");
+  params.addRequiredParam<std::string>("var_name_base",
+                                       "specifies the base name of the variables");
   params.addRequiredCoupledVar("temperature", "Name of temperature variable");
   params.addCoupledVar("pre_concs",
                        "All the variables that hold the precursor concentrations. "
@@ -42,8 +43,12 @@ NtAction::validParams()
                         "random initial conditions for the precursors.");
   params.addParam<FunctionName>("nt_ic_function",
                                 "An initial condition function for the neutrons.");
-  params.addParam<std::vector<BoundaryName>>("vacuum_boundaries",
-                                             "The boundaries on which to apply vacuum boundaries.");
+  params.addParam<std::vector<BoundaryName>>(
+      "vacuum_boundaries",
+      "The boundaries on which to apply vacuum boundaries.");
+  MooseEnum vacuum_bc_type("marshak mark milne", "marshak");
+  params.addParam<MooseEnum>("vacuum_bc_type", vacuum_bc_type,
+      "Whether to apply Marshak, Mark, or Milne vacuum boundary conditions. Defaults to Marshak.");
   params.addParam<bool>(
       "create_temperature_var", true, "Whether to create the temperature variable.");
   params.addParam<bool>(
@@ -147,6 +152,7 @@ NtAction::act()
         params.set<NonlinearVariableName>("variable") = var_name;
         if (isParamValid("use_exp_form"))
           params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
+        params.set<MooseEnum>("vacuum_bc_type") = getParam<MooseEnum>("vacuum_bc_type");
         std::string bc_name = "VacuumConcBC_" + var_name;
         _problem->addBoundaryCondition("VacuumConcBC", bc_name, params);
       }

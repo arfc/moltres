@@ -19,7 +19,7 @@ public:
 protected:
   virtual Real computeQpResidual() override;
   virtual Real computeQpJacobian() override;
-  virtual Real computeQpOffDiagJacobian(unsigned jvar);
+  virtual Real computeQpOffDiagJacobian(unsigned jvar) override;
 
   // Parameters
   const VariableValue & _T;

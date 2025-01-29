@@ -1,7 +1,47 @@
 [Tests]
-  [./coupled_bc]
+  [coupled_bc]
     type = 'Exodiff'
     input = 'coupled_bc_test.i'
     exodiff = 'coupled_bc_test_out.e'
-  [../]
+    requirement = 'The system shall be able to impose PostprocessorCoupledInflowBC and
+                   CoupledOutflowBC for advection with flow from coupled velocity variables.'
+  []
+  [vacuum_bc]
+    type = 'Exodiff'
+    input = 'vacuum_bc.i'
+    exodiff = 'vacuum_bc_out.e'
+    requirement = 'The system shall impose Marshak vacuum boundary conditions by default if
+                   `vacuum_bc_type` is not set.'
+  []
+  [vacuum_bc_marshak]
+    type = 'Exodiff'
+    input = 'vacuum_bc.i'
+    # Left boundary value = 1 + 2 * 0.001 = 1.002
+    # Right boundary value = 2 * 0.001 = 0.002
+    cli_args = 'BCs/vacuum/vacuum_bc_type=marshak'
+    exodiff = 'vacuum_bc_out.e'
+    requirement = 'The system shall impose Marshak vacuum boundary conditions.'
+  []
+  [vacuum_bc_mark]
+    type = 'Exodiff'
+    input = 'vacuum_bc.i'
+    # Left boundary value = 1 + sqrt(3) * 0.001 = 1.0017320508
+    # Right boundary value = sqrt(3) * 0.001 = 0.0017320508
+    cli_args = 'BCs/vacuum/vacuum_bc_type=mark
+                BCs/dirichlet/value=1.0017320508
+                Outputs/out/file_base=vacuum_bc_mark_out'
+    exodiff = 'vacuum_bc_mark_out.e'
+    requirement = 'The system shall impose Mark vacuum boundary conditions.'
+  []
+  [vacuum_bc_milne]
+    type = 'Exodiff'
+    input = 'vacuum_bc.i'
+    # Left boundary value = 1 + 3 * 0.710446 * 0.001 = 1.002131338
+    # Right boundary value = 3 * 0.710446 * 0.001 = 0.002131338
+    cli_args = 'BCs/vacuum/vacuum_bc_type=milne
+                BCs/dirichlet/value=1.0017320508
+                Outputs/out/file_base=vacuum_bc_milne_out'
+    exodiff = 'vacuum_bc_milne_out.e'
+    requirement = 'The system shall impose Milne vacuum boundary conditions.'
+  []
 []

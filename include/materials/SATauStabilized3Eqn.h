@@ -1,12 +1,9 @@
 #pragma once
 
 #include "SATauMaterial.h"
-
-class INSADMaterial;
-class INSADStabilized3Eqn;
-
-#include "SATauMaterial.h"
 #include "INSADStabilized3Eqn.h"
+
+class INSADStabilized3Eqn;
 
 class SATauStabilized3Eqn : public SATauMaterialTempl<INSADStabilized3Eqn>
 {

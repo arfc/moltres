@@ -16,7 +16,46 @@ the MOOSE finite element framework, enabling highly flexible and scalable reacto
 
 ## Multigroup Neutron Diffusion
 
-More information to be added in future.
+The neutron diffusion equation is an approximation to the Boltzmann transport equation, and is derived by taking the zeroth and first moment with respect to $\hat\Omega$, the direction of neutron travel. 
+A full derivation of the diffusion equation will not be presented here for conciseness. Importantly, when taking the first moment of the transport equation the angular flux is assumed to be linearly anisotropic. 
+The approximations reduce the phase space through the elimination of angular dependence, but the resulting equation also has reduced fidelity when compared to the transport equation, particularly in regions where the neutron flux has strong angular dependence. 
+A non-exhaustive list of regions in which the neutron flux strongly depends on angle is near material interfaces between materials with highly dissimilar neutronic properties, within strong absorbers, and within near-void regions.
+As a deterministic method, the neutron diffusion method also requires discretization of the continuous energy dependence into energy groups consisting of non-overlapping, finite energy ranges across the entire energy spectrum. 
+This energy discretization creates a system of equations referred to as the multigroup neutron diffusion equations: 
+
+!equation
+\frac{1}{v_g} \frac{\partial\phi_g}{\partial t}-\nabla \cdot D_g \nabla \phi_g +\Sigma^R_{g} \phi_g =\sum^G_{g \neq g'} {\Sigma^s_{g'\rightarrow g} \phi_{g'}}+ \chi^p_{g} \sum^G_{g'=1} {\left(1- \beta \right) \nu_{g'} \Sigma^f_{g'}\phi_{g'} }+\chi^d_{g} \sum^I_i {\lambda_i C_i}
+
+The delayed neutron precursor distributions are governed by:
+
+!equation
+\frac{\partial C_i}{\partial t}=\sum^G_{g'=1}{\beta_i \nu \Sigma^f_{g'}\phi_{g'}}-\lambda_i C_i-\vec{u} \cdot \nabla C_i
+
+Notably, there are two production terms of neutrons, the prompt fission source and delayed neutron precursor decay source. 
+The first term describes the neutrons immediately born from fission, and the second term describes the neutrons born from the radioactive decay of neutron-emitting radionuclides, commonly called delayed neutron precursors. 
+The multigroup neutron diffusion equations are generally impossible to solve analytically for realistic problems and are therefore typically solved with numerical methods. 
+Moltres utilizes the [Finite Element Method](https://mooseframework.inl.gov/help/faq/what_is_fem.html) (FEM) capabilities provided by the MOOSE framework.  
+In FEM, the spatial domain is discretized into finite mesh elements and the time dependence is modeled through discrete time steps and time integration methods. 
+
+!table id=diff_table caption= Terms in multi-group neutron diffusion equation and their associated kernels
+|Term in Multi-Group Diffusion Equation | Associated Kernel |Definition of Term|
+| - | - | - |
+| [!eq](\frac{1}{v_g} \frac{\partial\phi_g}{\partial t}) | [NtTimeDerivative](NtTimeDerivative.md) | Time rate of change of energy group g |
+| [!eq](- \nabla \cdot D_g \nabla \phi_g) | [GroupDiffusion](GroupDiffusion.md) | Streaming term of energy group g |
+| [!eq](\Sigma^R_{g} \phi_g) | [SigmaR](SigmaR.md) | Removal from energy group g |
+| [!eq](\sum^G_{g \neq g'} {\Sigma^s_{g'\rightarrow g} \phi_{g'}}) | [InScatter](InScatter.md) | In-scattering into energy group g | 
+| [!eq](\chi^p_{g} \sum^G_{g'=1} {\left[1- \beta \right] \nu_{g'} \Sigma^f_{g'}\phi_{g'} } ) | [CoupledFissionKernel](CoupledFissionKernel.md) | Prompt fission neutron source |
+| [!eq](\chi^d_{g} \sum^I_i {\lambda_i C_i}) | [DelayedNeutronSource](DelayedNeutronSource.md) | Delayed fission neutron source |
+
+!table id=prec_table caption= Terms in delayed neutron precursor equation and their associated kernels
+| Term in Delayed Precursor Equation | Associated Kernel(s) | Definition of Term |
+| - | - | - |
+| [!eq](\frac{\partial C_i}{\partial t}) | [ScalarTransportTimeDerivative](ScalarTransportTimeDerivative.md) | Time rate of change of precursor population | 
+| [!eq](\sum^G_{g'=1}{\beta_i \nu \Sigma^f_{g'}\phi_{g'}}) | [PrecursorSource](PrecursorSource.md) | Production of precursor from fission 
+| [!eq](-\lambda_i C_i) | [PrecursorDecay](PrecursorDecay.md) | Loss of precusors due to radioactive decay | 
+| [!eq](-\vec{u} \cdot \nabla C_i) | [DGCoupledAdvection](DGCoupledAdvection.md), [DGFunctionConvection](DGFunctionConvection.md), [DGConvection](https://mooseframework.inl.gov/source/dgkernels/DGConvection.html) | Advection of the precursors |
+
+For the advective term in the delayed neutron precursor equation, $-\vec{u}\cdot \nabla C_i$, there are three kernels. DGCoupledAdvection is used when the velocity is a variable in the simulation, DGFunctionConvection is used when the velocity is a function, and DGConvection is for when the velocity is constant.
 
 ## Heat Transfer and Fluid Flow
 
