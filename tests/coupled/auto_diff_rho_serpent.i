@@ -50,7 +50,6 @@ nt_scale = 1e13
     loop_precursors = false
     family = MONOMIAL
     order = CONSTANT
-    # jac_test = true
   []
 []
 
@@ -145,13 +144,6 @@ nt_scale = 1e13
     nt_scale = ${nt_scale}
     block = 'fuel'
   []
-  # [./temp_source_mod]
-  #   type = GammaHeatSource
-  #   variable = temp
-  #   gamma = .0144 # Cammi .0144
-  #   block = 'moder'
-  #   average_fission_heat = 'average_fission_heat'
-  # [../]
 []
 
 [BCs]
@@ -233,8 +225,6 @@ nt_scale = 1e13
   petsc_options_iname = '-pc_type -pc_factor_shift_type'
   petsc_options_value = 'lu       NONZERO'
   line_search = 'none'
-  # petsc_options_iname = '-snes_type'
-  # petsc_options_value = 'test'
 
   nl_max_its = 30
   l_max_its = 100
@@ -242,8 +232,6 @@ nt_scale = 1e13
   steady_state_tolerance = 1e-10
 
   dtmin = 1e-5
-  # dtmax = 1
-  # dt = 1e-3
   [TimeStepper]
     type = IterationAdaptiveDT
     dt = 1e-3
@@ -289,13 +277,6 @@ nt_scale = 1e13
     block = 'moder'
     outputs = 'exodus console'
   []
-  # [./average_fission_heat]
-  #   type = AverageFissionHeat
-  #   nt_scale = ${nt_scale}
-  #   execute_on = 'linear nonlinear'
-  #   outputs = 'console'
-  #   block = 'fuel'
-  # [../]
 []
 
 [Outputs]
@@ -312,23 +293,3 @@ nt_scale = 1e13
   show_var_residual_norms = true
 []
 
-# [ICs]
-#   [./temp_ic]
-#     type = RandomIC
-#     variable = temp
-#     min = 922
-#     max = 1022
-#   [../]
-#   [./group1_ic]
-#     type = RandomIC
-#     variable = group1
-#     min = .5
-#     max = 1.5
-#   [../]
-#   [./group2_ic]
-#     type = RandomIC
-#     variable = group2
-#     min = .5
-#     max = 1.5
-#   [../]
-# []

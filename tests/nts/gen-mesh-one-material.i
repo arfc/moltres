@@ -93,13 +93,6 @@
     diffusivity = 'k'
     save_in = 'diffus_resid tot_resid'
   []
-  # [./temp_cond]
-  #   type = HeatConduction
-  #   diffusion_coefficient_name = k
-  #   diffusion_coefficient_dT_name = d_k_d_temp
-  #   use_displaced_mesh = false
-  #   variable = temp
-  # [../]
   [temp_source]
     type = FissionHeatSource
     tot_fission_heat = tot_fission_heat
@@ -168,19 +161,9 @@
     value = 900
     save_in = 'bc_resid tot_resid'
   []
-  # [./temp]
-  #   boundary = boundary
-  #   type = VacuumBC
-  #   variable = temp
-  # [../]
 []
 
 [Executioner]
-  # type = NonlinearEigen
-  # free_power_iterations = 4
-  # source_abs_tol = 1e-12
-  # source_rel_tol = 1e-8
-  # output_after_power_iterations = true
 
   type = InversePowerMethod
   max_power_iterations = 50
@@ -192,16 +175,12 @@
   l_max_its = 100
 
   solve_type = 'PJFNK'
-  # solve_type = 'NEWTON'
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor'
-  # petsc_options_iname = '-pc_type -sub_pc_type'
-  # petsc_options_value = 'asm lu'
 []
 
 [Preconditioning]
   [SMP]
     type = SMP
-    # full = true
   []
 []
 

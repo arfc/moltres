@@ -2,7 +2,6 @@ xmax = .05
 ymax = .05
 
 [GlobalParams]
-  #integrate_p_by_parts = false
   gravity = '0 -9.81 0'
 []
 
@@ -43,8 +42,6 @@ ymax = .05
   petsc_options = '-snes_converged_reason -ksp_converged_reason -snes_test_display'
   petsc_options_iname = '-pc_type -pc_factor_shift_type -pc_factor_shift_amount'
   petsc_options_value = 'lu	  NONZERO		1e-10'
-  # petsc_options_iname = '-snes_type'
-  # petsc_options_value = 'test'
   line_search = 'none'
   nl_rel_tol = 1e-12
   nl_max_its = 20
@@ -52,13 +49,6 @@ ymax = .05
   l_max_its = 500
 
   dtmin = 1e-5
-  #[./TimeStepper]
-  #  type = IterationAdaptiveDT
-  #  dt = 1e-3
-  #  cutback_factor = 0.4
-  #  growth_factor = 1.2
-  #  optimal_iterations = 20
-  #[../]
 
 []
 
