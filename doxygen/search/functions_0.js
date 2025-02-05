@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['act_0',['act',['../class_precursor_action.html#ad9d8e814b6434f01b73a95089c5f49c0',1,'PrecursorAction::act()'],['../class_nt_action.html#a196522fb048a8d7bb667e5a4112eee0d',1,'NtAction::act()']]],
+  ['act_0',['act',['../class_nt_action.html#a196522fb048a8d7bb667e5a4112eee0d',1,'NtAction::act()'],['../class_precursor_action.html#ad9d8e814b6434f01b73a95089c5f49c0',1,'PrecursorAction::act() override']]],
   ['addcoolantoutflowpostprocessor_1',['addCoolantOutflowPostprocessor',['../class_precursor_action.html#a2075678ddbec96eb4721a38d22350f20',1,'PrecursorAction']]],
   ['addcoupledfissionkernel_2',['addCoupledFissionKernel',['../class_nt_action.html#a4d8831107c685bcea8bb46ff56f140f9',1,'NtAction']]],
   ['adddelayedneutronsource_3',['addDelayedNeutronSource',['../class_nt_action.html#a1bfd3b61231321008bef9eccd3f4d443',1,'NtAction']]],
