@@ -1,5 +1,6 @@
 #include "CoupledScalarAdvectionNoBCBC.h"
 #include "MooseMesh.h"
+#include "FEProblemBase.h"
 
 registerMooseObject("MoltresApp", CoupledScalarAdvectionNoBCBC);
 
