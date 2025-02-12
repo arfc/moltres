@@ -7,7 +7,7 @@ ScalarTransportBase::validParams()
 {
   InputParameters params = emptyInputParameters();
   params.addParam<bool>("use_exp_form",
-                        true,
+                        false,
                         "Whether concentrations should be in an expotential/logarithmic format.");
   return params;
 }

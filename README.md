@@ -41,4 +41,5 @@ A full list of contributing guidelines can be found
 
 ## Contact
 
-Please post to our GitHub Discussions tab.
+Please communicate issues with the development team through GitHub issues and 
+pull requests. 
