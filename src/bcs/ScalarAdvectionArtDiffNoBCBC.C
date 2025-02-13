@@ -1,4 +1,5 @@
 #include "ScalarAdvectionArtDiffNoBCBC.h"
+#include "FEProblemBase.h"
 
 registerMooseObject("MoltresApp", ScalarAdvectionArtDiffNoBCBC);
 

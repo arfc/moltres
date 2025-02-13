@@ -62,11 +62,12 @@ ScalarAdvectionArtDiff::tau()
   RealVectorValue U(_u_vel[_qp], _v_vel[_qp], _w_vel[_qp]);
   Real u_norm = U.norm();
   Real h;
+  mooseAssert(_mesh.dimension() >= 1 && _mesh.dimension() <= 3, "The dimension should always be between 1 and 3");
   if (_mesh.dimension() == 1)
     h = _current_elem->volume();
   else if (_mesh.dimension() == 2)
     h = std::sqrt(_current_elem->volume());
-  else if (_mesh.dimension() == 3)
+  else
     h = std::cbrt(_current_elem->volume());
   Real gamma = u_norm * h / 2. / _D[_qp];
   if (gamma <= 1e-10)
@@ -81,12 +82,13 @@ Real
 ScalarAdvectionArtDiff::computeQpResidual()
 {
   RealVectorValue U(_u_vel[_qp], _v_vel[_qp], _w_vel[_qp]);
+  mooseAssert(_mesh.dimension() >= 1 && _mesh.dimension() <= 3, "The dimension should always be between 1 and 3");
   Real h;
   if (_mesh.dimension() == 1)
     h = _current_elem->volume();
   else if (_mesh.dimension() == 2)
     h = std::sqrt(_current_elem->volume());
-  else if (_mesh.dimension() == 3)
+  else
     h = std::cbrt(_current_elem->volume());
   Real delta = U.norm() * h / 2. * ScalarAdvectionArtDiff::tau();
 
@@ -98,12 +100,13 @@ Real
 ScalarAdvectionArtDiff::computeQpJacobian()
 {
   RealVectorValue U(_u_vel[_qp], _v_vel[_qp], _w_vel[_qp]);
+  mooseAssert(_mesh.dimension() >= 1 && _mesh.dimension() <= 3, "The dimension should always be between 1 and 3");
   Real h;
   if (_mesh.dimension() == 1)
     h = _current_elem->volume();
   else if (_mesh.dimension() == 2)
     h = std::sqrt(_current_elem->volume());
-  else if (_mesh.dimension() == 3)
+  else
     h = std::cbrt(_current_elem->volume());
   Real delta = U.norm() * h / 2. * ScalarAdvectionArtDiff::tau();
 
