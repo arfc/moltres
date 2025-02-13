@@ -24,8 +24,10 @@ var searchData=
   ['scalartransportbase_2eh_21',['ScalarTransportBase.h',['../_scalar_transport_base_8h.html',1,'']]],
   ['scalartransporttimederivative_2ec_22',['ScalarTransportTimeDerivative.C',['../_scalar_transport_time_derivative_8_c.html',1,'']]],
   ['scalartransporttimederivative_2eh_23',['ScalarTransportTimeDerivative.h',['../_scalar_transport_time_derivative_8h.html',1,'']]],
-  ['sideweightedintegralpostprocessor_2ec_24',['SideWeightedIntegralPostprocessor.C',['../_side_weighted_integral_postprocessor_8_c.html',1,'']]],
-  ['sideweightedintegralpostprocessor_2eh_25',['SideWeightedIntegralPostprocessor.h',['../_side_weighted_integral_postprocessor_8h.html',1,'']]],
-  ['sigmar_2ec_26',['SigmaR.C',['../_sigma_r_8_c.html',1,'']]],
-  ['sigmar_2eh_27',['SigmaR.h',['../_sigma_r_8h.html',1,'']]]
+  ['sidefunctionweightedintegralpostprocessor_2ec_24',['SideFunctionWeightedIntegralPostprocessor.C',['../_side_function_weighted_integral_postprocessor_8_c.html',1,'']]],
+  ['sidefunctionweightedintegralpostprocessor_2eh_25',['SideFunctionWeightedIntegralPostprocessor.h',['../_side_function_weighted_integral_postprocessor_8h.html',1,'']]],
+  ['sideweightedintegralpostprocessor_2ec_26',['SideWeightedIntegralPostprocessor.C',['../_side_weighted_integral_postprocessor_8_c.html',1,'']]],
+  ['sideweightedintegralpostprocessor_2eh_27',['SideWeightedIntegralPostprocessor.h',['../_side_weighted_integral_postprocessor_8h.html',1,'']]],
+  ['sigmar_2ec_28',['SigmaR.C',['../_sigma_r_8_c.html',1,'']]],
+  ['sigmar_2eh_29',['SigmaR.h',['../_sigma_r_8h.html',1,'']]]
 ];
