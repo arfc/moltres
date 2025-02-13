@@ -1,4 +1,4 @@
-flow_velocity = 20
+flow_velocity = 21.7 # cm/s. See MSRE-properties.ods
 global_temperature = 922
 
 [GlobalParams]
@@ -12,8 +12,8 @@ global_temperature = 922
 [Mesh]
   type = GeneratedMesh
   dim = 1
-  nx = 20
-  xmax = 100
+  nx = 14
+  xmax = 150
   elem_type = EDGE2
 []
 
@@ -21,11 +21,9 @@ global_temperature = 922
   [core]
     var_name_base = pre
     outlet_boundaries = 'right'
-    outlet_vel_func = velFunc
-    velocity_type = function
-    u_func = velFunc
-    v_func = 0
-    w_func = 0
+    u_def = ${flow_velocity}
+    v_def = 0
+    w_def = 0
     nt_exp_form = false
     family = MONOMIAL
     order = FIRST
@@ -33,14 +31,6 @@ global_temperature = 922
     multi_app = loopApp
     is_loopapp = true
     inlet_boundaries = 'left'
-  []
-[]
-
-[Functions]
-  # 1-D flow exponentially converging in time
-  [velFunc]
-    type = ParsedFunction
-    expression = '${flow_velocity} * (1 - exp(-t/10))'
   []
 []
 
@@ -55,7 +45,7 @@ global_temperature = 922
 
 [Executioner]
   type = Transient
-  end_time = 100
+  end_time = 400
   nl_rel_tol = 1e-6
   nl_abs_tol = 1e-5
   solve_type = 'NEWTON'
@@ -66,7 +56,7 @@ global_temperature = 922
   nl_max_its = 20
   l_max_its = 50
   dtmin = 1e-2
-  dtmax = 4
+  dtmax = 5
   [TimeStepper]
     type = IterationAdaptiveDT
     dt = 1e-2
@@ -81,9 +71,6 @@ global_temperature = 922
     type = SMP
     full = true
   []
-[]
-
-[Postprocessors]
 []
 
 [Outputs]

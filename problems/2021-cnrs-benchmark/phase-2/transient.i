@@ -41,6 +41,7 @@ dt = 0.00625        # Timestep size = 1 / freq / 200 = 0.00625 s
 
 [Problem]
   type = FEProblem
+  allow_initial_conditions_with_restart = true
 []
 
 [Variables]
@@ -69,7 +70,7 @@ dt = 0.00625        # Timestep size = 1 / freq / 200 = 0.00625 s
   [pres]
     var_name_base = pre
     outlet_boundaries = ''
-    constant_velocity_values = false
+    velocity_type = variable
     uvel = velx
     vvel = vely
     nt_exp_form = false
@@ -214,7 +215,7 @@ dt = 0.00625        # Timestep size = 1 / freq / 200 = 0.00625 s
 [Functions]
   [func_alpha]
     type = ParsedFunction
-    value = '1 + 0.1 * sin(2*pi*t*${freq})' # Perturbation frequency = 0.8Hz
+    expression = '1 + 0.1 * sin(2*pi*t*${freq})' # Perturbation frequency = 0.8Hz
   []
   [velxf]
     type = SolutionFunction
