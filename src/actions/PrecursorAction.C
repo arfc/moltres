@@ -46,7 +46,10 @@ PrecursorAction::validParams()
                                "All the variables that hold the group fluxes. "
                                "These MUST be listed by decreasing "
                                "energy/increasing group number.");
-  params.addCoupledVar("neutron_source", "Neutron source variable name");
+  params.addCoupledVar("neutron_source",
+                       "Fission rate variable name. Optional parameter for reducing "
+                       "variable data transfers between MultiApps with a consolidated fission "
+                       "rate variable.");
   params.addRequiredParam<unsigned int>("num_groups", "The total number of energy groups.");
   params.addRequiredParam<std::vector<BoundaryName>>("outlet_boundaries", "Outflow boundaries.");
   params.addParam<std::vector<BoundaryName>>("inlet_boundaries", "Inflow boundaries.");
@@ -94,7 +97,8 @@ PrecursorAction::validParams()
                         0.0,
                         "Penalty scalar for the inlet penalty BC to reduce unphysical numerical "
                         "oscillations near the wall where flow velocity may be small.");
-  params.addParam<Real>("inlet_scale", "The amount to scale the inlet precursor concentration by");
+  params.addParam<Real>("inlet_scale",
+                        "The amount to scale the inlet precursor concentration by.");
   return params;
 }
 
@@ -169,6 +173,7 @@ PrecursorAction::act()
     {
       if (getParam<bool>("transient"))
         addTimeDerivative(var_name);
+      // Need to add continuous advection kernel if variable order >= FIRST
       if (getParam<MooseEnum>("order") != "CONSTANT")
         addAdvection(var_name);
       addPrecursorSource(op, var_name);
@@ -197,12 +202,22 @@ PrecursorAction::act()
       addInitialConditions(var_name);
 
     // postprocessors
-    else if (_current_task == "add_postprocessor" && getParam<bool>("loop_precursors"))
+    else if (_current_task == "add_postprocessor")
     {
-      // Set up postprocessors for calculating precursor conc at outlet
-      // and receiving precursor conc at inlet from loop app
-      addOutletPostprocessor(var_name);
-      addInletPostprocessor(var_name);
+      if getParam<bool>("loop_precursors"))
+      {
+        // Set up postprocessors for calculating precursor conc at outlet
+        // and receiving precursor conc at inlet from loop app
+        addOutletPostprocessor(var_name);
+        addInletPostprocessor(var_name);
+      }
+
+      if (getParam<bool>("loop_precursors") && _velocity_type != "constant" && (!_is_loopapp))
+      {
+        // Add outflow rate postprocessor for Navier-Stokes velocities in the main
+        // app if precursors are looped
+        addCoolantOutflowPostprocessor();
+      }
     }
 
     // transfers
@@ -213,12 +228,6 @@ PrecursorAction::act()
       addMultiAppTransfer(var_name);
     }
   }
-
-  // Add outflow rate postprocessor for Navier-Stokes velocities in the main
-  // app if precursors are looped
-  if (_current_task == "add_postprocessor" && getParam<bool>("loop_precursors") &&
-      _velocity_type != "constant" && (!_is_loopapp))
-    addCoolantOutflowPostprocessor();
 }
 
 void
