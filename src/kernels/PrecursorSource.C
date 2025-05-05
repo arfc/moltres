@@ -12,9 +12,9 @@ PrecursorSource::validParams()
                                                "These MUST be listed by decreasing "
                                                "energy/increasing group number.");
   params.addCoupledVar("neutron_source",
-                       "Fission rate variable name. Optional parameter for reducing "
+                       "Fission neutron source variable name. Optional parameter for reducing "
                        "variable data transfers between MultiApps with a consolidated fission "
-                       "source variable.");
+                       "neutron source variable.");
   params.addParam<unsigned int>("precursor_group_number",
                                 "What precursor group this kernel is acting on.");
   params.addCoupledVar(

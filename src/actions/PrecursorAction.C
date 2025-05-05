@@ -47,9 +47,9 @@ PrecursorAction::validParams()
                                "These MUST be listed by decreasing "
                                "energy/increasing group number.");
   params.addCoupledVar("neutron_source",
-                       "Fission rate variable name. Optional parameter for reducing "
+                       "Fission neutron source variable name. Optional parameter for reducing "
                        "variable data transfers between MultiApps with a consolidated fission "
-                       "rate variable.");
+                       "neutron source variable.");
   params.addRequiredParam<unsigned int>("num_groups", "The total number of energy groups.");
   params.addRequiredParam<std::vector<BoundaryName>>("outlet_boundaries", "Outflow boundaries.");
   params.addParam<std::vector<BoundaryName>>("inlet_boundaries", "Inflow boundaries.");

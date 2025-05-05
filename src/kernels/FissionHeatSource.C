@@ -10,7 +10,9 @@ FissionHeatSource::validParams()
   params.addRequiredCoupledVar("group_fluxes", "All the variables that hold the group fluxes. "
                                                "These MUST be listed by decreasing "
                                                "energy/increasing group number.");
-  params.addCoupledVar("heat_source", "Heat source variable name");
+  params.addCoupledVar("heat_source",
+                       "Heat source variable name. Optional parameter for reducing variable data "
+                       "transfers between MultiApps with a consolidated heat source variable.");
   params.addRequiredParam<PostprocessorName>(
       "tot_fission_heat", "The total fission heat postprocessor that's used to normalize the heat source.");
   params.addRequiredParam<Real>("power", "The reactor power.");

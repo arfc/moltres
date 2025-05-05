@@ -33,8 +33,10 @@ NtAction::validParams()
   params.addCoupledVar("pre_concs",
                        "All the variables that hold the precursor concentrations. "
                        "These MUST be listed by increasing group number.");
-  params.addCoupledVar("delayed_neutron_source", "Delayed neutron source term variable name");
-  params.addParam<Real>("temp_scaling", "The amount by which to scale the temperature variable.");
+  params.addCoupledVar("delayed_neutron_source",
+                       "Delayed neutron source variable name. Optional parameter for reducing "
+                       "variable data transfers between MultiApps with a consolidated delayed "
+                       "neutron source variable.");
   params.addRequiredParam<unsigned int>("num_groups", "The total number of energy groups.");
   params.addRequiredParam<bool>(
       "use_exp_form", "Whether concentrations should be in an exponential/logarithmic format.");
