@@ -34,6 +34,11 @@ protected:
     MILNE
   };
 
-  /// Ratio of u to du/dn
+  // Ratio of u to du/dn
   Real _alpha;
+
+  // Milne vacuum boundary extrapolation coefficient
+  // Derived from the exact analytical solution to the Milne problem. See MooseDocs-based
+  // documentation for more information.
+  Real _milne_extrapolation_coefficient = 3 * 0.710446;
 };

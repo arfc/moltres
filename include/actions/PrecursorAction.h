@@ -52,6 +52,13 @@ protected:
   void addTimeDerivative(const std::string & var_name);
 
   /**
+  * Adds appropriate conservative advection kernel
+  *
+  * @param var_name The name of the variable the kernel acts on
+  */
+  void addAdvection(const std::string & var_name);
+
+  /**
   * Adds DGAdvection kernel
   *
   * @param var_name The name of the variable the kernel acts on
@@ -71,6 +78,11 @@ protected:
   * @param var_name The name of the variable the BC acts on
   */
   void addInflowBC(const std::string & var_name);
+
+  /**
+   * Adds a PostprocessorPenaltyDirichletBC to stabilize precursor conc at inlet
+   */
+  void addPenaltyBC(const std::string & var_name);
 
   /**
   * Adds random initial conditions for Jacobian testing
@@ -127,5 +139,9 @@ protected:
   /// optional object name suffix
   std::string _object_suffix;
 
+  /// whether input file is for the outer loop
   bool _is_loopapp;
+
+  /// velocity type
+  MooseEnum _velocity_type;
 };

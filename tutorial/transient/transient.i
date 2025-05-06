@@ -40,7 +40,7 @@
     order = CONSTANT
     block = 0
     outlet_boundaries = 'fuel_top'
-    constant_velocity_values = true
+    velocity_type = constant
     u_def = 0
     v_def = 18.085
     w_def = 0
@@ -241,13 +241,6 @@
     type = FunctionDT
     function = dt_func
   []
-  #  [TimeStepper]
-  #    type = IterationAdaptiveDT
-  #    dt = .2
-  #    cutback_factor = 0.4
-  #    growth_factor = 1.2
-  #    optimal_iterations = 20
-  #  []
 []
 
 [Preconditioning]
@@ -306,7 +299,6 @@
 
 [Outputs]
   perf_graph = true
-  #  print_linear_residuals = true
   [exodus]
     type = Exodus
   []
@@ -317,5 +309,4 @@
 []
 
 [Debug]
-  #  show_var_residual_norms = true
 []
