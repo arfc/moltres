@@ -281,6 +281,26 @@ sph_harmonics(int l, int m, Real mu, Real eta, Real xi)
         default:
           mooseError("Invalid m value.");
       }
+    case 3:
+      switch (m)
+      {
+        case 3:
+          return -sqrt2 * C * 15 * (4 * eta * eta * eta - 3 * eta * (1 - mu * mu));
+        case 2:
+          return sqrt2 * C * 15 * mu * (eta * eta - xi * xi);
+        case 1:
+          return sqrt2 * C * 1.5 * (1 - 5 * mu * mu) * eta;
+        case 0:
+          return C * .5 * (5 * mu * mu * mu - 3 * mu);
+        case -1:
+          return sqrt2 * C * 1.5 * (1 - 5 * mu * mu) * xi;
+        case -2:
+          return sqrt2 * C * 30 * mu * eta * xi;
+        case -3:
+          return -sqrt2 * C * 15 * (3 * xi * (1 - mu * mu) - 4 * xi * xi * xi);
+        default:
+          mooseError("Invalid m value.");
+      }
     default:
       mooseError("Invalid l value.");
   }

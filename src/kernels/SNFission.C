@@ -1,8 +1,6 @@
 #include "SNFission.h"
 #include "Executioner.h"
 
-using MooseUtils::relativeFuzzyEqual;
-
 registerMooseObject("MoltresApp", SNFission);
 
 InputParameters
@@ -24,6 +22,8 @@ SNFission::validParams()
   params.addParam<bool>("acceleration", false, "Whether an acceleration scheme is applied.");
   params.addParam<bool>("use_initial_flux", false,
       "Whether to use the diffusion flux as an initial condition");
+  params.addParam<PostprocessorName>("iteration_postprocessor", 0,
+      "Name of postprocessor with fixed point iteration number");
   return params;
 }
 
@@ -40,7 +40,8 @@ SNFission::SNFission(const InputParameters & parameters)
     _account_delayed(getParam<bool>("account_delayed")),
     _eigenvalue_scaling(getPostprocessorValue("eigenvalue_scaling")),
     _acceleration(getParam<bool>("acceleration")),
-    _use_initial_flux(getParam<bool>("use_initial_flux"))
+    _use_initial_flux(getParam<bool>("use_initial_flux")),
+    _iteration_postprocessor(getPostprocessorValue("iteration_postprocessor"))
 {
   if (_acceleration || _use_initial_flux)
   {
@@ -75,17 +76,17 @@ SNFission::SNFission(const InputParameters & parameters)
 void
 SNFission::computeQpResidual(RealEigenVector & residual)
 {
-  if (relativeFuzzyEqual(_chi_p[_qp][_group], 0.0) && relativeFuzzyEqual(_chi_t[_qp][_group], 0.0))
+  if (_chi_p[_qp][_group] == 0.0 && _chi_t[_qp][_group] == 0.0)
     return;
 
   RealEigenVector lhs = _tau_sn[_qp][_group] * _ordinates * _array_grad_test[_i][_qp] +
     RealEigenVector::Constant(_count, _test[_i][_qp]);
 
   Real fission = 0.;
-  if (_acceleration || (_use_initial_flux && _app.getExecutioner()->fixedPointSolve().numFixedPointIts() == 1))
+  if (_acceleration || (_use_initial_flux && _iteration_postprocessor == 1.0))
   {
     for (unsigned int g = 0; g < _num_groups; ++g)
-      fission += _nsf[_qp][g] * (*_group_fluxes[g])[_qp];
+      fission += 0.125 * _nsf[_qp][g] * (*_group_fluxes[g])[_qp];
   }
   else
   {
@@ -108,10 +109,10 @@ SNFission::computeQpResidual(RealEigenVector & residual)
 RealEigenVector
 SNFission::computeQpJacobian()
 {
-  if (relativeFuzzyEqual(_chi_p[_qp][_group], 0.0) && relativeFuzzyEqual(_chi_t[_qp][_group], 0.0))
+  if (_chi_p[_qp][_group] == 0.0 && _chi_t[_qp][_group] == 0.0)
     return ArrayKernel::computeQpJacobian();
 
-  if (_acceleration || (_use_initial_flux && _app.getExecutioner()->fixedPointSolve().numFixedPointIts() == 1))
+  if (_acceleration || (_use_initial_flux && _iteration_postprocessor == 1.0))
     return ArrayKernel::computeQpJacobian();
   else
   {
@@ -135,10 +136,10 @@ SNFission::computeQpJacobian()
 RealEigenMatrix
 SNFission::computeQpOffDiagJacobian(const MooseVariableFEBase & jvar)
 {
-  if (relativeFuzzyEqual(_chi_p[_qp][_group], 0.0) && relativeFuzzyEqual(_chi_t[_qp][_group], 0.0))
+  if (_chi_p[_qp][_group] == 0.0 && _chi_t[_qp][_group] == 0.0)
     return ArrayKernel::computeQpOffDiagJacobian(jvar);
 
-  if (_acceleration || (_use_initial_flux && _app.getExecutioner()->fixedPointSolve().numFixedPointIts() == 1))
+  if (_acceleration || (_use_initial_flux && _iteration_postprocessor == 1.0))
     return ArrayKernel::computeQpOffDiagJacobian(jvar);
   else
   {

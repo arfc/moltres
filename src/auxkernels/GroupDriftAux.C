@@ -17,6 +17,11 @@ GroupDriftAux::validParams()
   params.addRequiredCoupledVar("group_angular_fluxes",
       "All the variables that hold the group angular fluxes. These MUST be listed by decreasing "
       "energy/increasing group number.");
+  params.addParam<bool>("set_diffcoef_limit",
+      false,
+      "Replaces all diffusion coefficient values above the specified limit to the limit value. "
+      "Primarily helps with stabilizing drift coefficients in void regions.");
+  params.addParam<Real>("diffcoef_limit", 5.0, "Maximum diffusion coefficient value limit.");
   return params;
 }
 
@@ -29,7 +34,9 @@ GroupDriftAux::GroupDriftAux(const InputParameters & parameters)
     _scatter(getMaterialProperty<std::vector<Real>>("scatter")),
     _N(getParam<unsigned int>("N")),
     _group(getParam<unsigned int>("group_number") - 1),
-    _num_groups(getParam<unsigned int>("num_groups"))
+    _num_groups(getParam<unsigned int>("num_groups")),
+    _set_limit(getParam<bool>("set_diffcoef_limit")),
+    _limit(getParam<Real>("diffcoef_limit"))
 {
   if (_var.count() != 3)
     mooseError("The number of group drift array variables must be 3.");
@@ -53,18 +60,28 @@ GroupDriftAux::GroupDriftAux(const InputParameters & parameters)
 RealEigenVector
 GroupDriftAux::computeValue()
 {
+  Real diffcoef;
+  if (_set_limit && _diffcoef[_qp][_group] > _limit)
+    diffcoef = _limit;
+  else
+    diffcoef = _diffcoef[_qp][_group];
+
   Real denom = _weights.transpose() * (*_group_fluxes[_group])[_qp];
   RealEigenVector D = RealEigenVector::Zero(3);
   if (relativeFuzzyEqual(denom, 0.0) || denom < 0.0)
     return D;
+  // Eddington term: \sum_d (w_d \tau_g \Omega_d \Omega_d \cdot \grad\Psi_{g,d})
   for (unsigned int i = 0; i < (*_group_fluxes[_group])[_qp].size(); ++i)
   {
     D += _weights(i) * _tau_sn[_qp][_group] * (_ordinates.row(i).transpose() * _ordinates.row(i)) *
       (*_grad_group_fluxes[_group])[_qp].row(i).transpose();
   }
+  // Collision, current, & diffusion terms:
+  // \sum_d (w_d (tau_g \Sigma_{t,g} - 1) \Omega_d \Psi_{g,d} - D\nabla\Psi_{g,d})
   D += (_tau_sn[_qp][_group] * _totxs[_qp][_group] - 1) * _ordinates.transpose() *
     _weights.cwiseProduct((*_group_fluxes[_group])[_qp]) -
-    _diffcoef[_qp][_group] * (*_grad_group_fluxes[_group])[_qp].transpose() * _weights;
+    diffcoef * (*_grad_group_fluxes[_group])[_qp].transpose() * _weights;
+  // 1st-order scattering term: -\sum_d (w_d tau_g S_1 \Omega_d\Psi_{g',d})
   for (unsigned int g = 0; g < _num_groups; ++g)
   {
     unsigned int scatter_idx = _num_groups * _num_groups + g * _num_groups + _group;
@@ -73,6 +90,17 @@ GroupDriftAux::computeValue()
     D -= _tau_sn[_qp][_group] * _scatter[_qp][scatter_idx] * _ordinates.transpose() *
       _weights.cwiseProduct((*_group_fluxes[g])[_qp]);
   }
+  // Normalized by scalar flux
   D /= denom;
+  // Avoid excessively high drift values to maintain solver stability in coarse meshes.
+  // This occurs when there are very small fluxes near void and control rod regions.
+  for (unsigned int i = 0; i < 3; ++i)
+  {
+    Real abs_val = std::abs(D(i));
+    if (_totxs[_qp][_group] < 1e-2 && abs_val > 2.) // void regions
+      D(i) *= 2. / abs_val;
+    else if (abs_val > 1.) // other regions
+      D(i) *= 1. / abs_val;
+  }
   return D;
 }
