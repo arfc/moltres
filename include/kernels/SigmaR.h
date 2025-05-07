@@ -17,6 +17,6 @@ protected:
 
   const MaterialProperty<std::vector<Real>> & _remxs;
   const MaterialProperty<std::vector<Real>> & _d_remxs_d_temp;
-  unsigned int _group;
-  unsigned int _temp_id;
+  const unsigned int _group;
+  const unsigned int _temp_id;
 };
