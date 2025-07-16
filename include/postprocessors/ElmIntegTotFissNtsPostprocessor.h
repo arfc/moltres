@@ -31,8 +31,17 @@ protected:
   // nu Sigma_f material property
   const MaterialProperty<std::vector<Real>> & _nsf;
 
+  // delayed neutron fraction material property
+  const MaterialProperty<Real> & _beta;
+
   // Decay constant material property
   const MaterialProperty<std::vector<Real>> & _decay_constant;
+
+  // Whether we have delayed source variable
+  const bool _has_delayed_source;
+
+  // delayed source variable
+  const VariableValue & _delayed_source;
 
   std::vector<MooseVariableFEBase *> _vars;
 
