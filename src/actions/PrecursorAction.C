@@ -204,7 +204,7 @@ PrecursorAction::act()
     // postprocessors
     else if (_current_task == "add_postprocessor")
     {
-      if getParam<bool>("loop_precursors"))
+      if (getParam<bool>("loop_precursors"))
       {
         // Set up postprocessors for calculating precursor conc at outlet
         // and receiving precursor conc at inlet from loop app

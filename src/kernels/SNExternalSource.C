@@ -1,5 +1,4 @@
 #include "SNExternalSource.h"
-#include "Function.h"
 #include "MoltresUtils.h"
 
 registerMooseObject("MoltresApp", SNExternalSource);
@@ -21,7 +20,7 @@ SNExternalSource::SNExternalSource(const InputParameters & parameters)
     _group(getParam<unsigned int>("group_number") - 1)
 {
   auto & funcs = getParam<std::vector<FunctionName>>("function");
-  if (_var.count() != funcs.size())
+  if (_count != funcs.size())
     paramError("function",
                "Number of external source functions must agree with the number of angular flux "
                "array variable components");

@@ -524,5 +524,5 @@ MoltresSNMaterial::computeQpProperties()
       _tau_sn[_qp][i] = 1. / (_c * _totxs[_qp][i]);
     else
       _tau_sn[_qp][i] = h / _sigma;
-  } 
+  }
 }
