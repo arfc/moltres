@@ -202,22 +202,12 @@ PrecursorAction::act()
       addInitialConditions(var_name);
 
     // postprocessors
-    else if (_current_task == "add_postprocessor")
+    else if (_current_task == "add_postprocessor" && getParam<bool>("loop_precursors"))
     {
-      if (getParam<bool>("loop_precursors"))
-      {
-        // Set up postprocessors for calculating precursor conc at outlet
-        // and receiving precursor conc at inlet from loop app
-        addOutletPostprocessor(var_name);
-        addInletPostprocessor(var_name);
-      }
-
-      if (getParam<bool>("loop_precursors") && _velocity_type != "constant" && (!_is_loopapp))
-      {
-        // Add outflow rate postprocessor for Navier-Stokes velocities in the main
-        // app if precursors are looped
-        addCoolantOutflowPostprocessor();
-      }
+      // Set up postprocessors for calculating precursor conc at outlet
+      // and receiving precursor conc at inlet from loop app
+      addOutletPostprocessor(var_name);
+      addInletPostprocessor(var_name);
     }
 
     // transfers
@@ -227,6 +217,14 @@ PrecursorAction::act()
       // out of the reactor core
       addMultiAppTransfer(var_name);
     }
+  }
+
+  if (_current_task == "add_postprocessor" && getParam<bool>("loop_precursors") &&
+      _velocity_type != "constant" && (!_is_loopapp))
+  {
+    // Add outflow rate postprocessor for Navier-Stokes velocities in the main
+    // app if precursors are looped
+    addCoolantOutflowPostprocessor();
   }
 }
 
