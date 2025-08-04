@@ -13,6 +13,7 @@ total_ords = ${fparse N*(N+2)}
   account_delayed = false
   use_exp_form = false
   group_constants = 'TOTXS FISSXS NSF FISSE RECIPVEL CHI_T CHI_P CHI_D SPN BETA_EFF DECAY_CONSTANT DIFFCOEF'
+  set_diffcoef_limit = true
   acceleration = true
 []
 
@@ -21,9 +22,9 @@ total_ords = ${fparse N*(N+2)}
   [cmg]
     type = CartesianMeshGenerator
     dim = 1
-    dx = '1.9375 1.125 3.875 1.125 3.875 1.125 3.875 1.125 1.9375'
-    ix = '5 4 10 4 10 4 10 4 5'
-    subdomain_id = '0 1 0 1 0 1 0 1 0'
+    dx = '0.4 0.1 1 1.5625 3.875 1.125 3.875 1.125 3.875 1.125 3.875 1.125 3.875 1.125 3.875 1.125 3.875 1.125 3.875 3.0625 5'
+    ix = '4 2 4 6 10 4 10 4 10 4 10 4 10 4 10 4 10 4 10 12 32'
+    subdomain_id = '0 0 1 2 3 2 3 2 3 2 3 2 3 2 3 2 3 2 3 2 4'
   []
 []
 
@@ -104,44 +105,84 @@ total_ords = ${fparse N*(N+2)}
     family = LAGRANGE
   []
   [drift1]
-    order = SECOND
+    order = FIRST
     family = MONOMIAL
     components = 3
   []
   [drift2]
-    order = SECOND
+    order = FIRST
     family = MONOMIAL
     components = 3
   []
   [drift3]
-    order = SECOND
+    order = FIRST
     family = MONOMIAL
     components = 3
   []
   [drift4]
-    order = SECOND
+    order = FIRST
     family = MONOMIAL
     components = 3
   []
   [drift5]
-    order = SECOND
+    order = FIRST
     family = MONOMIAL
     components = 3
   []
   [drift6]
-    order = SECOND
+    order = FIRST
     family = MONOMIAL
     components = 3
   []
   [drift7]
-    order = SECOND
+    order = FIRST
     family = MONOMIAL
     components = 3
   []
   [drift8]
-    order = SECOND
+    order = FIRST
     family = MONOMIAL
     components = 3
+  []
+  [bound_coef1]
+    order = SECOND
+    family = MONOMIAL
+    block = 4
+  []
+  [bound_coef2]
+    order = SECOND
+    family = MONOMIAL
+    block = 4
+  []
+  [bound_coef3]
+    order = SECOND
+    family = MONOMIAL
+    block = 4
+  []
+  [bound_coef4]
+    order = SECOND
+    family = MONOMIAL
+    block = 4
+  []
+  [bound_coef5]
+    order = SECOND
+    family = MONOMIAL
+    block = 4
+  []
+  [bound_coef6]
+    order = SECOND
+    family = MONOMIAL
+    block = 4
+  []
+  [bound_coef7]
+    order = SECOND
+    family = MONOMIAL
+    block = 4
+  []
+  [bound_coef8]
+    order = SECOND
+    family = MONOMIAL
+    block = 4
   []
 []
 
@@ -269,56 +310,56 @@ total_ords = ${fparse N*(N+2)}
   [fission_psi1]
     type = SNFission
     variable = psi1
-    block = 1
+    block = 2
     group_number = 1
     eigenvalue_scaling = eigenvalue
   []
   [fission_psi2]
     type = SNFission
     variable = psi2
-    block = 1
+    block = 2
     group_number = 2
     eigenvalue_scaling = eigenvalue
   []
   [fission_psi3]
     type = SNFission
     variable = psi3
-    block = 1
+    block = 2
     group_number = 3
     eigenvalue_scaling = eigenvalue
   []
   [fission_psi4]
     type = SNFission
     variable = psi4
-    block = 1
+    block = 2
     group_number = 4
     eigenvalue_scaling = eigenvalue
   []
   [fission_psi5]
     type = SNFission
     variable = psi5
-    block = 1
+    block = 2
     group_number = 5
     eigenvalue_scaling = eigenvalue
   []
   [fission_psi6]
     type = SNFission
     variable = psi6
-    block = 1
+    block = 2
     group_number = 6
     eigenvalue_scaling = eigenvalue
   []
   [fission_psi7]
     type = SNFission
     variable = psi7
-    block = 1
+    block = 2
     group_number = 7
     eigenvalue_scaling = eigenvalue
   []
   [fission_psi8]
     type = SNFission
     variable = psi8
-    block = 1
+    block = 2
     group_number = 8
     eigenvalue_scaling = eigenvalue
   []
@@ -373,65 +414,184 @@ total_ords = ${fparse N*(N+2)}
     group_number = 8
     execute_on = timestep_end
   []
+  [bound_coef1]
+    type = VacuumCoefAux
+    variable = bound_coef1
+    psi = psi1
+    boundary = 'right'
+    execute_on = timestep_end
+  []
+  [bound_coef2]
+    type = VacuumCoefAux
+    variable = bound_coef2
+    psi = psi2
+    boundary = 'right'
+    execute_on = timestep_end
+  []
+  [bound_coef3]
+    type = VacuumCoefAux
+    variable = bound_coef3
+    psi = psi3
+    boundary = 'right'
+    execute_on = timestep_end
+  []
+  [bound_coef4]
+    type = VacuumCoefAux
+    variable = bound_coef4
+    psi = psi4
+    boundary = 'right'
+    execute_on = timestep_end
+  []
+  [bound_coef5]
+    type = VacuumCoefAux
+    variable = bound_coef5
+    psi = psi5
+    boundary = 'right'
+    execute_on = timestep_end
+  []
+  [bound_coef6]
+    type = VacuumCoefAux
+    variable = bound_coef6
+    psi = psi6
+    boundary = 'right'
+    execute_on = timestep_end
+  []
+  [bound_coef7]
+    type = VacuumCoefAux
+    variable = bound_coef7
+    psi = psi7
+    boundary = 'right'
+    execute_on = timestep_end
+  []
+  [bound_coef8]
+    type = VacuumCoefAux
+    variable = bound_coef8
+    psi = psi8
+    boundary = 'right'
+    execute_on = timestep_end
+  []
 []
 
 [BCs]
   [reflecting_psi1]
     type = SNReflectingBC
     variable = psi1
-    boundary = 'left right'
+    boundary = 'left'
   []
   [reflecting_psi2]
     type = SNReflectingBC
     variable = psi2
-    boundary = 'left right'
+    boundary = 'left'
   []
   [reflecting_psi3]
     type = SNReflectingBC
     variable = psi3
-    boundary = 'left right'
+    boundary = 'left'
   []
   [reflecting_psi4]
     type = SNReflectingBC
     variable = psi4
-    boundary = 'left right'
+    boundary = 'left'
   []
   [reflecting_psi5]
     type = SNReflectingBC
     variable = psi5
-    boundary = 'left right'
+    boundary = 'left'
   []
   [reflecting_psi6]
     type = SNReflectingBC
     variable = psi6
-    boundary = 'left right'
+    boundary = 'left'
   []
   [reflecting_psi7]
     type = SNReflectingBC
     variable = psi7
-    boundary = 'left right'
+    boundary = 'left'
   []
   [reflecting_psi8]
     type = SNReflectingBC
     variable = psi8
-    boundary = 'left right'
+    boundary = 'left'
+  []
+  [vacuum_psi1]
+    type = SNVacuumBC
+    variable = psi1
+    boundary = 'right'
+  []
+  [vacuum_psi2]
+    type = SNVacuumBC
+    variable = psi2
+    boundary = 'right'
+  []
+  [vacuum_psi3]
+    type = SNVacuumBC
+    variable = psi3
+    boundary = 'right'
+  []
+  [vacuum_psi4]
+    type = SNVacuumBC
+    variable = psi4
+    boundary = 'right'
+  []
+  [vacuum_psi5]
+    type = SNVacuumBC
+    variable = psi5
+    boundary = 'right'
+  []
+  [vacuum_psi6]
+    type = SNVacuumBC
+    variable = psi6
+    boundary = 'right'
+  []
+  [vacuum_psi7]
+    type = SNVacuumBC
+    variable = psi7
+    boundary = 'right'
+  []
+  [vacuum_psi8]
+    type = SNVacuumBC
+    variable = psi8
+    boundary = 'right'
   []
 []
 
 [Materials]
-  [fuel]
+  [absorber]
     type = MoltresSNMaterial
-    base_file = '../../property_file_dir/sn-test/lattice.json'
-    material_key = 'fuel'
+    base_file = '../../property_file_dir/sn-test/absorber-air-lattice-ref.json'
+    material_key = 'ctrlrod'
+    interp_type = 'none'
+    block = '0'
+  []
+  [air]
+    type = MoltresSNMaterial
+    base_file = '../../property_file_dir/sn-test/absorber-air-lattice-ref.json'
+    material_key = 'air'
     interp_type = 'none'
     block = '1'
+    void_constant = .5
+    h_type = min
+  []
+  [fuel]
+    type = MoltresSNMaterial
+    base_file = '../../property_file_dir/sn-test/absorber-air-lattice-ref.json'
+    material_key = 'fuel'
+    interp_type = 'none'
+    block = '2'
   []
   [graphite]
     type = MoltresSNMaterial
-    base_file = '../../property_file_dir/sn-test/lattice.json'
+    base_file = '../../property_file_dir/sn-test/absorber-air-lattice-ref.json'
     material_key = 'graphite'
     interp_type = 'none'
-    block = '0'
+    block = '3'
+  []
+  [inor]
+    type = MoltresSNMaterial
+    base_file = '../../property_file_dir/sn-test/absorber-air-lattice-ref.json'
+    material_key = 'inor'
+    interp_type = 'none'
+    block = '4'
   []
 []
 
@@ -455,8 +615,4 @@ total_ords = ${fparse N*(N+2)}
     type = Receiver
     default = 1
   []
-[]
-
-[Outputs]
-  perf_graph = true
 []
