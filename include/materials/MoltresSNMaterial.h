@@ -99,10 +99,10 @@ protected:
   std::string _material_key;
 
   // Discrete ordinate order
-  unsigned int _N;
+  const unsigned int _N;
 
   // Maximum scattering Legendre moment
-  unsigned int _L;
+  const unsigned int _L;
 
   // Void constant for stabilization scheme in voids
   const Real _sigma;
