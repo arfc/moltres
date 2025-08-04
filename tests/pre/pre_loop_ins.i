@@ -184,7 +184,7 @@ ymax = 100
 
 [Executioner]
   type = Transient
-  end_time = 200
+  end_time = 100
   nl_rel_tol = 1e-6
   nl_abs_tol = 1e-5
   solve_type = 'NEWTON'

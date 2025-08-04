@@ -25,7 +25,7 @@ VacuumConcBC::VacuumConcBC(const InputParameters & parameters)
       _alpha = std::sqrt(3.);
       break;
     case MILNE:
-      _alpha = 3 * 0.710446;
+      _alpha = _milne_extrapolation_coefficient;
       break;
   }
 }

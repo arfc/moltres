@@ -83,9 +83,6 @@ global_temperature = 922
   []
 []
 
-[Postprocessors]
-[]
-
 [Outputs]
   perf_graph = true
   print_linear_residuals = true
