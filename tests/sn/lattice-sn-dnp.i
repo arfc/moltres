@@ -2,9 +2,10 @@
   num_groups = 8
   num_precursor_groups = 6
   group_fluxes = 'group1 group2 group3 group4 group5 group6 group7 group8'
+  pre_concs = 'pre1 pre2 pre3 pre4 pre5 pre6'
   temperature = 900
   sss2_input = true
-  account_delayed = false
+  account_delayed = true
   use_exp_form = false
   search_value_conflicts = false
 []
@@ -19,9 +20,9 @@
   [cmg]
     type = CartesianMeshGenerator
     dim = 1
-    dx = '0.4 0.1 1 1.5625 3.875 1.125 3.875 1.125 3.875 1.125 3.875 1.125 3.875 1.125 3.875 1.125 3.875 1.125 3.875 3.0625 5'
-    ix = '4 2 4 6 10 4 10 4 10 4 10 4 10 4 10 4 10 4 10 12 32'
-    subdomain_id = '0 0 1 2 3 2 3 2 3 2 3 2 3 2 3 2 3 2 3 2 4'
+    dx = '1.9375 1.125 3.875 1.125 3.875 1.125 3.875 1.125 1.9375'
+    ix = '5 4 10 4 10 4 10 4 5'
+    subdomain_id = '0 1 0 1 0 1 0 1 0'
   []
 []
 
@@ -66,45 +67,10 @@
     family = MONOMIAL
     components = 3
   []
-  [bound_coef1]
-    order = SECOND
+  [delayed_source]
+    order = CONSTANT
     family = MONOMIAL
-    block = 4
-  []
-  [bound_coef2]
-    order = SECOND
-    family = MONOMIAL
-    block = 4
-  []
-  [bound_coef3]
-    order = SECOND
-    family = MONOMIAL
-    block = 4
-  []
-  [bound_coef4]
-    order = SECOND
-    family = MONOMIAL
-    block = 4
-  []
-  [bound_coef5]
-    order = SECOND
-    family = MONOMIAL
-    block = 4
-  []
-  [bound_coef6]
-    order = SECOND
-    family = MONOMIAL
-    block = 4
-  []
-  [bound_coef7]
-    order = SECOND
-    family = MONOMIAL
-    block = 4
-  []
-  [bound_coef8]
-    order = SECOND
-    family = MONOMIAL
-    block = 4
+    block = 1
   []
 []
 
@@ -112,11 +78,28 @@
   family = LAGRANGE
   order = SECOND
   var_name_base = group
-  vacuum_boundaries = 'right'
-  fission_blocks = 2
-  set_diffcoef_limit = true
+  vacuum_boundaries = ''
+  fission_blocks = 1
+  pre_blocks = 1
   create_temperature_var = false
   eigen = true
+[]
+
+[Precursors]
+  [pres]
+    var_name_base = pre
+    block = 1
+    outlet_boundaries = ''
+    u_def = 0
+    v_def = 0
+    w_def = 0
+    nt_exp_form = false
+    loop_precursors = false
+    family = MONOMIAL
+    order = CONSTANT
+    transient = false
+    eigen = true
+  []
 []
 
 [Kernels]
@@ -162,92 +145,27 @@
   []
 []
 
-[BCs]
-  [group1_correction]
-    type = VacuumCorrectionBC
-    variable = group1
-    boundary = 'right'
-    vacuum_coef_var = bound_coef1
-  []
-  [group2_correction]
-    type = VacuumCorrectionBC
-    variable = group2
-    boundary = 'right'
-    vacuum_coef_var = bound_coef2
-  []
-  [group3_correction]
-    type = VacuumCorrectionBC
-    variable = group3
-    boundary = 'right'
-    vacuum_coef_var = bound_coef3
-  []
-  [group4_correction]
-    type = VacuumCorrectionBC
-    variable = group4
-    boundary = 'right'
-    vacuum_coef_var = bound_coef4
-  []
-  [group5_correction]
-    type = VacuumCorrectionBC
-    variable = group5
-    boundary = 'right'
-    vacuum_coef_var = bound_coef5
-  []
-  [group6_correction]
-    type = VacuumCorrectionBC
-    variable = group6
-    boundary = 'right'
-    vacuum_coef_var = bound_coef6
-  []
-  [group7_correction]
-    type = VacuumCorrectionBC
-    variable = group7
-    boundary = 'right'
-    vacuum_coef_var = bound_coef7
-  []
-  [group8_correction]
-    type = VacuumCorrectionBC
-    variable = group8
-    boundary = 'right'
-    vacuum_coef_var = bound_coef8
+[AuxKernels]
+  [delayed_neutron_source]
+    type = DelayedNeutronSourceAux
+    variable = delayed_source
   []
 []
 
 [Materials]
-  [absorber_sn]
+  [fuel]
     type = MoltresJsonMaterial
-    base_file = '../../property_file_dir/sn-test/absorber-air-lattice-ref.json'
-    material_key = 'ctrlrod'
-    interp_type = 'none'
-    block = '0'
-  []
-  [air]
-    type = MoltresJsonMaterial
-    base_file = '../../property_file_dir/sn-test/absorber-air-lattice-ref.json'
-    material_key = 'air'
+    base_file = '../../property_file_dir/sn-test/lattice.json'
+    material_key = 'fuel'
     interp_type = 'none'
     block = '1'
   []
-  [fuel]
-    type = MoltresJsonMaterial
-    base_file = '../../property_file_dir/sn-test/absorber-air-lattice-ref.json'
-    material_key = 'fuel'
-    interp_type = 'none'
-    block = '2'
-  []
   [graphite]
     type = MoltresJsonMaterial
-    base_file = '../../property_file_dir/sn-test/absorber-air-lattice-ref.json'
+    base_file = '../../property_file_dir/sn-test/lattice.json'
     material_key = 'graphite'
     interp_type = 'none'
-    block = '3'
-  []
-  [inor]
-    type = MoltresJsonMaterial
-    base_file = '../../property_file_dir/sn-test/absorber-air-lattice-ref.json'
-    material_key = 'inor'
-    interp_type = 'none'
-    block = '4'
+    block = '0'
   []
 []
 
@@ -257,7 +175,7 @@
 
   fixed_point_abs_tol = 1e-10
   fixed_point_rel_tol = 1e-10
-  fixed_point_max_its = 15
+  fixed_point_max_its = 20
   accept_on_max_fixed_point_iteration = false
 
   nl_abs_tol = 1e-10
@@ -273,7 +191,7 @@
 [MultiApps]
   [sub]
     type = FullSolveMultiApp
-    input_files = absorber-air-lattice-ref-sn-sub.i
+    input_files = lattice-sn-dnp-sub.i
     execute_on = timestep_end
     keep_solution_during_restore = true
   []
@@ -282,8 +200,8 @@
 [Transfers]
   [to_sub]
     type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = 'group1 group2 group3 group4 group5 group6 group7 group8'
-    variable = 'group1 group2 group3 group4 group5 group6 group7 group8'
+    source_variable = 'group1 group2 group3 group4 group5 group6 group7 group8 delayed_source'
+    variable = 'group1 group2 group3 group4 group5 group6 group7 group8 delayed_source'
     to_multi_app = sub
   []
   [to_sub_k]
@@ -356,60 +274,12 @@
     source_variable_components = '0 1 2'
     target_variable_components = '0 1 2'
   []
-  [from_sub_bound_coef1]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = 'bound_coef1'
-    variable = 'bound_coef1'
-    from_multi_app = sub
-  []
-  [from_sub_bound_coef2]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = 'bound_coef2'
-    variable = 'bound_coef2'
-    from_multi_app = sub
-  []
-  [from_sub_bound_coef3]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = 'bound_coef3'
-    variable = 'bound_coef3'
-    from_multi_app = sub
-  []
-  [from_sub_bound_coef4]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = 'bound_coef4'
-    variable = 'bound_coef4'
-    from_multi_app = sub
-  []
-  [from_sub_bound_coef5]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = 'bound_coef5'
-    variable = 'bound_coef5'
-    from_multi_app = sub
-  []
-  [from_sub_bound_coef6]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = 'bound_coef6'
-    variable = 'bound_coef6'
-    from_multi_app = sub
-  []
-  [from_sub_bound_coef7]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = 'bound_coef7'
-    variable = 'bound_coef7'
-    from_multi_app = sub
-  []
-  [from_sub_bound_coef8]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = 'bound_coef8'
-    variable = 'bound_coef8'
-    from_multi_app = sub
-  []
 []
 
 [Postprocessors]
   [bnorm]
     type = ElmIntegTotFissNtsPostprocessor
-    block = 2
+    block = 1
     execute_on = 'initial linear timestep_end'
   []
   [eigenvalue]
