@@ -66,6 +66,16 @@
     family = MONOMIAL
     components = 3
   []
+  [fission_rate]
+    order = SECOND
+    family = MONOMIAL
+    block = 1
+  []
+  [neutron_source]
+    order = SECOND
+    family = MONOMIAL
+    block = 1
+  []
 []
 
 [Nt]
@@ -118,6 +128,19 @@
     type = GroupDrift
     variable = group8
     group_drift_var = drift8
+  []
+[]
+
+[AuxKernels]
+  [fission_rate]
+    type = FissionRateAux
+    variable = fission_rate
+    block = 1
+  []
+  [neutron_source]
+    type = NeutronSourceAux
+    variable = neutron_source
+    block = 1
   []
 []
 
