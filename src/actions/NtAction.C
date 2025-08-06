@@ -33,7 +33,10 @@ NtAction::validParams()
   params.addCoupledVar("pre_concs",
                        "All the variables that hold the precursor concentrations. "
                        "These MUST be listed by increasing group number.");
-  params.addParam<Real>("temp_scaling", "The amount by which to scale the temperature variable.");
+  params.addCoupledVar("delayed_neutron_source",
+                       "Delayed neutron source variable name. Optional parameter for reducing "
+                       "variable data transfers between MultiApps with a consolidated delayed "
+                       "neutron source variable.");
   params.addRequiredParam<unsigned int>("num_groups", "The total number of energy groups.");
   params.addRequiredParam<bool>(
       "use_exp_form", "Whether concentrations should be in an exponential/logarithmic format.");
@@ -68,12 +71,19 @@ NtAction::validParams()
   params.addRequiredParam<bool>("account_delayed", "Whether to account for delayed neutrons.");
   params.addRequiredParam<bool>("sss2_input",
                                 "Whether the input follows sss2 form scattering matrices.");
+  params.addParam<std::vector<SubdomainName>>("fission_blocks",
+                                              "The blocks containing fissile material.");
   params.addParam<std::vector<SubdomainName>>("pre_blocks", "The blocks the precursors live on.");
-  params.addParam<Real>("eigenvalue_scaling",
+  params.addParam<PostprocessorName>("eigenvalue_scaling",
                         1.0,
                         "Artificial scaling factor for the fission source. Primarily for "
                         "introducing artificial reactivity to make super/subcritical systems "
                         "exactly critical or to simulate reactivity insertions/withdrawals.");
+  params.addParam<bool>("set_diffcoef_limit",
+      false,
+      "Replaces all diffusion coefficient values above the specified limit to the limit value. "
+      "Primarily helps with stabilizing drift coefficients in void regions.");
+  params.addParam<Real>("diffcoef_limit", 5.0, "Maximum diffusion coefficient value limit.");
   return params;
 }
 
@@ -289,6 +299,10 @@ NtAction::addNtKernel(const unsigned & op,
     params.set<unsigned int>("num_groups") = _num_groups;
     params.set<bool>("sss2_input") = getParam<bool>("sss2_input");
     params.set<std::vector<VariableName>>("group_fluxes") = all_var_names;
+  } else if (kernel_type == "GroupDiffusion")
+  {
+    params.set<bool>("set_diffcoef_limit") = getParam<bool>("set_diffcoef_limit");
+    params.set<Real>("diffcoef_limit") = getParam<Real>("diffcoef_limit");
   }
   std::string kernel_name = kernel_type + "_" + var_name;
   _problem->addKernel(kernel_type, kernel_name, params);
@@ -302,7 +316,10 @@ NtAction::addCoupledFissionKernel(const unsigned & op,
   InputParameters params = _factory.getValidParams("CoupledFissionKernel");
   params.set<NonlinearVariableName>("variable") = var_name;
   params.set<unsigned int>("group_number") = op;
-  if (isParamValid("block"))
+  if (isParamValid("fission_blocks"))
+    params.set<std::vector<SubdomainName>>("block") =
+        getParam<std::vector<SubdomainName>>("fission_blocks");
+  else if (isParamValid("block"))
     params.set<std::vector<SubdomainName>>("block") =
         getParam<std::vector<SubdomainName>>("block");
   if (isParamValid("use_exp_form"))
@@ -312,7 +329,7 @@ NtAction::addCoupledFissionKernel(const unsigned & op,
   params.set<unsigned int>("num_groups") = _num_groups;
   params.set<std::vector<VariableName>>("group_fluxes") = all_var_names;
   params.set<bool>("account_delayed") = getParam<bool>("account_delayed");
-  params.set<Real>("eigenvalue_scaling") = getParam<Real>("eigenvalue_scaling");
+  params.set<PostprocessorName>("eigenvalue_scaling") = getParam<PostprocessorName>("eigenvalue_scaling");
   if (getParam<bool>("eigen"))
     params.set<std::vector<TagName>>("extra_vector_tags") = {"eigen"};
   std::string kernel_name = "CoupledFissionKernel_" + var_name;
@@ -328,9 +345,14 @@ NtAction::addDelayedNeutronSource(const unsigned & op, const std::string & var_n
   if (isParamValid("pre_blocks"))
     params.set<std::vector<SubdomainName>>("block") =
         getParam<std::vector<SubdomainName>>("pre_blocks");
+  else if (isParamValid("block"))
+    params.set<std::vector<SubdomainName>>("block") =
+        getParam<std::vector<SubdomainName>>("block");
   if (isParamValid("use_exp_form"))
     params.set<bool>("use_exp_form") = getParam<bool>("use_exp_form");
   std::vector<std::string> include = {"temperature", "pre_concs"};
+  if (isParamValid("delayed_neutron_source"))
+    include.push_back("delayed_neutron_source");
   params.applySpecificParameters(parameters(), include);
   params.set<unsigned int>("num_precursor_groups") = _num_precursor_groups;
   std::string kernel_name = "DelayedNeutronSource_" + var_name;
