@@ -1,4 +1,1925 @@
-<!DOCTYPE html><head><meta charset="UTF-8"><title>INSADMomentumSUPGBC | Moltres</title><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/moltres.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Moltres</a><a href="https://github.com/arfc/moltres" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="#!" class="dropdown-trigger" data-target="beea9792-16ca-4403-ab76-5680ab1b0486" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="949fc07c-20e3-4563-afe9-24ecb405a21c" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="e71ad2b3-d64f-45f5-8094-010c57fb52b2" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#" class="sidenav-trigger" data-target="9543c7c9-de5d-4adc-a6c4-99ef98d1d5d4"><i class="material-icons">menu</i></a><ul class="sidenav" id="9543c7c9-de5d-4adc-a6c4-99ef98d1d5d4"><li><a href="#!" class="dropdown-trigger" data-target="8c08e343-471d-4749-8460-e38e2ed83091" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="02a7c457-cbe7-4d91-8118-a45e393f7e82" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="915e340f-997c-4714-b655-4b38d07725dc" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="beea9792-16ca-4403-ab76-5680ab1b0486"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/theory.html">Theory</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="949fc07c-20e3-4563-afe9-24ecb405a21c"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="e71ad2b3-d64f-45f5-8094-010c57fb52b2"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul><ul class="dropdown-content" id="8c08e343-471d-4749-8460-e38e2ed83091"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/theory.html">Theory</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="02a7c457-cbe7-4d91-8118-a45e393f7e82"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="915e340f-997c-4714-b655-4b38d07725dc"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="col hide-on-med-and-down l12"><nav class="breadcrumb-nav"><div class="nav-wrapper"><span class="breadcrumb">source</span><span class="breadcrumb">bcs</span><a href="#" class="breadcrumb">SATurbulentViscositySUPGBC</a></div></nav></div></div><div class="row"><div class="moose-content col s12 m12 l10"><section id="43aadbc3-9e76-45b5-b68f-63d2c6a6f6e4" data-section-level="1" data-section-text="INSADMomentumSUPGBC"><h1 id="insadmomentumsupgbc">INSADMomentumSUPGBC</h1><p>This class removes INS SUPG contributions along the boundary.</p><section class="scrollspy" id="61f42644-cbff-4472-a2d8-2f8b9befe21a" data-section-level="2" data-section-text="Overview"><h2 id="overview">Overview</h2><p>This object removes residual contributions from SUPG stabilization in the Spalart-Allmaras turbulence model equation along the boundaries.</p></section><section class="scrollspy" id="7ef39384-431e-41f5-a3ba-1d9341faf030" data-section-level="2" data-section-text="Example Input File Syntax"><h2 id="example-input-file-syntax">Example Input File Syntax</h2><p></p></section><section class="scrollspy" id="6c8c193d-17b3-4ea1-9e59-9fc4d93a23ac" data-section-level="2" data-section-text="Input Parameters"><h2 id="input-parameters">Input Parameters</h2><section id="225308ec-ca60-49fd-8acc-8aa25530dd88" data-section-level="3" data-section-text="Required Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">boundary</span><span class="moose-parameter-header-description">The list of boundary IDs from the mesh where this object applies</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;BoundaryName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of boundary IDs from the mesh where this object applies</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">variable</span><span class="moose-parameter-header-description">The name of the variable that this residual object operates on</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>NonlinearVariableName</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of the variable that this residual object operates on</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Required Parameters</h3></summary></details></section><section id="94c6eae6-efd5-47d6-8ca7-8eb973b97f62" data-section-level="3" data-section-text="Optional Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">displacements</span><span class="moose-parameter-header-description">The displacements</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;VariableName&gt;</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The displacements</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">matrix_only</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Whether this object is only doing assembly to matrices (no vectors)</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether this object is only doing assembly to matrices (no vectors)</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">rho_name</span><span class="moose-parameter-header-default">rho</span><span class="moose-parameter-header-description">Density</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>rho</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MaterialPropertyName</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Density</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">tau_name</span><span class="moose-parameter-header-default">tau</span><span class="moose-parameter-header-description">The name of the stabilization parameter tau.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>tau</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MaterialPropertyName</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of the stabilization parameter tau.</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Optional Parameters</h3></summary></details></section><section id="bafd112f-b8cd-489c-99cd-353414523439" data-section-level="3" data-section-text="Contribution To Tagged Field Data Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">absolute_value_vector_tags</span><span class="moose-parameter-header-description">The tags for the vectors this residual object should fill with the absolute value of the residual contribution</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;TagName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The tags for the vectors this residual object should fill with the absolute value of the residual contribution</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">extra_matrix_tags</span><span class="moose-parameter-header-description">The extra tags for the matrices this Kernel should fill</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;TagName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The extra tags for the matrices this Kernel should fill</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">extra_vector_tags</span><span class="moose-parameter-header-description">The extra tags for the vectors this Kernel should fill</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;TagName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The extra tags for the vectors this Kernel should fill</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">matrix_tags</span><span class="moose-parameter-header-default">system</span><span class="moose-parameter-header-description">The tag for the matrices this Kernel should fill</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>system</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MultiMooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>nontime, system</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The tag for the matrices this Kernel should fill</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">vector_tags</span><span class="moose-parameter-header-default">nontime</span><span class="moose-parameter-header-description">The tag for the vectors this Kernel should fill</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>nontime</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MultiMooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>nontime, time</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The tag for the vectors this Kernel should fill</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Contribution To Tagged Field Data Parameters</h3></summary></details></section><section id="a55da8fa-da60-4a5a-a711-10da244fd512" data-section-level="3" data-section-text="Advanced Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">control_tags</span><span class="moose-parameter-header-description">Adds user-defined labels for accessing object parameters via control logic.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Adds user-defined labels for accessing object parameters via control logic.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">diag_save_in</span><span class="moose-parameter-header-description">The name of auxiliary variables to save this BC's diagonal jacobian contributions to.  Everything about that variable must match everything about this variable (the type, what blocks it's on, etc.)</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;AuxVariableName&gt;</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of auxiliary variables to save this BC's diagonal jacobian contributions to.  Everything about that variable must match everything about this variable (the type, what blocks it's on, etc.)</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">enable</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Set the enabled status of the MooseObject.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>Yes</p><p class="moose-parameter-description"><span>Description:</span>Set the enabled status of the MooseObject.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">implicit</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Determines whether this object is calculated using an implicit or explicit form</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Determines whether this object is calculated using an implicit or explicit form</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">save_in</span><span class="moose-parameter-header-description">The name of auxiliary variables to save this BC's residual contributions to.  Everything about that variable must match everything about this variable (the type, what blocks it's on, etc.)</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;AuxVariableName&gt;</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of auxiliary variables to save this BC's residual contributions to.  Everything about that variable must match everything about this variable (the type, what blocks it's on, etc.)</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">seed</span><span class="moose-parameter-header-default">0</span><span class="moose-parameter-header-description">The seed for the master random number generator</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>unsigned int</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The seed for the master random number generator</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">skip_execution_outside_variable_domain</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Whether to skip execution of this boundary condition when the variable it applies to is not defined on the boundary. This can facilitate setups with moving variable domains and fixed boundaries. Note that the FEProblem boundary-restricted integrity checks will also need to be turned off if using this option</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether to skip execution of this boundary condition when the variable it applies to is not defined on the boundary. This can facilitate setups with moving variable domains and fixed boundaries. Note that the FEProblem boundary-restricted integrity checks will also need to be turned off if using this option</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_displaced_mesh</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Whether or not this object should use the displaced mesh for computation.  Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether or not this object should use the displaced mesh for computation.  Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Advanced Parameters</h3></summary></details></section><section id="feaf28c0-5c27-4ee5-9b35-fe396c62df67" data-section-level="3" data-section-text="Material Property Retrieval Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">prop_getter_suffix</span><span class="moose-parameter-header-description">An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MaterialPropertyName</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_interpolated_state</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">For the old and older state use projected material properties interpolated at the quadrature points. To set up projection use the ProjectedStatefulMaterialStorageAction.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>For the old and older state use projected material properties interpolated at the quadrature points. To set up projection use the ProjectedStatefulMaterialStorageAction.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Material Property Retrieval Parameters</h3></summary></details></section></section><section class="scrollspy" id="de2f6979-77e4-43cb-9de9-f210e9083534" data-section-level="2" data-section-text="Input Files"><h2 id="input-files">Input Files</h2><ul class="moose-list-inputs browser-default"><li><a class="moose-source-filename tooltipped modal-trigger" href="#8e01114e-cbe2-4d9e-987a-cb0951ad352a">(tests/sa-model/channel_flow_with_precursors.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#cb880851-6575-4073-9e2b-9da129c82ff9">(problems/2023-basic-turbulence-cases/channel/channel_flow.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#fed1475f-d98c-4bb6-af4f-8d5fa869de96">(problems/2023-basic-turbulence-cases/backward-facing-step/bfs_flow_upstream.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#6d5bb5a6-045f-4c7f-9ffb-7cb7069a8f6b">(tests/sa-model/pipe_flow.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#b55b79f8-31bf-4759-b50c-5d0a766180f8">(problems/2023-basic-turbulence-cases/backward-facing-step/bfs_flow_step.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#6350f734-5973-4efa-afe1-d48a0d87f87c">(tests/sa-model/channel_flow_with_heat.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#ffc6fff2-2d81-4d05-bd8b-92acb23d39d6">(tests/sa-model/channel_flow_short.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#477efd4b-dc7c-41c8-8b81-a504abab4a7b">(tests/sa-model/channel_flow.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#35556ab1-965b-47ed-9797-c4ebb7553b28">(problems/2023-basic-turbulence-cases/pipe/pipe_flow.i)</a></li></ul></section></section><div class="moose-modal modal" id="8e01114e-cbe2-4d9e-987a-cb0951ad352a"><div class="modal-content"><h4>(tests/sa-model/channel_flow_with_precursors.i)</h4><pre style="max-height:350px;"><code class="language-moose">Re = 1.375e4
+<!DOCTYPE html><head><meta charset="UTF-8"><title>INSADMomentumSUPGBC | Moltres</title><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/moltres.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Moltres</a><a href="https://github.com/arfc/moltres" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="#!" class="dropdown-trigger" data-target="5f5efb5a-bcdb-44d4-be0f-20ed75de06af" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="53f7576e-8869-4d58-99b1-c1595b135885" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="7c4df7ce-fc92-4279-930c-eb87b1b46065" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#" class="sidenav-trigger" data-target="fb3befd2-9f0e-4945-b591-901ece324596"><i class="material-icons">menu</i></a><ul class="sidenav" id="fb3befd2-9f0e-4945-b591-901ece324596"><li><a href="#!" class="dropdown-trigger" data-target="b6e732e6-95b7-4738-9fd3-9ea75e456ecf" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="74ca2723-5bbe-4c3e-8c91-bc598e585bb8" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="ac618e26-84dd-469e-969e-b54a00960a66" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="5f5efb5a-bcdb-44d4-be0f-20ed75de06af"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/theory.html">Theory</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="53f7576e-8869-4d58-99b1-c1595b135885"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="7c4df7ce-fc92-4279-930c-eb87b1b46065"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul><ul class="dropdown-content" id="b6e732e6-95b7-4738-9fd3-9ea75e456ecf"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/theory.html">Theory</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="74ca2723-5bbe-4c3e-8c91-bc598e585bb8"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="ac618e26-84dd-469e-969e-b54a00960a66"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="col hide-on-med-and-down l12"><nav class="breadcrumb-nav"><div class="nav-wrapper"><span class="breadcrumb">source</span><span class="breadcrumb">bcs</span><a href="#" class="breadcrumb">SATurbulentViscositySUPGBC</a></div></nav></div></div><div class="row"><div class="moose-content col s12 m12 l10"><section id="e8d68d65-e970-4da0-b201-bd542e1607b6" data-section-level="1" data-section-text="INSADMomentumSUPGBC"><h1 id="insadmomentumsupgbc">INSADMomentumSUPGBC</h1><p>This class removes INS SUPG contributions along the boundary.</p><section class="scrollspy" id="8d518de0-775a-40b9-aec6-68d10e1d9223" data-section-level="2" data-section-text="Overview"><h2 id="overview">Overview</h2><p>This object removes residual contributions from SUPG stabilization in the Spalart-Allmaras turbulence model equation along the boundaries.</p></section><section class="scrollspy" id="dcfca874-d34d-40de-9634-84006815d09f" data-section-level="2" data-section-text="Example Input File Syntax"><h2 id="example-input-file-syntax">Example Input File Syntax</h2><p></p></section><section class="scrollspy" id="5e2c12ab-4271-4aeb-8dc5-70279a7145f5" data-section-level="2" data-section-text="Input Parameters"><h2 id="input-parameters">Input Parameters</h2><section id="0e85b381-db13-42a9-b39d-8f7d5bd2569a" data-section-level="3" data-section-text="Required Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">boundary</span><span class="moose-parameter-header-description">The list of boundary IDs from the mesh where this object applies</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;BoundaryName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of boundary IDs from the mesh where this object applies</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">variable</span><span class="moose-parameter-header-description">The name of the variable that this residual object operates on</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>NonlinearVariableName</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of the variable that this residual object operates on</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Required Parameters</h3></summary></details></section><section id="cae5f656-dc71-49e7-b250-bd93219f645d" data-section-level="3" data-section-text="Optional Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">displacements</span><span class="moose-parameter-header-description">The displacements</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;VariableName&gt;</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The displacements</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">matrix_only</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Whether this object is only doing assembly to matrices (no vectors)</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether this object is only doing assembly to matrices (no vectors)</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">rho_name</span><span class="moose-parameter-header-default">rho</span><span class="moose-parameter-header-description">Density</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>rho</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MaterialPropertyName</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Density</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">tau_name</span><span class="moose-parameter-header-default">tau</span><span class="moose-parameter-header-description">The name of the stabilization parameter tau.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>tau</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MaterialPropertyName</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of the stabilization parameter tau.</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Optional Parameters</h3></summary></details></section><section id="cc09585c-9029-4b09-9eb7-a51b6521637c" data-section-level="3" data-section-text="Contribution To Tagged Field Data Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">absolute_value_vector_tags</span><span class="moose-parameter-header-description">The tags for the vectors this residual object should fill with the absolute value of the residual contribution</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;TagName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The tags for the vectors this residual object should fill with the absolute value of the residual contribution</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">extra_matrix_tags</span><span class="moose-parameter-header-description">The extra tags for the matrices this Kernel should fill</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;TagName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The extra tags for the matrices this Kernel should fill</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">extra_vector_tags</span><span class="moose-parameter-header-description">The extra tags for the vectors this Kernel should fill</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;TagName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The extra tags for the vectors this Kernel should fill</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">matrix_tags</span><span class="moose-parameter-header-default">system</span><span class="moose-parameter-header-description">The tag for the matrices this Kernel should fill</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>system</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MultiMooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>nontime, system</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The tag for the matrices this Kernel should fill</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">vector_tags</span><span class="moose-parameter-header-default">nontime</span><span class="moose-parameter-header-description">The tag for the vectors this Kernel should fill</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>nontime</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MultiMooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>nontime, time</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The tag for the vectors this Kernel should fill</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Contribution To Tagged Field Data Parameters</h3></summary></details></section><section id="0fc45930-8ac5-4e24-b8ca-ae5516448389" data-section-level="3" data-section-text="Advanced Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">control_tags</span><span class="moose-parameter-header-description">Adds user-defined labels for accessing object parameters via control logic.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Adds user-defined labels for accessing object parameters via control logic.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">diag_save_in</span><span class="moose-parameter-header-description">The name of auxiliary variables to save this BC's diagonal jacobian contributions to.  Everything about that variable must match everything about this variable (the type, what blocks it's on, etc.)</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;AuxVariableName&gt;</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of auxiliary variables to save this BC's diagonal jacobian contributions to.  Everything about that variable must match everything about this variable (the type, what blocks it's on, etc.)</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">enable</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Set the enabled status of the MooseObject.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>Yes</p><p class="moose-parameter-description"><span>Description:</span>Set the enabled status of the MooseObject.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">implicit</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Determines whether this object is calculated using an implicit or explicit form</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Determines whether this object is calculated using an implicit or explicit form</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">save_in</span><span class="moose-parameter-header-description">The name of auxiliary variables to save this BC's residual contributions to.  Everything about that variable must match everything about this variable (the type, what blocks it's on, etc.)</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;AuxVariableName&gt;</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of auxiliary variables to save this BC's residual contributions to.  Everything about that variable must match everything about this variable (the type, what blocks it's on, etc.)</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">seed</span><span class="moose-parameter-header-default">0</span><span class="moose-parameter-header-description">The seed for the master random number generator</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>unsigned int</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The seed for the master random number generator</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">skip_execution_outside_variable_domain</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Whether to skip execution of this boundary condition when the variable it applies to is not defined on the boundary. This can facilitate setups with moving variable domains and fixed boundaries. Note that the FEProblem boundary-restricted integrity checks will also need to be turned off if using this option</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether to skip execution of this boundary condition when the variable it applies to is not defined on the boundary. This can facilitate setups with moving variable domains and fixed boundaries. Note that the FEProblem boundary-restricted integrity checks will also need to be turned off if using this option</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_displaced_mesh</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Whether or not this object should use the displaced mesh for computation.  Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether or not this object should use the displaced mesh for computation.  Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Advanced Parameters</h3></summary></details></section><section id="4edf9067-4c7e-4dd9-b681-5561afafc968" data-section-level="3" data-section-text="Material Property Retrieval Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">prop_getter_suffix</span><span class="moose-parameter-header-description">An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MaterialPropertyName</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_interpolated_state</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">For the old and older state use projected material properties interpolated at the quadrature points. To set up projection use the ProjectedStatefulMaterialStorageAction.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>For the old and older state use projected material properties interpolated at the quadrature points. To set up projection use the ProjectedStatefulMaterialStorageAction.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Material Property Retrieval Parameters</h3></summary></details></section></section><section class="scrollspy" id="1664ddc0-37be-48dd-a8c9-7558c46ccd0b" data-section-level="2" data-section-text="Input Files"><h2 id="input-files">Input Files</h2><ul class="moose-list-inputs browser-default"><li><a class="moose-source-filename tooltipped modal-trigger" href="#bb41790b-5987-435e-9133-67e899b65e88">(tests/sa-model/channel_flow_short.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#80db1da2-b01a-4df4-818e-0bb9d5a28211">(problems/2023-basic-turbulence-cases/channel/channel_flow.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#d92d8f02-9015-4d30-897f-4fb3f16e33e1">(problems/2023-basic-turbulence-cases/backward-facing-step/bfs_flow_upstream.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#3b0c9bb4-81c7-4acb-a925-dbb024dbbe3b">(problems/2023-basic-turbulence-cases/pipe/pipe_flow.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#4a3355da-026b-4f2d-8585-9ffbdbcbdc46">(tests/sa-model/channel_flow_with_heat.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#300c51f6-279a-446e-8974-0ce241b3c688">(tests/sa-model/pipe_flow.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#2cd1ab1f-7754-4e91-b78b-6d5c3707304e">(tests/sa-model/channel_flow_with_precursors.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#462476dc-ce7e-48fa-98bd-5f448965216b">(tests/sa-model/channel_flow.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#99b39c7b-aa1e-4340-8220-fe34113153d0">(problems/2023-basic-turbulence-cases/backward-facing-step/bfs_flow_step.i)</a></li></ul></section></section><div class="moose-modal modal" id="bb41790b-5987-435e-9133-67e899b65e88"><div class="modal-content"><h4>(tests/sa-model/channel_flow_short.i)</h4><pre style="max-height:350px;"><code class="language-moose">Re = 1.375e4
+density = 1      # kg cm-3
+D = 1
+inlet = 1
+viscosity = &#x27;${fparse density * inlet * D / Re}&#x27;    # dynamic viscosity, mu = nu * rho, kg cm-1 s-1
+alpha = 0.33333           # INS SUPG and PSPG stabilization parameter
+
+[GlobalParams]
+  integrate_p_by_parts = false
+  viscous_form = &#x27;traction&#x27;
+  pressure = p
+  velocity = vel
+[]
+
+[Mesh]
+  [channel]
+    type = CartesianMeshGenerator
+    dim = 2
+    dx = &#x27;0.05 0.2 19.75&#x27;
+    dy = &#x27;0.3 0.1 0.05 0.05&#x27;
+    ix = &#x27;20 1 79&#x27;
+    iy = &#x27;10 5 5 10&#x27;
+  []
+  [corner_node]
+    type = ExtraNodesetGenerator
+    input = channel
+    new_boundary = &#x27;pinned_node&#x27;
+    coord = &#x27;20 0.5&#x27;
+  []
+[]
+
+[Problem]
+  type = FEProblem
+[]
+
+[Variables]
+  [vel]
+    family = LAGRANGE_VEC
+    order = FIRST
+  []
+  [p]
+  []
+  [mu_tilde]
+    initial_condition = &#x27;${fparse viscosity * 5}&#x27;
+  []
+[]
+
+[AuxVariables]
+  [mu_turbulence]
+  []
+  [wall_dist]
+  []
+  [velx]
+  []
+  [vely]
+  []
+  [wall_shear_stress]
+    family = MONOMIAL
+    order = CONSTANT
+  []
+  [turbulent_stress]
+    family = MONOMIAL
+    order = CONSTANT
+  []
+[]
+
+[Kernels]
+  [mass]
+    type = INSADMass
+    variable = p
+  []
+  [mass_pspg]
+    type = INSADMassPSPG
+    variable = p
+  []
+  [momentum_advection]
+    type = INSADMomentumAdvection
+    variable = vel
+  []
+  [momentum_viscous]
+    type = INSADMomentumViscous
+    variable = vel
+  []
+  [momentum_turbulent_viscous]
+    type = INSADMomentumTurbulentViscous
+    variable = vel
+    mu_tilde = mu_tilde
+  []
+  [momentum_pressure]
+    type = INSADMomentumPressure
+    variable = vel
+  []
+  [momentum_supg]
+    type = INSADMomentumSUPG
+    variable = vel
+  []
+  [momentum_time]
+    type = INSADMomentumTimeDerivative
+    variable = vel
+  []
+
+  [mu_tilde_time]
+    type = SATimeDerivative
+    variable = mu_tilde
+  []
+  [mu_tilde_space]
+    type = SATurbulentViscosity
+    variable = mu_tilde
+  []
+  [mu_tilde_supg]
+    type = SATurbulentViscositySUPG
+    variable = mu_tilde
+  []
+[]
+
+[AuxKernels]
+  [mu_space]
+    type = SATurbulentViscosityAux
+    variable = mu_turbulence
+    mu_tilde = mu_tilde
+  []
+  [wall_distance]
+    type = WallDistanceAux
+    variable = wall_dist
+    walls = &#x27;top&#x27;
+    execute_on = initial
+  []
+  [velx]
+    type = VectorVariableComponentAux
+    variable = velx
+    vector_variable = vel
+    component = x
+  []
+  [vely]
+    type = VectorVariableComponentAux
+    variable = vely
+    vector_variable = vel
+    component = y
+  []
+  [wall_shear_stress]
+    type = WallShearStressAux
+    variable = wall_shear_stress
+    boundary = top
+  []
+  [turbulent_stress]
+    type = TurbulentStressAux
+    variable = turbulent_stress
+    mu_tilde = mu_tilde
+  []
+[]
+
+[Functions]
+  [xfunc]
+    type = ParsedFunction
+    expression = &#x27;${fparse inlet}&#x27;
+  []
+  [mu_func]
+    type = ParsedFunction
+    expression = &#x27;if(y=0.5, 0, ${fparse viscosity * 5})&#x27;
+  []
+[]
+
+[ICs]
+  [velocity]
+    type = VectorFunctionIC
+    function_x = xfunc
+    function_y = 0
+    variable = vel
+  []
+[]
+
+[BCs]
+  [no_slip]
+    type = ADVectorFunctionDirichletBC
+    variable = vel
+    boundary = &#x27;top&#x27;
+    function_x = 0
+    function_y = 0
+  []
+  [inlet]
+    type = ADVectorFunctionDirichletBC
+    variable = vel
+    boundary = &#x27;left&#x27;
+    function_x = xfunc
+    function_y = 0
+  []
+  [outlet]
+    type = INSADMomentumTurbulentNoBCBC
+    variable = vel
+    boundary = &#x27;right&#x27;
+    mu_tilde = mu_tilde
+  []
+  [outlet_supg]
+    type = INSADMomentumSUPGBC
+    variable = vel
+    boundary = &#x27;right&#x27;
+  []
+  [outlet_pspg]
+    type = INSADMassPSPGBC
+    variable = p
+    boundary = &#x27;right&#x27;
+  []
+  [symmetry]
+    type = ADVectorFunctionDirichletBC
+    variable = vel
+    boundary = &#x27;bottom&#x27;
+    set_x_comp = false
+    function_y = 0
+  []
+
+  [pressure_pin]
+    type = DirichletBC
+    variable = p
+    boundary = &#x27;pinned_node&#x27;
+    value = 0
+  []
+
+  [mu_inlet]
+    type = FunctionDirichletBC
+    variable = mu_tilde
+    boundary = &#x27;left&#x27;
+    function = mu_func
+  []
+  [mu_wall]
+    type = DirichletBC
+    variable = mu_tilde
+    boundary = &#x27;top&#x27;
+    value = 0
+  []
+  [mu_outlet]
+    type = SATurbulentViscosityNoBCBC
+    variable = mu_tilde
+    boundary = &#x27;right&#x27;
+  []
+  [mu_outlet_supg]
+    type = SATurbulentViscositySUPGBC
+    variable = mu_tilde
+    boundary = &#x27;right&#x27;
+  []
+[]
+
+[Materials]
+  [ad_mat]
+    type = ADGenericConstantMaterial
+    prop_names = &#x27;rho mu&#x27;
+    prop_values = &#x27;${density} ${viscosity}&#x27;
+  []
+  [sa_mat]
+    type = SATauMaterial
+    alpha = ${alpha}
+    mu_tilde = mu_tilde
+    wall_distance_var = wall_dist
+    use_ft2_term = true
+  []
+[]
+
+[Executioner]
+  type = Transient
+
+  solve_type = &#x27;NEWTON&#x27;
+  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
+  petsc_options_iname = &#x27;-pc_type -pc_factor_shift_type -pc_factor_mat_solver_package&#x27;
+  petsc_options_value = &#x27;lu       NONZERO               superlu_dist&#x27;
+  line_search = none
+
+  automatic_scaling = true
+  compute_scaling_once = false
+  resid_vs_jac_scaling_param = 0.1
+  scaling_group_variables = &#x27;vel; p; mu_tilde&#x27;
+  off_diagonals_in_auto_scaling = true
+
+  nl_rel_tol = 1e-8
+  nl_abs_tol = 1e-14
+  nl_max_its = 10
+
+  start_time = 0.0
+  end_time = 6
+  dtmin = 1.0
+  dtmax = 10
+  [TimeStepper]
+    type = IterationAdaptiveDT
+    dt = 1e-0
+    cutback_factor = 0.9
+    growth_factor = 1.1
+    optimal_iterations = 6
+    iteration_window = 1
+    linear_iteration_ratio = 1000
+  []
+[]
+
+[Preconditioning]
+  [SMP]
+    type = SMP
+    full = true
+  []
+[]
+
+[Outputs]
+  [exodus]
+    type = Exodus
+    execute_on = final
+  []
+[]
+
+[Debug]
+  show_var_residual_norms = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="80db1da2-b01a-4df4-818e-0bb9d5a28211"><div class="modal-content"><h4>(problems/2023-basic-turbulence-cases/channel/channel_flow.i)</h4><pre style="max-height:350px;"><code class="language-moose">Re = 1.375e4
+density = 1      # kg cm-3
+D = 1
+inlet = 1
+viscosity = &#x27;${fparse density * inlet * D / Re}&#x27;    # dynamic viscosity, mu = nu * rho, kg cm-1 s-1
+alpha = 0.33333           # INS SUPG and PSPG stabilization parameter
+
+[GlobalParams]
+  integrate_p_by_parts = false
+  viscous_form = &#x27;traction&#x27;
+  pressure = p
+  velocity = vel
+[]
+
+[Mesh]
+  [channel]
+    type = CartesianMeshGenerator
+    dim = 2
+    dx = &#x27;0.05 0.2 139.75&#x27;
+    dy = &#x27;0.3 0.1 0.05 0.05&#x27;
+    ix = &#x27;20 1 559&#x27;
+    iy = &#x27;20 10 10 40&#x27;
+  []
+  [corner_node]
+    type = ExtraNodesetGenerator
+    input = channel
+    new_boundary = &#x27;pinned_node&#x27;
+    coord = &#x27;140 0.5&#x27;
+  []
+[]
+
+[Problem]
+  type = FEProblem
+[]
+
+[Variables]
+  [vel]
+    family = LAGRANGE_VEC
+    order = FIRST
+  []
+  [p]
+  []
+  [mu_tilde]
+    initial_condition = &#x27;${fparse viscosity * 5}&#x27;
+  []
+[]
+
+[AuxVariables]
+  [mu_turbulence]
+  []
+  [wall_dist]
+  []
+  [velx]
+  []
+  [vely]
+  []
+  [wall_shear_stress]
+    family = MONOMIAL
+    order = CONSTANT
+  []
+  [turbulent_stress]
+    family = MONOMIAL
+    order = CONSTANT
+  []
+[]
+
+[Kernels]
+  [mass]
+    type = INSADMass
+    variable = p
+  []
+  [mass_pspg]
+    type = INSADMassPSPG
+    variable = p
+  []
+  [momentum_advection]
+    type = INSADMomentumAdvection
+    variable = vel
+  []
+  [momentum_viscous]
+    type = INSADMomentumViscous
+    variable = vel
+  []
+  [momentum_turbulent_viscous]
+    type = INSADMomentumTurbulentViscous
+    variable = vel
+    mu_tilde = mu_tilde
+  []
+  [momentum_pressure]
+    type = INSADMomentumPressure
+    variable = vel
+  []
+  [momentum_supg]
+    type = INSADMomentumSUPG
+    variable = vel
+  []
+  [momentum_time]
+    type = INSADMomentumTimeDerivative
+    variable = vel
+  []
+
+  [mu_tilde_time]
+    type = SATimeDerivative
+    variable = mu_tilde
+  []
+  [mu_tilde_space]
+    type = SATurbulentViscosity
+    variable = mu_tilde
+  []
+  [mu_tilde_supg]
+    type = SATurbulentViscositySUPG
+    variable = mu_tilde
+  []
+[]
+
+[AuxKernels]
+  [mu_space]
+    type = SATurbulentViscosityAux
+    variable = mu_turbulence
+    mu_tilde = mu_tilde
+  []
+  [wall_distance]
+    type = WallDistanceAux
+    variable = wall_dist
+    walls = &#x27;top&#x27;
+    execute_on = initial
+  []
+  [velx]
+    type = VectorVariableComponentAux
+    variable = velx
+    vector_variable = vel
+    component = x
+  []
+  [vely]
+    type = VectorVariableComponentAux
+    variable = vely
+    vector_variable = vel
+    component = y
+  []
+  [wall_shear_stress]
+    type = WallShearStressAux
+    variable = wall_shear_stress
+    boundary = top
+  []
+  [turbulent_stress]
+    type = TurbulentStressAux
+    variable = turbulent_stress
+    mu_tilde = mu_tilde
+  []
+[]
+
+[Functions]
+  [xfunc]
+    type = ParsedFunction
+    expression = &#x27;${fparse inlet}&#x27;
+  []
+  [mu_func]
+    type = ParsedFunction
+    expression = &#x27;if(y=0.5, 0, ${fparse viscosity * 5})&#x27;
+  []
+[]
+
+[ICs]
+  [velocity]
+    type = VectorFunctionIC
+    function_x = xfunc
+    function_y = 0
+    variable = vel
+  []
+[]
+
+[BCs]
+  [no_slip]
+    type = ADVectorFunctionDirichletBC
+    variable = vel
+    boundary = &#x27;top&#x27;
+    function_x = 0
+    function_y = 0
+  []
+  [inlet]
+    type = ADVectorFunctionDirichletBC
+    variable = vel
+    boundary = &#x27;left&#x27;
+    function_x = xfunc
+    function_y = 0
+  []
+  [outlet]
+    type = INSADMomentumTurbulentNoBCBC
+    variable = vel
+    boundary = &#x27;right&#x27;
+    mu_tilde = mu_tilde
+  []
+  [outlet_supg]
+    type = INSADMomentumSUPGBC
+    variable = vel
+    boundary = &#x27;right&#x27;
+  []
+  [outlet_pspg]
+    type = INSADMassPSPGBC
+    variable = p
+    boundary = &#x27;right&#x27;
+  []
+  [symmetry]
+    type = ADVectorFunctionDirichletBC
+    variable = vel
+    boundary = &#x27;bottom&#x27;
+    set_x_comp = false
+    function_y = 0
+  []
+
+  [pressure_pin]
+    type = DirichletBC
+    variable = p
+    boundary = &#x27;pinned_node&#x27;
+    value = 0
+  []
+
+  [mu_inlet]
+    type = FunctionDirichletBC
+    variable = mu_tilde
+    boundary = &#x27;left&#x27;
+    function = mu_func
+  []
+  [mu_wall]
+    type = DirichletBC
+    variable = mu_tilde
+    boundary = &#x27;top&#x27;
+    value = 0
+  []
+  [mu_outlet]
+    type = SATurbulentViscosityNoBCBC
+    variable = mu_tilde
+    boundary = &#x27;right&#x27;
+  []
+  [mu_outlet_supg]
+    type = SATurbulentViscositySUPGBC
+    variable = mu_tilde
+    boundary = &#x27;right&#x27;
+  []
+[]
+
+[Materials]
+  [ad_mat]
+    type = ADGenericConstantMaterial
+    prop_names = &#x27;rho mu&#x27;
+    prop_values = &#x27;${density} ${viscosity}&#x27;
+  []
+  [sa_mat]
+    type = SATauMaterial
+    alpha = ${alpha}
+    mu_tilde = mu_tilde
+    wall_distance_var = wall_dist
+  []
+[]
+
+[VectorPostprocessors]
+  [outlet]
+    type = NodalValueSampler
+    variable = velx
+    boundary = &#x27;right&#x27;
+    sort_by = y
+    execute_on = final
+  []
+  [prior]
+    type = NodalValueSampler
+    variable = velx
+    boundary = &#x27;right&#x27;
+    sort_by = y
+    execute_on = final
+  []
+  [stress]
+    type = SideValueSampler
+    variable = turbulent_stress
+    boundary = &#x27;right&#x27;
+    sort_by = y
+    execute_on = final
+  []
+[]
+
+[Executioner]
+  type = Transient
+
+  solve_type = &#x27;NEWTON&#x27;
+  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
+  petsc_options_iname = &#x27;-pc_type -pc_factor_shift_type -pc_factor_mat_solver_package&#x27;
+  petsc_options_value = &#x27;lu       NONZERO               superlu_dist&#x27;
+  line_search = none
+
+  automatic_scaling = true
+  compute_scaling_once = false
+  resid_vs_jac_scaling_param = 0.1
+  scaling_group_variables = &#x27;vel; p; mu_tilde&#x27;
+  off_diagonals_in_auto_scaling = true
+
+  nl_rel_tol = 1e-8
+  nl_abs_tol = 1e-12
+  nl_max_its = 10
+
+  steady_state_detection = true
+  steady_state_tolerance = 1e-8
+  dtmin = 1e-2
+  dtmax = 10
+  [TimeStepper]
+    type = IterationAdaptiveDT
+    dt = 1e-1
+    cutback_factor = 0.9
+    growth_factor = 1.1
+    optimal_iterations = 6
+    iteration_window = 1
+    linear_iteration_ratio = 1000
+  []
+[]
+
+[Preconditioning]
+  [SMP]
+    type = SMP
+    full = true
+  []
+[]
+
+[Outputs]
+  [exodus]
+    type = Exodus
+  []
+  [csv]
+    type = CSV
+    execute_on = final
+  []
+[]
+
+[Debug]
+  show_var_residual_norms = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="d92d8f02-9015-4d30-897f-4fb3f16e33e1"><div class="modal-content"><h4>(problems/2023-basic-turbulence-cases/backward-facing-step/bfs_flow_upstream.i)</h4><pre style="max-height:350px;"><code class="language-moose">Re = 3.6e4
+density = 1      # kg cm-3
+D = 1
+inlet = 1
+viscosity = &#x27;${fparse density * inlet * D / Re}&#x27;    # dynamic viscosity, mu = nu * rho, kg cm-1 s-1
+alpha = 0.33333           # INS SUPG and PSPG stabilization parameter
+
+[GlobalParams]
+  integrate_p_by_parts = false
+  viscous_form = &#x27;traction&#x27;
+  pressure = p
+  velocity = vel
+[]
+
+[Mesh]
+  [block]
+    type = CartesianMeshGenerator
+    dim = 2
+    dx = &#x27;0.25 0.75 103&#x27;
+    ix = &#x27;40   1    103&#x27;
+    dy = &#x27;0.025 0.025 0.9 0.025 0.025 0.025 0.025 0.2 1.25 1  2.5 1.5 1.25 0.2 0.025 0.025&#x27;
+    iy = &#x27;16 8 36 5 10 20 5 10 25 20 5 30 25 10 5 20&#x27;
+  []
+  [rename]
+    type = SubdomainBoundingBoxGenerator
+    input = block
+    bottom_left = &#x27;0 0 0&#x27;
+    top_right = &#x27;104 1 0&#x27;
+    block_id = 1
+  []
+  [delete]
+    type = BlockDeletionGenerator
+    input = rename
+    block = 1
+    new_boundary = &#x27;bottom&#x27;
+  []
+  [corner_node]
+    type = ExtraNodesetGenerator
+    input = delete
+    new_boundary = &#x27;pinned_node&#x27;
+    coord = &#x27;104 9&#x27;
+  []
+[]
+
+[Problem]
+  type = FEProblem
+[]
+
+[Variables]
+  [vel]
+    family = LAGRANGE_VEC
+    order = FIRST
+  []
+  [p]
+  []
+  [mu_tilde]
+    initial_condition = &#x27;${fparse viscosity * 3}&#x27;
+  []
+[]
+
+[AuxVariables]
+  [mu_turbulence]
+  []
+  [wall_dist]
+  []
+  [velx]
+  []
+  [vely]
+  []
+  [wall_shear_stress]
+    family = MONOMIAL
+    order = CONSTANT
+  []
+  [turbulent_stress]
+  []
+[]
+
+[Kernels]
+  [mass]
+    type = INSADMass
+    variable = p
+  []
+  [mass_pspg]
+    type = INSADMassPSPG
+    variable = p
+  []
+  [momentum_advection]
+    type = INSADMomentumAdvection
+    variable = vel
+  []
+  [momentum_viscous]
+    type = INSADMomentumViscous
+    variable = vel
+  []
+  [momentum_turbulent_viscous]
+    type = INSADMomentumTurbulentViscous
+    variable = vel
+    mu_tilde = mu_tilde
+  []
+  [momentum_pressure]
+    type = INSADMomentumPressure
+    variable = vel
+  []
+  [momentum_supg]
+    type = INSADMomentumSUPG
+    variable = vel
+  []
+  [momentum_time]
+    type = INSADMomentumTimeDerivative
+    variable = vel
+  []
+
+  [mu_tilde_time]
+    type = SATimeDerivative
+    variable = mu_tilde
+  []
+  [mu_tilde_space]
+    type = SATurbulentViscosity
+    variable = mu_tilde
+  []
+  [mu_tilde_supg]
+    type = SATurbulentViscositySUPG
+    variable = mu_tilde
+  []
+[]
+
+[AuxKernels]
+  [mu_space]
+    type = SATurbulentViscosityAux
+    variable = mu_turbulence
+    mu_tilde = mu_tilde
+  []
+  [wall_distance]
+    type = WallDistanceAux
+    variable = wall_dist
+    walls = &#x27;top bottom&#x27;
+    execute_on = initial
+  []
+  [velx]
+    type = VectorVariableComponentAux
+    variable = velx
+    vector_variable = vel
+    component = x
+  []
+  [vely]
+    type = VectorVariableComponentAux
+    variable = vely
+    vector_variable = vel
+    component = y
+  []
+  [wall_shear_stress]
+    type = WallShearStressAux
+    variable = wall_shear_stress
+    boundary = &#x27;top bottom&#x27;
+  []
+  [turbulent_stress]
+    type = TurbulentStressAux
+    variable = turbulent_stress
+    mu_tilde = mu_tilde
+  []
+[]
+
+[Functions]
+  [xfunc]
+    type = ParsedFunction
+    expression = &#x27;${fparse inlet}&#x27;
+  []
+  [mu_func]
+    type = ParsedFunction
+    expression = &#x27;if(y=1, 0, if(y=9, 0, ${fparse viscosity * 3}))&#x27;
+  []
+[]
+
+[ICs]
+  [velocity]
+    type = VectorFunctionIC
+    function_x = xfunc
+    function_y = 0
+    variable = vel
+  []
+[]
+
+[BCs]
+  [no_slip]
+    type = ADVectorFunctionDirichletBC
+    variable = vel
+    boundary = &#x27;top bottom&#x27;
+    function_x = 0
+    function_y = 0
+  []
+  [inlet]
+    type = ADVectorFunctionDirichletBC
+    variable = vel
+    boundary = &#x27;left&#x27;
+    function_x = xfunc
+    function_y = 0
+  []
+  [outlet]
+    type = INSADMomentumTurbulentNoBCBC
+    variable = vel
+    boundary = &#x27;right&#x27;
+    mu_tilde = mu_tilde
+  []
+  [outlet_supg]
+    type = INSADMomentumSUPGBC
+    variable = vel
+    boundary = &#x27;right&#x27;
+  []
+  [outlet_pspg]
+    type = INSADMassPSPGBC
+    variable = p
+    boundary = &#x27;right&#x27;
+  []
+
+  [pressure_pin]
+    type = DirichletBC
+    variable = p
+    boundary = &#x27;pinned_node&#x27;
+    value = 0
+  []
+
+  [mu_inlet]
+    type = FunctionDirichletBC
+    variable = mu_tilde
+    boundary = &#x27;left&#x27;
+    function = mu_func
+  []
+  [mu_wall]
+    type = DirichletBC
+    variable = mu_tilde
+    boundary = &#x27;top bottom&#x27;
+    value = 0
+  []
+  [mu_outlet]
+    type = SATurbulentViscosityNoBCBC
+    variable = mu_tilde
+    boundary = &#x27;right&#x27;
+  []
+  [mu_outlet_supg]
+    type = SATurbulentViscositySUPGBC
+    variable = mu_tilde
+    boundary = &#x27;right&#x27;
+  []
+[]
+
+[Materials]
+  [ad_mat]
+    type = ADGenericConstantMaterial
+    prop_names = &#x27;rho mu&#x27;
+    prop_values = &#x27;${density} ${viscosity}&#x27;
+  []
+  [sa_mat]
+    type = SATauMaterial
+    alpha = ${alpha}
+    mu_tilde = mu_tilde
+    wall_distance_var = wall_dist
+  []
+[]
+
+[Executioner]
+  type = Transient
+
+  solve_type = &#x27;NEWTON&#x27;
+  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
+  petsc_options_iname = &#x27;-pc_type -pc_factor_shift_type -pc_factor_mat_solver_package&#x27;
+  petsc_options_value = &#x27;lu       NONZERO               superlu_dist&#x27;
+  line_search = none
+
+  automatic_scaling = true
+  compute_scaling_once = false
+  resid_vs_jac_scaling_param = 0.1
+  scaling_group_variables = &#x27;vel; p; mu_tilde&#x27;
+  off_diagonals_in_auto_scaling = true
+
+  nl_rel_tol = 1e-8
+  nl_abs_tol = 1e-14
+  nl_max_its = 10
+  l_max_its = 200
+
+  steady_state_detection = true
+  steady_state_tolerance = 1e-6
+  dtmin = 1e-2
+  dtmax = 10
+  [TimeStepper]
+    type = IterationAdaptiveDT
+    dt = 1e-1
+    cutback_factor = 0.9
+    growth_factor = 1.1
+    optimal_iterations = 6
+    iteration_window = 1
+    linear_iteration_ratio = 1000
+  []
+[]
+
+[Preconditioning]
+  [SMP]
+    type = SMP
+    full = true
+  []
+[]
+
+[Outputs]
+  [exodus]
+    type = Exodus
+  []
+  [csv]
+    type = CSV
+    execute_on = final
+  []
+[]
+
+[Debug]
+  show_var_residual_norms = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="3b0c9bb4-81c7-4acb-a925-dbb024dbbe3b"><div class="modal-content"><h4>(problems/2023-basic-turbulence-cases/pipe/pipe_flow.i)</h4><pre style="max-height:350px;"><code class="language-moose">Re = 4e4
+density = 1      # kg cm-3
+D = 1
+inlet = 1
+viscosity = &#x27;${fparse density * inlet * D / Re}&#x27;    # dynamic viscosity, mu = nu * rho, kg cm-1 s-1
+alpha = 0.33333           # INS SUPG and PSPG stabilization parameter
+
+[GlobalParams]
+  integrate_p_by_parts = false
+  viscous_form = &#x27;traction&#x27;
+  pressure = p
+  velocity = vel
+[]
+
+[Mesh]
+  coord_type = &#x27;RZ&#x27;
+  [pipe]
+    type = CartesianMeshGenerator
+    dim = 2
+    dx = &#x27;0.3 0.1 0.05 0.034 0.016&#x27;
+    dy = &#x27;0.025 0.475 149.5&#x27;
+    ix = &#x27;20 10 10 17 40&#x27;
+    iy = &#x27;20 1 299&#x27;
+  []
+  [corner_node]
+    type = ExtraNodesetGenerator
+    input = pipe
+    new_boundary = &#x27;pinned_node&#x27;
+    coord = &#x27;0.5 150&#x27;
+  []
+[]
+
+[Problem]
+  type = FEProblem
+[]
+
+[Variables]
+  [vel]
+    family = LAGRANGE_VEC
+    order = FIRST
+  []
+  [p]
+  []
+  [mu_tilde]
+    initial_condition = &#x27;${fparse viscosity * 5}&#x27;
+  []
+[]
+
+[AuxVariables]
+  [mu_turbulence]
+  []
+  [wall_dist]
+  []
+  [velx]
+  []
+  [vely]
+  []
+  [wall_shear_stress]
+    family = MONOMIAL
+    order = CONSTANT
+  []
+  [turbulent_stress]
+    family = MONOMIAL
+    order = CONSTANT
+  []
+[]
+
+[Kernels]
+  [mass]
+    type = INSADMass
+    variable = p
+  []
+  [mass_pspg]
+    type = INSADMassPSPG
+    variable = p
+  []
+  [momentum_advection]
+    type = INSADMomentumAdvection
+    variable = vel
+  []
+  [momentum_viscous]
+    type = INSADMomentumViscous
+    variable = vel
+  []
+  [momentum_turbulent_viscous]
+    type = INSADMomentumTurbulentViscous
+    variable = vel
+    mu_tilde = mu_tilde
+  []
+  [momentum_pressure]
+    type = INSADMomentumPressure
+    variable = vel
+  []
+  [momentum_supg]
+    type = INSADMomentumSUPG
+    variable = vel
+  []
+  [momentum_time]
+    type = INSADMomentumTimeDerivative
+    variable = vel
+  []
+
+  [mu_tilde_time]
+    type = SATimeDerivative
+    variable = mu_tilde
+  []
+  [mu_tilde_space]
+    type = SATurbulentViscosity
+    variable = mu_tilde
+  []
+  [mu_tilde_supg]
+    type = SATurbulentViscositySUPG
+    variable = mu_tilde
+  []
+[]
+
+[AuxKernels]
+  [mu_space]
+    type = SATurbulentViscosityAux
+    variable = mu_turbulence
+    mu_tilde = mu_tilde
+  []
+  [wall_distance]
+    type = WallDistanceAux
+    variable = wall_dist
+    walls = &#x27;right&#x27;
+    execute_on = initial
+  []
+  [velx]
+    type = VectorVariableComponentAux
+    variable = velx
+    vector_variable = vel
+    component = x
+  []
+  [vely]
+    type = VectorVariableComponentAux
+    variable = vely
+    vector_variable = vel
+    component = y
+  []
+  [wall_shear_stress]
+    type = WallShearStressAux
+    variable = wall_shear_stress
+    boundary = right
+  []
+  [turbulent_stress]
+    type = TurbulentStressAux
+    variable = turbulent_stress
+    mu_tilde = mu_tilde
+  []
+[]
+
+[Functions]
+  [yfunc]
+    type = ParsedFunction
+    expression = &#x27;${fparse inlet}&#x27;
+  []
+  [mu_func]
+    type = ParsedFunction
+    expression = &#x27;if(x=0.5, 0, ${fparse viscosity * 5})&#x27;
+  []
+[]
+
+[ICs]
+  [velocity]
+    type = VectorFunctionIC
+    function_x = 0
+    function_y = yfunc
+    variable = vel
+  []
+[]
+
+[BCs]
+  [no_slip]
+    type = ADVectorFunctionDirichletBC
+    variable = vel
+    boundary = &#x27;right&#x27;
+    function_x = 0
+    function_y = 0
+  []
+  [inlet]
+    type = ADVectorFunctionDirichletBC
+    variable = vel
+    boundary = &#x27;bottom&#x27;
+    function_x = 0
+    function_y = yfunc
+  []
+  [outlet]
+    type = INSADMomentumTurbulentNoBCBC
+    variable = vel
+    boundary = &#x27;top&#x27;
+    mu_tilde = mu_tilde
+  []
+  [outlet_supg]
+    type = INSADMomentumSUPGBC
+    variable = vel
+    boundary = &#x27;top&#x27;
+  []
+  [outlet_pspg]
+    type = INSADMassPSPGBC
+    variable = p
+    boundary = &#x27;top&#x27;
+  []
+
+  [pressure_pin]
+    type = DirichletBC
+    variable = p
+    boundary = &#x27;pinned_node&#x27;
+    value = 0
+  []
+
+  [mu_inlet]
+    type = FunctionDirichletBC
+    variable = mu_tilde
+    boundary = &#x27;bottom&#x27;
+    function = mu_func
+  []
+  [mu_wall]
+    type = DirichletBC
+    variable = mu_tilde
+    boundary = &#x27;right&#x27;
+    value = 0
+  []
+  [mu_outlet]
+    type = SATurbulentViscosityNoBCBC
+    variable = mu_tilde
+    boundary = &#x27;top&#x27;
+  []
+  [mu_outlet_supg]
+    type = SATurbulentViscositySUPGBC
+    variable = mu_tilde
+    boundary = &#x27;top&#x27;
+  []
+[]
+
+[Materials]
+  [ad_mat]
+    type = ADGenericConstantMaterial
+    prop_names = &#x27;rho mu&#x27;
+    prop_values = &#x27;${density} ${viscosity}&#x27;
+  []
+  [sa_mat]
+    type = SATauMaterial
+    alpha = ${alpha}
+    mu_tilde = mu_tilde
+    wall_distance_var = wall_dist
+  []
+[]
+
+[VectorPostprocessors]
+  [outlet]
+    type = NodalValueSampler
+    variable = vely
+    boundary = &#x27;top&#x27;
+    sort_by = x
+    execute_on = final
+  []
+  [stress]
+    type = SideValueSampler
+    variable = turbulent_stress
+    boundary = &#x27;top&#x27;
+    sort_by = x
+    execute_on = final
+  []
+[]
+
+[Executioner]
+  type = Transient
+
+  solve_type = &#x27;NEWTON&#x27;
+  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
+  petsc_options_iname = &#x27;-pc_type -pc_factor_shift_type -pc_factor_mat_solver_package&#x27;
+  petsc_options_value = &#x27;lu       NONZERO               superlu_dist&#x27;
+  line_search = none
+
+  automatic_scaling = true
+  compute_scaling_once = false
+  resid_vs_jac_scaling_param = 0.1
+  scaling_group_variables = &#x27;vel; p; mu_tilde&#x27;
+  off_diagonals_in_auto_scaling = true
+
+  nl_rel_tol = 1e-8
+  nl_abs_tol = 1e-12
+  nl_max_its = 10
+
+  steady_state_detection = true
+  steady_state_tolerance = 1e-8
+  dtmin = 1e-2
+  dtmax = 10
+  [TimeStepper]
+    type = IterationAdaptiveDT
+    dt = 1e-2
+    cutback_factor = 0.9
+    growth_factor = 1.1
+    optimal_iterations = 6
+    iteration_window = 1
+    linear_iteration_ratio = 1000
+  []
+[]
+
+[Preconditioning]
+  [SMP]
+    type = SMP
+    full = true
+  []
+[]
+
+[Outputs]
+  [exodus]
+    type = Exodus
+  []
+  [csv]
+    type = CSV
+    execute_on = final
+  []
+[]
+
+[Debug]
+  show_var_residual_norms = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="4a3355da-026b-4f2d-8585-9ffbdbcbdc46"><div class="modal-content"><h4>(tests/sa-model/channel_flow_with_heat.i)</h4><pre style="max-height:350px;"><code class="language-moose">Re = 1.375e4
+density = 1      # kg cm-3
+D = 1
+inlet = 1
+viscosity = &#x27;${fparse density * inlet * D / Re}&#x27;    # dynamic viscosity, mu = nu * rho, kg cm-1 s-1
+alpha = 0.33333           # INS SUPG and PSPG stabilization parameter
+cp = 1
+k = &#x27;${fparse viscosity * cp / 0.85}&#x27;
+
+[GlobalParams]
+  integrate_p_by_parts = false
+  viscous_form = &#x27;traction&#x27;
+  pressure = p
+  velocity = vel
+  temperature = temp
+[]
+
+[Mesh]
+  [channel]
+    type = CartesianMeshGenerator
+    dim = 2
+    dx = &#x27;0.05 0.2 19.75&#x27;
+    dy = &#x27;0.3 0.1 0.05 0.05&#x27;
+    ix = &#x27;20 1 79&#x27;
+    iy = &#x27;10 5 5 10&#x27;
+  []
+  [corner_node]
+    type = ExtraNodesetGenerator
+    input = channel
+    new_boundary = &#x27;pinned_node&#x27;
+    coord = &#x27;20 0.5&#x27;
+  []
+[]
+
+[Problem]
+  type = FEProblem
+[]
+
+[Variables]
+  [vel]
+    family = LAGRANGE_VEC
+    order = FIRST
+  []
+  [p]
+  []
+  [mu_tilde]
+    initial_condition = &#x27;${fparse viscosity * 5}&#x27;
+  []
+  [temp]
+    initial_condition = 300
+  []
+[]
+
+[AuxVariables]
+  [mu_turbulence]
+  []
+  [wall_dist]
+  []
+  [velx]
+  []
+  [vely]
+  []
+  [wall_shear_stress]
+    family = MONOMIAL
+    order = CONSTANT
+  []
+  [turbulent_stress]
+    family = MONOMIAL
+    order = CONSTANT
+  []
+[]
+
+[Kernels]
+  [mass]
+    type = INSADMass
+    variable = p
+  []
+  [mass_pspg]
+    type = INSADMassPSPG
+    variable = p
+  []
+
+  [momentum_advection]
+    type = INSADMomentumAdvection
+    variable = vel
+  []
+  [momentum_viscous]
+    type = INSADMomentumViscous
+    variable = vel
+  []
+  [momentum_turbulent_viscous]
+    type = INSADMomentumTurbulentViscous
+    variable = vel
+    mu_tilde = mu_tilde
+  []
+  [momentum_pressure]
+    type = INSADMomentumPressure
+    variable = vel
+  []
+  [momentum_supg]
+    type = INSADMomentumSUPG
+    variable = vel
+  []
+  [momentum_time]
+    type = INSADMomentumTimeDerivative
+    variable = vel
+  []
+
+  [mu_tilde_time]
+    type = SATimeDerivative
+    variable = mu_tilde
+  []
+  [mu_tilde_space]
+    type = SATurbulentViscosity
+    variable = mu_tilde
+  []
+  [mu_tilde_supg]
+    type = SATurbulentViscositySUPG
+    variable = mu_tilde
+  []
+
+  [temperature_advection]
+    type = INSADEnergyAdvection
+    variable = temp
+  []
+  [temp_conduction]
+    type = ADHeatConduction
+    variable = temp
+    thermal_conductivity = &#x27;k&#x27;
+  []
+  [temp_turbulent_diffusion]
+    type = INSADEnergyTurbulentDiffusion
+    variable = temp
+    mu_tilde = mu_tilde
+  []
+  [temp_source]
+    type = INSADEnergySource
+    variable = temp
+    source_function = &#x27;1&#x27;
+  []
+  [temp_supg]
+    type = INSADEnergySUPG
+    variable = temp
+  []
+  [temp_time]
+    type = INSADHeatConductionTimeDerivative
+    variable = temp
+  []
+[]
+
+[AuxKernels]
+  [mu_space]
+    type = SATurbulentViscosityAux
+    variable = mu_turbulence
+    mu_tilde = mu_tilde
+  []
+  [wall_distance]
+    type = WallDistanceAux
+    variable = wall_dist
+    walls = &#x27;top&#x27;
+    execute_on = initial
+  []
+  [velx]
+    type = VectorVariableComponentAux
+    variable = velx
+    vector_variable = vel
+    component = x
+  []
+  [vely]
+    type = VectorVariableComponentAux
+    variable = vely
+    vector_variable = vel
+    component = y
+  []
+  [wall_shear_stress]
+    type = WallShearStressAux
+    variable = wall_shear_stress
+    boundary = top
+  []
+  [turbulent_stress]
+    type = TurbulentStressAux
+    variable = turbulent_stress
+    mu_tilde = mu_tilde
+  []
+[]
+
+[Functions]
+  [xfunc]
+    type = ParsedFunction
+    expression = &#x27;${fparse inlet}&#x27;
+  []
+  [mu_func]
+    type = ParsedFunction
+    expression = &#x27;if(y=0.5, 0, ${fparse viscosity * 5})&#x27;
+  []
+[]
+
+[ICs]
+  [velocity]
+    type = VectorFunctionIC
+    function_x = xfunc
+    function_y = 0
+    variable = vel
+  []
+[]
+
+[BCs]
+  [no_slip]
+    type = ADVectorFunctionDirichletBC
+    variable = vel
+    boundary = &#x27;top&#x27;
+    function_x = 0
+    function_y = 0
+  []
+  [inlet]
+    type = ADVectorFunctionDirichletBC
+    variable = vel
+    boundary = &#x27;left&#x27;
+    function_x = xfunc
+    function_y = 0
+  []
+  [outlet]
+    type = INSADMomentumTurbulentNoBCBC
+    variable = vel
+    boundary = &#x27;right&#x27;
+    mu_tilde = mu_tilde
+  []
+  [outlet_supg]
+    type = INSADMomentumSUPGBC
+    variable = vel
+    boundary = &#x27;right&#x27;
+  []
+  [outlet_pspg]
+    type = INSADMassPSPGBC
+    variable = p
+    boundary = &#x27;right&#x27;
+  []
+  [symmetry]
+    type = ADVectorFunctionDirichletBC
+    variable = vel
+    boundary = &#x27;bottom&#x27;
+    set_x_comp = false
+    function_y = 0
+  []
+
+  [pressure_pin]
+    type = DirichletBC
+    variable = p
+    boundary = &#x27;pinned_node&#x27;
+    value = 0
+  []
+
+  [mu_inlet]
+    type = FunctionDirichletBC
+    variable = mu_tilde
+    boundary = &#x27;left&#x27;
+    function = mu_func
+  []
+  [mu_wall]
+    type = DirichletBC
+    variable = mu_tilde
+    boundary = &#x27;top&#x27;
+    value = 0
+  []
+  [mu_outlet]
+    type = SATurbulentViscosityNoBCBC
+    variable = mu_tilde
+    boundary = &#x27;right&#x27;
+  []
+  [mu_outlet_supg]
+    type = SATurbulentViscositySUPGBC
+    variable = mu_tilde
+    boundary = &#x27;right&#x27;
+  []
+
+  [temperature_inlet]
+    type = DirichletBC
+    variable = temp
+    boundary = &#x27;left&#x27;
+    value = 300
+  []
+[]
+
+[Materials]
+  [ad_mat]
+    type = ADGenericConstantMaterial
+    prop_names = &#x27;rho mu cp k grad_k&#x27;
+    prop_values = &#x27;${density} ${viscosity} ${cp} ${k} 0&#x27;
+  []
+  [sa_mat]
+    type = SATauStabilized3Eqn
+    alpha = ${alpha}
+    mu_tilde = mu_tilde
+    wall_distance_var = wall_dist
+    use_ft2_term = true
+  []
+[]
+
+[Executioner]
+  type = Transient
+  end_time = 30
+
+  solve_type = &#x27;NEWTON&#x27;
+  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
+  petsc_options_iname = &#x27;-pc_type -pc_factor_shift_type -pc_factor_mat_solver_package&#x27;
+  petsc_options_value = &#x27;lu       NONZERO               superlu_dist&#x27;
+  line_search = none
+
+  automatic_scaling = true
+  compute_scaling_once = false
+  resid_vs_jac_scaling_param = 0.1
+  off_diagonals_in_auto_scaling = true
+
+  nl_rel_tol = 1e-8
+  nl_abs_tol = 1e-13
+  nl_max_its = 10
+
+  dtmin = 1
+  dtmax = 10
+  [TimeStepper]
+    type = IterationAdaptiveDT
+    dt = 1
+    cutback_factor = 0.9
+    growth_factor = 1.2
+    optimal_iterations = 6
+    iteration_window = 1
+    linear_iteration_ratio = 1000
+  []
+[]
+
+[Preconditioning]
+  [SMP]
+    type = SMP
+    full = true
+  []
+[]
+
+[Outputs]
+  [exodus]
+    type = Exodus
+    execute_on = final
+  []
+[]
+
+[Debug]
+  show_var_residual_norms = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="300c51f6-279a-446e-8974-0ce241b3c688"><div class="modal-content"><h4>(tests/sa-model/pipe_flow.i)</h4><pre style="max-height:350px;"><code class="language-moose">Re = 4e4
+density = 1      # kg cm-3
+D = 1
+inlet = 1
+viscosity = &#x27;${fparse density * inlet * D / Re}&#x27;    # dynamic viscosity, mu = nu * rho, kg cm-1 s-1
+alpha = 0.33333           # INS SUPG and PSPG stabilization parameter
+
+[GlobalParams]
+  integrate_p_by_parts = false
+  viscous_form = &#x27;traction&#x27;
+  pressure = p
+  velocity = vel
+[]
+
+[Mesh]
+  coord_type = &#x27;RZ&#x27;
+  [pipe]
+    type = CartesianMeshGenerator
+    dim = 2
+    dx = &#x27;0.3 0.1 0.05 0.034 0.016&#x27;
+    dy = &#x27;0.025 0.475 19.5&#x27;
+    ix = &#x27;10 5 5 4 10&#x27;
+    iy = &#x27;20 1 39&#x27;
+  []
+  [corner_node]
+    type = ExtraNodesetGenerator
+    input = pipe
+    new_boundary = &#x27;pinned_node&#x27;
+    coord = &#x27;0.5 20&#x27;
+  []
+[]
+
+[Problem]
+  type = FEProblem
+[]
+
+[Variables]
+  [vel]
+    family = LAGRANGE_VEC
+    order = FIRST
+  []
+  [p]
+  []
+  [mu_tilde]
+    initial_condition = &#x27;${fparse viscosity * 5}&#x27;
+  []
+[]
+
+[AuxVariables]
+  [mu_turbulence]
+  []
+  [wall_dist]
+  []
+  [velx]
+  []
+  [vely]
+  []
+  [wall_shear_stress]
+    family = MONOMIAL
+    order = CONSTANT
+  []
+  [turbulent_stress]
+    family = MONOMIAL
+    order = CONSTANT
+  []
+[]
+
+[Kernels]
+  [mass]
+    type = INSADMass
+    variable = p
+  []
+  [mass_pspg]
+    type = INSADMassPSPG
+    variable = p
+  []
+  [momentum_advection]
+    type = INSADMomentumAdvection
+    variable = vel
+  []
+  [momentum_viscous]
+    type = INSADMomentumViscous
+    variable = vel
+  []
+  [momentum_turbulent_viscous]
+    type = INSADMomentumTurbulentViscous
+    variable = vel
+    mu_tilde = mu_tilde
+  []
+  [momentum_pressure]
+    type = INSADMomentumPressure
+    variable = vel
+  []
+  [momentum_supg]
+    type = INSADMomentumSUPG
+    variable = vel
+  []
+  [momentum_time]
+    type = INSADMomentumTimeDerivative
+    variable = vel
+  []
+
+  [mu_tilde_time]
+    type = SATimeDerivative
+    variable = mu_tilde
+  []
+  [mu_tilde_space]
+    type = SATurbulentViscosity
+    variable = mu_tilde
+  []
+  [mu_tilde_supg]
+    type = SATurbulentViscositySUPG
+    variable = mu_tilde
+  []
+[]
+
+[AuxKernels]
+  [mu_space]
+    type = SATurbulentViscosityAux
+    variable = mu_turbulence
+    mu_tilde = mu_tilde
+  []
+  [wall_distance]
+    type = WallDistanceAux
+    variable = wall_dist
+    walls = &#x27;right&#x27;
+    execute_on = initial
+  []
+  [velx]
+    type = VectorVariableComponentAux
+    variable = velx
+    vector_variable = vel
+    component = x
+  []
+  [vely]
+    type = VectorVariableComponentAux
+    variable = vely
+    vector_variable = vel
+    component = y
+  []
+  [wall_shear_stress]
+    type = WallShearStressAux
+    variable = wall_shear_stress
+    boundary = right
+  []
+  [turbulent_stress]
+    type = TurbulentStressAux
+    variable = turbulent_stress
+    mu_tilde = mu_tilde
+  []
+[]
+
+[Functions]
+  [yfunc]
+    type = ParsedFunction
+    expression = &#x27;${fparse inlet}&#x27;
+  []
+  [mu_func]
+    type = ParsedFunction
+    expression = &#x27;if(x=0.5, 0, ${fparse viscosity * 5})&#x27;
+  []
+[]
+
+[ICs]
+  [velocity]
+    type = VectorFunctionIC
+    function_x = 0
+    function_y = yfunc
+    variable = vel
+  []
+[]
+
+[BCs]
+  [no_slip]
+    type = ADVectorFunctionDirichletBC
+    variable = vel
+    boundary = &#x27;right&#x27;
+    function_x = 0
+    function_y = 0
+  []
+  [inlet]
+    type = ADVectorFunctionDirichletBC
+    variable = vel
+    boundary = &#x27;bottom&#x27;
+    function_x = 0
+    function_y = yfunc
+  []
+  [outlet]
+    type = INSADMomentumTurbulentNoBCBC
+    variable = vel
+    boundary = &#x27;top&#x27;
+    mu_tilde = mu_tilde
+  []
+  [outlet_supg]
+    type = INSADMomentumSUPGBC
+    variable = vel
+    boundary = &#x27;top&#x27;
+  []
+  [outlet_pspg]
+    type = INSADMassPSPGBC
+    variable = p
+    boundary = &#x27;top&#x27;
+  []
+
+  [pressure_pin]
+    type = DirichletBC
+    variable = p
+    boundary = &#x27;pinned_node&#x27;
+    value = 0
+  []
+
+  [mu_inlet]
+    type = FunctionDirichletBC
+    variable = mu_tilde
+    boundary = &#x27;bottom&#x27;
+    function = mu_func
+  []
+  [mu_wall]
+    type = DirichletBC
+    variable = mu_tilde
+    boundary = &#x27;right&#x27;
+    value = 0
+  []
+  [mu_outlet]
+    type = SATurbulentViscosityNoBCBC
+    variable = mu_tilde
+    boundary = &#x27;top&#x27;
+  []
+  [mu_outlet_supg]
+    type = SATurbulentViscositySUPGBC
+    variable = mu_tilde
+    boundary = &#x27;top&#x27;
+  []
+[]
+
+[Materials]
+  [ad_mat]
+    type = ADGenericConstantMaterial
+    prop_names = &#x27;rho mu&#x27;
+    prop_values = &#x27;${density} ${viscosity}&#x27;
+  []
+  [sa_mat]
+    type = SATauMaterial
+    alpha = ${alpha}
+    mu_tilde = mu_tilde
+    wall_distance_var = wall_dist
+  []
+[]
+
+[Executioner]
+  type = Transient
+
+  solve_type = &#x27;NEWTON&#x27;
+  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
+  petsc_options_iname = &#x27;-pc_type -pc_factor_shift_type -pc_factor_mat_solver_package&#x27;
+  petsc_options_value = &#x27;lu       NONZERO               superlu_dist&#x27;
+  line_search = none
+
+  automatic_scaling = true
+  compute_scaling_once = false
+  resid_vs_jac_scaling_param = 0.1
+  scaling_group_variables = &#x27;vel; p; mu_tilde&#x27;
+  off_diagonals_in_auto_scaling = true
+
+  nl_rel_tol = 1e-8
+  nl_abs_tol = 1e-14
+  nl_max_its = 10
+
+  steady_state_detection = true
+  steady_state_tolerance = 1e-10
+  dtmin = 1e-0
+  dtmax = 10
+  [TimeStepper]
+    type = IterationAdaptiveDT
+    dt = 1e-0
+    cutback_factor = 0.9
+    growth_factor = 1.1
+    optimal_iterations = 6
+    iteration_window = 1
+    linear_iteration_ratio = 1000
+  []
+[]
+
+[Preconditioning]
+  [SMP]
+    type = SMP
+    full = true
+  []
+[]
+
+[Outputs]
+  [exodus]
+    type = Exodus
+    execute_on = final
+  []
+[]
+
+[Debug]
+  show_var_residual_norms = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="2cd1ab1f-7754-4e91-b78b-6d5c3707304e"><div class="modal-content"><h4>(tests/sa-model/channel_flow_with_precursors.i)</h4><pre style="max-height:350px;"><code class="language-moose">Re = 1.375e4
 density = 1      # kg cm-3
 D = 1
 inlet = 1
@@ -358,7 +2279,7 @@ diff = &#x27;${fparse viscosity / density / 0.85}&#x27;
 [Debug]
   show_var_residual_norms = true
 []
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="cb880851-6575-4073-9e2b-9da129c82ff9"><div class="modal-content"><h4>(problems/2023-basic-turbulence-cases/channel/channel_flow.i)</h4><pre style="max-height:350px;"><code class="language-moose">Re = 1.375e4
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="462476dc-ce7e-48fa-98bd-5f448965216b"><div class="modal-content"><h4>(tests/sa-model/channel_flow.i)</h4><pre style="max-height:350px;"><code class="language-moose">Re = 1.375e4
 density = 1      # kg cm-3
 D = 1
 inlet = 1
@@ -376,16 +2297,16 @@ alpha = 0.33333           # INS SUPG and PSPG stabilization parameter
   [channel]
     type = CartesianMeshGenerator
     dim = 2
-    dx = &#x27;0.05 0.2 139.75&#x27;
+    dx = &#x27;0.05 0.2 19.75&#x27;
     dy = &#x27;0.3 0.1 0.05 0.05&#x27;
-    ix = &#x27;20 1 559&#x27;
-    iy = &#x27;20 10 10 40&#x27;
+    ix = &#x27;20 1 79&#x27;
+    iy = &#x27;10 5 5 10&#x27;
   []
   [corner_node]
     type = ExtraNodesetGenerator
     input = channel
     new_boundary = &#x27;pinned_node&#x27;
-    coord = &#x27;140 0.5&#x27;
+    coord = &#x27;20 0.5&#x27;
   []
 []
 
@@ -610,647 +2531,7 @@ alpha = 0.33333           # INS SUPG and PSPG stabilization parameter
     alpha = ${alpha}
     mu_tilde = mu_tilde
     wall_distance_var = wall_dist
-  []
-[]
-
-[VectorPostprocessors]
-  [outlet]
-    type = NodalValueSampler
-    variable = velx
-    boundary = &#x27;right&#x27;
-    sort_by = y
-    execute_on = final
-  []
-  [prior]
-    type = NodalValueSampler
-    variable = velx
-    boundary = &#x27;right&#x27;
-    sort_by = y
-    execute_on = final
-  []
-  [stress]
-    type = SideValueSampler
-    variable = turbulent_stress
-    boundary = &#x27;right&#x27;
-    sort_by = y
-    execute_on = final
-  []
-[]
-
-[Executioner]
-  type = Transient
-
-  solve_type = &#x27;NEWTON&#x27;
-  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
-  petsc_options_iname = &#x27;-pc_type -pc_factor_shift_type -pc_factor_mat_solver_package&#x27;
-  petsc_options_value = &#x27;lu       NONZERO               superlu_dist&#x27;
-  line_search = none
-
-  automatic_scaling = true
-  compute_scaling_once = false
-  resid_vs_jac_scaling_param = 0.1
-  scaling_group_variables = &#x27;vel; p; mu_tilde&#x27;
-  off_diagonals_in_auto_scaling = true
-
-  nl_rel_tol = 1e-8
-  nl_abs_tol = 1e-12
-  nl_max_its = 10
-
-  steady_state_detection = true
-  steady_state_tolerance = 1e-8
-  dtmin = 1e-2
-  dtmax = 10
-  [TimeStepper]
-    type = IterationAdaptiveDT
-    dt = 1e-1
-    cutback_factor = 0.9
-    growth_factor = 1.1
-    optimal_iterations = 6
-    iteration_window = 1
-    linear_iteration_ratio = 1000
-  []
-[]
-
-[Preconditioning]
-  [SMP]
-    type = SMP
-    full = true
-  []
-[]
-
-[Outputs]
-  [exodus]
-    type = Exodus
-  []
-  [csv]
-    type = CSV
-    execute_on = final
-  []
-[]
-
-[Debug]
-  show_var_residual_norms = true
-[]
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="fed1475f-d98c-4bb6-af4f-8d5fa869de96"><div class="modal-content"><h4>(problems/2023-basic-turbulence-cases/backward-facing-step/bfs_flow_upstream.i)</h4><pre style="max-height:350px;"><code class="language-moose">Re = 3.6e4
-density = 1      # kg cm-3
-D = 1
-inlet = 1
-viscosity = &#x27;${fparse density * inlet * D / Re}&#x27;    # dynamic viscosity, mu = nu * rho, kg cm-1 s-1
-alpha = 0.33333           # INS SUPG and PSPG stabilization parameter
-
-[GlobalParams]
-  integrate_p_by_parts = false
-  viscous_form = &#x27;traction&#x27;
-  pressure = p
-  velocity = vel
-[]
-
-[Mesh]
-  [block]
-    type = CartesianMeshGenerator
-    dim = 2
-    dx = &#x27;0.25 0.75 103&#x27;
-    ix = &#x27;40   1    103&#x27;
-    dy = &#x27;0.025 0.025 0.9 0.025 0.025 0.025 0.025 0.2 1.25 1  2.5 1.5 1.25 0.2 0.025 0.025&#x27;
-    iy = &#x27;16 8 36 5 10 20 5 10 25 20 5 30 25 10 5 20&#x27;
-  []
-  [rename]
-    type = SubdomainBoundingBoxGenerator
-    input = block
-    bottom_left = &#x27;0 0 0&#x27;
-    top_right = &#x27;104 1 0&#x27;
-    block_id = 1
-  []
-  [delete]
-    type = BlockDeletionGenerator
-    input = rename
-    block = 1
-    new_boundary = &#x27;bottom&#x27;
-  []
-  [corner_node]
-    type = ExtraNodesetGenerator
-    input = delete
-    new_boundary = &#x27;pinned_node&#x27;
-    coord = &#x27;104 9&#x27;
-  []
-[]
-
-[Problem]
-  type = FEProblem
-[]
-
-[Variables]
-  [vel]
-    family = LAGRANGE_VEC
-    order = FIRST
-  []
-  [p]
-  []
-  [mu_tilde]
-    initial_condition = &#x27;${fparse viscosity * 3}&#x27;
-  []
-[]
-
-[AuxVariables]
-  [mu_turbulence]
-  []
-  [wall_dist]
-  []
-  [velx]
-  []
-  [vely]
-  []
-  [wall_shear_stress]
-    family = MONOMIAL
-    order = CONSTANT
-  []
-  [turbulent_stress]
-  []
-[]
-
-[Kernels]
-  [mass]
-    type = INSADMass
-    variable = p
-  []
-  [mass_pspg]
-    type = INSADMassPSPG
-    variable = p
-  []
-  [momentum_advection]
-    type = INSADMomentumAdvection
-    variable = vel
-  []
-  [momentum_viscous]
-    type = INSADMomentumViscous
-    variable = vel
-  []
-  [momentum_turbulent_viscous]
-    type = INSADMomentumTurbulentViscous
-    variable = vel
-    mu_tilde = mu_tilde
-  []
-  [momentum_pressure]
-    type = INSADMomentumPressure
-    variable = vel
-  []
-  [momentum_supg]
-    type = INSADMomentumSUPG
-    variable = vel
-  []
-  [momentum_time]
-    type = INSADMomentumTimeDerivative
-    variable = vel
-  []
-
-  [mu_tilde_time]
-    type = SATimeDerivative
-    variable = mu_tilde
-  []
-  [mu_tilde_space]
-    type = SATurbulentViscosity
-    variable = mu_tilde
-  []
-  [mu_tilde_supg]
-    type = SATurbulentViscositySUPG
-    variable = mu_tilde
-  []
-[]
-
-[AuxKernels]
-  [mu_space]
-    type = SATurbulentViscosityAux
-    variable = mu_turbulence
-    mu_tilde = mu_tilde
-  []
-  [wall_distance]
-    type = WallDistanceAux
-    variable = wall_dist
-    walls = &#x27;top bottom&#x27;
-    execute_on = initial
-  []
-  [velx]
-    type = VectorVariableComponentAux
-    variable = velx
-    vector_variable = vel
-    component = x
-  []
-  [vely]
-    type = VectorVariableComponentAux
-    variable = vely
-    vector_variable = vel
-    component = y
-  []
-  [wall_shear_stress]
-    type = WallShearStressAux
-    variable = wall_shear_stress
-    boundary = &#x27;top bottom&#x27;
-  []
-  [turbulent_stress]
-    type = TurbulentStressAux
-    variable = turbulent_stress
-    mu_tilde = mu_tilde
-  []
-[]
-
-[Functions]
-  [xfunc]
-    type = ParsedFunction
-    expression = &#x27;${fparse inlet}&#x27;
-  []
-  [mu_func]
-    type = ParsedFunction
-    expression = &#x27;if(y=1, 0, if(y=9, 0, ${fparse viscosity * 3}))&#x27;
-  []
-[]
-
-[ICs]
-  [velocity]
-    type = VectorFunctionIC
-    function_x = xfunc
-    function_y = 0
-    variable = vel
-  []
-[]
-
-[BCs]
-  [no_slip]
-    type = ADVectorFunctionDirichletBC
-    variable = vel
-    boundary = &#x27;top bottom&#x27;
-    function_x = 0
-    function_y = 0
-  []
-  [inlet]
-    type = ADVectorFunctionDirichletBC
-    variable = vel
-    boundary = &#x27;left&#x27;
-    function_x = xfunc
-    function_y = 0
-  []
-  [outlet]
-    type = INSADMomentumTurbulentNoBCBC
-    variable = vel
-    boundary = &#x27;right&#x27;
-    mu_tilde = mu_tilde
-  []
-  [outlet_supg]
-    type = INSADMomentumSUPGBC
-    variable = vel
-    boundary = &#x27;right&#x27;
-  []
-  [outlet_pspg]
-    type = INSADMassPSPGBC
-    variable = p
-    boundary = &#x27;right&#x27;
-  []
-
-  [pressure_pin]
-    type = DirichletBC
-    variable = p
-    boundary = &#x27;pinned_node&#x27;
-    value = 0
-  []
-
-  [mu_inlet]
-    type = FunctionDirichletBC
-    variable = mu_tilde
-    boundary = &#x27;left&#x27;
-    function = mu_func
-  []
-  [mu_wall]
-    type = DirichletBC
-    variable = mu_tilde
-    boundary = &#x27;top bottom&#x27;
-    value = 0
-  []
-  [mu_outlet]
-    type = SATurbulentViscosityNoBCBC
-    variable = mu_tilde
-    boundary = &#x27;right&#x27;
-  []
-  [mu_outlet_supg]
-    type = SATurbulentViscositySUPGBC
-    variable = mu_tilde
-    boundary = &#x27;right&#x27;
-  []
-[]
-
-[Materials]
-  [ad_mat]
-    type = ADGenericConstantMaterial
-    prop_names = &#x27;rho mu&#x27;
-    prop_values = &#x27;${density} ${viscosity}&#x27;
-  []
-  [sa_mat]
-    type = SATauMaterial
-    alpha = ${alpha}
-    mu_tilde = mu_tilde
-    wall_distance_var = wall_dist
-  []
-[]
-
-[Executioner]
-  type = Transient
-
-  solve_type = &#x27;NEWTON&#x27;
-  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
-  petsc_options_iname = &#x27;-pc_type -pc_factor_shift_type -pc_factor_mat_solver_package&#x27;
-  petsc_options_value = &#x27;lu       NONZERO               superlu_dist&#x27;
-  line_search = none
-
-  automatic_scaling = true
-  compute_scaling_once = false
-  resid_vs_jac_scaling_param = 0.1
-  scaling_group_variables = &#x27;vel; p; mu_tilde&#x27;
-  off_diagonals_in_auto_scaling = true
-
-  nl_rel_tol = 1e-8
-  nl_abs_tol = 1e-14
-  nl_max_its = 10
-  l_max_its = 200
-
-  steady_state_detection = true
-  steady_state_tolerance = 1e-6
-  dtmin = 1e-2
-  dtmax = 10
-  [TimeStepper]
-    type = IterationAdaptiveDT
-    dt = 1e-1
-    cutback_factor = 0.9
-    growth_factor = 1.1
-    optimal_iterations = 6
-    iteration_window = 1
-    linear_iteration_ratio = 1000
-  []
-[]
-
-[Preconditioning]
-  [SMP]
-    type = SMP
-    full = true
-  []
-[]
-
-[Outputs]
-  [exodus]
-    type = Exodus
-  []
-  [csv]
-    type = CSV
-    execute_on = final
-  []
-[]
-
-[Debug]
-  show_var_residual_norms = true
-[]
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="6d5bb5a6-045f-4c7f-9ffb-7cb7069a8f6b"><div class="modal-content"><h4>(tests/sa-model/pipe_flow.i)</h4><pre style="max-height:350px;"><code class="language-moose">Re = 4e4
-density = 1      # kg cm-3
-D = 1
-inlet = 1
-viscosity = &#x27;${fparse density * inlet * D / Re}&#x27;    # dynamic viscosity, mu = nu * rho, kg cm-1 s-1
-alpha = 0.33333           # INS SUPG and PSPG stabilization parameter
-
-[GlobalParams]
-  integrate_p_by_parts = false
-  viscous_form = &#x27;traction&#x27;
-  pressure = p
-  velocity = vel
-[]
-
-[Mesh]
-  coord_type = &#x27;RZ&#x27;
-  [pipe]
-    type = CartesianMeshGenerator
-    dim = 2
-    dx = &#x27;0.3 0.1 0.05 0.034 0.016&#x27;
-    dy = &#x27;0.025 0.475 19.5&#x27;
-    ix = &#x27;10 5 5 4 10&#x27;
-    iy = &#x27;20 1 39&#x27;
-  []
-  [corner_node]
-    type = ExtraNodesetGenerator
-    input = pipe
-    new_boundary = &#x27;pinned_node&#x27;
-    coord = &#x27;0.5 20&#x27;
-  []
-[]
-
-[Problem]
-  type = FEProblem
-[]
-
-[Variables]
-  [vel]
-    family = LAGRANGE_VEC
-    order = FIRST
-  []
-  [p]
-  []
-  [mu_tilde]
-    initial_condition = &#x27;${fparse viscosity * 5}&#x27;
-  []
-[]
-
-[AuxVariables]
-  [mu_turbulence]
-  []
-  [wall_dist]
-  []
-  [velx]
-  []
-  [vely]
-  []
-  [wall_shear_stress]
-    family = MONOMIAL
-    order = CONSTANT
-  []
-  [turbulent_stress]
-    family = MONOMIAL
-    order = CONSTANT
-  []
-[]
-
-[Kernels]
-  [mass]
-    type = INSADMass
-    variable = p
-  []
-  [mass_pspg]
-    type = INSADMassPSPG
-    variable = p
-  []
-  [momentum_advection]
-    type = INSADMomentumAdvection
-    variable = vel
-  []
-  [momentum_viscous]
-    type = INSADMomentumViscous
-    variable = vel
-  []
-  [momentum_turbulent_viscous]
-    type = INSADMomentumTurbulentViscous
-    variable = vel
-    mu_tilde = mu_tilde
-  []
-  [momentum_pressure]
-    type = INSADMomentumPressure
-    variable = vel
-  []
-  [momentum_supg]
-    type = INSADMomentumSUPG
-    variable = vel
-  []
-  [momentum_time]
-    type = INSADMomentumTimeDerivative
-    variable = vel
-  []
-
-  [mu_tilde_time]
-    type = SATimeDerivative
-    variable = mu_tilde
-  []
-  [mu_tilde_space]
-    type = SATurbulentViscosity
-    variable = mu_tilde
-  []
-  [mu_tilde_supg]
-    type = SATurbulentViscositySUPG
-    variable = mu_tilde
-  []
-[]
-
-[AuxKernels]
-  [mu_space]
-    type = SATurbulentViscosityAux
-    variable = mu_turbulence
-    mu_tilde = mu_tilde
-  []
-  [wall_distance]
-    type = WallDistanceAux
-    variable = wall_dist
-    walls = &#x27;right&#x27;
-    execute_on = initial
-  []
-  [velx]
-    type = VectorVariableComponentAux
-    variable = velx
-    vector_variable = vel
-    component = x
-  []
-  [vely]
-    type = VectorVariableComponentAux
-    variable = vely
-    vector_variable = vel
-    component = y
-  []
-  [wall_shear_stress]
-    type = WallShearStressAux
-    variable = wall_shear_stress
-    boundary = right
-  []
-  [turbulent_stress]
-    type = TurbulentStressAux
-    variable = turbulent_stress
-    mu_tilde = mu_tilde
-  []
-[]
-
-[Functions]
-  [yfunc]
-    type = ParsedFunction
-    expression = &#x27;${fparse inlet}&#x27;
-  []
-  [mu_func]
-    type = ParsedFunction
-    expression = &#x27;if(x=0.5, 0, ${fparse viscosity * 5})&#x27;
-  []
-[]
-
-[ICs]
-  [velocity]
-    type = VectorFunctionIC
-    function_x = 0
-    function_y = yfunc
-    variable = vel
-  []
-[]
-
-[BCs]
-  [no_slip]
-    type = ADVectorFunctionDirichletBC
-    variable = vel
-    boundary = &#x27;right&#x27;
-    function_x = 0
-    function_y = 0
-  []
-  [inlet]
-    type = ADVectorFunctionDirichletBC
-    variable = vel
-    boundary = &#x27;bottom&#x27;
-    function_x = 0
-    function_y = yfunc
-  []
-  [outlet]
-    type = INSADMomentumTurbulentNoBCBC
-    variable = vel
-    boundary = &#x27;top&#x27;
-    mu_tilde = mu_tilde
-  []
-  [outlet_supg]
-    type = INSADMomentumSUPGBC
-    variable = vel
-    boundary = &#x27;top&#x27;
-  []
-  [outlet_pspg]
-    type = INSADMassPSPGBC
-    variable = p
-    boundary = &#x27;top&#x27;
-  []
-
-  [pressure_pin]
-    type = DirichletBC
-    variable = p
-    boundary = &#x27;pinned_node&#x27;
-    value = 0
-  []
-
-  [mu_inlet]
-    type = FunctionDirichletBC
-    variable = mu_tilde
-    boundary = &#x27;bottom&#x27;
-    function = mu_func
-  []
-  [mu_wall]
-    type = DirichletBC
-    variable = mu_tilde
-    boundary = &#x27;right&#x27;
-    value = 0
-  []
-  [mu_outlet]
-    type = SATurbulentViscosityNoBCBC
-    variable = mu_tilde
-    boundary = &#x27;top&#x27;
-  []
-  [mu_outlet_supg]
-    type = SATurbulentViscositySUPGBC
-    variable = mu_tilde
-    boundary = &#x27;top&#x27;
-  []
-[]
-
-[Materials]
-  [ad_mat]
-    type = ADGenericConstantMaterial
-    prop_names = &#x27;rho mu&#x27;
-    prop_values = &#x27;${density} ${viscosity}&#x27;
-  []
-  [sa_mat]
-    type = SATauMaterial
-    alpha = ${alpha}
-    mu_tilde = mu_tilde
-    wall_distance_var = wall_dist
+    use_ft2_term = true
   []
 []
 
@@ -1305,7 +2586,7 @@ alpha = 0.33333           # INS SUPG and PSPG stabilization parameter
 [Debug]
   show_var_residual_norms = true
 []
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="b55b79f8-31bf-4759-b50c-5d0a766180f8"><div class="modal-content"><h4>(problems/2023-basic-turbulence-cases/backward-facing-step/bfs_flow_step.i)</h4><pre style="max-height:350px;"><code class="language-moose">Re = 3.6e4
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="99b39c7b-aa1e-4340-8220-fe34113153d0"><div class="modal-content"><h4>(problems/2023-basic-turbulence-cases/backward-facing-step/bfs_flow_step.i)</h4><pre style="max-height:350px;"><code class="language-moose">Re = 3.6e4
 density = 1      # kg cm-3
 D = 1
 inlet = 1
@@ -1720,1285 +3001,4 @@ alpha = 0.33333           # INS SUPG and PSPG stabilization parameter
 [Debug]
   show_var_residual_norms = true
 []
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="6350f734-5973-4efa-afe1-d48a0d87f87c"><div class="modal-content"><h4>(tests/sa-model/channel_flow_with_heat.i)</h4><pre style="max-height:350px;"><code class="language-moose">Re = 1.375e4
-density = 1      # kg cm-3
-D = 1
-inlet = 1
-viscosity = &#x27;${fparse density * inlet * D / Re}&#x27;    # dynamic viscosity, mu = nu * rho, kg cm-1 s-1
-alpha = 0.33333           # INS SUPG and PSPG stabilization parameter
-cp = 1
-k = &#x27;${fparse viscosity * cp / 0.85}&#x27;
-
-[GlobalParams]
-  integrate_p_by_parts = false
-  viscous_form = &#x27;traction&#x27;
-  pressure = p
-  velocity = vel
-  temperature = temp
-[]
-
-[Mesh]
-  [channel]
-    type = CartesianMeshGenerator
-    dim = 2
-    dx = &#x27;0.05 0.2 19.75&#x27;
-    dy = &#x27;0.3 0.1 0.05 0.05&#x27;
-    ix = &#x27;20 1 79&#x27;
-    iy = &#x27;10 5 5 10&#x27;
-  []
-  [corner_node]
-    type = ExtraNodesetGenerator
-    input = channel
-    new_boundary = &#x27;pinned_node&#x27;
-    coord = &#x27;20 0.5&#x27;
-  []
-[]
-
-[Problem]
-  type = FEProblem
-[]
-
-[Variables]
-  [vel]
-    family = LAGRANGE_VEC
-    order = FIRST
-  []
-  [p]
-  []
-  [mu_tilde]
-    initial_condition = &#x27;${fparse viscosity * 5}&#x27;
-  []
-  [temp]
-    initial_condition = 300
-  []
-[]
-
-[AuxVariables]
-  [mu_turbulence]
-  []
-  [wall_dist]
-  []
-  [velx]
-  []
-  [vely]
-  []
-  [wall_shear_stress]
-    family = MONOMIAL
-    order = CONSTANT
-  []
-  [turbulent_stress]
-    family = MONOMIAL
-    order = CONSTANT
-  []
-[]
-
-[Kernels]
-  [mass]
-    type = INSADMass
-    variable = p
-  []
-  [mass_pspg]
-    type = INSADMassPSPG
-    variable = p
-  []
-
-  [momentum_advection]
-    type = INSADMomentumAdvection
-    variable = vel
-  []
-  [momentum_viscous]
-    type = INSADMomentumViscous
-    variable = vel
-  []
-  [momentum_turbulent_viscous]
-    type = INSADMomentumTurbulentViscous
-    variable = vel
-    mu_tilde = mu_tilde
-  []
-  [momentum_pressure]
-    type = INSADMomentumPressure
-    variable = vel
-  []
-  [momentum_supg]
-    type = INSADMomentumSUPG
-    variable = vel
-  []
-  [momentum_time]
-    type = INSADMomentumTimeDerivative
-    variable = vel
-  []
-
-  [mu_tilde_time]
-    type = SATimeDerivative
-    variable = mu_tilde
-  []
-  [mu_tilde_space]
-    type = SATurbulentViscosity
-    variable = mu_tilde
-  []
-  [mu_tilde_supg]
-    type = SATurbulentViscositySUPG
-    variable = mu_tilde
-  []
-
-  [temperature_advection]
-    type = INSADEnergyAdvection
-    variable = temp
-  []
-  [temp_conduction]
-    type = ADHeatConduction
-    variable = temp
-    thermal_conductivity = &#x27;k&#x27;
-  []
-  [temp_turbulent_diffusion]
-    type = INSADEnergyTurbulentDiffusion
-    variable = temp
-    mu_tilde = mu_tilde
-  []
-  [temp_source]
-    type = INSADEnergySource
-    variable = temp
-    source_function = &#x27;1&#x27;
-  []
-  [temp_supg]
-    type = INSADEnergySUPG
-    variable = temp
-  []
-  [temp_time]
-    type = INSADHeatConductionTimeDerivative
-    variable = temp
-  []
-[]
-
-[AuxKernels]
-  [mu_space]
-    type = SATurbulentViscosityAux
-    variable = mu_turbulence
-    mu_tilde = mu_tilde
-  []
-  [wall_distance]
-    type = WallDistanceAux
-    variable = wall_dist
-    walls = &#x27;top&#x27;
-    execute_on = initial
-  []
-  [velx]
-    type = VectorVariableComponentAux
-    variable = velx
-    vector_variable = vel
-    component = x
-  []
-  [vely]
-    type = VectorVariableComponentAux
-    variable = vely
-    vector_variable = vel
-    component = y
-  []
-  [wall_shear_stress]
-    type = WallShearStressAux
-    variable = wall_shear_stress
-    boundary = top
-  []
-  [turbulent_stress]
-    type = TurbulentStressAux
-    variable = turbulent_stress
-    mu_tilde = mu_tilde
-  []
-[]
-
-[Functions]
-  [xfunc]
-    type = ParsedFunction
-    expression = &#x27;${fparse inlet}&#x27;
-  []
-  [mu_func]
-    type = ParsedFunction
-    expression = &#x27;if(y=0.5, 0, ${fparse viscosity * 5})&#x27;
-  []
-[]
-
-[ICs]
-  [velocity]
-    type = VectorFunctionIC
-    function_x = xfunc
-    function_y = 0
-    variable = vel
-  []
-[]
-
-[BCs]
-  [no_slip]
-    type = ADVectorFunctionDirichletBC
-    variable = vel
-    boundary = &#x27;top&#x27;
-    function_x = 0
-    function_y = 0
-  []
-  [inlet]
-    type = ADVectorFunctionDirichletBC
-    variable = vel
-    boundary = &#x27;left&#x27;
-    function_x = xfunc
-    function_y = 0
-  []
-  [outlet]
-    type = INSADMomentumTurbulentNoBCBC
-    variable = vel
-    boundary = &#x27;right&#x27;
-    mu_tilde = mu_tilde
-  []
-  [outlet_supg]
-    type = INSADMomentumSUPGBC
-    variable = vel
-    boundary = &#x27;right&#x27;
-  []
-  [outlet_pspg]
-    type = INSADMassPSPGBC
-    variable = p
-    boundary = &#x27;right&#x27;
-  []
-  [symmetry]
-    type = ADVectorFunctionDirichletBC
-    variable = vel
-    boundary = &#x27;bottom&#x27;
-    set_x_comp = false
-    function_y = 0
-  []
-
-  [pressure_pin]
-    type = DirichletBC
-    variable = p
-    boundary = &#x27;pinned_node&#x27;
-    value = 0
-  []
-
-  [mu_inlet]
-    type = FunctionDirichletBC
-    variable = mu_tilde
-    boundary = &#x27;left&#x27;
-    function = mu_func
-  []
-  [mu_wall]
-    type = DirichletBC
-    variable = mu_tilde
-    boundary = &#x27;top&#x27;
-    value = 0
-  []
-  [mu_outlet]
-    type = SATurbulentViscosityNoBCBC
-    variable = mu_tilde
-    boundary = &#x27;right&#x27;
-  []
-  [mu_outlet_supg]
-    type = SATurbulentViscositySUPGBC
-    variable = mu_tilde
-    boundary = &#x27;right&#x27;
-  []
-
-  [temperature_inlet]
-    type = DirichletBC
-    variable = temp
-    boundary = &#x27;left&#x27;
-    value = 300
-  []
-[]
-
-[Materials]
-  [ad_mat]
-    type = ADGenericConstantMaterial
-    prop_names = &#x27;rho mu cp k grad_k&#x27;
-    prop_values = &#x27;${density} ${viscosity} ${cp} ${k} 0&#x27;
-  []
-  [sa_mat]
-    type = SATauStabilized3Eqn
-    alpha = ${alpha}
-    mu_tilde = mu_tilde
-    wall_distance_var = wall_dist
-    use_ft2_term = true
-  []
-[]
-
-[Executioner]
-  type = Transient
-  end_time = 30
-
-  solve_type = &#x27;NEWTON&#x27;
-  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
-  petsc_options_iname = &#x27;-pc_type -pc_factor_shift_type -pc_factor_mat_solver_package&#x27;
-  petsc_options_value = &#x27;lu       NONZERO               superlu_dist&#x27;
-  line_search = none
-
-  automatic_scaling = true
-  compute_scaling_once = false
-  resid_vs_jac_scaling_param = 0.1
-  off_diagonals_in_auto_scaling = true
-
-  nl_rel_tol = 1e-8
-  nl_abs_tol = 1e-13
-  nl_max_its = 10
-
-  dtmin = 1
-  dtmax = 10
-  [TimeStepper]
-    type = IterationAdaptiveDT
-    dt = 1
-    cutback_factor = 0.9
-    growth_factor = 1.2
-    optimal_iterations = 6
-    iteration_window = 1
-    linear_iteration_ratio = 1000
-  []
-[]
-
-[Preconditioning]
-  [SMP]
-    type = SMP
-    full = true
-  []
-[]
-
-[Outputs]
-  [exodus]
-    type = Exodus
-    execute_on = final
-  []
-[]
-
-[Debug]
-  show_var_residual_norms = true
-[]
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="ffc6fff2-2d81-4d05-bd8b-92acb23d39d6"><div class="modal-content"><h4>(tests/sa-model/channel_flow_short.i)</h4><pre style="max-height:350px;"><code class="language-moose">Re = 1.375e4
-density = 1      # kg cm-3
-D = 1
-inlet = 1
-viscosity = &#x27;${fparse density * inlet * D / Re}&#x27;    # dynamic viscosity, mu = nu * rho, kg cm-1 s-1
-alpha = 0.33333           # INS SUPG and PSPG stabilization parameter
-
-[GlobalParams]
-  integrate_p_by_parts = false
-  viscous_form = &#x27;traction&#x27;
-  pressure = p
-  velocity = vel
-[]
-
-[Mesh]
-  [channel]
-    type = CartesianMeshGenerator
-    dim = 2
-    dx = &#x27;0.05 0.2 19.75&#x27;
-    dy = &#x27;0.3 0.1 0.05 0.05&#x27;
-    ix = &#x27;20 1 79&#x27;
-    iy = &#x27;10 5 5 10&#x27;
-  []
-  [corner_node]
-    type = ExtraNodesetGenerator
-    input = channel
-    new_boundary = &#x27;pinned_node&#x27;
-    coord = &#x27;20 0.5&#x27;
-  []
-[]
-
-[Problem]
-  type = FEProblem
-[]
-
-[Variables]
-  [vel]
-    family = LAGRANGE_VEC
-    order = FIRST
-  []
-  [p]
-  []
-  [mu_tilde]
-    initial_condition = &#x27;${fparse viscosity * 5}&#x27;
-  []
-[]
-
-[AuxVariables]
-  [mu_turbulence]
-  []
-  [wall_dist]
-  []
-  [velx]
-  []
-  [vely]
-  []
-  [wall_shear_stress]
-    family = MONOMIAL
-    order = CONSTANT
-  []
-  [turbulent_stress]
-    family = MONOMIAL
-    order = CONSTANT
-  []
-[]
-
-[Kernels]
-  [mass]
-    type = INSADMass
-    variable = p
-  []
-  [mass_pspg]
-    type = INSADMassPSPG
-    variable = p
-  []
-  [momentum_advection]
-    type = INSADMomentumAdvection
-    variable = vel
-  []
-  [momentum_viscous]
-    type = INSADMomentumViscous
-    variable = vel
-  []
-  [momentum_turbulent_viscous]
-    type = INSADMomentumTurbulentViscous
-    variable = vel
-    mu_tilde = mu_tilde
-  []
-  [momentum_pressure]
-    type = INSADMomentumPressure
-    variable = vel
-  []
-  [momentum_supg]
-    type = INSADMomentumSUPG
-    variable = vel
-  []
-  [momentum_time]
-    type = INSADMomentumTimeDerivative
-    variable = vel
-  []
-
-  [mu_tilde_time]
-    type = SATimeDerivative
-    variable = mu_tilde
-  []
-  [mu_tilde_space]
-    type = SATurbulentViscosity
-    variable = mu_tilde
-  []
-  [mu_tilde_supg]
-    type = SATurbulentViscositySUPG
-    variable = mu_tilde
-  []
-[]
-
-[AuxKernels]
-  [mu_space]
-    type = SATurbulentViscosityAux
-    variable = mu_turbulence
-    mu_tilde = mu_tilde
-  []
-  [wall_distance]
-    type = WallDistanceAux
-    variable = wall_dist
-    walls = &#x27;top&#x27;
-    execute_on = initial
-  []
-  [velx]
-    type = VectorVariableComponentAux
-    variable = velx
-    vector_variable = vel
-    component = x
-  []
-  [vely]
-    type = VectorVariableComponentAux
-    variable = vely
-    vector_variable = vel
-    component = y
-  []
-  [wall_shear_stress]
-    type = WallShearStressAux
-    variable = wall_shear_stress
-    boundary = top
-  []
-  [turbulent_stress]
-    type = TurbulentStressAux
-    variable = turbulent_stress
-    mu_tilde = mu_tilde
-  []
-[]
-
-[Functions]
-  [xfunc]
-    type = ParsedFunction
-    expression = &#x27;${fparse inlet}&#x27;
-  []
-  [mu_func]
-    type = ParsedFunction
-    expression = &#x27;if(y=0.5, 0, ${fparse viscosity * 5})&#x27;
-  []
-[]
-
-[ICs]
-  [velocity]
-    type = VectorFunctionIC
-    function_x = xfunc
-    function_y = 0
-    variable = vel
-  []
-[]
-
-[BCs]
-  [no_slip]
-    type = ADVectorFunctionDirichletBC
-    variable = vel
-    boundary = &#x27;top&#x27;
-    function_x = 0
-    function_y = 0
-  []
-  [inlet]
-    type = ADVectorFunctionDirichletBC
-    variable = vel
-    boundary = &#x27;left&#x27;
-    function_x = xfunc
-    function_y = 0
-  []
-  [outlet]
-    type = INSADMomentumTurbulentNoBCBC
-    variable = vel
-    boundary = &#x27;right&#x27;
-    mu_tilde = mu_tilde
-  []
-  [outlet_supg]
-    type = INSADMomentumSUPGBC
-    variable = vel
-    boundary = &#x27;right&#x27;
-  []
-  [outlet_pspg]
-    type = INSADMassPSPGBC
-    variable = p
-    boundary = &#x27;right&#x27;
-  []
-  [symmetry]
-    type = ADVectorFunctionDirichletBC
-    variable = vel
-    boundary = &#x27;bottom&#x27;
-    set_x_comp = false
-    function_y = 0
-  []
-
-  [pressure_pin]
-    type = DirichletBC
-    variable = p
-    boundary = &#x27;pinned_node&#x27;
-    value = 0
-  []
-
-  [mu_inlet]
-    type = FunctionDirichletBC
-    variable = mu_tilde
-    boundary = &#x27;left&#x27;
-    function = mu_func
-  []
-  [mu_wall]
-    type = DirichletBC
-    variable = mu_tilde
-    boundary = &#x27;top&#x27;
-    value = 0
-  []
-  [mu_outlet]
-    type = SATurbulentViscosityNoBCBC
-    variable = mu_tilde
-    boundary = &#x27;right&#x27;
-  []
-  [mu_outlet_supg]
-    type = SATurbulentViscositySUPGBC
-    variable = mu_tilde
-    boundary = &#x27;right&#x27;
-  []
-[]
-
-[Materials]
-  [ad_mat]
-    type = ADGenericConstantMaterial
-    prop_names = &#x27;rho mu&#x27;
-    prop_values = &#x27;${density} ${viscosity}&#x27;
-  []
-  [sa_mat]
-    type = SATauMaterial
-    alpha = ${alpha}
-    mu_tilde = mu_tilde
-    wall_distance_var = wall_dist
-    use_ft2_term = true
-  []
-[]
-
-[Executioner]
-  type = Transient
-
-  solve_type = &#x27;NEWTON&#x27;
-  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
-  petsc_options_iname = &#x27;-pc_type -pc_factor_shift_type -pc_factor_mat_solver_package&#x27;
-  petsc_options_value = &#x27;lu       NONZERO               superlu_dist&#x27;
-  line_search = none
-
-  automatic_scaling = true
-  compute_scaling_once = false
-  resid_vs_jac_scaling_param = 0.1
-  scaling_group_variables = &#x27;vel; p; mu_tilde&#x27;
-  off_diagonals_in_auto_scaling = true
-
-  nl_rel_tol = 1e-8
-  nl_abs_tol = 1e-14
-  nl_max_its = 10
-
-  start_time = 0.0
-  end_time = 6
-  dtmin = 1.0
-  dtmax = 10
-  [TimeStepper]
-    type = IterationAdaptiveDT
-    dt = 1e-0
-    cutback_factor = 0.9
-    growth_factor = 1.1
-    optimal_iterations = 6
-    iteration_window = 1
-    linear_iteration_ratio = 1000
-  []
-[]
-
-[Preconditioning]
-  [SMP]
-    type = SMP
-    full = true
-  []
-[]
-
-[Outputs]
-  [exodus]
-    type = Exodus
-    execute_on = final
-  []
-[]
-
-[Debug]
-  show_var_residual_norms = true
-[]
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="477efd4b-dc7c-41c8-8b81-a504abab4a7b"><div class="modal-content"><h4>(tests/sa-model/channel_flow.i)</h4><pre style="max-height:350px;"><code class="language-moose">Re = 1.375e4
-density = 1      # kg cm-3
-D = 1
-inlet = 1
-viscosity = &#x27;${fparse density * inlet * D / Re}&#x27;    # dynamic viscosity, mu = nu * rho, kg cm-1 s-1
-alpha = 0.33333           # INS SUPG and PSPG stabilization parameter
-
-[GlobalParams]
-  integrate_p_by_parts = false
-  viscous_form = &#x27;traction&#x27;
-  pressure = p
-  velocity = vel
-[]
-
-[Mesh]
-  [channel]
-    type = CartesianMeshGenerator
-    dim = 2
-    dx = &#x27;0.05 0.2 19.75&#x27;
-    dy = &#x27;0.3 0.1 0.05 0.05&#x27;
-    ix = &#x27;20 1 79&#x27;
-    iy = &#x27;10 5 5 10&#x27;
-  []
-  [corner_node]
-    type = ExtraNodesetGenerator
-    input = channel
-    new_boundary = &#x27;pinned_node&#x27;
-    coord = &#x27;20 0.5&#x27;
-  []
-[]
-
-[Problem]
-  type = FEProblem
-[]
-
-[Variables]
-  [vel]
-    family = LAGRANGE_VEC
-    order = FIRST
-  []
-  [p]
-  []
-  [mu_tilde]
-    initial_condition = &#x27;${fparse viscosity * 5}&#x27;
-  []
-[]
-
-[AuxVariables]
-  [mu_turbulence]
-  []
-  [wall_dist]
-  []
-  [velx]
-  []
-  [vely]
-  []
-  [wall_shear_stress]
-    family = MONOMIAL
-    order = CONSTANT
-  []
-  [turbulent_stress]
-    family = MONOMIAL
-    order = CONSTANT
-  []
-[]
-
-[Kernels]
-  [mass]
-    type = INSADMass
-    variable = p
-  []
-  [mass_pspg]
-    type = INSADMassPSPG
-    variable = p
-  []
-  [momentum_advection]
-    type = INSADMomentumAdvection
-    variable = vel
-  []
-  [momentum_viscous]
-    type = INSADMomentumViscous
-    variable = vel
-  []
-  [momentum_turbulent_viscous]
-    type = INSADMomentumTurbulentViscous
-    variable = vel
-    mu_tilde = mu_tilde
-  []
-  [momentum_pressure]
-    type = INSADMomentumPressure
-    variable = vel
-  []
-  [momentum_supg]
-    type = INSADMomentumSUPG
-    variable = vel
-  []
-  [momentum_time]
-    type = INSADMomentumTimeDerivative
-    variable = vel
-  []
-
-  [mu_tilde_time]
-    type = SATimeDerivative
-    variable = mu_tilde
-  []
-  [mu_tilde_space]
-    type = SATurbulentViscosity
-    variable = mu_tilde
-  []
-  [mu_tilde_supg]
-    type = SATurbulentViscositySUPG
-    variable = mu_tilde
-  []
-[]
-
-[AuxKernels]
-  [mu_space]
-    type = SATurbulentViscosityAux
-    variable = mu_turbulence
-    mu_tilde = mu_tilde
-  []
-  [wall_distance]
-    type = WallDistanceAux
-    variable = wall_dist
-    walls = &#x27;top&#x27;
-    execute_on = initial
-  []
-  [velx]
-    type = VectorVariableComponentAux
-    variable = velx
-    vector_variable = vel
-    component = x
-  []
-  [vely]
-    type = VectorVariableComponentAux
-    variable = vely
-    vector_variable = vel
-    component = y
-  []
-  [wall_shear_stress]
-    type = WallShearStressAux
-    variable = wall_shear_stress
-    boundary = top
-  []
-  [turbulent_stress]
-    type = TurbulentStressAux
-    variable = turbulent_stress
-    mu_tilde = mu_tilde
-  []
-[]
-
-[Functions]
-  [xfunc]
-    type = ParsedFunction
-    expression = &#x27;${fparse inlet}&#x27;
-  []
-  [mu_func]
-    type = ParsedFunction
-    expression = &#x27;if(y=0.5, 0, ${fparse viscosity * 5})&#x27;
-  []
-[]
-
-[ICs]
-  [velocity]
-    type = VectorFunctionIC
-    function_x = xfunc
-    function_y = 0
-    variable = vel
-  []
-[]
-
-[BCs]
-  [no_slip]
-    type = ADVectorFunctionDirichletBC
-    variable = vel
-    boundary = &#x27;top&#x27;
-    function_x = 0
-    function_y = 0
-  []
-  [inlet]
-    type = ADVectorFunctionDirichletBC
-    variable = vel
-    boundary = &#x27;left&#x27;
-    function_x = xfunc
-    function_y = 0
-  []
-  [outlet]
-    type = INSADMomentumTurbulentNoBCBC
-    variable = vel
-    boundary = &#x27;right&#x27;
-    mu_tilde = mu_tilde
-  []
-  [outlet_supg]
-    type = INSADMomentumSUPGBC
-    variable = vel
-    boundary = &#x27;right&#x27;
-  []
-  [outlet_pspg]
-    type = INSADMassPSPGBC
-    variable = p
-    boundary = &#x27;right&#x27;
-  []
-  [symmetry]
-    type = ADVectorFunctionDirichletBC
-    variable = vel
-    boundary = &#x27;bottom&#x27;
-    set_x_comp = false
-    function_y = 0
-  []
-
-  [pressure_pin]
-    type = DirichletBC
-    variable = p
-    boundary = &#x27;pinned_node&#x27;
-    value = 0
-  []
-
-  [mu_inlet]
-    type = FunctionDirichletBC
-    variable = mu_tilde
-    boundary = &#x27;left&#x27;
-    function = mu_func
-  []
-  [mu_wall]
-    type = DirichletBC
-    variable = mu_tilde
-    boundary = &#x27;top&#x27;
-    value = 0
-  []
-  [mu_outlet]
-    type = SATurbulentViscosityNoBCBC
-    variable = mu_tilde
-    boundary = &#x27;right&#x27;
-  []
-  [mu_outlet_supg]
-    type = SATurbulentViscositySUPGBC
-    variable = mu_tilde
-    boundary = &#x27;right&#x27;
-  []
-[]
-
-[Materials]
-  [ad_mat]
-    type = ADGenericConstantMaterial
-    prop_names = &#x27;rho mu&#x27;
-    prop_values = &#x27;${density} ${viscosity}&#x27;
-  []
-  [sa_mat]
-    type = SATauMaterial
-    alpha = ${alpha}
-    mu_tilde = mu_tilde
-    wall_distance_var = wall_dist
-    use_ft2_term = true
-  []
-[]
-
-[Executioner]
-  type = Transient
-
-  solve_type = &#x27;NEWTON&#x27;
-  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
-  petsc_options_iname = &#x27;-pc_type -pc_factor_shift_type -pc_factor_mat_solver_package&#x27;
-  petsc_options_value = &#x27;lu       NONZERO               superlu_dist&#x27;
-  line_search = none
-
-  automatic_scaling = true
-  compute_scaling_once = false
-  resid_vs_jac_scaling_param = 0.1
-  scaling_group_variables = &#x27;vel; p; mu_tilde&#x27;
-  off_diagonals_in_auto_scaling = true
-
-  nl_rel_tol = 1e-8
-  nl_abs_tol = 1e-14
-  nl_max_its = 10
-
-  steady_state_detection = true
-  steady_state_tolerance = 1e-10
-  dtmin = 1e-0
-  dtmax = 10
-  [TimeStepper]
-    type = IterationAdaptiveDT
-    dt = 1e-0
-    cutback_factor = 0.9
-    growth_factor = 1.1
-    optimal_iterations = 6
-    iteration_window = 1
-    linear_iteration_ratio = 1000
-  []
-[]
-
-[Preconditioning]
-  [SMP]
-    type = SMP
-    full = true
-  []
-[]
-
-[Outputs]
-  [exodus]
-    type = Exodus
-    execute_on = final
-  []
-[]
-
-[Debug]
-  show_var_residual_norms = true
-[]
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="35556ab1-965b-47ed-9797-c4ebb7553b28"><div class="modal-content"><h4>(problems/2023-basic-turbulence-cases/pipe/pipe_flow.i)</h4><pre style="max-height:350px;"><code class="language-moose">Re = 4e4
-density = 1      # kg cm-3
-D = 1
-inlet = 1
-viscosity = &#x27;${fparse density * inlet * D / Re}&#x27;    # dynamic viscosity, mu = nu * rho, kg cm-1 s-1
-alpha = 0.33333           # INS SUPG and PSPG stabilization parameter
-
-[GlobalParams]
-  integrate_p_by_parts = false
-  viscous_form = &#x27;traction&#x27;
-  pressure = p
-  velocity = vel
-[]
-
-[Mesh]
-  coord_type = &#x27;RZ&#x27;
-  [pipe]
-    type = CartesianMeshGenerator
-    dim = 2
-    dx = &#x27;0.3 0.1 0.05 0.034 0.016&#x27;
-    dy = &#x27;0.025 0.475 149.5&#x27;
-    ix = &#x27;20 10 10 17 40&#x27;
-    iy = &#x27;20 1 299&#x27;
-  []
-  [corner_node]
-    type = ExtraNodesetGenerator
-    input = pipe
-    new_boundary = &#x27;pinned_node&#x27;
-    coord = &#x27;0.5 150&#x27;
-  []
-[]
-
-[Problem]
-  type = FEProblem
-[]
-
-[Variables]
-  [vel]
-    family = LAGRANGE_VEC
-    order = FIRST
-  []
-  [p]
-  []
-  [mu_tilde]
-    initial_condition = &#x27;${fparse viscosity * 5}&#x27;
-  []
-[]
-
-[AuxVariables]
-  [mu_turbulence]
-  []
-  [wall_dist]
-  []
-  [velx]
-  []
-  [vely]
-  []
-  [wall_shear_stress]
-    family = MONOMIAL
-    order = CONSTANT
-  []
-  [turbulent_stress]
-    family = MONOMIAL
-    order = CONSTANT
-  []
-[]
-
-[Kernels]
-  [mass]
-    type = INSADMass
-    variable = p
-  []
-  [mass_pspg]
-    type = INSADMassPSPG
-    variable = p
-  []
-  [momentum_advection]
-    type = INSADMomentumAdvection
-    variable = vel
-  []
-  [momentum_viscous]
-    type = INSADMomentumViscous
-    variable = vel
-  []
-  [momentum_turbulent_viscous]
-    type = INSADMomentumTurbulentViscous
-    variable = vel
-    mu_tilde = mu_tilde
-  []
-  [momentum_pressure]
-    type = INSADMomentumPressure
-    variable = vel
-  []
-  [momentum_supg]
-    type = INSADMomentumSUPG
-    variable = vel
-  []
-  [momentum_time]
-    type = INSADMomentumTimeDerivative
-    variable = vel
-  []
-
-  [mu_tilde_time]
-    type = SATimeDerivative
-    variable = mu_tilde
-  []
-  [mu_tilde_space]
-    type = SATurbulentViscosity
-    variable = mu_tilde
-  []
-  [mu_tilde_supg]
-    type = SATurbulentViscositySUPG
-    variable = mu_tilde
-  []
-[]
-
-[AuxKernels]
-  [mu_space]
-    type = SATurbulentViscosityAux
-    variable = mu_turbulence
-    mu_tilde = mu_tilde
-  []
-  [wall_distance]
-    type = WallDistanceAux
-    variable = wall_dist
-    walls = &#x27;right&#x27;
-    execute_on = initial
-  []
-  [velx]
-    type = VectorVariableComponentAux
-    variable = velx
-    vector_variable = vel
-    component = x
-  []
-  [vely]
-    type = VectorVariableComponentAux
-    variable = vely
-    vector_variable = vel
-    component = y
-  []
-  [wall_shear_stress]
-    type = WallShearStressAux
-    variable = wall_shear_stress
-    boundary = right
-  []
-  [turbulent_stress]
-    type = TurbulentStressAux
-    variable = turbulent_stress
-    mu_tilde = mu_tilde
-  []
-[]
-
-[Functions]
-  [yfunc]
-    type = ParsedFunction
-    expression = &#x27;${fparse inlet}&#x27;
-  []
-  [mu_func]
-    type = ParsedFunction
-    expression = &#x27;if(x=0.5, 0, ${fparse viscosity * 5})&#x27;
-  []
-[]
-
-[ICs]
-  [velocity]
-    type = VectorFunctionIC
-    function_x = 0
-    function_y = yfunc
-    variable = vel
-  []
-[]
-
-[BCs]
-  [no_slip]
-    type = ADVectorFunctionDirichletBC
-    variable = vel
-    boundary = &#x27;right&#x27;
-    function_x = 0
-    function_y = 0
-  []
-  [inlet]
-    type = ADVectorFunctionDirichletBC
-    variable = vel
-    boundary = &#x27;bottom&#x27;
-    function_x = 0
-    function_y = yfunc
-  []
-  [outlet]
-    type = INSADMomentumTurbulentNoBCBC
-    variable = vel
-    boundary = &#x27;top&#x27;
-    mu_tilde = mu_tilde
-  []
-  [outlet_supg]
-    type = INSADMomentumSUPGBC
-    variable = vel
-    boundary = &#x27;top&#x27;
-  []
-  [outlet_pspg]
-    type = INSADMassPSPGBC
-    variable = p
-    boundary = &#x27;top&#x27;
-  []
-
-  [pressure_pin]
-    type = DirichletBC
-    variable = p
-    boundary = &#x27;pinned_node&#x27;
-    value = 0
-  []
-
-  [mu_inlet]
-    type = FunctionDirichletBC
-    variable = mu_tilde
-    boundary = &#x27;bottom&#x27;
-    function = mu_func
-  []
-  [mu_wall]
-    type = DirichletBC
-    variable = mu_tilde
-    boundary = &#x27;right&#x27;
-    value = 0
-  []
-  [mu_outlet]
-    type = SATurbulentViscosityNoBCBC
-    variable = mu_tilde
-    boundary = &#x27;top&#x27;
-  []
-  [mu_outlet_supg]
-    type = SATurbulentViscositySUPGBC
-    variable = mu_tilde
-    boundary = &#x27;top&#x27;
-  []
-[]
-
-[Materials]
-  [ad_mat]
-    type = ADGenericConstantMaterial
-    prop_names = &#x27;rho mu&#x27;
-    prop_values = &#x27;${density} ${viscosity}&#x27;
-  []
-  [sa_mat]
-    type = SATauMaterial
-    alpha = ${alpha}
-    mu_tilde = mu_tilde
-    wall_distance_var = wall_dist
-  []
-[]
-
-[VectorPostprocessors]
-  [outlet]
-    type = NodalValueSampler
-    variable = vely
-    boundary = &#x27;top&#x27;
-    sort_by = x
-    execute_on = final
-  []
-  [stress]
-    type = SideValueSampler
-    variable = turbulent_stress
-    boundary = &#x27;top&#x27;
-    sort_by = x
-    execute_on = final
-  []
-[]
-
-[Executioner]
-  type = Transient
-
-  solve_type = &#x27;NEWTON&#x27;
-  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
-  petsc_options_iname = &#x27;-pc_type -pc_factor_shift_type -pc_factor_mat_solver_package&#x27;
-  petsc_options_value = &#x27;lu       NONZERO               superlu_dist&#x27;
-  line_search = none
-
-  automatic_scaling = true
-  compute_scaling_once = false
-  resid_vs_jac_scaling_param = 0.1
-  scaling_group_variables = &#x27;vel; p; mu_tilde&#x27;
-  off_diagonals_in_auto_scaling = true
-
-  nl_rel_tol = 1e-8
-  nl_abs_tol = 1e-12
-  nl_max_its = 10
-
-  steady_state_detection = true
-  steady_state_tolerance = 1e-8
-  dtmin = 1e-2
-  dtmax = 10
-  [TimeStepper]
-    type = IterationAdaptiveDT
-    dt = 1e-2
-    cutback_factor = 0.9
-    growth_factor = 1.1
-    optimal_iterations = 6
-    iteration_window = 1
-    linear_iteration_ratio = 1000
-  []
-[]
-
-[Preconditioning]
-  [SMP]
-    type = SMP
-    full = true
-  []
-[]
-
-[Outputs]
-  [exodus]
-    type = Exodus
-  []
-  [csv]
-    type = CSV
-    execute_on = final
-  []
-[]
-
-[Debug]
-  show_var_residual_norms = true
-[]
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div><div class="col hide-on-med-and-down l2"><div class="toc-wrapper pin-top"><ul class="section table-of-contents"><li><a href="#61f42644-cbff-4472-a2d8-2f8b9befe21a" class="tooltipped" data-position="left" data-tooltip="Overview">Overview</a></li><li><a href="#7ef39384-431e-41f5-a3ba-1d9341faf030" class="tooltipped" data-position="left" data-tooltip="Example Input File Syntax">Example Input File Syntax</a></li><li><a href="#6c8c193d-17b3-4ea1-9e59-9fc4d93a23ac" class="tooltipped" data-position="left" data-tooltip="Input Parameters">Input Parameters</a></li><li><a href="#de2f6979-77e4-43cb-9de9-f210e9083534" class="tooltipped" data-position="left" data-tooltip="Input Files">Input Files</a></li></ul></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div><div class="col hide-on-med-and-down l2"><div class="toc-wrapper pin-top"><ul class="section table-of-contents"><li><a href="#8d518de0-775a-40b9-aec6-68d10e1d9223" class="tooltipped" data-position="left" data-tooltip="Overview">Overview</a></li><li><a href="#dcfca874-d34d-40de-9634-84006815d09f" class="tooltipped" data-position="left" data-tooltip="Example Input File Syntax">Example Input File Syntax</a></li><li><a href="#5e2c12ab-4271-4aeb-8dc5-70279a7145f5" class="tooltipped" data-position="left" data-tooltip="Input Parameters">Input Parameters</a></li><li><a href="#1664ddc0-37be-48dd-a8c9-7558c46ccd0b" class="tooltipped" data-position="left" data-tooltip="Input Files">Input Files</a></li></ul></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>
