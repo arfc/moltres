@@ -16,7 +16,7 @@ MoltresApp::validParams()
 // dependent apps know about the MoltresApp label.
 registerKnownLabel("MoltresApp");
 
-MoltresApp::MoltresApp(InputParameters parameters)
+MoltresApp::MoltresApp(const InputParameters & parameters)
   : MooseApp(parameters)
 {
   MoltresApp::registerAll(_factory, _action_factory, _syntax);
