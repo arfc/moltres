@@ -5,7 +5,7 @@
 class MoltresApp : public MooseApp
 {
 public:
-  MoltresApp(InputParameters parameters);
+  MoltresApp(const InputParameters & parameters);
 
   static InputParameters validParams();
 
