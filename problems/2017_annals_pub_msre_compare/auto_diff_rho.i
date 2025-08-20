@@ -86,7 +86,7 @@ H = 162.56
   []
   [temp_advection_fuel]
     type = ConservativeTemperatureAdvection
-    velocity = '0 ${flow_velocity} 0'
+    velocity_variable = '0 ${flow_velocity} 0'
     variable = temp
     block = 'fuel'
   []
