@@ -157,7 +157,7 @@ offset = 2.5
   []
   [temp_advection_fuel]
     type = ConservativeTemperatureAdvection
-    velocity = '0 0 ${flow_velocity}'
+    velocity_variable = '0 0 ${flow_velocity}'
     variable = temp
     block = 'fuel'
   []

@@ -127,7 +127,7 @@
   [temp_advection_fuel]
     type = ConservativeTemperatureAdvection
     variable = temp
-    velocity = '0 18.085 0'
+    velocity_variable = '0 18.085 0'
     block = '0'
   []
   [temp_diffusion]
