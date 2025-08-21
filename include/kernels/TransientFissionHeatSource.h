@@ -34,6 +34,9 @@ protected:
   unsigned int _num_heat_groups;
   std::vector<Real> _decay_heat_frac;
   std::vector<Real> _decay_heat_const;
+  const bool _has_heat_source;
+  const VariableValue & _heat_source;
+  const Real _gamma_frac;
   std::vector<const VariableValue *> _heat_concs;
   std::vector<unsigned int> _heat_ids;
 };

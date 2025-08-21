@@ -24,7 +24,10 @@ protected:
   const MaterialProperty<std::vector<Real>> & _d_fisse_d_temp;
   unsigned int _num_groups;
   const PostprocessorValue & _tot_fission_heat;
-  Real _power;
+  const Real _power;
+  const bool _has_heat_source;
+  const VariableValue & _heat_source;
+  const Real _gamma_frac;
   std::vector<const VariableValue *> _group_fluxes;
   std::vector<unsigned int> _flux_ids;
 };
