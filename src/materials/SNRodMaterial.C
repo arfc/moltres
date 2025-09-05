@@ -60,8 +60,8 @@ SNRodMaterial::Construct(nlohmann::json xs_root)
   std::string nr = "nonrod_";
   for (unsigned int j = 0; j < _xsec_names.size(); ++j)
   {
-    auto o = _vec_lengths[_xsec_names[j]];
-    auto L = _XsTemperature.size();
+    unsigned int o = _vec_lengths[_xsec_names[j]];
+    unsigned int L = _XsTemperature.size();
 
     // Rod group constant interpolators
     _xsec_linear_interpolators[_xsec_names[j]].resize(o);
@@ -99,7 +99,7 @@ SNRodMaterial::Construct(nlohmann::json xs_root)
           mooseError("Unable to open database " + _material_key + "/" + temp_key + "/" +
                      _xsec_names[j]);
 
-        int dims = dataset.size();
+        unsigned int dims = dataset.size();
         if (o == 0 and !oneInfo)
         {
           mooseInfo("Only precursor material data initialized (num_groups = 0) for material " + _name);
@@ -111,14 +111,14 @@ SNRodMaterial::Construct(nlohmann::json xs_root)
                      "num_groups/num_precursor_groups parameter. " +
                      std::to_string(dims) + "!=" + std::to_string(o));
         if (_xsec_names[j] == "SPN")
-          for (auto i = 0; i < (_L+1); ++i)
-            for (auto k = 0; k < o/(_L+1); ++k)
+          for (unsigned int i = 0; i < (_L+1); ++i)
+            for (unsigned int k = 0; k < o/(_L+1); ++k)
             {
               _xsec_map[_xsec_names[j]][i*o/(_L+1)+k].push_back(dataset[i][k].get<double>());
               _xsec_map[nr + _xsec_names[j]][i*o/(_L+1)+k].push_back(nonrod_dataset[i][k].get<double>());
             }
         else
-          for (auto k = 0; k < o; ++k)
+          for (unsigned int k = 0; k < o; ++k)
           {
             _xsec_map[_xsec_names[j]][k].push_back(dataset[k].get<double>());
             _xsec_map[nr + _xsec_names[j]][k].push_back(nonrod_dataset[k].get<double>());
@@ -128,7 +128,7 @@ SNRodMaterial::Construct(nlohmann::json xs_root)
     {
       // Initialize excluded group constants as zero values
       for (decltype(_XsTemperature.size()) l = 0; l < L; ++l)
-        for (auto k = 0; k < o; ++k)
+        for (unsigned int k = 0; k < o; ++k)
         {
           _xsec_map[_xsec_names[j]][k].push_back(0.);
           _xsec_map[nr + _xsec_names[j]][k].push_back(0.);
@@ -145,8 +145,8 @@ SNRodMaterial::Construct(nlohmann::json xs_root)
         break;
       case LINEAR:
         if (_xsec_names[j] == "SPN")
-          for (auto i = 0; i < (_L+1); ++i)
-            for (auto k = 0; k < o/(_L+1); ++k)
+          for (unsigned int i = 0; i < (_L+1); ++i)
+            for (unsigned int k = 0; k < o/(_L+1); ++k)
             {
               _xsec_linear_interpolators[_xsec_names[j]][i*o/(_L+1)+k].setData(
                 _XsTemperature, _xsec_map[_xsec_names[j]][i*o/(_L+1)+k]);
@@ -154,7 +154,7 @@ SNRodMaterial::Construct(nlohmann::json xs_root)
                 _XsTemperature, _xsec_map[nr + _xsec_names[j]][i*o/(_L+1)+k]);
             }
         else
-          for (auto k = 0; k < o; ++k)
+          for (unsigned int k = 0; k < o; ++k)
           {
             _xsec_linear_interpolators[_xsec_names[j]][k].setData(_XsTemperature,
                                                                   _xsec_map[_xsec_names[j]][k]);
@@ -164,8 +164,8 @@ SNRodMaterial::Construct(nlohmann::json xs_root)
         break;
       case SPLINE:
         if (_xsec_names[j] == "SPN")
-          for (auto i = 0; i < (_L+1); ++i)
-            for (auto k = 0; k < o/(_L+1); ++k)
+          for (unsigned int i = 0; i < (_L+1); ++i)
+            for (unsigned int k = 0; k < o/(_L+1); ++k)
             {
               _xsec_spline_interpolators[_xsec_names[j]][i*o/(_L+1)+k].setData(
                 _XsTemperature, _xsec_map[_xsec_names[j]][i*o/(_L+1)+k]);
@@ -173,7 +173,7 @@ SNRodMaterial::Construct(nlohmann::json xs_root)
                 _XsTemperature, _xsec_map[nr + _xsec_names[j]][i*o/(_L+1)+k]);
             }
         else
-          for (auto k = 0; k < o; ++k)
+          for (unsigned int k = 0; k < o; ++k)
           {
             _xsec_spline_interpolators[_xsec_names[j]][k].setData(_XsTemperature,
                                                                   _xsec_map[_xsec_names[j]][k]);
@@ -185,8 +185,8 @@ SNRodMaterial::Construct(nlohmann::json xs_root)
         if (L < 3)
           mooseError("Monotone cubic interpolation requires at least three data points.");
         if (_xsec_names[j] == "SPN")
-          for (auto i = 0; i < (_L+1); ++i)
-            for (auto k = 0; k < o/(_L+1); ++k)
+          for (unsigned int i = 0; i < (_L+1); ++i)
+            for (unsigned int k = 0; k < o/(_L+1); ++k)
             {
               _xsec_monotone_cubic_interpolators[_xsec_names[j]][i*o/(_L+1)+k].setData(
                 _XsTemperature, _xsec_map[_xsec_names[j]][i*o/(_L+1)+k]);
@@ -194,7 +194,7 @@ SNRodMaterial::Construct(nlohmann::json xs_root)
                 _XsTemperature, _xsec_map[nr + _xsec_names[j]][i*o/(_L+1)+k]);
             }
         else
-          for (auto k = 0; k < o; ++k)
+          for (unsigned int k = 0; k < o; ++k)
           {
             _xsec_monotone_cubic_interpolators[_xsec_names[j]][k].setData(_XsTemperature,
                                                                   _xsec_map[_xsec_names[j]][k]);
