@@ -17,13 +17,14 @@ protected:
 
   const MaterialProperty<std::vector<Real>> & _decay_constant;
   const MaterialProperty<std::vector<Real>> & _d_decay_constant_d_temp;
-  unsigned int _group;
+  const unsigned int _group;
   const MaterialProperty<std::vector<Real>> &  _chi_d;
-  // todo add the jacobian (it's going to be negligible tho)
 
-  unsigned int _num_precursor_groups;
-  unsigned int _temp_id;
+  const unsigned int _num_precursor_groups;
+  const unsigned int _temp_id;
   const VariableValue & _temp;
+  const bool _has_delayed_source;
+  const VariableValue & _delayed_source;
   std::vector<const VariableValue *> _pre_concs;
   std::vector<unsigned int> _pre_ids;
 };
