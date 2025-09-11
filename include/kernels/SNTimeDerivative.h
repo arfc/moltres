@@ -17,7 +17,6 @@ protected:
   const MaterialProperty<std::vector<Real>> & _tau_sn;
   const MaterialProperty<std::vector<Real>> & _recipvel;
   const MaterialProperty<std::vector<Real>> & _d_recipvel_d_temp;
-  const unsigned int _N;
   const unsigned int _group;
   const unsigned int _temp_id;
   RealEigenMatrix _ordinates;

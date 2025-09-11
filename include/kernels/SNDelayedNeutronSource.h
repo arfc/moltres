@@ -16,7 +16,6 @@ protected:
   const MaterialProperty<std::vector<Real>> & _tau_sn;
   const MaterialProperty<std::vector<Real>> & _decay_constant;
   const MaterialProperty<std::vector<Real>> & _chi_d;
-  const unsigned int _N;
   const unsigned int _group;
   const VariableValue & _delayed_source;
   RealEigenMatrix _ordinates;

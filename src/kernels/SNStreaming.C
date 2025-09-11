@@ -17,11 +17,10 @@ SNStreaming::SNStreaming(const InputParameters & parameters)
   : ArrayKernel(parameters),
     _tau_sn(getMaterialProperty<std::vector<Real>>("tau_sn")),
     _totxs(getMaterialProperty<std::vector<Real>>("totxs")),
-    _N(getParam<unsigned int>("N")),
     _group(getParam<unsigned int>("group_number") - 1)
 {
   // Level-symmetric quadrature points and weights
-  RealEigenMatrix ords_weights = MoltresUtils::level_symmetric(_N);
+  RealEigenMatrix ords_weights = MoltresUtils::level_symmetric(getParam<unsigned int>("N"));
   _ordinates = ords_weights.leftCols(3);
   _weights = ords_weights.col(3);
 }

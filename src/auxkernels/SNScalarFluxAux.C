@@ -14,11 +14,10 @@ SNScalarFluxAux::validParams()
 
 SNScalarFluxAux::SNScalarFluxAux(const InputParameters & parameters)
   : AuxKernel(parameters),
-  _N(getParam<unsigned int>("N")),
   _psi(coupledArrayValue("psi"))
 {
   // Level-symmetric quadrature weights
-  RealEigenMatrix ords_weights = MoltresUtils::level_symmetric(_N);
+  RealEigenMatrix ords_weights = MoltresUtils::level_symmetric(getParam<unsigned int>("N"));
   _weights = ords_weights.col(3);
 }
 

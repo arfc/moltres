@@ -16,7 +16,6 @@ protected:
 
   const MaterialProperty<std::vector<Real>> & _tau_sn;
   const MaterialProperty<std::vector<Real>> & _scatter;
-  const unsigned int _N;
   const unsigned int _group;
   const unsigned int _num_groups;
   const int _L;

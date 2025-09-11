@@ -98,9 +98,6 @@ protected:
   // Material associated with the group constants to be loaded
   std::string _material_key;
 
-  // Discrete ordinate order
-  const unsigned int _N;
-
   // Maximum scattering Legendre moment
   const unsigned int _L;
 

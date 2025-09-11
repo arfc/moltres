@@ -16,12 +16,11 @@ VacuumCoefAux::validParams()
 
 VacuumCoefAux::VacuumCoefAux(const InputParameters & parameters)
   : AuxKernel(parameters),
-    _N(getParam<unsigned int>("N")),
     _psi(coupledArrayValue("psi")),
     _normals(_assembly.normals())
 {
   // Level-symmetric quadrature points and weights
-  RealEigenMatrix ords_weights = MoltresUtils::level_symmetric(_N);
+  RealEigenMatrix ords_weights = MoltresUtils::level_symmetric(getParam<unsigned int>("N"));
   _ordinates = ords_weights.leftCols(3);
   _weights = ords_weights.col(3);
 }

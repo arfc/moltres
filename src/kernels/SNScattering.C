@@ -31,7 +31,6 @@ SNScattering::SNScattering(const InputParameters & parameters)
   : ArrayKernel(parameters),
     _tau_sn(getMaterialProperty<std::vector<Real>>("tau_sn")),
     _scatter(getMaterialProperty<std::vector<Real>>("scatter")),
-    _N(getParam<unsigned int>("N")),
     _group(getParam<unsigned int>("group_number") - 1),
     _num_groups(getParam<unsigned int>("num_groups")),
     _L(getParam<int>("L")),
@@ -61,7 +60,7 @@ SNScattering::SNScattering(const InputParameters & parameters)
   }
 
   // Level-symmetric quadrature points, weights, and harmonics
-  RealEigenMatrix ords_weights = MoltresUtils::level_symmetric(_N);
+  RealEigenMatrix ords_weights = MoltresUtils::level_symmetric(getParam<unsigned int>("N"));
   _ordinates = ords_weights.leftCols(3);
   _weights = ords_weights.col(3);
   _harmonics = MoltresUtils::sph_harmonics_mat(_L, _ordinates);
@@ -88,34 +87,8 @@ SNScattering::computeQpResidual(RealEigenVector & residual)
     }
   }
 
-// Create variable to store flux moment values
-// e.g., If L = 3 (maximum), then flux_moments initialization is equivalent to:
-// std::vector<std::vector<std::vector<Real>>>
-//   flux_moments(_num_groups, std::vector<std::vector<Real>>
-//     { {0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0, 0.0, 0.0}, {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0} });
-  std::vector<std::vector<Real>> flux_moments_vec;
-  for (int l = 0; l < _L+1; ++l)
-    flux_moments_vec.push_back(std::vector<Real>((_L+1)*2-1, 0.0));
-  std::vector<std::vector<std::vector<Real>>>
-    flux_moments(_num_groups, flux_moments_vec);
-
+  Real flux_moment;
   int harmonics_idx = start_idx;
-  for (int l = start_idx; l < _L+1; ++l)
-    for (int m = -l; m < l+1; ++m)
-    {
-      for (unsigned int g = 0; g < _num_groups; ++g)
-      {
-        int scatter_idx = l * _num_groups * _num_groups + g * _num_groups + _group;
-        if (_scatter[_qp][scatter_idx] == 0.0)
-          continue;
-        flux_moments[g][l][m+l] +=
-          _weights.cwiseProduct(_harmonics.col(harmonics_idx)).transpose() *
-          (*_group_angular_fluxes[g])[_qp];
-      }
-      ++harmonics_idx;
-    }
-
-  harmonics_idx = start_idx;
   for (int l = start_idx; l < _L+1; ++l)
   {
     for (int m = -l; m < l+1; ++m)
@@ -125,8 +98,11 @@ SNScattering::computeQpResidual(RealEigenVector & residual)
         int scatter_idx = l * _num_groups * _num_groups + g * _num_groups + _group;
         if (_scatter[_qp][scatter_idx] == 0.0)
           continue;
+        flux_moment =
+          _weights.cwiseProduct(_harmonics.col(harmonics_idx)).transpose() *
+          (*_group_angular_fluxes[g])[_qp];
         residual -=
-          _scatter[_qp][scatter_idx] * flux_moments[g][l][m+l] *
+          _scatter[_qp][scatter_idx] * flux_moment *
           (2.0 * l + 1.0) * 0.125 * _harmonics.col(harmonics_idx);
       }
       ++harmonics_idx;

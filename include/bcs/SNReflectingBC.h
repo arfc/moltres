@@ -14,7 +14,6 @@ protected:
   virtual RealEigenVector computeQpJacobian() override;
   virtual RealEigenMatrix computeQpOffDiagJacobian(const MooseVariableFEBase & jvar) override;
 
-  unsigned int _N;
   RealEigenMatrix _ordinates;
   RealEigenVector _weights;
   std::vector<int> _x_reflection;

@@ -34,7 +34,6 @@ MoltresSNMaterial::validParams()
                                "BETA_EFF",
                                "DECAY_CONSTANT"},
       "Group constants to be determined.");
-  params.addRequiredParam<unsigned int>("N", "Discrete ordinate order");
   params.addParam<unsigned int>("L", 2, "Maximum scattering moment");
   params.addParam<Real>("void_constant", 0.,
       "The limit under which stabilization is applied for near-void and void regions");
@@ -85,7 +84,6 @@ MoltresSNMaterial::MoltresSNMaterial(const InputParameters & parameters)
     _interp_type(getParam<MooseEnum>("interp_type")),
     _group_consts(getParam<std::vector<std::string>>("group_constants")),
     _material_key(getParam<std::string>("material_key")),
-    _N(getParam<unsigned int>("N")),
     _L(getParam<unsigned int>("L")),
     _sigma(getParam<Real>("void_constant")),
     _c(getParam<Real>("stabilization_constant")),

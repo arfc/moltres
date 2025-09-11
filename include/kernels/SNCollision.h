@@ -14,7 +14,6 @@ protected:
   virtual RealEigenVector computeQpJacobian() override;
 
   const MaterialProperty<std::vector<Real>> & _totxs;
-  unsigned int _N;
   unsigned int _group;
   RealEigenVector _weights;
 };

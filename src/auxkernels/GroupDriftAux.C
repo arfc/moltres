@@ -32,7 +32,6 @@ GroupDriftAux::GroupDriftAux(const InputParameters & parameters)
     _diffcoef(getMaterialProperty<std::vector<Real>>("diffcoef")),
     _totxs(getMaterialProperty<std::vector<Real>>("totxs")),
     _scatter(getMaterialProperty<std::vector<Real>>("scatter")),
-    _N(getParam<unsigned int>("N")),
     _group(getParam<unsigned int>("group_number") - 1),
     _num_groups(getParam<unsigned int>("num_groups")),
     _set_limit(getParam<bool>("set_diffcoef_limit")),
@@ -52,7 +51,7 @@ GroupDriftAux::GroupDriftAux(const InputParameters & parameters)
   }
 
   // Level-symmetric quadrature points and weights
-  RealEigenMatrix ords_weights = MoltresUtils::level_symmetric(_N);
+  RealEigenMatrix ords_weights = MoltresUtils::level_symmetric(getParam<unsigned int>("N"));
   _ordinates = ords_weights.leftCols(3);
   _weights = ords_weights.col(3);
 }

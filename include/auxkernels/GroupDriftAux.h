@@ -17,7 +17,6 @@ protected:
   const MaterialProperty<std::vector<Real>> & _diffcoef;
   const MaterialProperty<std::vector<Real>> & _totxs;
   const MaterialProperty<std::vector<Real>> & _scatter;
-  const unsigned int _N;
   const unsigned int _group;
   const unsigned int _num_groups;
   const bool _set_limit;

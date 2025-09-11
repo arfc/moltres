@@ -19,12 +19,11 @@ SNDelayedNeutronSource::SNDelayedNeutronSource(const InputParameters & parameter
     _tau_sn(getMaterialProperty<std::vector<Real>>("tau_sn")),
     _decay_constant(getMaterialProperty<std::vector<Real>>("decay_constant")),
     _chi_d(getMaterialProperty<std::vector<Real>>("chi_d")),
-    _N(getParam<unsigned int>("N")),
     _group(getParam<unsigned int>("group_number") - 1),
     _delayed_source(coupledValue("delayed_neutron_source"))
 {
   // Level-symmetric quadrature points and weights
-  RealEigenMatrix ords_weights = MoltresUtils::level_symmetric(_N);
+  RealEigenMatrix ords_weights = MoltresUtils::level_symmetric(getParam<unsigned int>("N"));
   _ordinates = ords_weights.leftCols(3);
   _weights = ords_weights.col(3);
 }

@@ -17,12 +17,11 @@ SNTimeDerivative::SNTimeDerivative(const InputParameters & parameters)
     _tau_sn(getMaterialProperty<std::vector<Real>>("tau_sn")),
     _recipvel(getMaterialProperty<std::vector<Real>>("recipvel")),
     _d_recipvel_d_temp(getMaterialProperty<std::vector<Real>>("d_recipvel_d_temp")),
-    _N(getParam<unsigned int>("N")),
     _group(getParam<unsigned int>("group_number") - 1),
     _temp_id(coupled("temperature"))
 {
   // Level-symmetric quadrature points and weights
-  RealEigenMatrix ords_weights = MoltresUtils::level_symmetric(_N);
+  RealEigenMatrix ords_weights = MoltresUtils::level_symmetric(getParam<unsigned int>("N"));
   _ordinates = ords_weights.leftCols(3);
   _weights = ords_weights.col(3);
 }

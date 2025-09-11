@@ -16,11 +16,10 @@ SNCollision::validParams()
 SNCollision::SNCollision(const InputParameters & parameters)
   : ArrayKernel(parameters),
     _totxs(getMaterialProperty<std::vector<Real>>("totxs")),
-    _N(getParam<unsigned int>("N")),
     _group(getParam<unsigned int>("group_number") - 1)
 {
   // Level-symmetric quadrature weights
-  _weights = MoltresUtils::level_symmetric(_N).col(3);
+  _weights = MoltresUtils::level_symmetric(getParam<unsigned int>("N")).col(3);
 }
 
 void

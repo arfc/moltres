@@ -16,14 +16,13 @@ SNDiffusionBC::validParams()
 
 SNDiffusionBC::SNDiffusionBC(const InputParameters & parameters)
   : ArrayIntegratedBC(parameters),
-    _N(getParam<unsigned int>("N")),
     _diffcoef(getMaterialProperty<std::vector<Real>>("diffcoef")),
     _group(getParam<unsigned int>("group_number") - 1),
     _diff_flux(coupledValue("diffusion_flux")),
     _grad_diff_flux(coupledGradient("diffusion_flux"))
 {
   // Level-symmetric quadrature points and weights
-  RealEigenMatrix ords_weights = MoltresUtils::level_symmetric(_N);
+  RealEigenMatrix ords_weights = MoltresUtils::level_symmetric(getParam<unsigned int>("N"));
   _ordinates = ords_weights.leftCols(3);
   _weights = ords_weights.col(3);
 }

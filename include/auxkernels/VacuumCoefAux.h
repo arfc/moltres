@@ -12,7 +12,6 @@ public:
 protected:
   virtual Real computeValue() override;
 
-  const unsigned int _N;
   const ArrayVariableValue & _psi;
   const MooseArray<Point> & _normals;
   RealEigenMatrix _ordinates;

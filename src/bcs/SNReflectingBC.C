@@ -12,11 +12,10 @@ SNReflectingBC::validParams()
 }
 
 SNReflectingBC::SNReflectingBC(const InputParameters & parameters)
-  : ArrayIntegratedBC(parameters),
-    _N(getParam<unsigned int>("N"))
+  : ArrayIntegratedBC(parameters)
 {
   // Level-symmetric quadrature points and weights
-  RealEigenMatrix ords_weights = MoltresUtils::level_symmetric(_N);
+  RealEigenMatrix ords_weights = MoltresUtils::level_symmetric(getParam<unsigned int>("N"));
   _ordinates = ords_weights.leftCols(3);
   _weights = ords_weights.col(3);
 }

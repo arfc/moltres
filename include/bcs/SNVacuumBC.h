@@ -13,7 +13,6 @@ protected:
   virtual void computeQpResidual(RealEigenVector & residual) override;
   virtual RealEigenVector computeQpJacobian() override;
 
-  unsigned int _N;
   RealEigenMatrix _ordinates;
   RealEigenVector _weights;
 };

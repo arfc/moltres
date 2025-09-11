@@ -20,7 +20,6 @@ protected:
   const MaterialProperty<std::vector<Real>> & _chi_t;
   const MaterialProperty<std::vector<Real>> & _chi_p;
   const MaterialProperty<Real> & _beta;
-  const unsigned int _N;
   const unsigned int _group;
   const unsigned int _num_groups;
   const bool _account_delayed;

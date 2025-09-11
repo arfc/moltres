@@ -34,7 +34,6 @@ SNFission::SNFission(const InputParameters & parameters)
     _chi_t(getMaterialProperty<std::vector<Real>>("chi_t")),
     _chi_p(getMaterialProperty<std::vector<Real>>("chi_p")),
     _beta(getMaterialProperty<Real>("beta")),
-    _N(getParam<unsigned int>("N")),
     _group(getParam<unsigned int>("group_number") - 1),
     _num_groups(getParam<unsigned int>("num_groups")),
     _account_delayed(getParam<bool>("account_delayed")),
@@ -68,7 +67,7 @@ SNFission::SNFission(const InputParameters & parameters)
   }
 
   // Level-symmetric quadrature points and weights
-  RealEigenMatrix ords_weights = MoltresUtils::level_symmetric(_N);
+  RealEigenMatrix ords_weights = MoltresUtils::level_symmetric(getParam<unsigned int>("N"));
   _ordinates = ords_weights.leftCols(3);
   _weights = ords_weights.col(3);
 }
