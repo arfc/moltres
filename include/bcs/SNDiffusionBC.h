@@ -13,6 +13,7 @@ protected:
   virtual void computeQpResidual(RealEigenVector & residual) override;
   virtual RealEigenVector computeQpJacobian() override;
 
+  const Real _ls_norm_factor = 0.125;
   const MaterialProperty<std::vector<Real>> & _diffcoef;
   unsigned int _group;
   const VariableValue & _diff_flux;

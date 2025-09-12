@@ -15,6 +15,7 @@ protected:
   virtual RealEigenVector computeQpJacobian() override;
   virtual RealEigenMatrix computeQpOffDiagJacobian(const MooseVariableFEBase & jvar) override;
 
+  const Real _ls_norm_factor = 0.125;
   const MaterialProperty<std::vector<Real>> & _tau_sn;
   const MaterialProperty<std::vector<Real>> & _nsf;
   const MaterialProperty<std::vector<Real>> & _chi_t;

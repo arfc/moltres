@@ -42,7 +42,7 @@ SNScattering::SNScattering(const InputParameters & parameters)
   {
     unsigned int n = coupledComponents("group_fluxes");
     if (n != _num_groups)
-      mooseError("The number of coupled variables does not match the number of groups.");
+      mooseError("The number of group flux variables does not match the number of groups.");
     _group_fluxes.resize(n);
     for (unsigned int g = 0; g < _num_groups; ++g)
       _group_fluxes[g] = &coupledValue("group_fluxes", g);
@@ -50,7 +50,7 @@ SNScattering::SNScattering(const InputParameters & parameters)
 
   unsigned int n = coupledComponents("group_angular_fluxes");
   if (n != _num_groups)
-    mooseError("The number of coupled variables doesn't match the number of groups.");
+    mooseError("The number of angular group flux variables does not match the number of groups.");
   _group_angular_fluxes.resize(n);
   _flux_ids.resize(n);
   for (unsigned int g = 0; g < _num_groups; ++g)
@@ -72,6 +72,8 @@ SNScattering::computeQpResidual(RealEigenVector & residual)
   RealEigenVector lhs = _tau_sn[_qp][_group] * _ordinates * _array_grad_test[_i][_qp] +
     RealEigenVector::Constant(_count, _test[_i][_qp]);
 
+  // If using diffusion flux as initial condition, no need to compute scattering source using
+  // angular fluxes on the first iteration.
   int start_idx = 0;
   if (_acceleration || (_use_initial_flux && relativeFuzzyEqual(_iteration_postprocessor, 1.0)))
   {
@@ -83,7 +85,7 @@ SNScattering::computeQpResidual(RealEigenVector & residual)
         continue;
       residual -= RealEigenVector::Constant(
           _count,
-          _scatter[_qp][scatter_idx] * (*_group_fluxes[g])[_qp]) * 0.125;
+          _scatter[_qp][scatter_idx] * (*_group_fluxes[g])[_qp]) * _ls_norm_factor;
     }
   }
 
@@ -103,7 +105,7 @@ SNScattering::computeQpResidual(RealEigenVector & residual)
           (*_group_angular_fluxes[g])[_qp];
         residual -=
           _scatter[_qp][scatter_idx] * flux_moment *
-          (2.0 * l + 1.0) * 0.125 * _harmonics.col(harmonics_idx);
+          (2.0 * l + 1.0) * _ls_norm_factor * _harmonics.col(harmonics_idx);
       }
       ++harmonics_idx;
     }
@@ -127,7 +129,7 @@ SNScattering::computeQpJacobian()
     int scatter_idx = l * _num_groups * _num_groups + _group * _num_groups + _group;
     for (int m = -l; m < l+1; ++m)
     {
-      jac -= _scatter[_qp][scatter_idx] * (2.0 * l + 1.0) * 0.125 *
+      jac -= _scatter[_qp][scatter_idx] * (2.0 * l + 1.0) * _ls_norm_factor *
         _harmonics.col(harmonics_idx).cwiseProduct(_harmonics.col(harmonics_idx));
       ++harmonics_idx;
     }
@@ -161,7 +163,7 @@ SNScattering::computeQpOffDiagJacobian(const MooseVariableFEBase & jvar)
             for (unsigned int j = 0; j < _count; ++j)
               jac(i, j) -= _weights(i) * lhs(i) * _scatter[_qp][scatter_idx] * _weights(j) *
                 MoltresUtils::sph_harmonics(l, m, _ordinates(j,0), _ordinates(j,1),
-                _ordinates(j,2)) * _phi[_j][_qp] * (2.0 * l + 1.0) * 0.125 *
+                _ordinates(j,2)) * _phi[_j][_qp] * (2.0 * l + 1.0) * _ls_norm_factor *
                 MoltresUtils::sph_harmonics(l, m,
                 _ordinates(i,0), _ordinates(i,1), _ordinates(i,2));
       }

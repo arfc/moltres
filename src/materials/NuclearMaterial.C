@@ -89,7 +89,7 @@ NuclearMaterial::dummyComputeQpProperties()
     _d_remxs_d_temp[_qp][i] = 0;
     _d_fissxs_d_temp[_qp][i] = 0;
     _d_nsf_d_temp[_qp][i] = 0;
-    _d_fisse_d_temp[_qp][i] = 0; // convert from MeV to Joules
+    _d_fisse_d_temp[_qp][i] = 0;
     _d_diffcoef_d_temp[_qp][i] = 0;
     _d_recipvel_d_temp[_qp][i] = 0;
     _d_chi_t_d_temp[_qp][i] = 0;

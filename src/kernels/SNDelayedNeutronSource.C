@@ -37,7 +37,7 @@ SNDelayedNeutronSource::computeQpResidual(RealEigenVector & residual)
   RealEigenVector lhs = _tau_sn[_qp][_group] * _ordinates * _array_grad_test[_i][_qp] +
     RealEigenVector::Constant(_count, _test[_i][_qp]);
 
-  Real rhs = 0.125 * _chi_d[_qp][_group] * _delayed_source[_qp];
+  Real rhs = _ls_norm_factor * _chi_d[_qp][_group] * _delayed_source[_qp];
 
   residual = -_weights.cwiseProduct(lhs) * rhs;
 }

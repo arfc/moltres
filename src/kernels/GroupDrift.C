@@ -1,5 +1,8 @@
 #include "GroupDrift.h"
 
+using MooseUtils::absoluteFuzzyLessThan;
+using MooseUtils::absoluteFuzzyGreaterThan;
+
 registerMooseObject("MoltresApp", GroupDrift);
 
 InputParameters
@@ -39,14 +42,16 @@ GroupDrift::computeQpResidual()
   array_grad_test << _grad_test[_i][_qp](0),
                      _grad_test[_i][_qp](1),
                      _grad_test[_i][_qp](2);
+  // Apply hybrid method adaptive boundary coupling
   if (_adaptive)
   {
     Real tol = 1e-8;
     Real z_coord = _q_point[_qp](2);
     Real sign;
-    if (z_coord < _bot_left(2) - tol || z_coord > _top_right(2) + tol)
+    if (absoluteFuzzyLessThan(z_coord, _bot_left(2), tol) ||
+        absoluteFuzzyGreaterThan(z_coord, _top_right(2), tol))
     {
-      sign = z_coord < _bot_left(2) - tol ? -1.0 : 1.0;
+      sign = absoluteFuzzyLessThan(z_coord, _bot_left(2), tol) ? -1.0 : 1.0;
       if (_drift_var[_qp](2) * _drift_grad[_qp](2,2) * sign > 0)
         return 0.0;
     }
@@ -60,26 +65,30 @@ GroupDrift::computeQpResidual()
         return 0.0;
     }
   }
+  // Else apply drift term everywhere
   return computeConcentration(_u, _qp) * array_grad_test.transpose() * _drift_var[_qp];
 }
 
 Real
 GroupDrift::computeQpJacobian()
 {
+  // Disable drift Jacobian contributions to improve BoomerAMG performance if needed
   if (!(_use_jacobian))
     return 0;
   RealEigenVector array_grad_test(3);
   array_grad_test << _grad_test[_i][_qp](0),
                      _grad_test[_i][_qp](1),
                      _grad_test[_i][_qp](2);
+  // Apply hybrid method adaptive boundary coupling
   if (_adaptive)
   {
     Real tol = 1e-8;
     Real z_coord = _q_point[_qp](2);
     Real sign;
-    if (z_coord < _bot_left(2) - tol || z_coord > _top_right(2) + tol)
+    if (absoluteFuzzyLessThan(z_coord, _bot_left(2), tol) ||
+        absoluteFuzzyGreaterThan(z_coord, _top_right(2), tol))
     {
-      sign = z_coord < _bot_left(2) - tol ? -1.0 : 1.0;
+      sign = absoluteFuzzyLessThan(z_coord, _bot_left(2), tol) ? -1.0 : 1.0;
       if (_drift_var[_qp](2) * _drift_grad[_qp](2,2) * sign > 0)
         return 0.0;
     }
@@ -93,6 +102,7 @@ GroupDrift::computeQpJacobian()
         return 0.0;
     }
   }
+  // Else apply drift term everywhere
   return computeConcentrationDerivative(_u, _phi, _j, _qp) * array_grad_test.transpose() *
     _drift_var[_qp];
 }

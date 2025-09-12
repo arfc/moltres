@@ -13,6 +13,7 @@ public:
 protected:
   virtual void computeQpResidual(RealEigenVector & residual) override;
 
+  const Real _ls_norm_factor = 0.125;
   const MaterialProperty<std::vector<Real>> & _tau_sn;
   const MaterialProperty<std::vector<Real>> & _decay_constant;
   const MaterialProperty<std::vector<Real>> & _chi_d;
