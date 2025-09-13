@@ -33,10 +33,13 @@ SNReflectingBC::computeQpResidual(RealEigenVector & residual)
                "perpendicular to the x-, y-, or z-axis.");
   RealEigenVector normal_vec{{_normals[_qp](0), _normals[_qp](1), _normals[_qp](2)}};
   RealEigenVector ord_dot_n = _ordinates * normal_vec;
+  // Initialize all flux residual contributions as outgoing fluxes
   RealEigenVector flux = _u[_qp];
   for (unsigned int i = 0; i < _count; ++i)
+    // Check whether flux is incoming
     if (ord_dot_n(i) < 0.)
     {
+      // Map to incident flux based on reflections on x-, y-, or z-plane
       if (absoluteFuzzyEqual(std::abs(_normals[_qp](0)), 1.0, tol))
         flux(i) = _u[_qp](MoltresUtils::x_reflection_map(i));
       else if (absoluteFuzzyEqual(std::abs(_normals[_qp](1)), 1.0, tol))
@@ -53,8 +56,10 @@ SNReflectingBC::computeQpJacobian()
   RealEigenVector normal_vec{{_normals[_qp](0), _normals[_qp](1), _normals[_qp](2)}};
   RealEigenVector ord_dot_n = _ordinates * normal_vec;
   RealEigenVector jac;
+  // Initialize all flux Jacobian contributions as outgoing fluxes
   jac = _test[_i][_qp] * _phi[_j][_qp] * ord_dot_n.cwiseProduct(_weights);
   for (unsigned int i = 0; i < _count; ++i)
+    // Check whether flux direction is incoming
     if (ord_dot_n(i) < 0.)
       jac(i) = 0.;
   return jac;
@@ -71,8 +76,10 @@ SNReflectingBC::computeQpOffDiagJacobian(const MooseVariableFEBase & jvar)
     Real tol = 1e-6;
     for (unsigned int i = 0; i < _count; ++i)
     {
+      // Check whether flux direction is incoming
       if (ord_dot_n(i) < 0.)
       {
+        // Map to incident flux based on reflections on x-, y-, or z-plane
         if (absoluteFuzzyEqual(std::abs(_normals[_qp](0)), 1.0, tol))
           jac(i, MoltresUtils::x_reflection_map(i)) =
             _test[_i][_qp] * _phi[_j][_qp] * ord_dot_n(i) * _weights(i);

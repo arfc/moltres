@@ -15,17 +15,19 @@ protected:
   virtual void splineComputeQpProperties() override;
   virtual void monotoneCubicComputeQpProperties() override;
   virtual void linearComputeQpProperties() override;
+
+  /// Volume fraction of rod material in element
   Real volumeFraction();
 
-  // Non-rod material key associated with the group constants to be loaded
+  /// Non-rod material key associated with the group constants to be loaded
   std::string _nonrod_material_key;
 
-  // Rod height function
+  /// Rod height function
   const Function & _rod_height;
 
-  // Rod cusping correction power factor
+  /// Rod cusping correction power factor
   const Real _cusp_power;
 
-  // Rod cusping correction coefficient
+  /// Rod cusping correction coefficient
   const Real _cusp_coeff;
 };

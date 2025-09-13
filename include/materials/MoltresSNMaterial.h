@@ -53,15 +53,16 @@ protected:
   void Construct(nlohmann::json xs_root);
   virtual void computeQpProperties() override;
 
+  /// Temperature variable
   const VariableValue & _temperature;
 
-  // Number of neutron groups
+  /// Number of neutron groups
   unsigned int _num_groups;
 
-  // Number of precursor groups
+  /// Number of precursor groups
   unsigned int _num_precursor_groups;
 
-  // Group constant MaterialProperty(s)
+  /// Group constant MaterialProperty(s)
   MaterialProperty<std::vector<Real>> & _totxs;
   MaterialProperty<std::vector<Real>> & _fissxs;
   MaterialProperty<std::vector<Real>> & _nsf;
@@ -89,29 +90,31 @@ protected:
   MaterialProperty<std::vector<Real>> & _d_decay_constant_d_temp;
   MaterialProperty<std::vector<Real>> & _d_diffcoef_d_temp;
 
-  // Group constant interpolation type
+  /// Group constant interpolation type
   MooseEnum _interp_type;
 
-  // Vector of group constants to be loaded
+  /// Vector of group constants to be loaded
   std::vector<std::string> _group_consts;
 
-  // Material associated with the group constants to be loaded
+  /// Material associated with the group constants to be loaded
   std::string _material_key;
 
-  // Maximum scattering Legendre moment
+  /// Maximum scattering Legendre moment
   const unsigned int _L;
 
-  // Void constant for stabilization scheme in voids
+  /// Void constant for stabilization scheme in voids
   const Real _sigma;
 
-  // Stabilization constant for stabilization scheme in voids
+  /// Stabilization constant for stabilization scheme in voids
   const Real _c;
 
+  /// Type of element length unit (maximum or minimum vertex separation)
   const MooseEnum _h_type;
 
+  /// Void stabilization factor
   MaterialProperty<std::vector<Real>> & _tau_sn;
 
-  // Vector of group constant names
+  /// Vector of group constant names
   std::vector<std::string> _xsec_names{"TOTXS",
                                        "FISSXS",
                                        "NSF",
@@ -125,17 +128,17 @@ protected:
                                        "DECAY_CONSTANT",
                                        "DIFFCOEF"};
 
-  // Map of group constant names to group constant values
+  /// Map of group constant names to group constant values
   std::map<std::string, std::vector<std::vector<Real>>> _xsec_map;
 
-  // Group constant interpolators
+  /// Group constant interpolators
   std::map<std::string, std::vector<SplineInterpolation>> _xsec_spline_interpolators;
   std::map<std::string, std::vector<MonotoneCubicInterpolation>> _xsec_monotone_cubic_interpolators;
   std::map<std::string, std::vector<LinearInterpolation>> _xsec_linear_interpolators;
 
-  // Map of group constant names to number of neutron/precursor groups
+  /// Map of group constant names to number of neutron/precursor groups
   std::map<std::string, int> _vec_lengths;
 
-  // Vector of temperature values
+  /// Vector of temperature values
   std::vector<double> _XsTemperature;
 };

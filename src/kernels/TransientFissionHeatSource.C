@@ -72,6 +72,7 @@ Real
 TransientFissionHeatSource::computeQpResidual()
 {
   Real r = 0;
+  // Use heat source aux variable if provided
   if (_has_heat_source)
     r += -_test[_i][_qp] * _heat_source[_qp] * _nt_scale;
   else

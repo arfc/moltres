@@ -19,8 +19,15 @@ public:
 protected:
   virtual Real computeValue() override;
 
+  // Group constant MaterialProperty(s)
   const MaterialProperty<std::vector<Real>> & _fissxs;
+
+  /// Number of neutron groups
   unsigned int _num_groups;
+
+  /// Neutron flux scaling factor
   Real _nt_scale;
+
+  /// Group flux variables
   std::vector<const VariableValue *> _group_fluxes;
 };

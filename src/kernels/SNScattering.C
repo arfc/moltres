@@ -72,7 +72,7 @@ SNScattering::computeQpResidual(RealEigenVector & residual)
   RealEigenVector lhs = _tau_sn[_qp][_group] * _ordinates * _array_grad_test[_i][_qp] +
     RealEigenVector::Constant(_count, _test[_i][_qp]);
 
-  // If using diffusion flux as initial condition, no need to compute scattering source using
+  // If using diffusion flux as initial condition, no need to compute scalar flux from
   // angular fluxes on the first iteration.
   int start_idx = 0;
   if (_acceleration || (_use_initial_flux && relativeFuzzyEqual(_iteration_postprocessor, 1.0)))
@@ -89,6 +89,7 @@ SNScattering::computeQpResidual(RealEigenVector & residual)
     }
   }
 
+  // Compute scattering contributions up to order L
   Real flux_moment;
   int harmonics_idx = start_idx;
   for (int l = start_idx; l < _L+1; ++l)
@@ -120,6 +121,8 @@ SNScattering::computeQpJacobian()
   RealEigenVector lhs = _tau_sn[_qp][_group] * _ordinates * _array_grad_test[_i][_qp] +
     RealEigenVector::Constant(_count, _test[_i][_qp]);
 
+  // If using diffusion flux as initial condition, skip computing Jacobian contributions from
+  // 0th scattering moment.
   int start_idx = 0;
   if (_acceleration || (_use_initial_flux && relativeFuzzyEqual(_iteration_postprocessor, 1.0)))
     ++start_idx;
@@ -150,8 +153,11 @@ SNScattering::computeQpOffDiagJacobian(const MooseVariableFEBase & jvar)
     {
       RealEigenMatrix jac = RealEigenMatrix::Zero(_count, _count);
 
+      // If using diffusion flux as initial condition, skip computing Jacobian contributions from
+      // 0th scattering moment.
       int start_idx = 0;
-      if (_acceleration || (_use_initial_flux && relativeFuzzyEqual(_iteration_postprocessor, 1.0)))
+      if (_acceleration ||
+          (_use_initial_flux && relativeFuzzyEqual(_iteration_postprocessor, 1.0)))
         ++start_idx;
       for (int l = start_idx; l < _L+1; ++l)
       {

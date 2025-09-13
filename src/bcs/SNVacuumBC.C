@@ -27,7 +27,9 @@ SNVacuumBC::computeQpResidual(RealEigenVector & residual)
   RealEigenVector ord_dot_n = _ordinates * normal_vec;
   residual = _test[_i][_qp] * ord_dot_n.cwiseProduct(_u[_qp]).cwiseProduct(_weights);
   for (unsigned int i = 0; i < _count; ++i)
+    // Check whether flux direction is incoming
     if (ord_dot_n(i) < 0.)
+      // Zero incoming flux at vacuum boundary
       residual(i) = 0.;
 }
 
@@ -39,7 +41,9 @@ SNVacuumBC::computeQpJacobian()
   RealEigenVector jac;
   jac = _test[_i][_qp] * _phi[_j][_qp] * ord_dot_n.cwiseProduct(_weights);
   for (unsigned int i = 0; i < _count; ++i)
+    // Check whether flux direction is incoming
     if (ord_dot_n(i) < 0.)
+      // Zero incoming flux at vacuum boundary
       jac(i) = 0.;
   return jac;
 }
