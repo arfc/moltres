@@ -10,5 +10,5 @@ var searchData=
   ['inscatter_7',['InScatter',['../class_in_scatter.html#a1b05ec171ea3d6e6ef98835c3906cf50',1,'InScatter']]],
   ['integralnewvariablepostprocessor_8',['IntegralNewVariablePostprocessor',['../class_integral_new_variable_postprocessor.html#aaf5ef8b7eb41c4dc718058868f71bd0c',1,'IntegralNewVariablePostprocessor']]],
   ['integraloldvariablepostprocessor_9',['IntegralOldVariablePostprocessor',['../class_integral_old_variable_postprocessor.html#a43e8468fd9049c6e019c5806e6d7cfb3',1,'IntegralOldVariablePostprocessor']]],
-  ['interptypes_10',['interpTypes',['../class_nuclear_material.html#a5fc344c22c0ad6bd10b2cfb836cf3a2f',1,'NuclearMaterial']]]
+  ['interptypes_10',['interpTypes',['../class_moltres_s_n_material.html#a7244166dce46166f66c2c5489d61f1e0',1,'MoltresSNMaterial::interpTypes()'],['../class_nuclear_material.html#a5fc344c22c0ad6bd10b2cfb836cf3a2f',1,'NuclearMaterial::interpTypes()']]]
 ];

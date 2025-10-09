@@ -28,6 +28,6 @@ var searchData=
   ['integraloldvariablepostprocessor_25',['IntegralOldVariablePostprocessor',['../class_integral_old_variable_postprocessor.html',1,'IntegralOldVariablePostprocessor'],['../class_integral_old_variable_postprocessor.html#a43e8468fd9049c6e019c5806e6d7cfb3',1,'IntegralOldVariablePostprocessor::IntegralOldVariablePostprocessor()']]],
   ['integraloldvariablepostprocessor_2ec_26',['IntegralOldVariablePostprocessor.C',['../_integral_old_variable_postprocessor_8_c.html',1,'']]],
   ['integraloldvariablepostprocessor_2eh_27',['IntegralOldVariablePostprocessor.h',['../_integral_old_variable_postprocessor_8h.html',1,'']]],
-  ['interpolator_28',['INTERPOLATOR',['../class_nuclear_material.html#a73b29fd4e54f4427080470460c8d95b3',1,'NuclearMaterial']]],
-  ['interptypes_29',['interpTypes',['../class_nuclear_material.html#a5fc344c22c0ad6bd10b2cfb836cf3a2f',1,'NuclearMaterial']]]
+  ['interpolator_28',['INTERPOLATOR',['../class_moltres_s_n_material.html#a2c1c0425c602bac052002faf70d160f2',1,'MoltresSNMaterial::INTERPOLATOR'],['../class_nuclear_material.html#a73b29fd4e54f4427080470460c8d95b3',1,'NuclearMaterial::INTERPOLATOR']]],
+  ['interptypes_29',['interpTypes',['../class_moltres_s_n_material.html#a7244166dce46166f66c2c5489d61f1e0',1,'MoltresSNMaterial::interpTypes()'],['../class_nuclear_material.html#a5fc344c22c0ad6bd10b2cfb836cf3a2f',1,'NuclearMaterial::interpTypes()']]]
 ];

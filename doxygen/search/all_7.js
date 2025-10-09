@@ -13,5 +13,11 @@ var searchData=
   ['graphitetwogrpxsfunctionmaterial_2eh_10',['GraphiteTwoGrpXSFunctionMaterial.h',['../_graphite_two_grp_x_s_function_material_8h.html',1,'']]],
   ['groupdiffusion_11',['GroupDiffusion',['../class_group_diffusion.html',1,'GroupDiffusion'],['../class_group_diffusion.html#ac4c9f807ba0daa83d737b81d29534430',1,'GroupDiffusion::GroupDiffusion()']]],
   ['groupdiffusion_2ec_12',['GroupDiffusion.C',['../_group_diffusion_8_c.html',1,'']]],
-  ['groupdiffusion_2eh_13',['GroupDiffusion.h',['../_group_diffusion_8h.html',1,'']]]
+  ['groupdiffusion_2eh_13',['GroupDiffusion.h',['../_group_diffusion_8h.html',1,'']]],
+  ['groupdrift_14',['GroupDrift',['../class_group_drift.html',1,'GroupDrift'],['../class_group_drift.html#a8418e5096096e610dbbdc9d09b7f9fce',1,'GroupDrift::GroupDrift()']]],
+  ['groupdrift_2ec_15',['GroupDrift.C',['../_group_drift_8_c.html',1,'']]],
+  ['groupdrift_2eh_16',['GroupDrift.h',['../_group_drift_8h.html',1,'']]],
+  ['groupdriftaux_17',['GroupDriftAux',['../class_group_drift_aux.html',1,'GroupDriftAux'],['../class_group_drift_aux.html#ae185a433d09fd5e5f4a86e3aac7a3ec8',1,'GroupDriftAux::GroupDriftAux()']]],
+  ['groupdriftaux_2ec_18',['GroupDriftAux.C',['../_group_drift_aux_8_c.html',1,'']]],
+  ['groupdriftaux_2eh_19',['GroupDriftAux.h',['../_group_drift_aux_8h.html',1,'']]]
 ];

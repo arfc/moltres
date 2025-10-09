@@ -5,5 +5,7 @@ var searchData=
   ['getsubdomainids_2',['getSubdomainIDs',['../class_variable_not_a_moose_object_action.html#aca62545702a2eadace60557521fee7be',1,'VariableNotAMooseObjectAction']]],
   ['getvalue_3',['getValue',['../class_average_fission_heat.html#aa0ff2ad98519300f90e01edeabe9d8ec',1,'AverageFissionHeat::getValue()'],['../class_division_postprocessor.html#af23b89ec1972f7da9f9e82a0c2ca504d',1,'DivisionPostprocessor::getValue()'],['../class_element_l2_diff.html#a29c686e373102b741c3bba82e5cae710',1,'ElementL2Diff::getValue()'],['../class_limit_k.html#a25e99e2a2ba6bfcc1fdf3a0e194fdf3c',1,'LimitK::getValue()']]],
   ['graphitetwogrpxsfunctionmaterial_4',['GraphiteTwoGrpXSFunctionMaterial',['../class_graphite_two_grp_x_s_function_material.html#ac1bea40fe89fa98c9e872478af586765',1,'GraphiteTwoGrpXSFunctionMaterial']]],
-  ['groupdiffusion_5',['GroupDiffusion',['../class_group_diffusion.html#ac4c9f807ba0daa83d737b81d29534430',1,'GroupDiffusion']]]
+  ['groupdiffusion_5',['GroupDiffusion',['../class_group_diffusion.html#ac4c9f807ba0daa83d737b81d29534430',1,'GroupDiffusion']]],
+  ['groupdrift_6',['GroupDrift',['../class_group_drift.html#a8418e5096096e610dbbdc9d09b7f9fce',1,'GroupDrift']]],
+  ['groupdriftaux_7',['GroupDriftAux',['../class_group_drift_aux.html#ae185a433d09fd5e5f4a86e3aac7a3ec8',1,'GroupDriftAux']]]
 ];

@@ -5,5 +5,7 @@ var searchData=
   ['fissionheatsourceaux_2ec_2',['FissionHeatSourceAux.C',['../_fission_heat_source_aux_8_c.html',1,'']]],
   ['fissionheatsourceaux_2eh_3',['FissionHeatSourceAux.h',['../_fission_heat_source_aux_8h.html',1,'']]],
   ['fissionheatsourcetransientaux_2ec_4',['FissionHeatSourceTransientAux.C',['../_fission_heat_source_transient_aux_8_c.html',1,'']]],
-  ['fissionheatsourcetransientaux_2eh_5',['FissionHeatSourceTransientAux.h',['../_fission_heat_source_transient_aux_8h.html',1,'']]]
+  ['fissionheatsourcetransientaux_2eh_5',['FissionHeatSourceTransientAux.h',['../_fission_heat_source_transient_aux_8h.html',1,'']]],
+  ['fissionrateaux_2ec_6',['FissionRateAux.C',['../_fission_rate_aux_8_c.html',1,'']]],
+  ['fissionrateaux_2eh_7',['FissionRateAux.h',['../_fission_rate_aux_8h.html',1,'']]]
 ];

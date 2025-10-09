@@ -11,6 +11,10 @@ var searchData=
   ['moltresapp_2eh_8',['MoltresApp.h',['../_moltres_app_8h.html',1,'']]],
   ['moltresjsonmaterial_2ec_9',['MoltresJsonMaterial.C',['../_moltres_json_material_8_c.html',1,'']]],
   ['moltresjsonmaterial_2eh_10',['MoltresJsonMaterial.h',['../_moltres_json_material_8h.html',1,'']]],
-  ['msrefueltwogrpxsfunctionmaterial_2ec_11',['MsreFuelTwoGrpXSFunctionMaterial.C',['../_msre_fuel_two_grp_x_s_function_material_8_c.html',1,'']]],
-  ['msrefueltwogrpxsfunctionmaterial_2eh_12',['MsreFuelTwoGrpXSFunctionMaterial.h',['../_msre_fuel_two_grp_x_s_function_material_8h.html',1,'']]]
+  ['moltressnmaterial_2ec_11',['MoltresSNMaterial.C',['../_moltres_s_n_material_8_c.html',1,'']]],
+  ['moltressnmaterial_2eh_12',['MoltresSNMaterial.h',['../_moltres_s_n_material_8h.html',1,'']]],
+  ['moltresutils_2ec_13',['MoltresUtils.C',['../_moltres_utils_8_c.html',1,'']]],
+  ['moltresutils_2eh_14',['MoltresUtils.h',['../_moltres_utils_8h.html',1,'']]],
+  ['msrefueltwogrpxsfunctionmaterial_2ec_15',['MsreFuelTwoGrpXSFunctionMaterial.C',['../_msre_fuel_two_grp_x_s_function_material_8_c.html',1,'']]],
+  ['msrefueltwogrpxsfunctionmaterial_2eh_16',['MsreFuelTwoGrpXSFunctionMaterial.h',['../_msre_fuel_two_grp_x_s_function_material_8h.html',1,'']]]
 ];
