@@ -11,6 +11,7 @@ TransientFissionHeatSource::validParams()
   params.addRequiredCoupledVar("group_fluxes", "All the variables that hold the group fluxes. "
                                                "These MUST be listed by decreasing "
                                                "energy/increasing group number.");
+  params.addCoupledVar("heat_source", "Heat source variable name");
   params.addParam<Real>("nt_scale", 1, "Scaling of the neutron fluxes to aid convergence.");
   params.addParam<unsigned int>("num_decay_heat_groups", 0, "The number of decay heat groups.");
   params.addCoupledVar("heat_concs", "All the variables that hold the decay heat "
@@ -18,6 +19,8 @@ TransientFissionHeatSource::validParams()
   params.addParam<std::vector<Real>>("decay_heat_fractions", {}, "Decay Heat Fractions");
   params.addParam<std::vector<Real>>("decay_heat_constants", {}, "Decay Heat Constants");
   params.addParam<bool>("account_decay_heat", false, "Whether to account for decay heat.");
+  params.addParam<Real>("gamma_frac", 0.0,
+      "Fraction of total fission heat generated in non-fuel regions due to gamma heating");
   return params;
 }
 
@@ -33,14 +36,20 @@ TransientFissionHeatSource::TransientFissionHeatSource(const InputParameters & p
     _account_decay_heat(getParam<bool>("account_decay_heat")),
     _num_heat_groups(getParam<unsigned int>("num_decay_heat_groups")),
     _decay_heat_frac(getParam<std::vector<Real>>("decay_heat_fractions")),
-    _decay_heat_const(getParam<std::vector<Real>>("decay_heat_constants"))
+    _decay_heat_const(getParam<std::vector<Real>>("decay_heat_constants")),
+    _has_heat_source(isCoupled("heat_source")),
+    _heat_source(isCoupled("heat_source") ? coupledValue("heat_source") : _zero),
+    _gamma_frac(getParam<Real>("gamma_frac"))
 {
-  _group_fluxes.resize(_num_groups);
-  _flux_ids.resize(_num_groups);
-  for (unsigned int i = 0; i < _group_fluxes.size(); ++i)
+  if (!_has_heat_source)
   {
-    _group_fluxes[i] = &coupledValue("group_fluxes", i);
-    _flux_ids[i] = coupled("group_fluxes", i);
+    _group_fluxes.resize(_num_groups);
+    _flux_ids.resize(_num_groups);
+    for (unsigned int i = 0; i < _group_fluxes.size(); ++i)
+    {
+      _group_fluxes[i] = &coupledValue("group_fluxes", i);
+      _flux_ids[i] = coupled("group_fluxes", i);
+    }
   }
   if (_account_decay_heat)
   {
@@ -63,11 +72,13 @@ Real
 TransientFissionHeatSource::computeQpResidual()
 {
   Real r = 0;
-  for (unsigned int i = 0; i < _num_groups; ++i)
-  {
-    r += -_test[_i][_qp] * _fisse[_qp][i] * _fissxs[_qp][i] *
-         computeConcentration((*_group_fluxes[i]), _qp) * _nt_scale;
-  }
+  // Use heat source aux variable if provided
+  if (_has_heat_source)
+    r += -_test[_i][_qp] * _heat_source[_qp] * _nt_scale;
+  else
+    for (unsigned int i = 0; i < _num_groups; ++i)
+      r += -_test[_i][_qp] * _fisse[_qp][i] * _fissxs[_qp][i] *
+           computeConcentration((*_group_fluxes[i]), _qp) * _nt_scale;
 
   Real frac = 0;
   for (unsigned int i = 0; i < _num_heat_groups; ++i)
@@ -77,8 +88,10 @@ TransientFissionHeatSource::computeQpResidual()
 
   if (_account_decay_heat)
   {
-    r *= (1. - frac);
+    r *= (1.0 - frac);
   }
+
+  r *= (1.0 - _gamma_frac);
 
   return r;
 }
@@ -86,6 +99,8 @@ TransientFissionHeatSource::computeQpResidual()
 Real
 TransientFissionHeatSource::computeQpJacobian()
 {
+  if (_has_heat_source)
+    return 0.0;
   Real jac = 0;
   for (unsigned int i = 0; i < _num_groups; ++i)
   {
@@ -102,7 +117,7 @@ TransientFissionHeatSource::computeQpJacobian()
 
   if (_account_decay_heat)
   {
-    jac *= (1. - frac);
+    jac *= (1.0 - frac);
   }
 
   return jac;
@@ -111,6 +126,8 @@ TransientFissionHeatSource::computeQpJacobian()
 Real
 TransientFissionHeatSource::computeQpOffDiagJacobian(unsigned int jvar)
 {
+  if (_has_heat_source)
+    return 0.0;
   Real jac = 0;
   for (unsigned int i = 0; i < _num_groups; ++i)
   {
@@ -126,7 +143,7 @@ TransientFissionHeatSource::computeQpOffDiagJacobian(unsigned int jvar)
       }
 
       if (_account_decay_heat)
-        jac *= (1. - frac);
+        jac *= (1.0 - frac);
       break;
     }
   }

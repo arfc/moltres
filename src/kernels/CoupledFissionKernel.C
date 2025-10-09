@@ -15,10 +15,11 @@ CoupledFissionKernel::validParams()
                                                "These MUST be listed by decreasing "
                                                "energy/increasing group number.");
   params.addRequiredParam<bool>("account_delayed", "Whether to account for delayed neutrons.");
-  params.addParam<Real>("eigenvalue_scaling", 1.0, "Artificial scaling factor for the fission "
-                                                   "source. Primarily introduced to make "
-                                                   "super/sub-critical systems exactly critical "
-                                                   "for the CNRS benchmark.");
+  params.addParam<PostprocessorName>("eigenvalue_scaling", 1.0,
+                                     "Artificial scaling factor for the fission "
+                                     "source. Primarily introduced to make "
+                                     "super/sub-critical systems exactly critical "
+                                     "for the CNRS benchmark.");
   return params;
 }
 
@@ -38,7 +39,7 @@ CoupledFissionKernel::CoupledFissionKernel(const InputParameters & parameters)
     _temp_id(coupled("temperature")),
     _temp(coupledValue("temperature")),
     _account_delayed(getParam<bool>("account_delayed")),
-    _eigenvalue_scaling(getParam<Real>("eigenvalue_scaling"))
+    _eigenvalue_scaling(getPostprocessorValue("eigenvalue_scaling"))
 {
   unsigned int n = coupledComponents("group_fluxes");
   if (!(n == _num_groups))
@@ -75,15 +76,8 @@ CoupledFissionKernel::computeQpResidual()
 Real
 CoupledFissionKernel::computeQpJacobian()
 {
-  Real jac = 0;
-  for (unsigned int i = 0; i < _num_groups; ++i)
-  {
-    if (i == _group)
-    {
-      jac = -_nsf[_qp][i] * computeConcentrationDerivative((*_group_fluxes[i]), _phi, _j, _qp);
-      break;
-    }
-  }
+  Real jac = -_nsf[_qp][_group] *
+    computeConcentrationDerivative((*_group_fluxes[_group]), _phi, _j, _qp);
 
   if (_account_delayed)
     jac *= (1. - _beta[_qp]) * _chi_p[_qp][_group];

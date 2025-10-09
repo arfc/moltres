@@ -86,31 +86,31 @@ NuclearMaterial::dummyComputeQpProperties()
     _chi_t[_qp][i] = _xsec_map["CHI_T"][i][0];
     _chi_p[_qp][i] = _xsec_map["CHI_P"][i][0];
     _chi_d[_qp][i] = _xsec_map["CHI_D"][i][0];
-    _d_remxs_d_temp[_qp][i] = _xsec_map["REMXS"][i][0];
-    _d_fissxs_d_temp[_qp][i] = _xsec_map["FISSXS"][i][0];
-    _d_nsf_d_temp[_qp][i] = _xsec_map["NSF"][i][0];
-    _d_fisse_d_temp[_qp][i] = _xsec_map["FISSE"][i][0] * 1e6 * 1.6e-19; // convert from MeV to Joules
-    _d_diffcoef_d_temp[_qp][i] = _xsec_map["DIFFCOEF"][i][0];
-    _d_recipvel_d_temp[_qp][i] = _xsec_map["RECIPVEL"][i][0];
-    _d_chi_t_d_temp[_qp][i] = _xsec_map["CHI_T"][i][0];
-    _d_chi_p_d_temp[_qp][i] = _xsec_map["CHI_P"][i][0];
-    _d_chi_d_d_temp[_qp][i] = _xsec_map["CHI_D"][i][0];
+    _d_remxs_d_temp[_qp][i] = 0;
+    _d_fissxs_d_temp[_qp][i] = 0;
+    _d_nsf_d_temp[_qp][i] = 0;
+    _d_fisse_d_temp[_qp][i] = 0;
+    _d_diffcoef_d_temp[_qp][i] = 0;
+    _d_recipvel_d_temp[_qp][i] = 0;
+    _d_chi_t_d_temp[_qp][i] = 0;
+    _d_chi_p_d_temp[_qp][i] = 0;
+    _d_chi_d_d_temp[_qp][i] = 0;
   }
   for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
   {
     _gtransfxs[_qp][i] = _xsec_map["GTRANSFXS"][i][0];
-    _d_gtransfxs_d_temp[_qp][i] = _xsec_map["GTRANSFXS"][i][0];
+    _d_gtransfxs_d_temp[_qp][i] = 0;
   }
   _beta[_qp] = 0;
   _d_beta_d_temp[_qp] = 0;
   for (decltype(_num_groups) i = 0; i < _num_precursor_groups; ++i)
   {
     _beta_eff[_qp][i] = _xsec_map["BETA_EFF"][i][0];
-    _d_beta_eff_d_temp[_qp][i] = _xsec_map["BETA_EFF"][i][0];
+    _d_beta_eff_d_temp[_qp][i] = 0;
     _beta[_qp] += _beta_eff[_qp][i];
-    _d_beta_d_temp[_qp] += _d_beta_eff_d_temp[_qp][i];
+    _d_beta_d_temp[_qp] += 0;
     _decay_constant[_qp][i] = _xsec_map["DECAY_CONSTANT"][i][0];
-    _d_decay_constant_d_temp[_qp][i] = _xsec_map["DECAY_CONSTANT"][i][0];
+    _d_decay_constant_d_temp[_qp][i] = 0;
   }
 }
 
