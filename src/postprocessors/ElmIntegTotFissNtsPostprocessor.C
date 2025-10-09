@@ -12,6 +12,7 @@ ElmIntegTotFissNtsPostprocessor::validParams()
   params.addCoupledVar("pre_concs", "All the variables that hold the precursor "
                                     "concentrations. These MUST be listed by increasing "
                                     "group number.");
+  params.addCoupledVar("delayed_neutron_source", "Delayed neutron source term variable name");
   params.addRequiredParam<unsigned int>("num_groups", "The number of energy groups.");
   params.addParam<unsigned int>("num_precursor_groups", 0, "The number of precursor groups.");
   params.addRequiredParam<bool>("account_delayed", "Whether to account for delayed neutrons.");
@@ -25,7 +26,11 @@ ElmIntegTotFissNtsPostprocessor::ElmIntegTotFissNtsPostprocessor(const InputPara
     _num_precursor_groups(getParam<unsigned int>("num_precursor_groups")),
     _account_delayed(getParam<bool>("account_delayed")),
     _nsf(getMaterialProperty<std::vector<Real>>("nsf")),
+    _beta(getMaterialProperty<Real>("beta")),
     _decay_constant(getMaterialProperty<std::vector<Real>>("decay_constant")),
+    _has_delayed_source(isCoupled("delayed_neutron_source")),
+    _delayed_source(isCoupled("delayed_neutron_source") ?
+      coupledValue("delayed_neutron_source") : _zero),
     _vars(getCoupledMooseVars())
 {
   addMooseVariableDependency(_vars);
@@ -40,24 +45,25 @@ ElmIntegTotFissNtsPostprocessor::ElmIntegTotFissNtsPostprocessor(const InputPara
   }
 
   if (_account_delayed)
-  {
-    unsigned int m = coupledComponents("pre_concs");
-    if (m == 0)
+    if (!_has_delayed_source)
     {
-      mooseError("account_delayed flag set to true but no precursor groups specified."
-                 "If there are no precursor groups, set account_delayed to false");
+      unsigned int m = coupledComponents("pre_concs");
+      if (m == 0)
+      {
+        mooseError("account_delayed flag set to true but no precursor groups specified."
+                   "If there are no precursor groups, set account_delayed to false");
+      }
+      else if (!(m == _num_precursor_groups))
+      {
+        mooseError("The number of precursor conc variables doesn't match the number"
+                   "of precursor groups.");
+      }
+      _pre_concs.resize(m);
+      for (unsigned int i = 0; i < _pre_concs.size(); ++i)
+      {
+        _pre_concs[i] = &coupledValue("pre_concs", i);
+      }
     }
-    else if (!(m == _num_precursor_groups))
-    {
-      mooseError("The number of precursor conc variables doesn't match the number"
-                 "of precursor groups.");
-    }
-    _pre_concs.resize(m);
-    for (unsigned int i = 0; i < _pre_concs.size(); ++i)
-    {
-      _pre_concs[i] = &coupledValue("pre_concs", i);
-    }
-  }
 }
 
 Real
@@ -69,8 +75,12 @@ ElmIntegTotFissNtsPostprocessor::computeQpIntegral()
 
   if (_account_delayed)
   {
-    for (unsigned int i = 0; i < _num_precursor_groups; ++i)
-      sum += _decay_constant[_qp][i] * (*_pre_concs[i])[_qp];
+    sum *= (1. - _beta[_qp]);
+    if (_has_delayed_source)
+      sum += _delayed_source[_qp];
+    else
+      for (unsigned int i = 0; i < _num_precursor_groups; ++i)
+        sum += _decay_constant[_qp][i] * (*_pre_concs[i])[_qp];
   }
 
   return sum;
