@@ -1,4 +1,882 @@
-<!DOCTYPE html><head><meta charset="UTF-8"><title>GroupDrift | Moltres</title><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../contrib/katex/katex.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/katex_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/moltres.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script><script type="text/javascript" src="../../contrib/katex/katex.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Moltres</a><a href="https://github.com/arfc/moltres" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="#!" class="dropdown-trigger" data-target="86d00e83-8513-4490-ae2a-1f2a63e1ceb0" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="3990bc40-587c-4fb1-9b4a-bca48e24a2f5" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="9b4f6776-a53a-40dd-a651-b08d2905716b" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#" class="sidenav-trigger" data-target="f63eff72-38d6-45fc-90af-fce72e8baff9"><i class="material-icons">menu</i></a><ul class="sidenav" id="f63eff72-38d6-45fc-90af-fce72e8baff9"><li><a href="#!" class="dropdown-trigger" data-target="151efd54-d3ab-4804-921a-0ab5d3e2db53" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="a6d6b03a-ba45-4d4e-8da3-83a44d97260a" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="337325f2-0fbd-4cc5-8612-7a0fd92511d4" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="86d00e83-8513-4490-ae2a-1f2a63e1ceb0"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/theory.html">Theory</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="3990bc40-587c-4fb1-9b4a-bca48e24a2f5"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="9b4f6776-a53a-40dd-a651-b08d2905716b"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul><ul class="dropdown-content" id="151efd54-d3ab-4804-921a-0ab5d3e2db53"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/theory.html">Theory</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="a6d6b03a-ba45-4d4e-8da3-83a44d97260a"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="337325f2-0fbd-4cc5-8612-7a0fd92511d4"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="col hide-on-med-and-down l12"><nav class="breadcrumb-nav"><div class="nav-wrapper"><span class="breadcrumb">source</span><span class="breadcrumb">kernels</span><a href="#" class="breadcrumb">GroupDrift</a></div></nav></div></div><div class="row"><div class="moose-content col s12 m12 l10"><section id="a9ddf52d-ca2a-41e0-bbc3-832cd38a3657" data-section-level="1" data-section-text="GroupDrift"><h1 id="groupdrift">GroupDrift</h1><p></p><section class="scrollspy" id="df0cc26b-1335-49d6-8d23-ef154cd6fcbd" data-section-level="2" data-section-text="Overview"><h2 id="overview">Overview</h2><p>This object adds the neutron drift term to the neutron diffusion equation for nonlinear diffusion acceleration of the <span class="moose-katex-inline-equation" id="moose-equation-7785dea6-f7ee-4ee1-8c09-ccfe01303ae2"><script>var element = document.getElementById("moose-equation-7785dea6-f7ee-4ee1-8c09-ccfe01303ae2");katex.render("S_N", element, {displayMode:false,throwOnError:false});</script></span> method or the hybrid <span class="moose-katex-inline-equation" id="moose-equation-4d8152e3-3352-49ef-8c62-18536603e8c3"><script>var element = document.getElementById("moose-equation-4d8152e3-3352-49ef-8c62-18536603e8c3");katex.render("S_N", element, {displayMode:false,throwOnError:false});</script></span>-diffusion method.</p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-595f159e-b71c-4363-90b1-4360a817b4db"></span><script>var element = document.getElementById("moose-equation-595f159e-b71c-4363-90b1-4360a817b4db");katex.render("\\left(\\nabla\\phi^*,\\vec{D}_g\\phi_g\\right)", element, {displayMode:true,throwOnError:false});</script></span><p>where</p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-20ae60cd-b095-4f1c-ad54-c0679130751b"></span><script>var element = document.getElementById("moose-equation-20ae60cd-b095-4f1c-ad54-c0679130751b");katex.render("\\vec{D}_g = \\frac{\\sum^{N_d}_{d=1}w_d\\left(\\tau_g\\hat{\\Omega}_d\\hat{\\Omega}_d\\cdot\\nabla\\Psi_{g,d}   + \\left(\\tau_g\\Sigma_{t,g}-1\\right)\\hat{\\Omega}_d\\Psi_{g,d}   - \\tau_g\\sum^G_{g'=1}\\Sigma^{g'\\rightarrow g}_{s,1}\\hat{\\Omega}_d\\Psi_{g',d}   - D_g\\nabla\\Psi_{g,d}\\right)}{\\sum^{N_d}_{d=1}w_d\\Psi_{g,d}}", element, {displayMode:true,throwOnError:false});</script></span><p></p></section><section class="scrollspy" id="25b2bca7-a59e-40cf-9bca-000af0bbcfb2" data-section-level="2" data-section-text="Input Parameters"><h2 id="input-parameters">Input Parameters</h2><section id="d96d3188-5958-47a8-9c90-3846e139461a" data-section-level="3" data-section-text="Required Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">group_drift_var</span><span class="moose-parameter-header-description">The group drift array variable name.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;VariableName&gt;</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The group drift array variable name.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">variable</span><span class="moose-parameter-header-description">The name of the variable that this residual object operates on</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>NonlinearVariableName</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of the variable that this residual object operates on</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Required Parameters</h3></summary></details></section><section id="9a5e3562-cb0e-4a6b-ad1e-35b772709e27" data-section-level="3" data-section-text="Optional Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">adaptive</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Adaptive drift</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Adaptive drift</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">block</span><span class="moose-parameter-header-description">The list of blocks (ids or names) that this object will be applied</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;SubdomainName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of blocks (ids or names) that this object will be applied</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">bottom_left</span><span class="moose-parameter-header-description">The bottom-left point of the interior of the adaptive drift region</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>libMesh::Point</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The bottom-left point of the interior of the adaptive drift region</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">displacements</span><span class="moose-parameter-header-description">The displacements</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;VariableName&gt;</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The displacements</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">matrix_only</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Whether this object is only doing assembly to matrices (no vectors)</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether this object is only doing assembly to matrices (no vectors)</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">top_right</span><span class="moose-parameter-header-description">The top-right point of the interior of the adaptive drift region</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>libMesh::Point</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The top-right point of the interior of the adaptive drift region</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_exp_form</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Whether concentrations should be in an expotential/logarithmic format.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether concentrations should be in an expotential/logarithmic format.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_jacobian</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Whether to compute the Jacobian for preconditioning</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether to compute the Jacobian for preconditioning</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Optional Parameters</h3></summary></details></section><section id="8e71522d-5a4d-448b-95a3-1932703cfb1d" data-section-level="3" data-section-text="Contribution To Tagged Field Data Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">absolute_value_vector_tags</span><span class="moose-parameter-header-description">The tags for the vectors this residual object should fill with the absolute value of the residual contribution</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;TagName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The tags for the vectors this residual object should fill with the absolute value of the residual contribution</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">extra_matrix_tags</span><span class="moose-parameter-header-description">The extra tags for the matrices this Kernel should fill</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;TagName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The extra tags for the matrices this Kernel should fill</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">extra_vector_tags</span><span class="moose-parameter-header-description">The extra tags for the vectors this Kernel should fill</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;TagName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The extra tags for the vectors this Kernel should fill</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">matrix_tags</span><span class="moose-parameter-header-default">system</span><span class="moose-parameter-header-description">The tag for the matrices this Kernel should fill</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>system</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MultiMooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>nontime, system</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The tag for the matrices this Kernel should fill</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">vector_tags</span><span class="moose-parameter-header-default">nontime</span><span class="moose-parameter-header-description">The tag for the vectors this Kernel should fill</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>nontime</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MultiMooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>nontime, time</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The tag for the vectors this Kernel should fill</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Contribution To Tagged Field Data Parameters</h3></summary></details></section><section id="9aa594e4-1192-4504-b001-4c7bf3cf7e3b" data-section-level="3" data-section-text="Advanced Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">control_tags</span><span class="moose-parameter-header-description">Adds user-defined labels for accessing object parameters via control logic.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Adds user-defined labels for accessing object parameters via control logic.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">diag_save_in</span><span class="moose-parameter-header-description">The name of auxiliary variables to save this Kernel's diagonal Jacobian contributions to. Everything about that variable must match everything about this variable (the type, what blocks it's on, etc.)</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;AuxVariableName&gt;</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of auxiliary variables to save this Kernel's diagonal Jacobian contributions to. Everything about that variable must match everything about this variable (the type, what blocks it's on, etc.)</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">enable</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Set the enabled status of the MooseObject.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>Yes</p><p class="moose-parameter-description"><span>Description:</span>Set the enabled status of the MooseObject.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">implicit</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Determines whether this object is calculated using an implicit or explicit form</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Determines whether this object is calculated using an implicit or explicit form</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">save_in</span><span class="moose-parameter-header-description">The name of auxiliary variables to save this Kernel's residual contributions to.  Everything about that variable must match everything about this variable (the type, what blocks it's on, etc.)</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;AuxVariableName&gt;</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of auxiliary variables to save this Kernel's residual contributions to.  Everything about that variable must match everything about this variable (the type, what blocks it's on, etc.)</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">seed</span><span class="moose-parameter-header-default">0</span><span class="moose-parameter-header-description">The seed for the master random number generator</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>unsigned int</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The seed for the master random number generator</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_displaced_mesh</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Whether or not this object should use the displaced mesh for computation. Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether or not this object should use the displaced mesh for computation. Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Advanced Parameters</h3></summary></details></section><section id="6c22b184-9459-45c4-a497-daaca97f1690" data-section-level="3" data-section-text="Material Property Retrieval Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">prop_getter_suffix</span><span class="moose-parameter-header-description">An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MaterialPropertyName</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_interpolated_state</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">For the old and older state use projected material properties interpolated at the quadrature points. To set up projection use the ProjectedStatefulMaterialStorageAction.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>For the old and older state use projected material properties interpolated at the quadrature points. To set up projection use the ProjectedStatefulMaterialStorageAction.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Material Property Retrieval Parameters</h3></summary></details></section></section><section class="scrollspy" id="17d639c3-0914-4335-83a0-4f84d8700014" data-section-level="2" data-section-text="Input Files"><h2 id="input-files">Input Files</h2><ul class="moose-list-inputs browser-default"><li><a class="moose-source-filename tooltipped modal-trigger" href="#ff11a2de-6c4e-4ea1-bd9f-981959a62a6b">(tests/hybrid/absorber-air-lattice-ref-hybrid.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#601cf54d-dfcd-4bb4-b8a9-731e2f97f0dd">(tests/materials/sn_rod.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#d71c51f4-7b99-4e07-9412-70a63d4812f8">(tests/sn/lattice-sn-dnp.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#630acb1b-518f-49f2-aa6e-cc17d8df914f">(tests/sn/absorber-air-lattice-ref-sn.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#338859c2-5c8c-46ff-bd73-32345902f4ab">(tests/sn/lattice-sn.i)</a></li></ul></section></section><div class="moose-modal modal" id="ff11a2de-6c4e-4ea1-bd9f-981959a62a6b"><div class="modal-content"><h4>(tests/hybrid/absorber-air-lattice-ref-hybrid.i)</h4><pre style="max-height:350px;"><code class="language-moose">[GlobalParams]
+<!DOCTYPE html><head><meta charset="UTF-8"><title>GroupDrift | Moltres</title><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../contrib/katex/katex.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/katex_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/moltres.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script><script type="text/javascript" src="../../contrib/katex/katex.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Moltres</a><a href="https://github.com/arfc/moltres" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="#!" class="dropdown-trigger" data-target="d015efa3-d743-4998-a3f4-9a8d27c43b33" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="e5ae2848-fbcf-4120-8fc2-39d6e59f9904" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="651f7184-a03d-4f6b-a76a-ea23e533a32f" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#" class="sidenav-trigger" data-target="b99134de-ae8b-44f7-b974-3ae3bbc69361"><i class="material-icons">menu</i></a><ul class="sidenav" id="b99134de-ae8b-44f7-b974-3ae3bbc69361"><li><a href="#!" class="dropdown-trigger" data-target="3ac6b3c0-69ec-453e-a153-cc15e9958581" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="281ca603-1662-4da5-811e-87ba797215a4" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="6ecb3a1a-1fdc-4e4d-82a8-f0ab5bc71e77" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="d015efa3-d743-4998-a3f4-9a8d27c43b33"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/theory.html">Theory</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="e5ae2848-fbcf-4120-8fc2-39d6e59f9904"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="651f7184-a03d-4f6b-a76a-ea23e533a32f"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul><ul class="dropdown-content" id="3ac6b3c0-69ec-453e-a153-cc15e9958581"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/theory.html">Theory</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="281ca603-1662-4da5-811e-87ba797215a4"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="6ecb3a1a-1fdc-4e4d-82a8-f0ab5bc71e77"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="col hide-on-med-and-down l12"><nav class="breadcrumb-nav"><div class="nav-wrapper"><span class="breadcrumb">source</span><span class="breadcrumb">kernels</span><a href="#" class="breadcrumb">GroupDrift</a></div></nav></div></div><div class="row"><div class="moose-content col s12 m12 l10"><section id="910d607f-3c3c-4e9d-b619-3416f9764794" data-section-level="1" data-section-text="GroupDrift"><h1 id="groupdrift">GroupDrift</h1><p></p><section class="scrollspy" id="d07c1881-3836-4c16-8c4e-f6e1c067faf1" data-section-level="2" data-section-text="Overview"><h2 id="overview">Overview</h2><p>This object adds the neutron drift term to the neutron diffusion equation for nonlinear diffusion acceleration of the <span class="moose-katex-inline-equation" id="moose-equation-352aa8c4-08fa-43e0-82c0-b62b5c9d5b64"><script>var element = document.getElementById("moose-equation-352aa8c4-08fa-43e0-82c0-b62b5c9d5b64");katex.render("S_N", element, {displayMode:false,throwOnError:false});</script></span> method or the hybrid <span class="moose-katex-inline-equation" id="moose-equation-56b2be95-e627-4ab3-88a9-a305e03470fa"><script>var element = document.getElementById("moose-equation-56b2be95-e627-4ab3-88a9-a305e03470fa");katex.render("S_N", element, {displayMode:false,throwOnError:false});</script></span>-diffusion method.</p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-a6f2c72c-fb91-42d4-a830-4df93466b0af"></span><script>var element = document.getElementById("moose-equation-a6f2c72c-fb91-42d4-a830-4df93466b0af");katex.render("\\left(\\nabla\\phi^*,\\vec{D}_g\\phi_g\\right)", element, {displayMode:true,throwOnError:false});</script></span><p>where</p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-8b025aa4-a537-4404-8f09-d35479c3527c"></span><script>var element = document.getElementById("moose-equation-8b025aa4-a537-4404-8f09-d35479c3527c");katex.render("\\vec{D}_g = \\frac{\\sum^{N_d}_{d=1}w_d\\left(\\tau_g\\hat{\\Omega}_d\\hat{\\Omega}_d\\cdot\\nabla\\Psi_{g,d}   + \\left(\\tau_g\\Sigma_{t,g}-1\\right)\\hat{\\Omega}_d\\Psi_{g,d}   - \\tau_g\\sum^G_{g'=1}\\Sigma^{g'\\rightarrow g}_{s,1}\\hat{\\Omega}_d\\Psi_{g',d}   - D_g\\nabla\\Psi_{g,d}\\right)}{\\sum^{N_d}_{d=1}w_d\\Psi_{g,d}}", element, {displayMode:true,throwOnError:false});</script></span><p></p></section><section class="scrollspy" id="4ceea621-2c5d-41f8-9105-82eef5884b0b" data-section-level="2" data-section-text="Input Parameters"><h2 id="input-parameters">Input Parameters</h2><section id="ab3e39c4-adc4-40c9-8876-6d0634be858a" data-section-level="3" data-section-text="Required Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">group_drift_var</span><span class="moose-parameter-header-description">The group drift array variable name.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;VariableName&gt;</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The group drift array variable name.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">variable</span><span class="moose-parameter-header-description">The name of the variable that this residual object operates on</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>NonlinearVariableName</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of the variable that this residual object operates on</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Required Parameters</h3></summary></details></section><section id="c51a8d56-ea98-417f-a92a-1c3c85443f8e" data-section-level="3" data-section-text="Optional Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">adaptive</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Adaptive drift</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Adaptive drift</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">block</span><span class="moose-parameter-header-description">The list of blocks (ids or names) that this object will be applied</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;SubdomainName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of blocks (ids or names) that this object will be applied</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">bottom_left</span><span class="moose-parameter-header-description">The bottom-left point of the interior of the adaptive drift region</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>libMesh::Point</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The bottom-left point of the interior of the adaptive drift region</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">displacements</span><span class="moose-parameter-header-description">The displacements</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;VariableName&gt;</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The displacements</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">matrix_only</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Whether this object is only doing assembly to matrices (no vectors)</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether this object is only doing assembly to matrices (no vectors)</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">top_right</span><span class="moose-parameter-header-description">The top-right point of the interior of the adaptive drift region</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>libMesh::Point</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The top-right point of the interior of the adaptive drift region</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_exp_form</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Whether concentrations should be in an expotential/logarithmic format.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether concentrations should be in an expotential/logarithmic format.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_jacobian</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Whether to compute the Jacobian for preconditioning</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether to compute the Jacobian for preconditioning</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Optional Parameters</h3></summary></details></section><section id="c9820a25-6747-4406-b1c3-878edc110a58" data-section-level="3" data-section-text="Contribution To Tagged Field Data Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">absolute_value_vector_tags</span><span class="moose-parameter-header-description">The tags for the vectors this residual object should fill with the absolute value of the residual contribution</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;TagName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The tags for the vectors this residual object should fill with the absolute value of the residual contribution</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">extra_matrix_tags</span><span class="moose-parameter-header-description">The extra tags for the matrices this Kernel should fill</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;TagName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The extra tags for the matrices this Kernel should fill</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">extra_vector_tags</span><span class="moose-parameter-header-description">The extra tags for the vectors this Kernel should fill</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;TagName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The extra tags for the vectors this Kernel should fill</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">matrix_tags</span><span class="moose-parameter-header-default">system</span><span class="moose-parameter-header-description">The tag for the matrices this Kernel should fill</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>system</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MultiMooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>nontime, system</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The tag for the matrices this Kernel should fill</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">vector_tags</span><span class="moose-parameter-header-default">nontime</span><span class="moose-parameter-header-description">The tag for the vectors this Kernel should fill</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>nontime</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MultiMooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>nontime, time</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The tag for the vectors this Kernel should fill</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Contribution To Tagged Field Data Parameters</h3></summary></details></section><section id="69e9a2b6-6027-43b2-802d-0021e1c883c0" data-section-level="3" data-section-text="Advanced Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">control_tags</span><span class="moose-parameter-header-description">Adds user-defined labels for accessing object parameters via control logic.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Adds user-defined labels for accessing object parameters via control logic.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">diag_save_in</span><span class="moose-parameter-header-description">The name of auxiliary variables to save this Kernel's diagonal Jacobian contributions to. Everything about that variable must match everything about this variable (the type, what blocks it's on, etc.)</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;AuxVariableName&gt;</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of auxiliary variables to save this Kernel's diagonal Jacobian contributions to. Everything about that variable must match everything about this variable (the type, what blocks it's on, etc.)</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">enable</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Set the enabled status of the MooseObject.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>Yes</p><p class="moose-parameter-description"><span>Description:</span>Set the enabled status of the MooseObject.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">implicit</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Determines whether this object is calculated using an implicit or explicit form</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Determines whether this object is calculated using an implicit or explicit form</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">save_in</span><span class="moose-parameter-header-description">The name of auxiliary variables to save this Kernel's residual contributions to.  Everything about that variable must match everything about this variable (the type, what blocks it's on, etc.)</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;AuxVariableName&gt;</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of auxiliary variables to save this Kernel's residual contributions to.  Everything about that variable must match everything about this variable (the type, what blocks it's on, etc.)</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">search_method</span><span class="moose-parameter-header-default">nearest_node_connected_sides</span><span class="moose-parameter-header-description">Choice of search algorithm.  All options begin by finding the nearest node in the primary boundary to a query point in the secondary boundary.  In the default nearest_node_connected_sides algorithm, primary boundary elements are searched iff that nearest node is one of their nodes.  This is fast to determine via a pregenerated node-to-elem map and is robust on conforming meshes.  In the optional all_proximate_sides algorithm, primary boundary elements are searched iff they touch that nearest node, even if they are not topologically connected to it.  This is more CPU-intensive but is necessary for robustness on any boundary surfaces which has disconnections (such as Flex IGA meshes) or non-conformity (such as hanging nodes in adaptively h-refined meshes).</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>nearest_node_connected_sides</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>nearest_node_connected_sides, all_proximate_sides</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Choice of search algorithm.  All options begin by finding the nearest node in the primary boundary to a query point in the secondary boundary.  In the default nearest_node_connected_sides algorithm, primary boundary elements are searched iff that nearest node is one of their nodes.  This is fast to determine via a pregenerated node-to-elem map and is robust on conforming meshes.  In the optional all_proximate_sides algorithm, primary boundary elements are searched iff they touch that nearest node, even if they are not topologically connected to it.  This is more CPU-intensive but is necessary for robustness on any boundary surfaces which has disconnections (such as Flex IGA meshes) or non-conformity (such as hanging nodes in adaptively h-refined meshes).</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">seed</span><span class="moose-parameter-header-default">0</span><span class="moose-parameter-header-description">The seed for the master random number generator</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>unsigned int</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The seed for the master random number generator</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_displaced_mesh</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Whether or not this object should use the displaced mesh for computation. Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether or not this object should use the displaced mesh for computation. Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Advanced Parameters</h3></summary></details></section><section id="fe8c836a-c218-4848-b770-18d661d7276b" data-section-level="3" data-section-text="Material Property Retrieval Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">prop_getter_suffix</span><span class="moose-parameter-header-description">An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MaterialPropertyName</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_interpolated_state</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">For the old and older state use projected material properties interpolated at the quadrature points. To set up projection use the ProjectedStatefulMaterialStorageAction.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>For the old and older state use projected material properties interpolated at the quadrature points. To set up projection use the ProjectedStatefulMaterialStorageAction.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Material Property Retrieval Parameters</h3></summary></details></section></section><section class="scrollspy" id="6621ae17-f3b7-46c6-8ee4-5b54f689ea94" data-section-level="2" data-section-text="Input Files"><h2 id="input-files">Input Files</h2><ul class="moose-list-inputs browser-default"><li><a class="moose-source-filename tooltipped modal-trigger" href="#bad9d5c3-7f6b-482b-8086-6715bb1a97ec">(tests/sn/lattice-sn.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#ebc278cd-1b8d-4257-8e49-b48fde9c713f">(tests/sn/lattice-sn-dnp.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#0aac6a0c-a291-4403-a885-1dce4dfb5af4">(tests/materials/sn_rod.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#6a1d49e6-53be-449c-ac51-d3e32bc67a07">(tests/hybrid/absorber-air-lattice-ref-hybrid.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#1f143367-7712-4004-a356-52fab51fbb97">(tests/sn/absorber-air-lattice-ref-sn.i)</a></li></ul></section></section><div class="moose-modal modal" id="bad9d5c3-7f6b-482b-8086-6715bb1a97ec"><div class="modal-content"><h4>(tests/sn/lattice-sn.i)</h4><pre style="max-height:350px;"><code class="language-moose">[GlobalParams]
+  num_groups = 8
+  num_precursor_groups = 6
+  group_fluxes = &#x27;group1 group2 group3 group4 group5 group6 group7 group8&#x27;
+  temperature = 900
+  sss2_input = true
+  account_delayed = false
+  use_exp_form = false
+  search_value_conflicts = false
+[]
+
+[Problem]
+  type = EigenProblem
+  bx_norm = bnorm
+[]
+
+[Mesh]
+  second_order = true
+  [cmg]
+    type = CartesianMeshGenerator
+    dim = 1
+    dx = &#x27;1.9375 1.125 3.875 1.125 3.875 1.125 3.875 1.125 1.9375&#x27;
+    ix = &#x27;5 4 10 4 10 4 10 4 5&#x27;
+    subdomain_id = &#x27;0 1 0 1 0 1 0 1 0&#x27;
+  []
+[]
+
+[AuxVariables]
+  [drift1]
+    order = SECOND
+    family = MONOMIAL
+    components = 3
+  []
+  [drift2]
+    order = SECOND
+    family = MONOMIAL
+    components = 3
+  []
+  [drift3]
+    order = SECOND
+    family = MONOMIAL
+    components = 3
+  []
+  [drift4]
+    order = SECOND
+    family = MONOMIAL
+    components = 3
+  []
+  [drift5]
+    order = SECOND
+    family = MONOMIAL
+    components = 3
+  []
+  [drift6]
+    order = SECOND
+    family = MONOMIAL
+    components = 3
+  []
+  [drift7]
+    order = SECOND
+    family = MONOMIAL
+    components = 3
+  []
+  [drift8]
+    order = SECOND
+    family = MONOMIAL
+    components = 3
+  []
+  [fission_rate]
+    order = SECOND
+    family = MONOMIAL
+    block = 1
+  []
+  [neutron_source]
+    order = SECOND
+    family = MONOMIAL
+    block = 1
+  []
+[]
+
+[Nt]
+  family = LAGRANGE
+  order = SECOND
+  var_name_base = group
+  vacuum_boundaries = &#x27;&#x27;
+  fission_blocks = &#x27;1&#x27;
+  create_temperature_var = false
+  eigen = true
+[]
+
+[Kernels]
+  [group1_drift]
+    type = GroupDrift
+    variable = group1
+    group_drift_var = drift1
+  []
+  [group2_drift]
+    type = GroupDrift
+    variable = group2
+    group_drift_var = drift2
+  []
+  [group3_drift]
+    type = GroupDrift
+    variable = group3
+    group_drift_var = drift3
+  []
+  [group4_drift]
+    type = GroupDrift
+    variable = group4
+    group_drift_var = drift4
+  []
+  [group5_drift]
+    type = GroupDrift
+    variable = group5
+    group_drift_var = drift5
+  []
+  [group6_drift]
+    type = GroupDrift
+    variable = group6
+    group_drift_var = drift6
+  []
+  [group7_drift]
+    type = GroupDrift
+    variable = group7
+    group_drift_var = drift7
+  []
+  [group8_drift]
+    type = GroupDrift
+    variable = group8
+    group_drift_var = drift8
+  []
+[]
+
+[AuxKernels]
+  [fission_rate]
+    type = FissionRateAux
+    variable = fission_rate
+    block = 1
+  []
+  [neutron_source]
+    type = NeutronSourceAux
+    variable = neutron_source
+    block = 1
+  []
+[]
+
+[Materials]
+  [fuel]
+    type = MoltresJsonMaterial
+    base_file = &#x27;../../property_file_dir/sn-test/lattice.json&#x27;
+    material_key = &#x27;fuel&#x27;
+    interp_type = &#x27;none&#x27;
+    block = &#x27;1&#x27;
+  []
+  [graphite]
+    type = MoltresJsonMaterial
+    base_file = &#x27;../../property_file_dir/sn-test/lattice.json&#x27;
+    material_key = &#x27;graphite&#x27;
+    interp_type = &#x27;none&#x27;
+    block = &#x27;0&#x27;
+  []
+[]
+
+[Executioner]
+  type = Eigenvalue
+  free_power_iterations = 2
+
+  fixed_point_abs_tol = 1e-10
+  fixed_point_rel_tol = 1e-10
+  fixed_point_max_its = 20
+  accept_on_max_fixed_point_iteration = false
+
+  nl_abs_tol = 1e-10
+  nl_rel_tol = 1e-50
+
+  solve_type = &#x27;PJFNK&#x27;
+  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
+  petsc_options_iname = &#x27;-pc_type -pc_hypre_type -ksp_gmres_restart&#x27;
+  petsc_options_value = &#x27;hypre boomeramg 200&#x27;
+  line_search = &#x27;none&#x27;
+[]
+
+[MultiApps]
+  [sub]
+    type = FullSolveMultiApp
+    input_files = lattice-sn-sub.i
+    execute_on = timestep_end
+    keep_solution_during_restore = true
+  []
+[]
+
+[Transfers]
+  [to_sub]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;group1 group2 group3 group4 group5 group6 group7 group8&#x27;
+    variable = &#x27;group1 group2 group3 group4 group5 group6 group7 group8&#x27;
+    to_multi_app = sub
+  []
+  [to_sub_k]
+    type = MultiAppPostprocessorTransfer
+    from_postprocessor = eigenvalue
+    to_postprocessor = eigenvalue
+    to_multi_app = sub
+  []
+  [from_sub_drift1]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;drift1 drift1 drift1&#x27;
+    variable = &#x27;drift1 drift1 drift1&#x27;
+    from_multi_app = sub
+    source_variable_components = &#x27;0 1 2&#x27;
+    target_variable_components = &#x27;0 1 2&#x27;
+  []
+  [from_sub_drift2]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;drift2 drift2 drift2&#x27;
+    variable = &#x27;drift2 drift2 drift2&#x27;
+    from_multi_app = sub
+    source_variable_components = &#x27;0 1 2&#x27;
+    target_variable_components = &#x27;0 1 2&#x27;
+  []
+  [from_sub_drift3]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;drift3 drift3 drift3&#x27;
+    variable = &#x27;drift3 drift3 drift3&#x27;
+    from_multi_app = sub
+    source_variable_components = &#x27;0 1 2&#x27;
+    target_variable_components = &#x27;0 1 2&#x27;
+  []
+  [from_sub_drift4]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;drift4 drift4 drift4&#x27;
+    variable = &#x27;drift4 drift4 drift4&#x27;
+    from_multi_app = sub
+    source_variable_components = &#x27;0 1 2&#x27;
+    target_variable_components = &#x27;0 1 2&#x27;
+  []
+  [from_sub_drift5]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;drift5 drift5 drift5&#x27;
+    variable = &#x27;drift5 drift5 drift5&#x27;
+    from_multi_app = sub
+    source_variable_components = &#x27;0 1 2&#x27;
+    target_variable_components = &#x27;0 1 2&#x27;
+  []
+  [from_sub_drift6]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;drift6 drift6 drift6&#x27;
+    variable = &#x27;drift6 drift6 drift6&#x27;
+    from_multi_app = sub
+    source_variable_components = &#x27;0 1 2&#x27;
+    target_variable_components = &#x27;0 1 2&#x27;
+  []
+  [from_sub_drift7]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;drift7 drift7 drift7&#x27;
+    variable = &#x27;drift7 drift7 drift7&#x27;
+    from_multi_app = sub
+    source_variable_components = &#x27;0 1 2&#x27;
+    target_variable_components = &#x27;0 1 2&#x27;
+  []
+  [from_sub_drift8]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;drift8 drift8 drift8&#x27;
+    variable = &#x27;drift8 drift8 drift8&#x27;
+    from_multi_app = sub
+    source_variable_components = &#x27;0 1 2&#x27;
+    target_variable_components = &#x27;0 1 2&#x27;
+  []
+[]
+
+[Postprocessors]
+  [bnorm]
+    type = ElmIntegTotFissNtsPostprocessor
+    block = 1
+    execute_on = &#x27;initial linear timestep_end&#x27;
+  []
+  [eigenvalue]
+    type = VectorPostprocessorComponent
+    vectorpostprocessor = eigenvalues
+    vector_name = eigen_values_real
+    index = 0
+  []
+[]
+
+[VectorPostprocessors]
+  [eigenvalues]
+    type = Eigenvalues
+    inverse_eigenvalue = true
+    outputs = console
+  []
+[]
+
+[Outputs]
+  [exodus]
+    type = Exodus
+    discontinuous = true
+  []
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="ebc278cd-1b8d-4257-8e49-b48fde9c713f"><div class="modal-content"><h4>(tests/sn/lattice-sn-dnp.i)</h4><pre style="max-height:350px;"><code class="language-moose">[GlobalParams]
+  num_groups = 8
+  num_precursor_groups = 6
+  group_fluxes = &#x27;group1 group2 group3 group4 group5 group6 group7 group8&#x27;
+  pre_concs = &#x27;pre1 pre2 pre3 pre4 pre5 pre6&#x27;
+  temperature = 900
+  sss2_input = true
+  account_delayed = true
+  use_exp_form = false
+  search_value_conflicts = false
+[]
+
+[Problem]
+  type = EigenProblem
+  bx_norm = bnorm
+[]
+
+[Mesh]
+  second_order = true
+  [cmg]
+    type = CartesianMeshGenerator
+    dim = 1
+    dx = &#x27;1.9375 1.125 3.875 1.125 3.875 1.125 3.875 1.125 1.9375&#x27;
+    ix = &#x27;5 4 10 4 10 4 10 4 5&#x27;
+    subdomain_id = &#x27;0 1 0 1 0 1 0 1 0&#x27;
+  []
+[]
+
+[AuxVariables]
+  [drift1]
+    order = SECOND
+    family = MONOMIAL
+    components = 3
+  []
+  [drift2]
+    order = SECOND
+    family = MONOMIAL
+    components = 3
+  []
+  [drift3]
+    order = SECOND
+    family = MONOMIAL
+    components = 3
+  []
+  [drift4]
+    order = SECOND
+    family = MONOMIAL
+    components = 3
+  []
+  [drift5]
+    order = SECOND
+    family = MONOMIAL
+    components = 3
+  []
+  [drift6]
+    order = SECOND
+    family = MONOMIAL
+    components = 3
+  []
+  [drift7]
+    order = SECOND
+    family = MONOMIAL
+    components = 3
+  []
+  [drift8]
+    order = SECOND
+    family = MONOMIAL
+    components = 3
+  []
+  [delayed_source]
+    order = CONSTANT
+    family = MONOMIAL
+    block = 1
+  []
+[]
+
+[Nt]
+  family = LAGRANGE
+  order = SECOND
+  var_name_base = group
+  vacuum_boundaries = &#x27;&#x27;
+  fission_blocks = 1
+  pre_blocks = 1
+  create_temperature_var = false
+  eigen = true
+[]
+
+[Precursors]
+  [pres]
+    var_name_base = pre
+    block = 1
+    outlet_boundaries = &#x27;&#x27;
+    u_def = 0
+    v_def = 0
+    w_def = 0
+    nt_exp_form = false
+    loop_precursors = false
+    family = MONOMIAL
+    order = CONSTANT
+    transient = false
+    eigen = true
+  []
+[]
+
+[Kernels]
+  [group1_drift]
+    type = GroupDrift
+    variable = group1
+    group_drift_var = drift1
+  []
+  [group2_drift]
+    type = GroupDrift
+    variable = group2
+    group_drift_var = drift2
+  []
+  [group3_drift]
+    type = GroupDrift
+    variable = group3
+    group_drift_var = drift3
+  []
+  [group4_drift]
+    type = GroupDrift
+    variable = group4
+    group_drift_var = drift4
+  []
+  [group5_drift]
+    type = GroupDrift
+    variable = group5
+    group_drift_var = drift5
+  []
+  [group6_drift]
+    type = GroupDrift
+    variable = group6
+    group_drift_var = drift6
+  []
+  [group7_drift]
+    type = GroupDrift
+    variable = group7
+    group_drift_var = drift7
+  []
+  [group8_drift]
+    type = GroupDrift
+    variable = group8
+    group_drift_var = drift8
+  []
+[]
+
+[AuxKernels]
+  [delayed_neutron_source]
+    type = DelayedNeutronSourceAux
+    variable = delayed_source
+  []
+[]
+
+[Materials]
+  [fuel]
+    type = MoltresJsonMaterial
+    base_file = &#x27;../../property_file_dir/sn-test/lattice.json&#x27;
+    material_key = &#x27;fuel&#x27;
+    interp_type = &#x27;none&#x27;
+    block = &#x27;1&#x27;
+  []
+  [graphite]
+    type = MoltresJsonMaterial
+    base_file = &#x27;../../property_file_dir/sn-test/lattice.json&#x27;
+    material_key = &#x27;graphite&#x27;
+    interp_type = &#x27;none&#x27;
+    block = &#x27;0&#x27;
+  []
+[]
+
+[Executioner]
+  type = Eigenvalue
+  free_power_iterations = 2
+
+  fixed_point_abs_tol = 1e-10
+  fixed_point_rel_tol = 1e-10
+  fixed_point_max_its = 20
+  accept_on_max_fixed_point_iteration = false
+
+  nl_abs_tol = 1e-10
+  nl_rel_tol = 1e-50
+
+  solve_type = &#x27;PJFNK&#x27;
+  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
+  petsc_options_iname = &#x27;-pc_type -pc_hypre_type -ksp_gmres_restart&#x27;
+  petsc_options_value = &#x27;hypre boomeramg 200&#x27;
+  line_search = &#x27;none&#x27;
+[]
+
+[MultiApps]
+  [sub]
+    type = FullSolveMultiApp
+    input_files = lattice-sn-dnp-sub.i
+    execute_on = timestep_end
+    keep_solution_during_restore = true
+  []
+[]
+
+[Transfers]
+  [to_sub]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;group1 group2 group3 group4 group5 group6 group7 group8 delayed_source&#x27;
+    variable = &#x27;group1 group2 group3 group4 group5 group6 group7 group8 delayed_source&#x27;
+    to_multi_app = sub
+  []
+  [to_sub_k]
+    type = MultiAppPostprocessorTransfer
+    from_postprocessor = eigenvalue
+    to_postprocessor = eigenvalue
+    to_multi_app = sub
+  []
+  [from_sub_drift1]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;drift1 drift1 drift1&#x27;
+    variable = &#x27;drift1 drift1 drift1&#x27;
+    from_multi_app = sub
+    source_variable_components = &#x27;0 1 2&#x27;
+    target_variable_components = &#x27;0 1 2&#x27;
+  []
+  [from_sub_drift2]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;drift2 drift2 drift2&#x27;
+    variable = &#x27;drift2 drift2 drift2&#x27;
+    from_multi_app = sub
+    source_variable_components = &#x27;0 1 2&#x27;
+    target_variable_components = &#x27;0 1 2&#x27;
+  []
+  [from_sub_drift3]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;drift3 drift3 drift3&#x27;
+    variable = &#x27;drift3 drift3 drift3&#x27;
+    from_multi_app = sub
+    source_variable_components = &#x27;0 1 2&#x27;
+    target_variable_components = &#x27;0 1 2&#x27;
+  []
+  [from_sub_drift4]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;drift4 drift4 drift4&#x27;
+    variable = &#x27;drift4 drift4 drift4&#x27;
+    from_multi_app = sub
+    source_variable_components = &#x27;0 1 2&#x27;
+    target_variable_components = &#x27;0 1 2&#x27;
+  []
+  [from_sub_drift5]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;drift5 drift5 drift5&#x27;
+    variable = &#x27;drift5 drift5 drift5&#x27;
+    from_multi_app = sub
+    source_variable_components = &#x27;0 1 2&#x27;
+    target_variable_components = &#x27;0 1 2&#x27;
+  []
+  [from_sub_drift6]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;drift6 drift6 drift6&#x27;
+    variable = &#x27;drift6 drift6 drift6&#x27;
+    from_multi_app = sub
+    source_variable_components = &#x27;0 1 2&#x27;
+    target_variable_components = &#x27;0 1 2&#x27;
+  []
+  [from_sub_drift7]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;drift7 drift7 drift7&#x27;
+    variable = &#x27;drift7 drift7 drift7&#x27;
+    from_multi_app = sub
+    source_variable_components = &#x27;0 1 2&#x27;
+    target_variable_components = &#x27;0 1 2&#x27;
+  []
+  [from_sub_drift8]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;drift8 drift8 drift8&#x27;
+    variable = &#x27;drift8 drift8 drift8&#x27;
+    from_multi_app = sub
+    source_variable_components = &#x27;0 1 2&#x27;
+    target_variable_components = &#x27;0 1 2&#x27;
+  []
+[]
+
+[Postprocessors]
+  [bnorm]
+    type = ElmIntegTotFissNtsPostprocessor
+    block = 1
+    execute_on = &#x27;initial linear timestep_end&#x27;
+  []
+  [eigenvalue]
+    type = VectorPostprocessorComponent
+    vectorpostprocessor = eigenvalues
+    vector_name = eigen_values_real
+    index = 0
+  []
+[]
+
+[VectorPostprocessors]
+  [eigenvalues]
+    type = Eigenvalues
+    inverse_eigenvalue = true
+    outputs = console
+  []
+[]
+
+[Outputs]
+  [exodus]
+    type = Exodus
+    discontinuous = true
+  []
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="0aac6a0c-a291-4403-a885-1dce4dfb5af4"><div class="modal-content"><h4>(tests/materials/sn_rod.i)</h4><pre style="max-height:350px;"><code class="language-moose">[GlobalParams]
+  num_groups = 8
+  num_precursor_groups = 6
+  group_fluxes = &#x27;group1 group2 group3 group4 group5 group6 group7 group8&#x27;
+  temperature = 900
+  sss2_input = true
+  account_delayed = false
+  use_exp_form = false
+  search_value_conflicts = false
+[]
+
+[Problem]
+  type = EigenProblem
+  bx_norm = bnorm
+[]
+
+[Mesh]
+  [mesh]
+    type = CartesianMeshGenerator
+    dim = 3
+    dx = 10
+    dy = 10
+    dz = &#x27;90 10&#x27;
+    iz = &#x27;90 40&#x27;
+  []
+[]
+
+[AuxVariables]
+  [drift1]
+    order = FIRST
+    family = MONOMIAL
+    components = 3
+  []
+  [drift2]
+    order = FIRST
+    family = MONOMIAL
+    components = 3
+  []
+  [drift3]
+    order = FIRST
+    family = MONOMIAL
+    components = 3
+  []
+  [drift4]
+    order = FIRST
+    family = MONOMIAL
+    components = 3
+  []
+  [drift5]
+    order = FIRST
+    family = MONOMIAL
+    components = 3
+  []
+  [drift6]
+    order = FIRST
+    family = MONOMIAL
+    components = 3
+  []
+  [drift7]
+    order = FIRST
+    family = MONOMIAL
+    components = 3
+  []
+  [drift8]
+    order = FIRST
+    family = MONOMIAL
+    components = 3
+  []
+[]
+
+[Nt]
+  family = LAGRANGE
+  order = FIRST
+  var_name_base = group
+  set_diffcoef_limit = true
+  create_temperature_var = false
+  eigen = true
+[]
+
+[Kernels]
+  [group1_drift]
+    type = GroupDrift
+    variable = group1
+    group_drift_var = drift1
+  []
+  [group2_drift]
+    type = GroupDrift
+    variable = group2
+    group_drift_var = drift2
+  []
+  [group3_drift]
+    type = GroupDrift
+    variable = group3
+    group_drift_var = drift3
+  []
+  [group4_drift]
+    type = GroupDrift
+    variable = group4
+    group_drift_var = drift4
+  []
+  [group5_drift]
+    type = GroupDrift
+    variable = group5
+    group_drift_var = drift5
+  []
+  [group6_drift]
+    type = GroupDrift
+    variable = group6
+    group_drift_var = drift6
+  []
+  [group7_drift]
+    type = GroupDrift
+    variable = group7
+    group_drift_var = drift7
+  []
+  [group8_drift]
+    type = GroupDrift
+    variable = group8
+    group_drift_var = drift8
+  []
+[]
+
+[Functions]
+  [rod_height]
+    type = ParsedFunction
+    expression = &#x27;95&#x27;
+  []
+[]
+
+[Materials]
+  [rod_fuel]
+    type = DiffusionRodMaterial
+    base_file = &#x27;../../property_file_dir/sn-test/absorber-air-lattice-ref.json&#x27;
+    material_key = &#x27;ctrlrod&#x27;
+    nonrod_material_key = &#x27;fuel&#x27;
+    rod_height_func = rod_height
+    interp_type = &#x27;none&#x27;
+  []
+[]
+
+[Executioner]
+  type = Eigenvalue
+  free_power_iterations = 2
+
+  fixed_point_abs_tol = 1e-10
+  fixed_point_rel_tol = 1e-10
+  fixed_point_max_its = 15
+  accept_on_max_fixed_point_iteration = false
+
+  nl_abs_tol = 1e-10
+  nl_rel_tol = 1e-50
+
+  solve_type = &#x27;PJFNK&#x27;
+  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
+  petsc_options_iname = &#x27;-pc_type -pc_hypre_type -ksp_gmres_restart&#x27;
+  petsc_options_value = &#x27;hypre boomeramg 200&#x27;
+  line_search = &#x27;none&#x27;
+[]
+
+[MultiApps]
+  [sub]
+    type = FullSolveMultiApp
+    input_files = sn_rod_sub.i
+    execute_on = timestep_end
+    keep_solution_during_restore = true
+  []
+[]
+
+[Transfers]
+  [to_sub]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;group1 group2 group3 group4 group5 group6 group7 group8&#x27;
+    variable = &#x27;group1 group2 group3 group4 group5 group6 group7 group8&#x27;
+    to_multi_app = sub
+  []
+  [to_sub_k]
+    type = MultiAppPostprocessorTransfer
+    from_postprocessor = eigenvalue
+    to_postprocessor = eigenvalue
+    to_multi_app = sub
+  []
+  [from_sub_drift1]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;drift1 drift1 drift1&#x27;
+    variable = &#x27;drift1 drift1 drift1&#x27;
+    from_multi_app = sub
+    source_variable_components = &#x27;0 1 2&#x27;
+    target_variable_components = &#x27;0 1 2&#x27;
+  []
+  [from_sub_drift2]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;drift2 drift2 drift2&#x27;
+    variable = &#x27;drift2 drift2 drift2&#x27;
+    from_multi_app = sub
+    source_variable_components = &#x27;0 1 2&#x27;
+    target_variable_components = &#x27;0 1 2&#x27;
+  []
+  [from_sub_drift3]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;drift3 drift3 drift3&#x27;
+    variable = &#x27;drift3 drift3 drift3&#x27;
+    from_multi_app = sub
+    source_variable_components = &#x27;0 1 2&#x27;
+    target_variable_components = &#x27;0 1 2&#x27;
+  []
+  [from_sub_drift4]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;drift4 drift4 drift4&#x27;
+    variable = &#x27;drift4 drift4 drift4&#x27;
+    from_multi_app = sub
+    source_variable_components = &#x27;0 1 2&#x27;
+    target_variable_components = &#x27;0 1 2&#x27;
+  []
+  [from_sub_drift5]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;drift5 drift5 drift5&#x27;
+    variable = &#x27;drift5 drift5 drift5&#x27;
+    from_multi_app = sub
+    source_variable_components = &#x27;0 1 2&#x27;
+    target_variable_components = &#x27;0 1 2&#x27;
+  []
+  [from_sub_drift6]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;drift6 drift6 drift6&#x27;
+    variable = &#x27;drift6 drift6 drift6&#x27;
+    from_multi_app = sub
+    source_variable_components = &#x27;0 1 2&#x27;
+    target_variable_components = &#x27;0 1 2&#x27;
+  []
+  [from_sub_drift7]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;drift7 drift7 drift7&#x27;
+    variable = &#x27;drift7 drift7 drift7&#x27;
+    from_multi_app = sub
+    source_variable_components = &#x27;0 1 2&#x27;
+    target_variable_components = &#x27;0 1 2&#x27;
+  []
+  [from_sub_drift8]
+    type = MultiAppGeneralFieldShapeEvaluationTransfer
+    source_variable = &#x27;drift8 drift8 drift8&#x27;
+    variable = &#x27;drift8 drift8 drift8&#x27;
+    from_multi_app = sub
+    source_variable_components = &#x27;0 1 2&#x27;
+    target_variable_components = &#x27;0 1 2&#x27;
+  []
+[]
+
+[Postprocessors]
+  [bnorm]
+    type = ElmIntegTotFissNtsPostprocessor
+    execute_on = &#x27;initial linear timestep_end&#x27;
+  []
+  [eigenvalue]
+    type = VectorPostprocessorComponent
+    vectorpostprocessor = eigenvalues
+    vector_name = eigen_values_real
+    index = 0
+  []
+[]
+
+[VectorPostprocessors]
+  [eigenvalues]
+    type = Eigenvalues
+    inverse_eigenvalue = true
+    outputs = console
+  []
+[]
+
+[Outputs]
+  [exodus]
+    type = Exodus
+    discontinuous = true
+  []
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="6a1d49e6-53be-449c-ac51-d3e32bc67a07"><div class="modal-content"><h4>(tests/hybrid/absorber-air-lattice-ref-hybrid.i)</h4><pre style="max-height:350px;"><code class="language-moose">[GlobalParams]
   num_groups = 8
   num_precursor_groups = 6
   group_fluxes = &#x27;group1 group2 group3 group4 group5 group6 group7 group8&#x27;
@@ -387,587 +1265,7 @@
     execute_on = &#x27;initial timestep_end failed&#x27;
   []
 []
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="601cf54d-dfcd-4bb4-b8a9-731e2f97f0dd"><div class="modal-content"><h4>(tests/materials/sn_rod.i)</h4><pre style="max-height:350px;"><code class="language-moose">[GlobalParams]
-  num_groups = 8
-  num_precursor_groups = 6
-  group_fluxes = &#x27;group1 group2 group3 group4 group5 group6 group7 group8&#x27;
-  temperature = 900
-  sss2_input = true
-  account_delayed = false
-  use_exp_form = false
-  search_value_conflicts = false
-[]
-
-[Problem]
-  type = EigenProblem
-  bx_norm = bnorm
-[]
-
-[Mesh]
-  [mesh]
-    type = CartesianMeshGenerator
-    dim = 3
-    dx = 10
-    dy = 10
-    dz = &#x27;90 10&#x27;
-    iz = &#x27;90 40&#x27;
-  []
-[]
-
-[AuxVariables]
-  [drift1]
-    order = FIRST
-    family = MONOMIAL
-    components = 3
-  []
-  [drift2]
-    order = FIRST
-    family = MONOMIAL
-    components = 3
-  []
-  [drift3]
-    order = FIRST
-    family = MONOMIAL
-    components = 3
-  []
-  [drift4]
-    order = FIRST
-    family = MONOMIAL
-    components = 3
-  []
-  [drift5]
-    order = FIRST
-    family = MONOMIAL
-    components = 3
-  []
-  [drift6]
-    order = FIRST
-    family = MONOMIAL
-    components = 3
-  []
-  [drift7]
-    order = FIRST
-    family = MONOMIAL
-    components = 3
-  []
-  [drift8]
-    order = FIRST
-    family = MONOMIAL
-    components = 3
-  []
-[]
-
-[Nt]
-  family = LAGRANGE
-  order = FIRST
-  var_name_base = group
-  set_diffcoef_limit = true
-  create_temperature_var = false
-  eigen = true
-[]
-
-[Kernels]
-  [group1_drift]
-    type = GroupDrift
-    variable = group1
-    group_drift_var = drift1
-  []
-  [group2_drift]
-    type = GroupDrift
-    variable = group2
-    group_drift_var = drift2
-  []
-  [group3_drift]
-    type = GroupDrift
-    variable = group3
-    group_drift_var = drift3
-  []
-  [group4_drift]
-    type = GroupDrift
-    variable = group4
-    group_drift_var = drift4
-  []
-  [group5_drift]
-    type = GroupDrift
-    variable = group5
-    group_drift_var = drift5
-  []
-  [group6_drift]
-    type = GroupDrift
-    variable = group6
-    group_drift_var = drift6
-  []
-  [group7_drift]
-    type = GroupDrift
-    variable = group7
-    group_drift_var = drift7
-  []
-  [group8_drift]
-    type = GroupDrift
-    variable = group8
-    group_drift_var = drift8
-  []
-[]
-
-[Functions]
-  [rod_height]
-    type = ParsedFunction
-    expression = &#x27;95&#x27;
-  []
-[]
-
-[Materials]
-  [rod_fuel]
-    type = DiffusionRodMaterial
-    base_file = &#x27;../../property_file_dir/sn-test/absorber-air-lattice-ref.json&#x27;
-    material_key = &#x27;ctrlrod&#x27;
-    nonrod_material_key = &#x27;fuel&#x27;
-    rod_height_func = rod_height
-    interp_type = &#x27;none&#x27;
-  []
-[]
-
-[Executioner]
-  type = Eigenvalue
-  free_power_iterations = 2
-
-  fixed_point_abs_tol = 1e-10
-  fixed_point_rel_tol = 1e-10
-  fixed_point_max_its = 15
-  accept_on_max_fixed_point_iteration = false
-
-  nl_abs_tol = 1e-10
-  nl_rel_tol = 1e-50
-
-  solve_type = &#x27;PJFNK&#x27;
-  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
-  petsc_options_iname = &#x27;-pc_type -pc_hypre_type -ksp_gmres_restart&#x27;
-  petsc_options_value = &#x27;hypre boomeramg 200&#x27;
-  line_search = &#x27;none&#x27;
-[]
-
-[MultiApps]
-  [sub]
-    type = FullSolveMultiApp
-    input_files = sn_rod_sub.i
-    execute_on = timestep_end
-    keep_solution_during_restore = true
-  []
-[]
-
-[Transfers]
-  [to_sub]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;group1 group2 group3 group4 group5 group6 group7 group8&#x27;
-    variable = &#x27;group1 group2 group3 group4 group5 group6 group7 group8&#x27;
-    to_multi_app = sub
-  []
-  [to_sub_k]
-    type = MultiAppPostprocessorTransfer
-    from_postprocessor = eigenvalue
-    to_postprocessor = eigenvalue
-    to_multi_app = sub
-  []
-  [from_sub_drift1]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;drift1 drift1 drift1&#x27;
-    variable = &#x27;drift1 drift1 drift1&#x27;
-    from_multi_app = sub
-    source_variable_components = &#x27;0 1 2&#x27;
-    target_variable_components = &#x27;0 1 2&#x27;
-  []
-  [from_sub_drift2]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;drift2 drift2 drift2&#x27;
-    variable = &#x27;drift2 drift2 drift2&#x27;
-    from_multi_app = sub
-    source_variable_components = &#x27;0 1 2&#x27;
-    target_variable_components = &#x27;0 1 2&#x27;
-  []
-  [from_sub_drift3]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;drift3 drift3 drift3&#x27;
-    variable = &#x27;drift3 drift3 drift3&#x27;
-    from_multi_app = sub
-    source_variable_components = &#x27;0 1 2&#x27;
-    target_variable_components = &#x27;0 1 2&#x27;
-  []
-  [from_sub_drift4]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;drift4 drift4 drift4&#x27;
-    variable = &#x27;drift4 drift4 drift4&#x27;
-    from_multi_app = sub
-    source_variable_components = &#x27;0 1 2&#x27;
-    target_variable_components = &#x27;0 1 2&#x27;
-  []
-  [from_sub_drift5]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;drift5 drift5 drift5&#x27;
-    variable = &#x27;drift5 drift5 drift5&#x27;
-    from_multi_app = sub
-    source_variable_components = &#x27;0 1 2&#x27;
-    target_variable_components = &#x27;0 1 2&#x27;
-  []
-  [from_sub_drift6]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;drift6 drift6 drift6&#x27;
-    variable = &#x27;drift6 drift6 drift6&#x27;
-    from_multi_app = sub
-    source_variable_components = &#x27;0 1 2&#x27;
-    target_variable_components = &#x27;0 1 2&#x27;
-  []
-  [from_sub_drift7]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;drift7 drift7 drift7&#x27;
-    variable = &#x27;drift7 drift7 drift7&#x27;
-    from_multi_app = sub
-    source_variable_components = &#x27;0 1 2&#x27;
-    target_variable_components = &#x27;0 1 2&#x27;
-  []
-  [from_sub_drift8]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;drift8 drift8 drift8&#x27;
-    variable = &#x27;drift8 drift8 drift8&#x27;
-    from_multi_app = sub
-    source_variable_components = &#x27;0 1 2&#x27;
-    target_variable_components = &#x27;0 1 2&#x27;
-  []
-[]
-
-[Postprocessors]
-  [bnorm]
-    type = ElmIntegTotFissNtsPostprocessor
-    execute_on = &#x27;initial linear timestep_end&#x27;
-  []
-  [eigenvalue]
-    type = VectorPostprocessorComponent
-    vectorpostprocessor = eigenvalues
-    vector_name = eigen_values_real
-    index = 0
-  []
-[]
-
-[VectorPostprocessors]
-  [eigenvalues]
-    type = Eigenvalues
-    inverse_eigenvalue = true
-    outputs = console
-  []
-[]
-
-[Outputs]
-  [exodus]
-    type = Exodus
-    discontinuous = true
-  []
-[]
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="d71c51f4-7b99-4e07-9412-70a63d4812f8"><div class="modal-content"><h4>(tests/sn/lattice-sn-dnp.i)</h4><pre style="max-height:350px;"><code class="language-moose">[GlobalParams]
-  num_groups = 8
-  num_precursor_groups = 6
-  group_fluxes = &#x27;group1 group2 group3 group4 group5 group6 group7 group8&#x27;
-  pre_concs = &#x27;pre1 pre2 pre3 pre4 pre5 pre6&#x27;
-  temperature = 900
-  sss2_input = true
-  account_delayed = true
-  use_exp_form = false
-  search_value_conflicts = false
-[]
-
-[Problem]
-  type = EigenProblem
-  bx_norm = bnorm
-[]
-
-[Mesh]
-  second_order = true
-  [cmg]
-    type = CartesianMeshGenerator
-    dim = 1
-    dx = &#x27;1.9375 1.125 3.875 1.125 3.875 1.125 3.875 1.125 1.9375&#x27;
-    ix = &#x27;5 4 10 4 10 4 10 4 5&#x27;
-    subdomain_id = &#x27;0 1 0 1 0 1 0 1 0&#x27;
-  []
-[]
-
-[AuxVariables]
-  [drift1]
-    order = SECOND
-    family = MONOMIAL
-    components = 3
-  []
-  [drift2]
-    order = SECOND
-    family = MONOMIAL
-    components = 3
-  []
-  [drift3]
-    order = SECOND
-    family = MONOMIAL
-    components = 3
-  []
-  [drift4]
-    order = SECOND
-    family = MONOMIAL
-    components = 3
-  []
-  [drift5]
-    order = SECOND
-    family = MONOMIAL
-    components = 3
-  []
-  [drift6]
-    order = SECOND
-    family = MONOMIAL
-    components = 3
-  []
-  [drift7]
-    order = SECOND
-    family = MONOMIAL
-    components = 3
-  []
-  [drift8]
-    order = SECOND
-    family = MONOMIAL
-    components = 3
-  []
-  [delayed_source]
-    order = CONSTANT
-    family = MONOMIAL
-    block = 1
-  []
-[]
-
-[Nt]
-  family = LAGRANGE
-  order = SECOND
-  var_name_base = group
-  vacuum_boundaries = &#x27;&#x27;
-  fission_blocks = 1
-  pre_blocks = 1
-  create_temperature_var = false
-  eigen = true
-[]
-
-[Precursors]
-  [pres]
-    var_name_base = pre
-    block = 1
-    outlet_boundaries = &#x27;&#x27;
-    u_def = 0
-    v_def = 0
-    w_def = 0
-    nt_exp_form = false
-    loop_precursors = false
-    family = MONOMIAL
-    order = CONSTANT
-    transient = false
-    eigen = true
-  []
-[]
-
-[Kernels]
-  [group1_drift]
-    type = GroupDrift
-    variable = group1
-    group_drift_var = drift1
-  []
-  [group2_drift]
-    type = GroupDrift
-    variable = group2
-    group_drift_var = drift2
-  []
-  [group3_drift]
-    type = GroupDrift
-    variable = group3
-    group_drift_var = drift3
-  []
-  [group4_drift]
-    type = GroupDrift
-    variable = group4
-    group_drift_var = drift4
-  []
-  [group5_drift]
-    type = GroupDrift
-    variable = group5
-    group_drift_var = drift5
-  []
-  [group6_drift]
-    type = GroupDrift
-    variable = group6
-    group_drift_var = drift6
-  []
-  [group7_drift]
-    type = GroupDrift
-    variable = group7
-    group_drift_var = drift7
-  []
-  [group8_drift]
-    type = GroupDrift
-    variable = group8
-    group_drift_var = drift8
-  []
-[]
-
-[AuxKernels]
-  [delayed_neutron_source]
-    type = DelayedNeutronSourceAux
-    variable = delayed_source
-  []
-[]
-
-[Materials]
-  [fuel]
-    type = MoltresJsonMaterial
-    base_file = &#x27;../../property_file_dir/sn-test/lattice.json&#x27;
-    material_key = &#x27;fuel&#x27;
-    interp_type = &#x27;none&#x27;
-    block = &#x27;1&#x27;
-  []
-  [graphite]
-    type = MoltresJsonMaterial
-    base_file = &#x27;../../property_file_dir/sn-test/lattice.json&#x27;
-    material_key = &#x27;graphite&#x27;
-    interp_type = &#x27;none&#x27;
-    block = &#x27;0&#x27;
-  []
-[]
-
-[Executioner]
-  type = Eigenvalue
-  free_power_iterations = 2
-
-  fixed_point_abs_tol = 1e-10
-  fixed_point_rel_tol = 1e-10
-  fixed_point_max_its = 20
-  accept_on_max_fixed_point_iteration = false
-
-  nl_abs_tol = 1e-10
-  nl_rel_tol = 1e-50
-
-  solve_type = &#x27;PJFNK&#x27;
-  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
-  petsc_options_iname = &#x27;-pc_type -pc_hypre_type -ksp_gmres_restart&#x27;
-  petsc_options_value = &#x27;hypre boomeramg 200&#x27;
-  line_search = &#x27;none&#x27;
-[]
-
-[MultiApps]
-  [sub]
-    type = FullSolveMultiApp
-    input_files = lattice-sn-dnp-sub.i
-    execute_on = timestep_end
-    keep_solution_during_restore = true
-  []
-[]
-
-[Transfers]
-  [to_sub]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;group1 group2 group3 group4 group5 group6 group7 group8 delayed_source&#x27;
-    variable = &#x27;group1 group2 group3 group4 group5 group6 group7 group8 delayed_source&#x27;
-    to_multi_app = sub
-  []
-  [to_sub_k]
-    type = MultiAppPostprocessorTransfer
-    from_postprocessor = eigenvalue
-    to_postprocessor = eigenvalue
-    to_multi_app = sub
-  []
-  [from_sub_drift1]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;drift1 drift1 drift1&#x27;
-    variable = &#x27;drift1 drift1 drift1&#x27;
-    from_multi_app = sub
-    source_variable_components = &#x27;0 1 2&#x27;
-    target_variable_components = &#x27;0 1 2&#x27;
-  []
-  [from_sub_drift2]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;drift2 drift2 drift2&#x27;
-    variable = &#x27;drift2 drift2 drift2&#x27;
-    from_multi_app = sub
-    source_variable_components = &#x27;0 1 2&#x27;
-    target_variable_components = &#x27;0 1 2&#x27;
-  []
-  [from_sub_drift3]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;drift3 drift3 drift3&#x27;
-    variable = &#x27;drift3 drift3 drift3&#x27;
-    from_multi_app = sub
-    source_variable_components = &#x27;0 1 2&#x27;
-    target_variable_components = &#x27;0 1 2&#x27;
-  []
-  [from_sub_drift4]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;drift4 drift4 drift4&#x27;
-    variable = &#x27;drift4 drift4 drift4&#x27;
-    from_multi_app = sub
-    source_variable_components = &#x27;0 1 2&#x27;
-    target_variable_components = &#x27;0 1 2&#x27;
-  []
-  [from_sub_drift5]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;drift5 drift5 drift5&#x27;
-    variable = &#x27;drift5 drift5 drift5&#x27;
-    from_multi_app = sub
-    source_variable_components = &#x27;0 1 2&#x27;
-    target_variable_components = &#x27;0 1 2&#x27;
-  []
-  [from_sub_drift6]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;drift6 drift6 drift6&#x27;
-    variable = &#x27;drift6 drift6 drift6&#x27;
-    from_multi_app = sub
-    source_variable_components = &#x27;0 1 2&#x27;
-    target_variable_components = &#x27;0 1 2&#x27;
-  []
-  [from_sub_drift7]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;drift7 drift7 drift7&#x27;
-    variable = &#x27;drift7 drift7 drift7&#x27;
-    from_multi_app = sub
-    source_variable_components = &#x27;0 1 2&#x27;
-    target_variable_components = &#x27;0 1 2&#x27;
-  []
-  [from_sub_drift8]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;drift8 drift8 drift8&#x27;
-    variable = &#x27;drift8 drift8 drift8&#x27;
-    from_multi_app = sub
-    source_variable_components = &#x27;0 1 2&#x27;
-    target_variable_components = &#x27;0 1 2&#x27;
-  []
-[]
-
-[Postprocessors]
-  [bnorm]
-    type = ElmIntegTotFissNtsPostprocessor
-    block = 1
-    execute_on = &#x27;initial linear timestep_end&#x27;
-  []
-  [eigenvalue]
-    type = VectorPostprocessorComponent
-    vectorpostprocessor = eigenvalues
-    vector_name = eigen_values_real
-    index = 0
-  []
-[]
-
-[VectorPostprocessors]
-  [eigenvalues]
-    type = Eigenvalues
-    inverse_eigenvalue = true
-    outputs = console
-  []
-[]
-
-[Outputs]
-  [exodus]
-    type = Exodus
-    discontinuous = true
-  []
-[]
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="630acb1b-518f-49f2-aa6e-cc17d8df914f"><div class="modal-content"><h4>(tests/sn/absorber-air-lattice-ref-sn.i)</h4><pre style="max-height:350px;"><code class="language-moose">[GlobalParams]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="1f143367-7712-4004-a356-52fab51fbb97"><div class="modal-content"><h4>(tests/sn/absorber-air-lattice-ref-sn.i)</h4><pre style="max-height:350px;"><code class="language-moose">[GlobalParams]
   num_groups = 8
   num_precursor_groups = 6
   group_fluxes = &#x27;group1 group2 group3 group4 group5 group6 group7 group8&#x27;
@@ -1403,302 +1701,4 @@
     discontinuous = true
   []
 []
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="338859c2-5c8c-46ff-bd73-32345902f4ab"><div class="modal-content"><h4>(tests/sn/lattice-sn.i)</h4><pre style="max-height:350px;"><code class="language-moose">[GlobalParams]
-  num_groups = 8
-  num_precursor_groups = 6
-  group_fluxes = &#x27;group1 group2 group3 group4 group5 group6 group7 group8&#x27;
-  temperature = 900
-  sss2_input = true
-  account_delayed = false
-  use_exp_form = false
-  search_value_conflicts = false
-[]
-
-[Problem]
-  type = EigenProblem
-  bx_norm = bnorm
-[]
-
-[Mesh]
-  second_order = true
-  [cmg]
-    type = CartesianMeshGenerator
-    dim = 1
-    dx = &#x27;1.9375 1.125 3.875 1.125 3.875 1.125 3.875 1.125 1.9375&#x27;
-    ix = &#x27;5 4 10 4 10 4 10 4 5&#x27;
-    subdomain_id = &#x27;0 1 0 1 0 1 0 1 0&#x27;
-  []
-[]
-
-[AuxVariables]
-  [drift1]
-    order = SECOND
-    family = MONOMIAL
-    components = 3
-  []
-  [drift2]
-    order = SECOND
-    family = MONOMIAL
-    components = 3
-  []
-  [drift3]
-    order = SECOND
-    family = MONOMIAL
-    components = 3
-  []
-  [drift4]
-    order = SECOND
-    family = MONOMIAL
-    components = 3
-  []
-  [drift5]
-    order = SECOND
-    family = MONOMIAL
-    components = 3
-  []
-  [drift6]
-    order = SECOND
-    family = MONOMIAL
-    components = 3
-  []
-  [drift7]
-    order = SECOND
-    family = MONOMIAL
-    components = 3
-  []
-  [drift8]
-    order = SECOND
-    family = MONOMIAL
-    components = 3
-  []
-  [fission_rate]
-    order = SECOND
-    family = MONOMIAL
-    block = 1
-  []
-  [neutron_source]
-    order = SECOND
-    family = MONOMIAL
-    block = 1
-  []
-[]
-
-[Nt]
-  family = LAGRANGE
-  order = SECOND
-  var_name_base = group
-  vacuum_boundaries = &#x27;&#x27;
-  fission_blocks = &#x27;1&#x27;
-  create_temperature_var = false
-  eigen = true
-[]
-
-[Kernels]
-  [group1_drift]
-    type = GroupDrift
-    variable = group1
-    group_drift_var = drift1
-  []
-  [group2_drift]
-    type = GroupDrift
-    variable = group2
-    group_drift_var = drift2
-  []
-  [group3_drift]
-    type = GroupDrift
-    variable = group3
-    group_drift_var = drift3
-  []
-  [group4_drift]
-    type = GroupDrift
-    variable = group4
-    group_drift_var = drift4
-  []
-  [group5_drift]
-    type = GroupDrift
-    variable = group5
-    group_drift_var = drift5
-  []
-  [group6_drift]
-    type = GroupDrift
-    variable = group6
-    group_drift_var = drift6
-  []
-  [group7_drift]
-    type = GroupDrift
-    variable = group7
-    group_drift_var = drift7
-  []
-  [group8_drift]
-    type = GroupDrift
-    variable = group8
-    group_drift_var = drift8
-  []
-[]
-
-[AuxKernels]
-  [fission_rate]
-    type = FissionRateAux
-    variable = fission_rate
-    block = 1
-  []
-  [neutron_source]
-    type = NeutronSourceAux
-    variable = neutron_source
-    block = 1
-  []
-[]
-
-[Materials]
-  [fuel]
-    type = MoltresJsonMaterial
-    base_file = &#x27;../../property_file_dir/sn-test/lattice.json&#x27;
-    material_key = &#x27;fuel&#x27;
-    interp_type = &#x27;none&#x27;
-    block = &#x27;1&#x27;
-  []
-  [graphite]
-    type = MoltresJsonMaterial
-    base_file = &#x27;../../property_file_dir/sn-test/lattice.json&#x27;
-    material_key = &#x27;graphite&#x27;
-    interp_type = &#x27;none&#x27;
-    block = &#x27;0&#x27;
-  []
-[]
-
-[Executioner]
-  type = Eigenvalue
-  free_power_iterations = 2
-
-  fixed_point_abs_tol = 1e-10
-  fixed_point_rel_tol = 1e-10
-  fixed_point_max_its = 20
-  accept_on_max_fixed_point_iteration = false
-
-  nl_abs_tol = 1e-10
-  nl_rel_tol = 1e-50
-
-  solve_type = &#x27;PJFNK&#x27;
-  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
-  petsc_options_iname = &#x27;-pc_type -pc_hypre_type -ksp_gmres_restart&#x27;
-  petsc_options_value = &#x27;hypre boomeramg 200&#x27;
-  line_search = &#x27;none&#x27;
-[]
-
-[MultiApps]
-  [sub]
-    type = FullSolveMultiApp
-    input_files = lattice-sn-sub.i
-    execute_on = timestep_end
-    keep_solution_during_restore = true
-  []
-[]
-
-[Transfers]
-  [to_sub]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;group1 group2 group3 group4 group5 group6 group7 group8&#x27;
-    variable = &#x27;group1 group2 group3 group4 group5 group6 group7 group8&#x27;
-    to_multi_app = sub
-  []
-  [to_sub_k]
-    type = MultiAppPostprocessorTransfer
-    from_postprocessor = eigenvalue
-    to_postprocessor = eigenvalue
-    to_multi_app = sub
-  []
-  [from_sub_drift1]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;drift1 drift1 drift1&#x27;
-    variable = &#x27;drift1 drift1 drift1&#x27;
-    from_multi_app = sub
-    source_variable_components = &#x27;0 1 2&#x27;
-    target_variable_components = &#x27;0 1 2&#x27;
-  []
-  [from_sub_drift2]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;drift2 drift2 drift2&#x27;
-    variable = &#x27;drift2 drift2 drift2&#x27;
-    from_multi_app = sub
-    source_variable_components = &#x27;0 1 2&#x27;
-    target_variable_components = &#x27;0 1 2&#x27;
-  []
-  [from_sub_drift3]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;drift3 drift3 drift3&#x27;
-    variable = &#x27;drift3 drift3 drift3&#x27;
-    from_multi_app = sub
-    source_variable_components = &#x27;0 1 2&#x27;
-    target_variable_components = &#x27;0 1 2&#x27;
-  []
-  [from_sub_drift4]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;drift4 drift4 drift4&#x27;
-    variable = &#x27;drift4 drift4 drift4&#x27;
-    from_multi_app = sub
-    source_variable_components = &#x27;0 1 2&#x27;
-    target_variable_components = &#x27;0 1 2&#x27;
-  []
-  [from_sub_drift5]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;drift5 drift5 drift5&#x27;
-    variable = &#x27;drift5 drift5 drift5&#x27;
-    from_multi_app = sub
-    source_variable_components = &#x27;0 1 2&#x27;
-    target_variable_components = &#x27;0 1 2&#x27;
-  []
-  [from_sub_drift6]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;drift6 drift6 drift6&#x27;
-    variable = &#x27;drift6 drift6 drift6&#x27;
-    from_multi_app = sub
-    source_variable_components = &#x27;0 1 2&#x27;
-    target_variable_components = &#x27;0 1 2&#x27;
-  []
-  [from_sub_drift7]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;drift7 drift7 drift7&#x27;
-    variable = &#x27;drift7 drift7 drift7&#x27;
-    from_multi_app = sub
-    source_variable_components = &#x27;0 1 2&#x27;
-    target_variable_components = &#x27;0 1 2&#x27;
-  []
-  [from_sub_drift8]
-    type = MultiAppGeneralFieldShapeEvaluationTransfer
-    source_variable = &#x27;drift8 drift8 drift8&#x27;
-    variable = &#x27;drift8 drift8 drift8&#x27;
-    from_multi_app = sub
-    source_variable_components = &#x27;0 1 2&#x27;
-    target_variable_components = &#x27;0 1 2&#x27;
-  []
-[]
-
-[Postprocessors]
-  [bnorm]
-    type = ElmIntegTotFissNtsPostprocessor
-    block = 1
-    execute_on = &#x27;initial linear timestep_end&#x27;
-  []
-  [eigenvalue]
-    type = VectorPostprocessorComponent
-    vectorpostprocessor = eigenvalues
-    vector_name = eigen_values_real
-    index = 0
-  []
-[]
-
-[VectorPostprocessors]
-  [eigenvalues]
-    type = Eigenvalues
-    inverse_eigenvalue = true
-    outputs = console
-  []
-[]
-
-[Outputs]
-  [exodus]
-    type = Exodus
-    discontinuous = true
-  []
-[]
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div><div class="col hide-on-med-and-down l2"><div class="toc-wrapper pin-top"><ul class="section table-of-contents"><li><a href="#df0cc26b-1335-49d6-8d23-ef154cd6fcbd" class="tooltipped" data-position="left" data-tooltip="Overview">Overview</a></li><li><a href="#25b2bca7-a59e-40cf-9bca-000af0bbcfb2" class="tooltipped" data-position="left" data-tooltip="Input Parameters">Input Parameters</a></li><li><a href="#17d639c3-0914-4335-83a0-4f84d8700014" class="tooltipped" data-position="left" data-tooltip="Input Files">Input Files</a></li></ul></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div><div class="col hide-on-med-and-down l2"><div class="toc-wrapper pin-top"><ul class="section table-of-contents"><li><a href="#d07c1881-3836-4c16-8c4e-f6e1c067faf1" class="tooltipped" data-position="left" data-tooltip="Overview">Overview</a></li><li><a href="#4ceea621-2c5d-41f8-9105-82eef5884b0b" class="tooltipped" data-position="left" data-tooltip="Input Parameters">Input Parameters</a></li><li><a href="#6621ae17-f3b7-46c6-8ee4-5b54f689ea94" class="tooltipped" data-position="left" data-tooltip="Input Files">Input Files</a></li></ul></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>
