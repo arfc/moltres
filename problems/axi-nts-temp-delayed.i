@@ -200,7 +200,7 @@ flow_velocity = 147 # Cammi 147 cm/s
   [pre1_lin]
     variable = pre1_lin
     density_log = pre1
-    type = Density
+    type = DensityFromLog
   []
   # [./diffus_temp]
   #   type = MatDiffusionAux
