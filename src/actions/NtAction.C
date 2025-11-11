@@ -231,7 +231,7 @@ NtAction::act()
       // Set up aux kernels
       if (_current_task == "add_aux_kernel")
       {
-        InputParameters params = _factory.getValidParams("Density");
+        InputParameters params = _factory.getValidParams("DensityFromLog");
         params.set<AuxVariableName>("variable") = aux_var_name;
         params.set<std::vector<VariableName>>("density_log") = {var_name};
         if (isParamValid("block"))
@@ -239,7 +239,7 @@ NtAction::act()
               getParam<std::vector<SubdomainName>>("block");
 
         std::string aux_kernel_name = "Density_" + aux_var_name;
-        _problem->addAuxKernel("Density", aux_kernel_name, params);
+        _problem->addAuxKernel("DensityFromLog", aux_kernel_name, params);
       }
     }
   }
