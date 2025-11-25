@@ -30,8 +30,9 @@ TurbulentStressAux::TurbulentStressAux(const InputParameters & parameters)
 Real
 TurbulentStressAux::computeValue()
 {
+  using std::pow;
   ADReal chi = _mu_tilde[_qp] / _mu[_qp];
-  ADReal fv1 = std::pow(chi, 3) / (std::pow(chi, 3) + std::pow(7.1, 3));
+  ADReal fv1 = pow(chi, 3) / (pow(chi, 3) + pow(7.1, 3));
   ADReal nu_T = _mu_tilde[_qp] * fv1 / _rho[_qp];
   return raw_value(nu_T * _strain_mag[_qp]);
 }

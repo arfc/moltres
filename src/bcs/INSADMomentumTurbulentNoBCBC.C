@@ -13,8 +13,7 @@ INSADMomentumTurbulentNoBCBC::validParams()
 }
 
 INSADMomentumTurbulentNoBCBC::INSADMomentumTurbulentNoBCBC(const InputParameters & parameters)
-  : INSADMomentumNoBCBC(parameters),
-    _mu_tilde(adCoupledValue("mu_tilde"))
+  : INSADMomentumNoBCBC(parameters), _mu_tilde(adCoupledValue("mu_tilde"))
 {
   if (_form == "laplace")
     mooseError("The Laplace form of the INS equations is incompatible with the Spalart-Allmaras "
@@ -24,11 +23,12 @@ INSADMomentumTurbulentNoBCBC::INSADMomentumTurbulentNoBCBC(const InputParameters
 ADReal
 INSADMomentumTurbulentNoBCBC::computeQpResidual()
 {
+  using std::pow;
   ADReal chi = _mu_tilde[_qp] / _mu[_qp];
-  ADReal fv1 = std::pow(chi, 3) / (std::pow(chi, 3) + std::pow(7.1, 3));
+  ADReal fv1 = pow(chi, 3) / (pow(chi, 3) + pow(7.1, 3));
   ADReal residual;
-  residual = -(_mu[_qp] + _mu_tilde[_qp] * fv1) * ((_grad_u[_qp] + _grad_u[_qp].transpose()) * \
-                                                   _normals[_qp]) * _test[_i][_qp];
+  residual = -(_mu[_qp] + _mu_tilde[_qp] * fv1) *
+             ((_grad_u[_qp] + _grad_u[_qp].transpose()) * _normals[_qp]) * _test[_i][_qp];
   if (_integrate_p_by_parts)
     residual += _p[_qp] * _normals[_qp] * _test[_i][_qp];
   return residual;
