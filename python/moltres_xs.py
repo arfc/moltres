@@ -9,6 +9,7 @@ import h5py
 import openmc
 import importlib
 
+
 class openmc_mgxslib:
     def __init__ (self, stpt_file, summ_file, json_path):
         
