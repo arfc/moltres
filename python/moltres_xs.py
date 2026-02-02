@@ -12,21 +12,21 @@ import importlib
 
 class openmc_mgxslib:
     def __init__ (self, stpt_file, summ_file, json_path):
-        
+
         """
-             Reads OpenMC Statepoint and Summary Files that contain mgxs.Library() MGXS Tallies and builds a .json.  
-             Is set up to read only 1 Statepoint and Summary as of now, will add multi-file capbilities soon. 
-             
+             Reads OpenMC Statepoint and Summary Files that contain mgxs.Library() MGXS Tallies and builds a .json.
+             Is set up to read only 1 Statepoint and Summary as of now, will add multi-file capbilities soon.
+
              mgxs.Library() is the most optimized, efficient, and user-friendly way to generate MGXS Tallies
              This function requires the user to have a properly setup mgxs.Library()
-             
-             Is currently defined for an arbitrary number of domains, materials, energy groups, and delayed groups. 
-            
+
+             Is currently defined for an arbitrary number of domains, materials, energy groups, and delayed groups.
+
             Requirements
             ----------
             mgxs.Libary().mgxs_types
-                The types configured in the users mgxs.Library() must at least have the required mgxs_types 
-                that are given in the __init__ function. 
+                The types configured in the users mgxs.Library() must at least have the required mgxs_types
+                that are given in the __init__ function.
             mgxs.Library().legendre_order = 3
                 Legendre Order must be 3 to properly compute and format GTRANSFXS.
                 (I do not know if this is a true requirement, but it matches the godiva.json GTRANSFXS numbers)
@@ -38,36 +38,36 @@ class openmc_mgxslib:
             summ_file: str
                 Name of OpenMC Summary file associated with the Statepoint file
             json_path: str
-                Name of .json file and path where the json_store will be dumped. 
+                Name of .json file and path where the json_store will be dumped.
             Returns
             ----------
             json_store: dict
-                A hierarchical dictionary that stores all MGXS Tallies requested/required. 
-                Organized by material and temperature. 
+                A hierarchical dictionary that stores all MGXS Tallies requested/required.
+                Organized by material and temperature.
                 Contains: BETA_EFF, CHI_T, CHI_D, CHI_P, DECAY_CONSTANT, DIFFCOEF, FISSXS,
-                FISSE, GTRANSFXS, NSF, and RECIPVEL. 
-                
+                FISSE, GTRANSFXS, NSF, and RECIPVEL.
+
         """
-        
+
         self.stpt_file = str(stpt_file)
         self.summ_file = str(summ_file)
         self.json_path = str(json_path)
         self.required_mgxs_types = {
-            "beta", 
-            "chi", 
-            "chi-prompt", 
-            "chi-delayed", 
-            "decay-rate", 
-            "diffusion-coefficient", 
-            "fission", 
-            "kappa-fission", 
+            "beta",
+            "chi",
+            "chi-prompt",
+            "chi-delayed",
+            "decay-rate",
+            "diffusion-coefficient",
+            "fission",
+            "kappa-fission",
             "consistent nu-scatter matrix",
-            "nu-fission", 
+            "nu-fission",
             "inverse-velocity",}
-        
+
     def build_json(self, mgxslib):
         self.json_store = {}
-        
+
         statepoint = openmc.StatePoint(self.stpt_file, autolink = False)
         summary = openmc.Summary(self.summ_file)
         statepoint.link_with_summary(summary)
@@ -78,7 +78,7 @@ class openmc_mgxslib:
 
         material_id_to_name = {mat.id: mat.name for mat in summary.materials}
         material_id_to_object = {mat.id: mat for mat in summary.materials}
-        
+
         rename_mgxs = {
             "beta": "BETA_EFF",
             "chi": "CHI_T",
@@ -89,9 +89,9 @@ class openmc_mgxslib:
             "fission": "FISSXS",
             "inverse-velocity": "RECIPVEL",
         }
-        
+
         mgxslib.build_hdf5_store()
-        
+
         with h5py.File("mgxs/mgxs.h5", "r") as f:
             for domain_type in f:
                 for domain_id in f[domain_type]:
@@ -99,7 +99,7 @@ class openmc_mgxslib:
                         raise KeyError(f"Domain ID {domain_id} not found in materials summary")
                     domain_name = material_id_to_name.get(int(domain_id), str(domain_id))
                     self.json_store[domain_name] = {}
-                    
+
                     mat = material_id_to_object.get(int(domain_id))
                     temps =mat.temperature if isinstance(mat.temperature, list) else [mat.temperature]
                     for temp in temps:
@@ -109,47 +109,47 @@ class openmc_mgxslib:
                                 raise KeyError(f"MGXS type '{mgxs_type}' not found for material '{domain_name}'")
                             mgxs_data = f[domain_type][domain_id][mgxs_type]
                             arr = mgxs_data["average"][:]
-                            
+
                             if mgxs_type == "kappa-fission":
                                 fission_data = f[domain_type][domain_id]["fission"]["average"][:]
                                 fission_data = np.array(fission_data)
                                 kappa_data = np.array(arr)
-                                
+
                                 safe_arr = np.zeros_like(fission_data)
                                 mask = fission_data != 0
                                 safe_arr[mask] = (kappa_data[mask] / fission_data[mask]) * 1e-6
                                 arr = safe_arr
-                            
+
                             if mgxs_type == "consistent nu-scatter matrix":
                                 P0 = arr[:, :, 0]
                                 arr = P0
-                                
+
                             if mgxs_type == "chi-delayed":
                                 chi_d = arr.sum(axis = 0)
                                 chi_d /= chi_d.sum()
                                 arr = chi_d
-                                
+
                             if mgxs_type == "beta":
                                 beta = arr.sum(axis = 1)
                                 arr = beta
 
                             if arr.ndim > 1:
                                 arr = arr.flatten()
-                                
+
                             arr = arr.tolist()
                             mgxs_key = rename_mgxs.get(mgxs_type, mgxs_type)
-                            
+
                             if mgxs_type == "consistent nu-scatter matrix":
                                 mgxs_key = "GTRANSFXS"
                             elif mgxs_type == "kappa-fission":
                                 mgxs_key = "FISSE"
                             elif mgxs_type == "nu-fission":
-                                mgxs_key = "NSF" # New OpenMC nu-fission tally already comes flux weighted. 
-                            
+                                mgxs_key = "NSF" # New OpenMC nu-fission tally already comes flux weighted.
+
                             self.json_store[domain_name][temp][mgxs_key] = arr
-                    self.json_store[domain_name]["temp"] = temps               
+                    self.json_store[domain_name]["temp"] = temps
         return self.json_store
-    
+
     def dump_json(self):
         if not self.json_store:
             raise ValueError("JSON Store is empty, mgxs.Library() did not load correctly or build_json() did not run.")
@@ -541,7 +541,7 @@ class openmc_xs:
         tallies_file.export_to_xml()
         return domain_dict
 
-            
+
 class scale_xs:
     """
         Python class that reads in a scale t16 file and organizes the cross
