@@ -52,7 +52,7 @@ class openmc_mgxslib:
         self.stpt_file = str(stpt_file)
         self.summ_file = str(summ_file)
         self.json_path = str(json_path)
-        self.required_mgxs_types = {
+        self.required_mgxs_types = [
             "beta",
             "chi",
             "chi-prompt",
@@ -63,7 +63,7 @@ class openmc_mgxslib:
             "kappa-fission",
             "consistent nu-scatter matrix",
             "nu-fission",
-            "inverse-velocity",}
+            "inverse-velocity"]
 
     def build_json(self, mgxslib):
         self.json_store = {}
@@ -87,7 +87,7 @@ class openmc_mgxslib:
             "decay-rate": "DECAY_CONSTANT",
             "diffusion-coefficient": "DIFFCOEF",
             "fission": "FISSXS",
-            "inverse-velocity": "RECIPVEL",
+            "inverse-velocity": "RECIPVEL"
         }
 
         mgxslib.build_hdf5_store()
@@ -102,6 +102,7 @@ class openmc_mgxslib:
 
                     mat = material_id_to_object.get(int(domain_id))
                     temps =mat.temperature if isinstance(mat.temperature, list) else [mat.temperature]
+
                     for temp in temps:
                         self.json_store[domain_name][temp] = {}
                         for mgxs_type in self.required_mgxs_types:
@@ -147,7 +148,7 @@ class openmc_mgxslib:
                                 mgxs_key = "NSF" # New OpenMC nu-fission tally already comes flux weighted.
 
                             self.json_store[domain_name][temp][mgxs_key] = arr
-                    self.json_store[domain_name]["temp"] = temps
+                        self.json_store[domain_name]["temps"] = temps
         return self.json_store
 
     def dump_json(self):
