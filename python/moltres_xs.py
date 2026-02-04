@@ -9,13 +9,20 @@ import h5py
 import openmc
 import importlib
 
-
 class openmc_mgxslib:
-    def __init__ (self, stpt_file, summ_file, json_path):
+    def __init__ (self, cases: dict):
 
         """
              Reads OpenMC Statepoint and Summary Files that contain mgxs.Library() MGXS Tallies and builds a .json.
-             Is set up to read only 1 Statepoint and Summary as of now, will add multi-file capbilities soon.
+             Is able to read multi statepoint/summary/mgxslibs on 2 cases:
+
+             Case 1: User has 2 mgxs.Library() in 1 file and they want to insert both at the same time,
+             Using the case dict, just add another key with a different statepoint, summary, and mgxslib.
+             (NOTE: NOT TESTED FULLY)
+
+             Case 2: User has a JSON file already created from 1 OpenMC run and wants to append it with another,
+             New function append_to_json() will append an already Moltres formatted JSON File.
+             (NOTE: Tested locally, overwrites are possible under very specific situations, but otherwise works fine)
 
              mgxs.Library() is the most optimized, efficient, and user-friendly way to generate MGXS Tallies
              This function requires the user to have a properly setup mgxs.Library()
@@ -30,6 +37,15 @@ class openmc_mgxslib:
             mgxs.Library().legendre_order = 3
                 Legendre Order must be 3 to properly compute and format GTRANSFXS.
                 (I do not know if this is a true requirement, but it matches the godiva.json GTRANSFXS numbers)
+            For JSON File Creation, a dict must be created using the following format and be passed in initialization:
+                dict = {
+                    "dict_name":{
+                        "statepoint": "...",
+                        "summary": "...",
+                        "mgxslib": "..."
+                    }
+                }
+
             Parameters
             ----------
             stpt_file: str
@@ -49,9 +65,8 @@ class openmc_mgxslib:
 
         """
 
-        self.stpt_file = str(stpt_file)
-        self.summ_file = str(summ_file)
-        self.json_path = str(json_path)
+        self.cases = cases
+        self.json_store = {}
         self.required_mgxs_types = [
             "beta",
             "chi",
@@ -65,13 +80,12 @@ class openmc_mgxslib:
             "nu-fission",
             "inverse-velocity"]
 
-    def build_json(self, mgxslib):
-        self.json_store = {}
+    def process_mgxslib(self, stpt_file, summ_file, mgxslib):
 
-        statepoint = openmc.StatePoint(self.stpt_file, autolink = False)
-        summary = openmc.Summary(self.summ_file)
+        statepoint = openmc.StatePoint(stpt_file, autolink = False)
+        summary = openmc.Summary(summ_file)
         statepoint.link_with_summary(summary)
-        if not hasattr(mgxslib, "load_from_statepoint") or not hasattr(mgxslib, "build_hdf5_store"):
+        if not hasattr(mgxslib, "load_from_statepoint"): # changed
             raise TypeError("Passed Library Object invalid, must be mgxs.Library()")
 
         mgxslib.load_from_statepoint(statepoint)
@@ -95,23 +109,34 @@ class openmc_mgxslib:
         with h5py.File("mgxs/mgxs.h5", "r") as f:
             for domain_type in f:
                 for domain_id in f[domain_type]:
-                    if int(domain_id) not in material_id_to_object:
-                        raise KeyError(f"Domain ID {domain_id} not found in materials summary")
-                    domain_name = material_id_to_name.get(int(domain_id), str(domain_id))
-                    self.json_store[domain_name] = {}
 
-                    mat = material_id_to_object.get(int(domain_id))
+                    mat_id = int(domain_id)
+                    mat_name = material_id_to_name[mat_id]
+                    mat = material_id_to_object[mat_id]
+
+                    if mat_name not in self.json_store:
+                        self.json_store[mat_name] = {}
+
                     temps =mat.temperature if isinstance(mat.temperature, list) else [mat.temperature]
 
                     for temp in temps:
-                        self.json_store[domain_name][temp] = {}
-                        for mgxs_type in self.required_mgxs_types:
-                            if mgxs_type not in f[domain_type][domain_id]:
-                                raise KeyError(f"MGXS type '{mgxs_type}' not found for material '{domain_name}'")
-                            mgxs_data = f[domain_type][domain_id][mgxs_type]
-                            arr = mgxs_data["average"][:]
 
-                            if mgxs_type == "kappa-fission":
+                        if temp == None:
+                            raise ValueError(f"Material {mat_name} has no set temperature value. If you intended on using room temperature please set material.temperature = 294")
+                        else:
+                            temp = float(temp)
+
+                        if str(temp) not in self.json_store[mat_name]:
+                            self.json_store[mat_name][str(temp)] = {}
+
+                        for mgxs_type in self.required_mgxs_types:
+
+                            if mgxs_type not in f[domain_type][domain_id]:
+                                raise KeyError(f"MGXS type '{mgxs_type}' not found for material '{mat_name}'")
+
+                            arr = f[domain_type][domain_id][mgxs_type]["average"][:]
+
+                            if mgxs_type == "kappa-fission": # will update to make less complicated soon
                                 fission_data = f[domain_type][domain_id]["fission"]["average"][:]
                                 fission_data = np.array(fission_data)
                                 kappa_data = np.array(arr)
@@ -122,22 +147,18 @@ class openmc_mgxslib:
                                 arr = safe_arr
 
                             if mgxs_type == "consistent nu-scatter matrix":
-                                P0 = arr[:, :, 0]
-                                arr = P0
+                                arr = arr[:, :, 0] # P0 Entry
 
                             if mgxs_type == "chi-delayed":
-                                chi_d = arr.sum(axis = 0)
-                                chi_d /= chi_d.sum()
-                                arr = chi_d
+                                arr = arr.sum(axis = 0) # Delayed Group Collapse
+                                arr /= arr.sum() # Normalization
 
                             if mgxs_type == "beta":
-                                beta = arr.sum(axis = 1)
-                                arr = beta
+                                arr = arr.sum(axis = 1) # Energy Group Collapse
 
                             if arr.ndim > 1:
                                 arr = arr.flatten()
 
-                            arr = arr.tolist()
                             mgxs_key = rename_mgxs.get(mgxs_type, mgxs_type)
 
                             if mgxs_type == "consistent nu-scatter matrix":
@@ -147,16 +168,63 @@ class openmc_mgxslib:
                             elif mgxs_type == "nu-fission":
                                 mgxs_key = "NSF" # New OpenMC nu-fission tally already comes flux weighted.
 
-                            self.json_store[domain_name][temp][mgxs_key] = arr
-                        self.json_store[domain_name]["temps"] = temps
+                            self.json_store[mat_name][str(temp)][mgxs_key] = arr = arr.tolist()
+
+                        existing = set(self.json_store[mat_name].get("temps", []))
+                        self.json_store[mat_name]["temps"] = sorted(existing.union({temp})) # Updating Running Temperatures List
+
+    def build_json(self):
+        for case in self.cases.values():
+            self.process_mgxslib(
+                case["statepoint"],
+                case["summary"],
+                case["mgxslib"]
+            )
         return self.json_store
 
-    def dump_json(self):
+    def dump_json(self, json_path: str):
         if not self.json_store:
-            raise ValueError("JSON Store is empty, mgxs.Library() did not load correctly or build_json() did not run.")
+            raise ValueError("JSON Store is empty")
 
-        with open(self.json_path, 'w') as f:
+        with open(json_path, 'w') as f:
             json.dump(self.json_store , f, indent=4)
+
+    def append_to_json(self, existing_json_path):
+
+        if not self.json_store:
+            raise ValueError("Current JSON store is empty. Run build_json() first.")
+
+        with open(existing_json_path, "r") as f:
+            existing = json.load(f)
+
+        for mat, mat_data in self.json_store.items():
+
+            if mat not in existing:
+                existing[mat] = mat_data
+                continue
+
+            for key, value in mat_data.items():
+
+                if key == "temps":
+                    old = set(existing[mat].get("temps", []))
+                    new = set(value)
+                    existing[mat]["temps"] = sorted(old.union(new))
+
+                elif isinstance(value, dict):
+                    if key not in existing[mat]:
+                        existing[mat][key] = value
+                    else:
+                        existing[mat][key].update(value)
+                else:
+                    existing[mat][key] = value
+
+        for mat in existing:
+            if "temps" in existing[mat]:
+                temps = existing[mat].pop("temps")
+                existing[mat]["temps"] = temps
+
+        with open(existing_json_path, "w") as f:
+            json.dump(existing, f, indent=4)
 
 class openmc_xs:
     """
