@@ -8,9 +8,10 @@ import numpy as np
 import h5py
 import openmc
 import importlib
+import os
 
 class openmc_mgxslib:
-    def __init__ (self, cases: dict):
+    def __init__ (self, cases: dict, cleanup_h5: bool = True): # Default Behavior of cleaning up temp mgxs.h5 files.
 
         """
              Reads OpenMC Statepoint and Summary Files that contain mgxs.Library() MGXS Tallies and builds a .json.
@@ -49,6 +50,7 @@ class openmc_mgxslib:
         """
 
         self.cases = cases
+        self.clean = cleanup_h5
         self.json_store = {}
         self.required_mgxs_types = [
             "beta",
@@ -59,6 +61,7 @@ class openmc_mgxslib:
             "diffusion-coefficient",
             "fission",
             "kappa-fission",
+            "consistent nu-scatter matrix",
             "nu-fission",
             "inverse-velocity"]
 
@@ -162,6 +165,12 @@ class openmc_mgxslib:
                         existing_temps.add(temp)
                         self.json_store[mat_name]["temps"] = sorted(existing_temps) # Updating Running Temperatures List
                     print(f"Registered Moltres Group Constants for {mat_name} at {temp}K")
+        if self.clean:
+            try:
+                os.remove("mgxs/mgxs.h5")
+                os.rmdir("mgxs") # This only runs if the folder is empty, safe for other files.
+            except: FileNotFoundError
+            pass
 
     def build_json(self):
         for case in self.cases.values():
