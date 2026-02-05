@@ -14,15 +14,7 @@ class openmc_mgxslib:
 
         """
              Reads OpenMC Statepoint and Summary Files that contain mgxs.Library() MGXS Tallies and builds a .json.
-             Is able to read multi statepoint/summary/mgxslibs on 2 cases:
-
-             Case 1: User has 2 mgxs.Library() in 1 file and they want to insert both at the same time,
-             Using the case dict, just add another key with a different statepoint, summary, and mgxslib.
-             (NOTE: NOT TESTED FULLY)
-
-             Case 2: User has a JSON file already created from 1 OpenMC run and wants to append it with another,
-             New function append_to_json() will append an already Moltres formatted JSON File.
-             (NOTE: Tested locally, overwrites are possible under very specific situations, but otherwise works fine)
+             Is set up to read only 1 Statepoint and Summary as of now, will add multi-file capbilities soon.
 
              mgxs.Library() is the most optimized, efficient, and user-friendly way to generate MGXS Tallies
              This function requires the user to have a properly setup mgxs.Library()
@@ -37,15 +29,6 @@ class openmc_mgxslib:
             mgxs.Library().legendre_order = 3
                 Legendre Order must be 3 to properly compute and format GTRANSFXS.
                 (I do not know if this is a true requirement, but it matches the godiva.json GTRANSFXS numbers)
-            For JSON File Creation, a dict must be created using the following format and be passed in initialization:
-                dict = {
-                    "dict_name":{
-                        "statepoint": "...",
-                        "summary": "...",
-                        "mgxslib": "..."
-                    }
-                }
-
             Parameters
             ----------
             stpt_file: str
@@ -76,7 +59,6 @@ class openmc_mgxslib:
             "diffusion-coefficient",
             "fission",
             "kappa-fission",
-            "consistent nu-scatter matrix",
             "nu-fission",
             "inverse-velocity"]
 
@@ -117,7 +99,10 @@ class openmc_mgxslib:
                     if mat_name not in self.json_store:
                         self.json_store[mat_name] = {}
 
-                    temps =mat.temperature if isinstance(mat.temperature, list) else [mat.temperature]
+                    if isinstance(mat.temperature, list):
+                        temps = mat.temperature
+                    else:
+                        temps = [mat.temperature]
 
                     for temp in temps:
 
@@ -136,22 +121,25 @@ class openmc_mgxslib:
 
                             arr = f[domain_type][domain_id][mgxs_type]["average"][:]
 
-                            if mgxs_type == "kappa-fission": # will update to make less complicated soon
-                                fission_data = f[domain_type][domain_id]["fission"]["average"][:]
-                                fission_data = np.array(fission_data)
+                            if mgxs_type == "kappa-fission":
+                                fission_data = np.array(f[domain_type][domain_id]["fission"]["average"][:])
                                 kappa_data = np.array(arr)
 
-                                safe_arr = np.zeros_like(fission_data)
-                                mask = fission_data != 0
-                                safe_arr[mask] = (kappa_data[mask] / fission_data[mask]) * 1e-6
-                                arr = safe_arr
+                                arr = np.divide(kappa_data, fission_data,
+                                                out = np.zeros_like(kappa_data, dtype = float),
+                                                where = (fission_data != 0)) * 1e-6 #In MeV
 
                             if mgxs_type == "consistent nu-scatter matrix":
                                 arr = arr[:, :, 0] # P0 Entry
 
                             if mgxs_type == "chi-delayed":
-                                arr = arr.sum(axis = 0) # Delayed Group Collapse
-                                arr /= arr.sum() # Normalization
+                                arr = arr.sum(axis = 0)
+                                denom = arr.sum()
+
+                                if denom!= 0:
+                                    arr = arr / denom
+                                else:
+                                    arr = np.zeros_like(arr)
 
                             if mgxs_type == "beta":
                                 arr = arr.sum(axis = 1) # Energy Group Collapse
@@ -168,10 +156,12 @@ class openmc_mgxslib:
                             elif mgxs_type == "nu-fission":
                                 mgxs_key = "NSF" # New OpenMC nu-fission tally already comes flux weighted.
 
-                            self.json_store[mat_name][str(temp)][mgxs_key] = arr = arr.tolist()
+                            self.json_store[mat_name][str(temp)][mgxs_key] = arr.tolist()
 
-                        existing = set(self.json_store[mat_name].get("temps", []))
-                        self.json_store[mat_name]["temps"] = sorted(existing.union({temp})) # Updating Running Temperatures List
+                        existing_temps = set(self.json_store[mat_name].get("temps", []))
+                        existing_temps.add(temp)
+                        self.json_store[mat_name]["temps"] = sorted(existing_temps) # Updating Running Temperatures List
+                    print(f"Registered Moltres Group Constants for {mat_name} at {temp}K")
 
     def build_json(self):
         for case in self.cases.values():
@@ -188,6 +178,7 @@ class openmc_mgxslib:
 
         with open(json_path, 'w') as f:
             json.dump(self.json_store , f, indent=4)
+            print(f"Successfully Built and Dumped JSON at {json_path}")
 
     def append_to_json(self, existing_json_path):
 
@@ -225,6 +216,7 @@ class openmc_mgxslib:
 
         with open(existing_json_path, "w") as f:
             json.dump(existing, f, indent=4)
+            print(f"Successfully appended to JSON at {existing_json_path}")
 
 class openmc_xs:
     """
