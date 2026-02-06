@@ -15,21 +15,39 @@ class openmc_mgxslib:
 
         """
              Reads OpenMC Statepoint and Summary Files that contain mgxs.Library() MGXS Tallies and builds a .json.
-             Is set up to read only 1 Statepoint and Summary as of now, will add multi-file capbilities soon.
+             Is able to read multi statepoint/summary/mgxslibs on 2 cases:
+
+             Case 1: User has 2 mgxs.Library() in 1 file and they want to insert both at the same time,
+             Using the case dict, just add another key with a different statepoint, summary, and mgxslib.
+             (NOTE: NOT TESTED FULLY)
+
+             Case 2: User has a JSON file already created from 1 OpenMC run and wants to append it with another,
+             New function append_to_json() will append an already Moltres formatted JSON File.
+             (NOTE: Tested locally, overwrites are possible under very specific situations, but otherwise works fine)
 
              mgxs.Library() is the most optimized, efficient, and user-friendly way to generate MGXS Tallies
              This function requires the user to have a properly setup mgxs.Library()
 
              Is currently defined for an arbitrary number of domains, materials, energy groups, and delayed groups.
 
+              For JSON File Creation, a dict must be created using the following format and be passed in initialization under cases:
+                dict = {
+                    "dict_name":{
+                        "statepoint": "...",
+                        "summary": "...",
+                        "mgxslib": "..."
+                    }
+                }
+
             Requirements
             ----------
             mgxs.Libary().mgxs_types
                 The types configured in the users mgxs.Library() must at least have the required mgxs_types
                 that are given in the __init__ function.
-            mgxs.Library().legendre_order = 3
-                Legendre Order must be 3 to properly compute and format GTRANSFXS.
-                (I do not know if this is a true requirement, but it matches the godiva.json GTRANSFXS numbers)
+            NOTE: It is RECOMMENDED to have mgxs.Library().legendre_order > 0  when generating scattering matrices.
+            Legendre Order = 0 does not include anisotropic scattering and results may differ from reference data.
+            This software can still process legendre_order = 0.
+
             Parameters
             ----------
             stpt_file: str
@@ -133,7 +151,10 @@ class openmc_mgxslib:
                                                 where = (fission_data != 0)) * 1e-6 #In MeV
 
                             if mgxs_type == "consistent nu-scatter matrix":
-                                arr = arr[:, :, 0] # P0 Entry
+                                if arr.ndim == 3:
+                                    arr = arr[:, :, 0] # P0 Entry
+                                else:
+                                    print(f"Legendre Order of 0 Detected, Only P0 scattering is available for material: {mat_name} , results may differ from higher-order consistent scattering.")
 
                             if mgxs_type == "chi-delayed":
                                 arr = arr.sum(axis = 0)
