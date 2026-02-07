@@ -247,6 +247,43 @@ class openmc_mgxslib:
         with open(existing_json_path, "w") as f:
             json.dump(existing, f, indent=4)
             print(f"Successfully appended to JSON at {existing_json_path}")
+            
+    def generate_openmc_tallies_xml(energy_groups, delayed_groups: int, domains, geometry, tallies_file):
+        
+        if all(isinstance(d, openmc.Material) for d in domains):
+            domain_type = "material"
+        elif all(isinstance(d, openmc.Cell) for d in domains):
+            domain_type = "cell"
+        else:
+            raise TypeError("All domains must be the same type (Material or Cell)")
+        
+        
+        groups = openmc.mgxs.EnergyGroups(group_edges = energy_groups)
+        mgxs_library = openmc.mgxs.Library(geometry)
+        mgxs_library.energy_groups = groups
+        mgxs_library.num_delayed_groups = delayed_groups
+        mgxs_library.legendre_order = 3
+        mgxs_library.domain_type = domain_type
+        mgxs_library.domains = domains
+        mgxs_library.mgxs_types = [
+            "beta",
+            "chi",
+            "chi-prompt",
+            "chi-delayed",
+            "decay-rate",
+            "diffusion-coefficient",
+            "kappa-fission",
+            "consistent nu-scatter matrix",
+            "nu-fission",
+            "inverse-velocity",
+            "fission",
+            "total"]
+        
+        mgxs_library.build_library()
+        mgxs_library.add_to_tallies_file(tallies_file, merge = True)
+        tallies_file.export_to_xml()
+        
+        return mgxs_library
 
 class openmc_xs:
     """
