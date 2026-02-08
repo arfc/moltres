@@ -11,8 +11,7 @@ import importlib
 import os
 
 class openmc_mgxslib:
-    def __init__ (self, cases: dict, cleanup_h5: bool = True): # Default Behavior of cleaning up temp mgxs.h5 files.
-
+    def __init__(self, stpt_file, mgxslib, summ_file, cleanup_h5: bool = True):
         """
              Reads OpenMC Statepoint and Summary Files that contain mgxs.Library() MGXS Tallies and builds a .json.
              Is able to read multi statepoint/summary/mgxslibs on 2 cases:
@@ -66,10 +65,29 @@ class openmc_mgxslib:
                 FISSE, GTRANSFXS, NSF, and RECIPVEL.
 
         """
+        import inspect
+        if isinstance(mgxslib, type(sys)): # Ensure to grab openmc.mgxs.Library from the python input file
+            found = False
+            for name, obj in inspect.getmembers(mgxslib):
+                if isinstance(obj, openmc.mgxs.Library):
+                    mgxslib = obj
+                    found = True
+                    break
+            if not found:
+                raise ValueError(f"No mgxs.Library object found in module {mgxslib}")
+
+        cases = {
+            "case": {
+                "statepoint": stpt_file,
+                "summary": summ_file,
+                "mgxslib": mgxslib
+            }
+        }
 
         self.cases = cases
         self.clean = cleanup_h5
         self.json_store = {}
+        self.xs_lib = {}
         self.required_mgxs_types = [
             "beta",
             "chi",
@@ -82,16 +100,25 @@ class openmc_mgxslib:
             "consistent nu-scatter matrix",
             "nu-fission",
             "inverse-velocity"]
+        
+
+
 
     def process_mgxslib(self, stpt_file, summ_file, mgxslib):
 
         statepoint = openmc.StatePoint(stpt_file, autolink = False)
+
         summary = openmc.Summary(summ_file)
         statepoint.link_with_summary(summary)
         if not hasattr(mgxslib, "load_from_statepoint"): # changed
             raise TypeError("Passed Library Object invalid, must be mgxs.Library()")
 
-        mgxslib.load_from_statepoint(statepoint)
+        try:
+            mgxslib.load_from_statepoint(statepoint) # MAIN ERROR OCCURING AT THIS LINE WITH TALLY ERRORS
+        except Exception as e:
+            print(f"Error loading statepoint: {e}") 
+            print("Ensure the statepoint file was generated using the same mgxs.Library definition.")
+            raise e
 
         material_id_to_name = {mat.id: mat.name for mat in summary.materials}
         material_id_to_object = {mat.id: mat for mat in summary.materials}
@@ -124,16 +151,32 @@ class openmc_mgxslib:
                         temps = mat.temperature
                     else:
                         temps = [mat.temperature]
+                    
+                    # Sort temperatures to map them to branch indices deterministically
+                    # Assuming temps are numbers, or convertible to float. None is treated as 294K conceptually or handled separately
+                    temps_sorted = sorted(temps, key=lambda x: float(x) if x is not None else 294.0)
 
-                    for temp in temps:
+                    for temp_idx, temp in enumerate(temps_sorted):
 
-                        if temp == None:
+                        if temp is None:
                             raise ValueError(f"Material {mat_name} has no set temperature value. If you intended on using room temperature please set material.temperature = 294")
                         else:
                             temp = float(temp)
 
                         if str(temp) not in self.json_store[mat_name]:
                             self.json_store[mat_name][str(temp)] = {}
+                        
+                        # Populate xs_lib for compatibility with read_input
+                        burn_idx = 0 
+                        uni_idx = mat_id - 1
+                        branch_idx = temp_idx
+
+                        if burn_idx not in self.xs_lib:
+                            self.xs_lib[burn_idx] = {}
+                        if uni_idx not in self.xs_lib[burn_idx]:
+                            self.xs_lib[burn_idx][uni_idx] = {}
+                        if branch_idx not in self.xs_lib[burn_idx][uni_idx]:
+                            self.xs_lib[burn_idx][uni_idx][branch_idx] = {}
 
                         for mgxs_type in self.required_mgxs_types:
 
@@ -181,6 +224,7 @@ class openmc_mgxslib:
                                 mgxs_key = "NSF" # New OpenMC nu-fission tally already comes flux weighted.
 
                             self.json_store[mat_name][str(temp)][mgxs_key] = arr.tolist()
+                            self.xs_lib[burn_idx][uni_idx][branch_idx][mgxs_key] = arr.tolist()
 
                         existing_temps = set(self.json_store[mat_name].get("temps", []))
                         existing_temps.add(temp)
@@ -190,8 +234,8 @@ class openmc_mgxslib:
             try:
                 os.remove("mgxs/mgxs.h5")
                 os.rmdir("mgxs") # This only runs if the folder is empty, safe for other files.
-            except: FileNotFoundError
-            pass
+            except FileNotFoundError:
+                pass
 
     def build_json(self):
         for case in self.cases.values():
@@ -248,6 +292,7 @@ class openmc_mgxslib:
             json.dump(existing, f, indent=4)
             print(f"Successfully appended to JSON at {existing_json_path}")
             
+    @staticmethod # made this a staticmethod call to prevent any interference with class call
     def generate_openmc_tallies_xml(energy_groups, delayed_groups: int, domains, geometry, tallies_file):
         
         if all(isinstance(d, openmc.Material) for d in domains):
@@ -947,9 +992,9 @@ if __name__ == '__main__':
                     openmc_ref_modules[i] = importlib.import_module(
                         XS_ref.replace(".py", "")
                     )
-                    files[i] = openmc_xs(XS_in, i, XS_sum)
+                    files[i] = openmc_mgxslib(XS_in, openmc_ref_modules[i], XS_sum)
                 else:
-                    raise (
+                    raise ValueError(
                         "XS data not understood\n \
                             Please use: scale or serpent, or openmc"
                     )
