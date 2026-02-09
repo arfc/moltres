@@ -1,434 +1,4 @@
-<!DOCTYPE html><head><meta charset="UTF-8"><title>SNScalarFluxAux | Moltres</title><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../contrib/katex/katex.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/katex_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/moltres.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script><script type="text/javascript" src="../../contrib/katex/katex.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Moltres</a><a href="https://github.com/arfc/moltres" class="right"><img src="../../media/framework/github-logo.png" alt="GitHub wordmark" class="github-mark"></img><img src="../../media/framework/github-mark.png" alt="GitHub logo" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="#!" class="dropdown-trigger" data-target="a3c42664-594d-4f0f-b273-07b469d87148" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="e9e37f3b-0e78-47a4-9e9a-5dd747db6f97" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="52814945-eaea-4e0a-8db1-bc8a1cdcbe78" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#" class="sidenav-trigger" data-target="dab72af4-cba9-4a09-8da6-a03e83815cd8"><i class="material-icons">menu</i></a><ul class="sidenav" id="dab72af4-cba9-4a09-8da6-a03e83815cd8"><li><a href="#!" class="dropdown-trigger" data-target="5f14b962-ef86-49c5-8cad-7492d3e1a289" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="9f97c735-f131-46f1-8696-aecd9b242370" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="d8be1391-edbf-45a2-89f5-d2f2696f28d5" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="a3c42664-594d-4f0f-b273-07b469d87148"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/theory.html">Theory</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="e9e37f3b-0e78-47a4-9e9a-5dd747db6f97"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="52814945-eaea-4e0a-8db1-bc8a1cdcbe78"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul><ul class="dropdown-content" id="5f14b962-ef86-49c5-8cad-7492d3e1a289"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/theory.html">Theory</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="9f97c735-f131-46f1-8696-aecd9b242370"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="d8be1391-edbf-45a2-89f5-d2f2696f28d5"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="col hide-on-med-and-down l12"><nav class="breadcrumb-nav"><div class="nav-wrapper"><span class="breadcrumb">source</span><span class="breadcrumb">auxkernels</span><a href="#" class="breadcrumb">SNScalarFluxAux</a></div></nav></div></div><div class="row"><div class="moose-content col s12 m12 l10"><section id="ce587e04-3721-4c5e-9ac0-aaeaf6b910f1" data-section-level="1" data-section-text="SNScalarFluxAux"><h1 id="snscalarfluxaux">SNScalarFluxAux</h1><p></p><section class="scrollspy" id="93b833f5-c683-4186-a047-421d545871fc" data-section-level="2" data-section-text="Overview"><h2 id="overview">Overview</h2><p>Computes the scalar neutron group flux from the angular neutron group flux, <span class="moose-katex-inline-equation" id="moose-equation-f5185e58-4471-4863-833c-11439c3589c4"><script>var element = document.getElementById("moose-equation-f5185e58-4471-4863-833c-11439c3589c4");katex.render("\\phi_g=\\sum_{d=1}^{N_d}w_d\\Psi_{g,d}", element, {displayMode:false,throwOnError:false});</script></span>.</p></section><section class="scrollspy" id="dcb8e493-30e1-4679-8b86-52cdedb9d14e" data-section-level="2" data-section-text="Example Input File Syntax"><h2 id="example-input-file-syntax">Example Input File Syntax</h2><p></p></section><section class="scrollspy" id="4e1dabdf-3a9b-4fbe-885d-22f517b89704" data-section-level="2" data-section-text="Input Parameters"><h2 id="input-parameters">Input Parameters</h2><section id="36011cd0-e261-4200-af2c-43303b0f0ba7" data-section-level="3" data-section-text="Required Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">N</span><span class="moose-parameter-header-description">Discrete ordinate order</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>unsigned int</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Discrete ordinate order</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">psi</span><span class="moose-parameter-header-description">SN angular flux array variable</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;VariableName&gt;</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>SN angular flux array variable</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">variable</span><span class="moose-parameter-header-description">The name of the variable that this object applies to</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>AuxVariableName</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of the variable that this object applies to</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Required Parameters</h3></summary></details></section><section id="aed4eaa1-1340-4730-8ad1-7ab4c6d4704f" data-section-level="3" data-section-text="Optional Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">block</span><span class="moose-parameter-header-description">The list of blocks (ids or names) that this object will be applied</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;SubdomainName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of blocks (ids or names) that this object will be applied</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">boundary</span><span class="moose-parameter-header-description">The list of boundaries (ids or names) from the mesh where this object applies</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;BoundaryName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of boundaries (ids or names) from the mesh where this object applies</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">check_boundary_restricted</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Whether to check for multiple element sides on the boundary in the case of a boundary restricted, element aux variable. Setting this to false will allow contribution to a single element's elemental value(s) from multiple boundary sides on the same element (example: when the restricted boundary exists on two or more sides of an element, such as at a corner of a mesh</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether to check for multiple element sides on the boundary in the case of a boundary restricted, element aux variable. Setting this to false will allow contribution to a single element's elemental value(s) from multiple boundary sides on the same element (example: when the restricted boundary exists on two or more sides of an element, such as at a corner of a mesh</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">execute_on</span><span class="moose-parameter-header-default">LINEAR TIMESTEP_END</span><span class="moose-parameter-header-description">The list of flag(s) indicating when this object should be executed. For a description of each flag, see https://mooseframework.inl.gov/source/interfaces/SetupInterface.html.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>LINEAR TIMESTEP_END</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>ExecFlagEnum</p><p class="moose-parameter-description-options"><span>Options:</span>XFEM_MARK, NONE, INITIAL, LINEAR, LINEAR_CONVERGENCE, NONLINEAR, NONLINEAR_CONVERGENCE, POSTCHECK, TIMESTEP_END, TIMESTEP_BEGIN, MULTIAPP_FIXED_POINT_END, MULTIAPP_FIXED_POINT_BEGIN, MULTIAPP_FIXED_POINT_CONVERGENCE, FINAL, CUSTOM, PRE_DISPLACE</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of flag(s) indicating when this object should be executed. For a description of each flag, see https://mooseframework.inl.gov/source/interfaces/SetupInterface.html.</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Optional Parameters</h3></summary></details></section><section id="e0617e4d-456f-433a-8e93-500a01f20fd3" data-section-level="3" data-section-text="Advanced Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">control_tags</span><span class="moose-parameter-header-description">Adds user-defined labels for accessing object parameters via control logic.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Adds user-defined labels for accessing object parameters via control logic.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">enable</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Set the enabled status of the MooseObject.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>Yes</p><p class="moose-parameter-description"><span>Description:</span>Set the enabled status of the MooseObject.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">search_method</span><span class="moose-parameter-header-default">nearest_node_connected_sides</span><span class="moose-parameter-header-description">Choice of search algorithm.  All options begin by finding the nearest node in the primary boundary to a query point in the secondary boundary.  In the default nearest_node_connected_sides algorithm, primary boundary elements are searched iff that nearest node is one of their nodes.  This is fast to determine via a pregenerated node-to-elem map and is robust on conforming meshes.  In the optional all_proximate_sides algorithm, primary boundary elements are searched iff they touch that nearest node, even if they are not topologically connected to it.  This is more CPU-intensive but is necessary for robustness on any boundary surfaces which has disconnections (such as Flex IGA meshes) or non-conformity (such as hanging nodes in adaptively h-refined meshes).</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>nearest_node_connected_sides</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>nearest_node_connected_sides, all_proximate_sides</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Choice of search algorithm.  All options begin by finding the nearest node in the primary boundary to a query point in the secondary boundary.  In the default nearest_node_connected_sides algorithm, primary boundary elements are searched iff that nearest node is one of their nodes.  This is fast to determine via a pregenerated node-to-elem map and is robust on conforming meshes.  In the optional all_proximate_sides algorithm, primary boundary elements are searched iff they touch that nearest node, even if they are not topologically connected to it.  This is more CPU-intensive but is necessary for robustness on any boundary surfaces which has disconnections (such as Flex IGA meshes) or non-conformity (such as hanging nodes in adaptively h-refined meshes).</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">seed</span><span class="moose-parameter-header-default">0</span><span class="moose-parameter-header-description">The seed for the master random number generator</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>unsigned int</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The seed for the master random number generator</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_displaced_mesh</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Whether or not this object should use the displaced mesh for computation.  Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether or not this object should use the displaced mesh for computation.  Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Advanced Parameters</h3></summary></details></section><section id="613bf59b-01a6-46b6-bf12-2127c15ae98c" data-section-level="3" data-section-text="Material Property Retrieval Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">prop_getter_suffix</span><span class="moose-parameter-header-description">An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MaterialPropertyName</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_interpolated_state</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">For the old and older state use projected material properties interpolated at the quadrature points. To set up projection use the ProjectedStatefulMaterialStorageAction.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>For the old and older state use projected material properties interpolated at the quadrature points. To set up projection use the ProjectedStatefulMaterialStorageAction.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Material Property Retrieval Parameters</h3></summary></details></section></section><section class="scrollspy" id="164d343a-550e-4d90-a208-a40fa6e84813" data-section-level="2" data-section-text="Input Files"><h2 id="input-files">Input Files</h2><ul class="moose-list-inputs browser-default"><li><a class="moose-source-filename tooltipped modal-trigger" href="#ee06fa5b-5d54-43e9-abed-388d685d9063">(tests/sn/hmg-sn.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#5b9fb0f0-af94-4b2e-9e43-c3a8ba34b810">(tests/hybrid/absorber-air-lattice-ref-hybrid-sub.i)</a></li></ul></section></section><div class="moose-modal modal" id="ee06fa5b-5d54-43e9-abed-388d685d9063"><div class="modal-content"><h4>(tests/sn/hmg-sn.i)</h4><pre style="max-height:350px;"><code class="language-moose">N = 8
-L = 2
-total_ords = ${fparse N*(N+2)}
-
-[GlobalParams]
-  num_groups = 8
-  num_precursor_groups = 6
-  group_fluxes = &#x27;group1 group2 group3 group4 group5 group6 group7 group8&#x27;
-  group_angular_fluxes = &#x27;psi1 psi2 psi3 psi4 psi5 psi6 psi7 psi8&#x27;
-  temperature = 900
-  N = ${N}
-  L = ${L}
-  account_delayed = false
-  group_constants = &#x27;TOTXS FISSXS NSF FISSE RECIPVEL CHI_T CHI_P CHI_D SPN BETA_EFF DECAY_CONSTANT&#x27;
-  acceleration = false
-[]
-
-[Problem]
-  type = EigenProblem
-  bx_norm = bnorm
-[]
-
-[Mesh]
-  second_order = true
-  [cmg]
-    type = CartesianMeshGenerator
-    dim = 1
-    dx = &#x27;20&#x27;
-    ix = &#x27;20&#x27;
-    subdomain_id = &#x27;0&#x27;
-  []
-[]
-
-[Variables]
-  [psi1]
-    order = SECOND
-    family = LAGRANGE
-    components = ${total_ords}
-  []
-  [psi2]
-    order = SECOND
-    family = LAGRANGE
-    components = ${total_ords}
-  []
-  [psi3]
-    order = SECOND
-    family = LAGRANGE
-    components = ${total_ords}
-  []
-  [psi4]
-    order = SECOND
-    family = LAGRANGE
-    components = ${total_ords}
-  []
-  [psi5]
-    order = SECOND
-    family = LAGRANGE
-    components = ${total_ords}
-  []
-  [psi6]
-    order = SECOND
-    family = LAGRANGE
-    components = ${total_ords}
-  []
-  [psi7]
-    order = SECOND
-    family = LAGRANGE
-    components = ${total_ords}
-  []
-  [psi8]
-    order = SECOND
-    family = LAGRANGE
-    components = ${total_ords}
-  []
-[]
-
-[AuxVariables]
-  [group1]
-    order = SECOND
-    family = LAGRANGE
-    initial_condition = 1
-  []
-  [group2]
-    order = SECOND
-    family = LAGRANGE
-    initial_condition = 1
-  []
-  [group3]
-    order = SECOND
-    family = LAGRANGE
-    initial_condition = 1
-  []
-  [group4]
-    order = SECOND
-    family = LAGRANGE
-    initial_condition = 1
-  []
-  [group5]
-    order = SECOND
-    family = LAGRANGE
-    initial_condition = 1
-  []
-  [group6]
-    order = SECOND
-    family = LAGRANGE
-    initial_condition = 1
-  []
-  [group7]
-    order = SECOND
-    family = LAGRANGE
-    initial_condition = 1
-  []
-  [group8]
-    order = SECOND
-    family = LAGRANGE
-    initial_condition = 1
-  []
-[]
-
-[Kernels]
-  [streaming_psi1]
-    type = SNStreaming
-    variable = psi1
-    group_number = 1
-  []
-  [streaming_psi2]
-    type = SNStreaming
-    variable = psi2
-    group_number = 2
-  []
-  [streaming_psi3]
-    type = SNStreaming
-    variable = psi3
-    group_number = 3
-  []
-  [streaming_psi4]
-    type = SNStreaming
-    variable = psi4
-    group_number = 4
-  []
-  [streaming_psi5]
-    type = SNStreaming
-    variable = psi5
-    group_number = 5
-  []
-  [streaming_psi6]
-    type = SNStreaming
-    variable = psi6
-    group_number = 6
-  []
-  [streaming_psi7]
-    type = SNStreaming
-    variable = psi7
-    group_number = 7
-  []
-  [streaming_psi8]
-    type = SNStreaming
-    variable = psi8
-    group_number = 8
-  []
-  [collision_psi1]
-    type = SNCollision
-    variable = psi1
-    group_number = 1
-  []
-  [collision_psi2]
-    type = SNCollision
-    variable = psi2
-    group_number = 2
-  []
-  [collision_psi3]
-    type = SNCollision
-    variable = psi3
-    group_number = 3
-  []
-  [collision_psi4]
-    type = SNCollision
-    variable = psi4
-    group_number = 4
-  []
-  [collision_psi5]
-    type = SNCollision
-    variable = psi5
-    group_number = 5
-  []
-  [collision_psi6]
-    type = SNCollision
-    variable = psi6
-    group_number = 6
-  []
-  [collision_psi7]
-    type = SNCollision
-    variable = psi7
-    group_number = 7
-  []
-  [collision_psi8]
-    type = SNCollision
-    variable = psi8
-    group_number = 8
-  []
-  [scattering_psi1]
-    type = SNScattering
-    variable = psi1
-    group_number = 1
-  []
-  [scattering_psi2]
-    type = SNScattering
-    variable = psi2
-    group_number = 2
-  []
-  [scattering_psi3]
-    type = SNScattering
-    variable = psi3
-    group_number = 3
-  []
-  [scattering_psi4]
-    type = SNScattering
-    variable = psi4
-    group_number = 4
-  []
-  [scattering_psi5]
-    type = SNScattering
-    variable = psi5
-    group_number = 5
-  []
-  [scattering_psi6]
-    type = SNScattering
-    variable = psi6
-    group_number = 6
-  []
-  [scattering_psi7]
-    type = SNScattering
-    variable = psi7
-    group_number = 7
-  []
-  [scattering_psi8]
-    type = SNScattering
-    variable = psi8
-    group_number = 8
-  []
-  [fission_psi1]
-    type = SNFission
-    variable = psi1
-    group_number = 1
-    extra_vector_tags = eigen
-  []
-  [fission_psi2]
-    type = SNFission
-    variable = psi2
-    group_number = 2
-    extra_vector_tags = eigen
-  []
-  [fission_psi3]
-    type = SNFission
-    variable = psi3
-    group_number = 3
-    extra_vector_tags = eigen
-  []
-  [fission_psi4]
-    type = SNFission
-    variable = psi4
-    group_number = 4
-    extra_vector_tags = eigen
-  []
-  [fission_psi5]
-    type = SNFission
-    variable = psi5
-    group_number = 5
-    extra_vector_tags = eigen
-  []
-  [fission_psi6]
-    type = SNFission
-    variable = psi6
-    group_number = 6
-    extra_vector_tags = eigen
-  []
-  [fission_psi7]
-    type = SNFission
-    variable = psi7
-    group_number = 7
-    extra_vector_tags = eigen
-  []
-  [fission_psi8]
-    type = SNFission
-    variable = psi8
-    group_number = 8
-    extra_vector_tags = eigen
-  []
-[]
-
-[AuxKernels]
-  [scalar_group1]
-    type = SNScalarFluxAux
-    variable = group1
-    psi = psi1
-    execute_on = &#x27;initial linear timestep_end&#x27;
-  []
-  [scalar_group2]
-    type = SNScalarFluxAux
-    variable = group2
-    psi = psi2
-    execute_on = &#x27;initial linear timestep_end&#x27;
-  []
-  [scalar_goup3]
-    type = SNScalarFluxAux
-    variable = group3
-    psi = psi3
-    execute_on = &#x27;initial linear timestep_end&#x27;
-  []
-  [scalar_group4]
-    type = SNScalarFluxAux
-    variable = group4
-    psi = psi4
-    execute_on = &#x27;initial linear timestep_end&#x27;
-  []
-  [scalar_group5]
-    type = SNScalarFluxAux
-    variable = group5
-    psi = psi5
-    execute_on = &#x27;initial linear timestep_end&#x27;
-  []
-  [scalar_group6]
-    type = SNScalarFluxAux
-    variable = group6
-    psi = psi6
-    execute_on = &#x27;initial linear timestep_end&#x27;
-  []
-  [scalar_group7]
-    type = SNScalarFluxAux
-    variable = group7
-    psi = psi7
-    execute_on = &#x27;initial linear timestep_end&#x27;
-  []
-  [scalar_group8]
-    type = SNScalarFluxAux
-    variable = group8
-    psi = psi8
-    execute_on = &#x27;initial linear timestep_end&#x27;
-  []
-[]
-
-[BCs]
-  [reflecting_psi1]
-    type = SNReflectingBC
-    variable = psi1
-    boundary = &#x27;left right&#x27;
-  []
-  [reflecting_psi2]
-    type = SNReflectingBC
-    variable = psi2
-    boundary = &#x27;left right&#x27;
-  []
-  [reflecting_psi3]
-    type = SNReflectingBC
-    variable = psi3
-    boundary = &#x27;left right&#x27;
-  []
-  [reflecting_psi4]
-    type = SNReflectingBC
-    variable = psi4
-    boundary = &#x27;left right&#x27;
-  []
-  [reflecting_psi5]
-    type = SNReflectingBC
-    variable = psi5
-    boundary = &#x27;left right&#x27;
-  []
-  [reflecting_psi6]
-    type = SNReflectingBC
-    variable = psi6
-    boundary = &#x27;left right&#x27;
-  []
-  [reflecting_psi7]
-    type = SNReflectingBC
-    variable = psi7
-    boundary = &#x27;left right&#x27;
-  []
-  [reflecting_psi8]
-    type = SNReflectingBC
-    variable = psi8
-    boundary = &#x27;left right&#x27;
-  []
-[]
-
-[Materials]
-  [hmg]
-    type = MoltresSNMaterial
-    base_file = &#x27;../../property_file_dir/sn-test/hmg.json&#x27;
-    material_key = &#x27;hmg&#x27;
-    interp_type = &#x27;none&#x27;
-    block = &#x27;0&#x27;
-  []
-[]
-
-[Executioner]
-  type = Eigenvalue
-  free_power_iterations = 2
-
-  solve_type = &#x27;PJFNK&#x27;
-  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
-  petsc_options_iname = &#x27;-pc_type -pc_hypre_type -pc_hypre_boomeramg_strong_threshold -pc_hypre_boomeramg_agg_nl -pc_hypre_boomeramg_agg_num_paths -pc_hypre_boomeramg_max_levels -pc_hypre_boomeramg_coarsen_type -pc_hypre_boomeramg_interp_type -pc_hypre_boomeramg_P_max -pc_hypre_boomeramg_truncfactor -ksp_gmres_restart&#x27;
-  petsc_options_value = &#x27;hypre boomeramg 0.7 4 5 25 HMIS ext+i 2 0.3 200&#x27;
-  line_search = &#x27;none&#x27;
-
-  nl_abs_tol = 1e-8
-  nl_rel_tol = 1e-50
-[]
-
-[Postprocessors]
-  [bnorm]
-    type = ElmIntegTotFissNtsPostprocessor
-    block = 0
-    execute_on = &#x27;initial linear timestep_end&#x27;
-  []
-[]
-
-[VectorPostprocessors]
-  [eigenvalues]
-    type = Eigenvalues
-    inverse_eigenvalue = true
-    outputs = console
-  []
-[]
-
-[Outputs]
-  [exodus]
-    type = Exodus
-    discontinuous = true
-  []
-[]
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="5b9fb0f0-af94-4b2e-9e43-c3a8ba34b810"><div class="modal-content"><h4>(tests/hybrid/absorber-air-lattice-ref-hybrid-sub.i)</h4><pre style="max-height:350px;"><code class="language-moose">N = 8
+<!DOCTYPE html><head><meta charset="UTF-8"><title>SNScalarFluxAux | Moltres</title><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../contrib/katex/katex.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/katex_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/moltres.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script><script type="text/javascript" src="../../contrib/katex/katex.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Moltres</a><a href="https://github.com/arfc/moltres" class="right"><img src="../../media/framework/github-logo.png" alt="GitHub wordmark" class="github-mark"></img><img src="../../media/framework/github-mark.png" alt="GitHub logo" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="#!" class="dropdown-trigger" data-target="c3429830-0aad-412d-8c50-5f7050f3712e" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="a0958f17-f043-4fb9-865e-c626eebed2d3" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="11a937a5-aea0-419e-bc42-ff0d9636ad44" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#" class="sidenav-trigger" data-target="0998c4fa-609e-40b0-954f-ea8f4b9ff50c"><i class="material-icons">menu</i></a><ul class="sidenav" id="0998c4fa-609e-40b0-954f-ea8f4b9ff50c"><li><a href="#!" class="dropdown-trigger" data-target="cd4f86a9-72c1-4679-88f6-5907e75ad385" data-constrainWidth="false">Getting Started<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="f5fd56e5-be99-49b3-af6c-b1bb4529d768" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="#!" class="dropdown-trigger" data-target="df33f4c3-4ffa-4a26-9671-c2416c3b9f05" data-constrainWidth="false">Help<i class="material-icons right">arrow_drop_down</i></a></li><li><a href="../../citing.html">Citing</a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="c3429830-0aad-412d-8c50-5f7050f3712e"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/theory.html">Theory</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="a0958f17-f043-4fb9-865e-c626eebed2d3"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="11a937a5-aea0-419e-bc42-ff0d9636ad44"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul><ul class="dropdown-content" id="cd4f86a9-72c1-4679-88f6-5907e75ad385"><li><a href="../../getting_started/installation.html">Install Moltres</a></li><li><a href="../../getting_started/theory.html">Theory</a></li><li><a href="../../getting_started/tutorials.html">Tutorials</a></li></ul><ul class="dropdown-content" id="f5fd56e5-be99-49b3-af6c-b1bb4529d768"><li><a href="../../syntax/index.html">Moltres Syntax</a></li><li><a href="https://mooseframework.inl.gov/source/index.html">MOOSE Syntax</a></li><li><a href="../../doxygen/classes.html">Moltres Doxygen</a></li><li><a href="https://mooseframework.inl.gov/docs/doxygen/moose/classes.html">MOOSE Doxygen</a></li><li><a href="../../development/contributing.html">Contributing</a></li><li><a href="../../publications.html">List of Publications</a></li></ul><ul class="dropdown-content" id="df33f4c3-4ffa-4a26-9671-c2416c3b9f05"><li><a href="https://github.com/arfc/moltres/discussions">Moltres Discussion Forum</a></li><li><a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion Forum</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="col hide-on-med-and-down l12"><nav class="breadcrumb-nav"><div class="nav-wrapper"><span class="breadcrumb">source</span><span class="breadcrumb">auxkernels</span><a href="#" class="breadcrumb">SNScalarFluxAux</a></div></nav></div></div><div class="row"><div class="moose-content col s12 m12 l10"><section id="501ef3cb-5e97-49fd-b816-19d511831d75" data-section-level="1" data-section-text="SNScalarFluxAux"><h1 id="snscalarfluxaux">SNScalarFluxAux</h1><p></p><section class="scrollspy" id="20c83a53-fe3e-4c24-a019-608fc1ea52c0" data-section-level="2" data-section-text="Overview"><h2 id="overview">Overview</h2><p>Computes the scalar neutron group flux from the angular neutron group flux, <span class="moose-katex-inline-equation" id="moose-equation-db8e39b7-c249-42a5-a8f6-2cc892ab6ccf"><script>var element = document.getElementById("moose-equation-db8e39b7-c249-42a5-a8f6-2cc892ab6ccf");katex.render("\\phi_g=\\sum_{d=1}^{N_d}w_d\\Psi_{g,d}", element, {displayMode:false,throwOnError:false});</script></span>.</p></section><section class="scrollspy" id="80fd1e8c-f872-4818-a0c1-86b14aff3119" data-section-level="2" data-section-text="Example Input File Syntax"><h2 id="example-input-file-syntax">Example Input File Syntax</h2><p></p></section><section class="scrollspy" id="12de1fcb-a036-44c3-b001-0c3fb47a35fa" data-section-level="2" data-section-text="Input Parameters"><h2 id="input-parameters">Input Parameters</h2><section id="e1e9a1bc-8468-4437-b51c-72dba1c73cfb" data-section-level="3" data-section-text="Required Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">N</span><span class="moose-parameter-header-description">Discrete ordinate order</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>unsigned int</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Discrete ordinate order</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">psi</span><span class="moose-parameter-header-description">SN angular flux array variable</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;VariableName&gt;</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>SN angular flux array variable</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">variable</span><span class="moose-parameter-header-description">The name of the variable that this object applies to</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>AuxVariableName</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of the variable that this object applies to</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Required Parameters</h3></summary></details></section><section id="5947c383-cdb1-42d7-b454-4f0f5a5ccf7f" data-section-level="3" data-section-text="Optional Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">block</span><span class="moose-parameter-header-description">The list of blocks (ids or names) that this object will be applied</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;SubdomainName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of blocks (ids or names) that this object will be applied</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">boundary</span><span class="moose-parameter-header-description">The list of boundaries (ids or names) from the mesh where this object applies</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;BoundaryName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of boundaries (ids or names) from the mesh where this object applies</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">check_boundary_restricted</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Whether to check for multiple element sides on the boundary in the case of a boundary restricted, element aux variable. Setting this to false will allow contribution to a single element's elemental value(s) from multiple boundary sides on the same element (example: when the restricted boundary exists on two or more sides of an element, such as at a corner of a mesh</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether to check for multiple element sides on the boundary in the case of a boundary restricted, element aux variable. Setting this to false will allow contribution to a single element's elemental value(s) from multiple boundary sides on the same element (example: when the restricted boundary exists on two or more sides of an element, such as at a corner of a mesh</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">execute_on</span><span class="moose-parameter-header-default">LINEAR TIMESTEP_END</span><span class="moose-parameter-header-description">The list of flag(s) indicating when this object should be executed. For a description of each flag, see https://mooseframework.inl.gov/source/interfaces/SetupInterface.html.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>LINEAR TIMESTEP_END</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>ExecFlagEnum</p><p class="moose-parameter-description-options"><span>Options:</span>XFEM_MARK, NONE, INITIAL, LINEAR, LINEAR_CONVERGENCE, NONLINEAR, NONLINEAR_CONVERGENCE, POSTCHECK, TIMESTEP_END, TIMESTEP_BEGIN, MULTIAPP_FIXED_POINT_END, MULTIAPP_FIXED_POINT_BEGIN, MULTIAPP_FIXED_POINT_CONVERGENCE, FINAL, CUSTOM, PRE_DISPLACE</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of flag(s) indicating when this object should be executed. For a description of each flag, see https://mooseframework.inl.gov/source/interfaces/SetupInterface.html.</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Optional Parameters</h3></summary></details></section><section id="653b2a87-524b-4ac9-aa0d-09ee1aadf2dd" data-section-level="3" data-section-text="Advanced Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">control_tags</span><span class="moose-parameter-header-description">Adds user-defined labels for accessing object parameters via control logic.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Adds user-defined labels for accessing object parameters via control logic.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">enable</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Set the enabled status of the MooseObject.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>Yes</p><p class="moose-parameter-description"><span>Description:</span>Set the enabled status of the MooseObject.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">search_method</span><span class="moose-parameter-header-default">nearest_node_connected_sides</span><span class="moose-parameter-header-description">Choice of search algorithm.  All options begin by finding the nearest node in the primary boundary to a query point in the secondary boundary.  In the default nearest_node_connected_sides algorithm, primary boundary elements are searched iff that nearest node is one of their nodes.  This is fast to determine via a pregenerated node-to-elem map and is robust on conforming meshes.  In the optional all_proximate_sides algorithm, primary boundary elements are searched iff they touch that nearest node, even if they are not topologically connected to it.  This is more CPU-intensive but is necessary for robustness on any boundary surfaces which has disconnections (such as Flex IGA meshes) or non-conformity (such as hanging nodes in adaptively h-refined meshes).</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>nearest_node_connected_sides</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>nearest_node_connected_sides, all_proximate_sides</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Choice of search algorithm.  All options begin by finding the nearest node in the primary boundary to a query point in the secondary boundary.  In the default nearest_node_connected_sides algorithm, primary boundary elements are searched iff that nearest node is one of their nodes.  This is fast to determine via a pregenerated node-to-elem map and is robust on conforming meshes.  In the optional all_proximate_sides algorithm, primary boundary elements are searched iff they touch that nearest node, even if they are not topologically connected to it.  This is more CPU-intensive but is necessary for robustness on any boundary surfaces which has disconnections (such as Flex IGA meshes) or non-conformity (such as hanging nodes in adaptively h-refined meshes).</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">seed</span><span class="moose-parameter-header-default">0</span><span class="moose-parameter-header-description">The seed for the master random number generator</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>unsigned int</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The seed for the master random number generator</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_displaced_mesh</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Whether or not this object should use the displaced mesh for computation.  Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether or not this object should use the displaced mesh for computation.  Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Advanced Parameters</h3></summary></details></section><section id="e16e8411-dd37-49d9-92e6-c85a806ade7a" data-section-level="3" data-section-text="Material Property Retrieval Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">prop_getter_suffix</span><span class="moose-parameter-header-description">An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MaterialPropertyName</p><p class="moose-parameter-description-doc-unit"><span>Unit:</span>(no unit assumed)</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_interpolated_state</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">For the old and older state use projected material properties interpolated at the quadrature points. To set up projection use the ProjectedStatefulMaterialStorageAction.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>For the old and older state use projected material properties interpolated at the quadrature points. To set up projection use the ProjectedStatefulMaterialStorageAction.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Material Property Retrieval Parameters</h3></summary></details></section></section><section class="scrollspy" id="f3ec7471-e393-4a15-92a1-88778c49d941" data-section-level="2" data-section-text="Input Files"><h2 id="input-files">Input Files</h2><ul class="moose-list-inputs browser-default"><li><a class="moose-source-filename tooltipped modal-trigger" href="#8a423cd8-b8ce-4150-8556-dc661c022c7f">(tests/hybrid/absorber-air-lattice-ref-hybrid-sub.i)</a></li><li><a class="moose-source-filename tooltipped modal-trigger" href="#43083ad9-5d20-4951-9e4b-28135ebeab7e">(tests/sn/hmg-sn.i)</a></li></ul></section></section><div class="moose-modal modal" id="8a423cd8-b8ce-4150-8556-dc661c022c7f"><div class="modal-content"><h4>(tests/hybrid/absorber-air-lattice-ref-hybrid-sub.i)</h4><pre style="max-height:350px;"><code class="language-moose">N = 8
 L = 2
 total_ords = ${fparse N*(N+2)}
 
@@ -1010,4 +580,434 @@ total_ords = ${fparse N*(N+2)}
 [Outputs]
   perf_graph = true
 []
-</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div><div class="col hide-on-med-and-down l2"><div class="toc-wrapper pin-top"><ul class="section table-of-contents"><li><a href="#93b833f5-c683-4186-a047-421d545871fc" class="tooltipped" data-position="left" data-tooltip="Overview">Overview</a></li><li><a href="#dcb8e493-30e1-4679-8b86-52cdedb9d14e" class="tooltipped" data-position="left" data-tooltip="Example Input File Syntax">Example Input File Syntax</a></li><li><a href="#4e1dabdf-3a9b-4fbe-885d-22f517b89704" class="tooltipped" data-position="left" data-tooltip="Input Parameters">Input Parameters</a></li><li><a href="#164d343a-550e-4d90-a208-a40fa6e84813" class="tooltipped" data-position="left" data-tooltip="Input Files">Input Files</a></li></ul></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="43083ad9-5d20-4951-9e4b-28135ebeab7e"><div class="modal-content"><h4>(tests/sn/hmg-sn.i)</h4><pre style="max-height:350px;"><code class="language-moose">N = 8
+L = 2
+total_ords = ${fparse N*(N+2)}
+
+[GlobalParams]
+  num_groups = 8
+  num_precursor_groups = 6
+  group_fluxes = &#x27;group1 group2 group3 group4 group5 group6 group7 group8&#x27;
+  group_angular_fluxes = &#x27;psi1 psi2 psi3 psi4 psi5 psi6 psi7 psi8&#x27;
+  temperature = 900
+  N = ${N}
+  L = ${L}
+  account_delayed = false
+  group_constants = &#x27;TOTXS FISSXS NSF FISSE RECIPVEL CHI_T CHI_P CHI_D SPN BETA_EFF DECAY_CONSTANT&#x27;
+  acceleration = false
+[]
+
+[Problem]
+  type = EigenProblem
+  bx_norm = bnorm
+[]
+
+[Mesh]
+  second_order = true
+  [cmg]
+    type = CartesianMeshGenerator
+    dim = 1
+    dx = &#x27;20&#x27;
+    ix = &#x27;20&#x27;
+    subdomain_id = &#x27;0&#x27;
+  []
+[]
+
+[Variables]
+  [psi1]
+    order = SECOND
+    family = LAGRANGE
+    components = ${total_ords}
+  []
+  [psi2]
+    order = SECOND
+    family = LAGRANGE
+    components = ${total_ords}
+  []
+  [psi3]
+    order = SECOND
+    family = LAGRANGE
+    components = ${total_ords}
+  []
+  [psi4]
+    order = SECOND
+    family = LAGRANGE
+    components = ${total_ords}
+  []
+  [psi5]
+    order = SECOND
+    family = LAGRANGE
+    components = ${total_ords}
+  []
+  [psi6]
+    order = SECOND
+    family = LAGRANGE
+    components = ${total_ords}
+  []
+  [psi7]
+    order = SECOND
+    family = LAGRANGE
+    components = ${total_ords}
+  []
+  [psi8]
+    order = SECOND
+    family = LAGRANGE
+    components = ${total_ords}
+  []
+[]
+
+[AuxVariables]
+  [group1]
+    order = SECOND
+    family = LAGRANGE
+    initial_condition = 1
+  []
+  [group2]
+    order = SECOND
+    family = LAGRANGE
+    initial_condition = 1
+  []
+  [group3]
+    order = SECOND
+    family = LAGRANGE
+    initial_condition = 1
+  []
+  [group4]
+    order = SECOND
+    family = LAGRANGE
+    initial_condition = 1
+  []
+  [group5]
+    order = SECOND
+    family = LAGRANGE
+    initial_condition = 1
+  []
+  [group6]
+    order = SECOND
+    family = LAGRANGE
+    initial_condition = 1
+  []
+  [group7]
+    order = SECOND
+    family = LAGRANGE
+    initial_condition = 1
+  []
+  [group8]
+    order = SECOND
+    family = LAGRANGE
+    initial_condition = 1
+  []
+[]
+
+[Kernels]
+  [streaming_psi1]
+    type = SNStreaming
+    variable = psi1
+    group_number = 1
+  []
+  [streaming_psi2]
+    type = SNStreaming
+    variable = psi2
+    group_number = 2
+  []
+  [streaming_psi3]
+    type = SNStreaming
+    variable = psi3
+    group_number = 3
+  []
+  [streaming_psi4]
+    type = SNStreaming
+    variable = psi4
+    group_number = 4
+  []
+  [streaming_psi5]
+    type = SNStreaming
+    variable = psi5
+    group_number = 5
+  []
+  [streaming_psi6]
+    type = SNStreaming
+    variable = psi6
+    group_number = 6
+  []
+  [streaming_psi7]
+    type = SNStreaming
+    variable = psi7
+    group_number = 7
+  []
+  [streaming_psi8]
+    type = SNStreaming
+    variable = psi8
+    group_number = 8
+  []
+  [collision_psi1]
+    type = SNCollision
+    variable = psi1
+    group_number = 1
+  []
+  [collision_psi2]
+    type = SNCollision
+    variable = psi2
+    group_number = 2
+  []
+  [collision_psi3]
+    type = SNCollision
+    variable = psi3
+    group_number = 3
+  []
+  [collision_psi4]
+    type = SNCollision
+    variable = psi4
+    group_number = 4
+  []
+  [collision_psi5]
+    type = SNCollision
+    variable = psi5
+    group_number = 5
+  []
+  [collision_psi6]
+    type = SNCollision
+    variable = psi6
+    group_number = 6
+  []
+  [collision_psi7]
+    type = SNCollision
+    variable = psi7
+    group_number = 7
+  []
+  [collision_psi8]
+    type = SNCollision
+    variable = psi8
+    group_number = 8
+  []
+  [scattering_psi1]
+    type = SNScattering
+    variable = psi1
+    group_number = 1
+  []
+  [scattering_psi2]
+    type = SNScattering
+    variable = psi2
+    group_number = 2
+  []
+  [scattering_psi3]
+    type = SNScattering
+    variable = psi3
+    group_number = 3
+  []
+  [scattering_psi4]
+    type = SNScattering
+    variable = psi4
+    group_number = 4
+  []
+  [scattering_psi5]
+    type = SNScattering
+    variable = psi5
+    group_number = 5
+  []
+  [scattering_psi6]
+    type = SNScattering
+    variable = psi6
+    group_number = 6
+  []
+  [scattering_psi7]
+    type = SNScattering
+    variable = psi7
+    group_number = 7
+  []
+  [scattering_psi8]
+    type = SNScattering
+    variable = psi8
+    group_number = 8
+  []
+  [fission_psi1]
+    type = SNFission
+    variable = psi1
+    group_number = 1
+    extra_vector_tags = eigen
+  []
+  [fission_psi2]
+    type = SNFission
+    variable = psi2
+    group_number = 2
+    extra_vector_tags = eigen
+  []
+  [fission_psi3]
+    type = SNFission
+    variable = psi3
+    group_number = 3
+    extra_vector_tags = eigen
+  []
+  [fission_psi4]
+    type = SNFission
+    variable = psi4
+    group_number = 4
+    extra_vector_tags = eigen
+  []
+  [fission_psi5]
+    type = SNFission
+    variable = psi5
+    group_number = 5
+    extra_vector_tags = eigen
+  []
+  [fission_psi6]
+    type = SNFission
+    variable = psi6
+    group_number = 6
+    extra_vector_tags = eigen
+  []
+  [fission_psi7]
+    type = SNFission
+    variable = psi7
+    group_number = 7
+    extra_vector_tags = eigen
+  []
+  [fission_psi8]
+    type = SNFission
+    variable = psi8
+    group_number = 8
+    extra_vector_tags = eigen
+  []
+[]
+
+[AuxKernels]
+  [scalar_group1]
+    type = SNScalarFluxAux
+    variable = group1
+    psi = psi1
+    execute_on = &#x27;initial linear timestep_end&#x27;
+  []
+  [scalar_group2]
+    type = SNScalarFluxAux
+    variable = group2
+    psi = psi2
+    execute_on = &#x27;initial linear timestep_end&#x27;
+  []
+  [scalar_goup3]
+    type = SNScalarFluxAux
+    variable = group3
+    psi = psi3
+    execute_on = &#x27;initial linear timestep_end&#x27;
+  []
+  [scalar_group4]
+    type = SNScalarFluxAux
+    variable = group4
+    psi = psi4
+    execute_on = &#x27;initial linear timestep_end&#x27;
+  []
+  [scalar_group5]
+    type = SNScalarFluxAux
+    variable = group5
+    psi = psi5
+    execute_on = &#x27;initial linear timestep_end&#x27;
+  []
+  [scalar_group6]
+    type = SNScalarFluxAux
+    variable = group6
+    psi = psi6
+    execute_on = &#x27;initial linear timestep_end&#x27;
+  []
+  [scalar_group7]
+    type = SNScalarFluxAux
+    variable = group7
+    psi = psi7
+    execute_on = &#x27;initial linear timestep_end&#x27;
+  []
+  [scalar_group8]
+    type = SNScalarFluxAux
+    variable = group8
+    psi = psi8
+    execute_on = &#x27;initial linear timestep_end&#x27;
+  []
+[]
+
+[BCs]
+  [reflecting_psi1]
+    type = SNReflectingBC
+    variable = psi1
+    boundary = &#x27;left right&#x27;
+  []
+  [reflecting_psi2]
+    type = SNReflectingBC
+    variable = psi2
+    boundary = &#x27;left right&#x27;
+  []
+  [reflecting_psi3]
+    type = SNReflectingBC
+    variable = psi3
+    boundary = &#x27;left right&#x27;
+  []
+  [reflecting_psi4]
+    type = SNReflectingBC
+    variable = psi4
+    boundary = &#x27;left right&#x27;
+  []
+  [reflecting_psi5]
+    type = SNReflectingBC
+    variable = psi5
+    boundary = &#x27;left right&#x27;
+  []
+  [reflecting_psi6]
+    type = SNReflectingBC
+    variable = psi6
+    boundary = &#x27;left right&#x27;
+  []
+  [reflecting_psi7]
+    type = SNReflectingBC
+    variable = psi7
+    boundary = &#x27;left right&#x27;
+  []
+  [reflecting_psi8]
+    type = SNReflectingBC
+    variable = psi8
+    boundary = &#x27;left right&#x27;
+  []
+[]
+
+[Materials]
+  [hmg]
+    type = MoltresSNMaterial
+    base_file = &#x27;../../property_file_dir/sn-test/hmg.json&#x27;
+    material_key = &#x27;hmg&#x27;
+    interp_type = &#x27;none&#x27;
+    block = &#x27;0&#x27;
+  []
+[]
+
+[Executioner]
+  type = Eigenvalue
+  free_power_iterations = 2
+
+  solve_type = &#x27;PJFNK&#x27;
+  petsc_options = &#x27;-snes_converged_reason -ksp_converged_reason -snes_linesearch_monitor&#x27;
+  petsc_options_iname = &#x27;-pc_type -pc_hypre_type -pc_hypre_boomeramg_strong_threshold -pc_hypre_boomeramg_agg_nl -pc_hypre_boomeramg_agg_num_paths -pc_hypre_boomeramg_max_levels -pc_hypre_boomeramg_coarsen_type -pc_hypre_boomeramg_interp_type -pc_hypre_boomeramg_P_max -pc_hypre_boomeramg_truncfactor -ksp_gmres_restart&#x27;
+  petsc_options_value = &#x27;hypre boomeramg 0.7 4 5 25 HMIS ext+i 2 0.3 200&#x27;
+  line_search = &#x27;none&#x27;
+
+  nl_abs_tol = 1e-8
+  nl_rel_tol = 1e-50
+[]
+
+[Postprocessors]
+  [bnorm]
+    type = ElmIntegTotFissNtsPostprocessor
+    block = 0
+    execute_on = &#x27;initial linear timestep_end&#x27;
+  []
+[]
+
+[VectorPostprocessors]
+  [eigenvalues]
+    type = Eigenvalues
+    inverse_eigenvalue = true
+    outputs = console
+  []
+[]
+
+[Outputs]
+  [exodus]
+    type = Exodus
+    discontinuous = true
+  []
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div><div class="col hide-on-med-and-down l2"><div class="toc-wrapper pin-top"><ul class="section table-of-contents"><li><a href="#20c83a53-fe3e-4c24-a019-608fc1ea52c0" class="tooltipped" data-position="left" data-tooltip="Overview">Overview</a></li><li><a href="#80fd1e8c-f872-4818-a0c1-86b14aff3119" class="tooltipped" data-position="left" data-tooltip="Example Input File Syntax">Example Input File Syntax</a></li><li><a href="#12de1fcb-a036-44c3-b001-0c3fb47a35fa" class="tooltipped" data-position="left" data-tooltip="Input Parameters">Input Parameters</a></li><li><a href="#f3ec7471-e393-4a15-92a1-88778c49d941" class="tooltipped" data-position="left" data-tooltip="Input Files">Input Files</a></li></ul></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>
