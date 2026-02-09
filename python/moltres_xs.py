@@ -11,60 +11,33 @@ import importlib
 import os
 
 class openmc_mgxslib:
+    """
+        Reads OpenMC Statepoint and Summary Files, and mgxs.Library() to build and organize
+        a dictionary that contains each MGXS Tally. Currently set up to read an arbitrary number of
+        energy groups, delayed groups, temperatures, and materials.
+
+        Parameters
+        ----------
+        stpt_file: str
+            Name of OpenMC Statepoint HDF5 file containing collapsed cross section
+            data
+        mgxslib: openmc.mgxs.Library()
+            MGXS Library that contains the multigroup tallies OpenMC processed through tallies.xml
+        summ_file: str
+            Name of OpenMC Summary file associated with the Statepoint file
+        cleanup_h5: bool
+            Deletes temporary .h5 files created during the process_mgxslib() function,
+            may be turned off for logging/debugging purposes. Defaults to True.
+        Returns
+        ----------
+        xs_lib: dict
+            A hierarchical dictionary, organized by burnup, id, and temperature.
+            Currently stores BETA_EFF, CHI_T, CHI_P, CHI_D, DECAY_CONSTANT, DIFFCOEF,
+            FISSE, GTRANSFXS, NSF, RECIPVEL, FISSXS, TOTXS, and REMXS.
+
+    """
+
     def __init__(self, stpt_file, mgxslib, summ_file, cleanup_h5: bool = True):
-        """
-             Reads OpenMC Statepoint and Summary Files that contain mgxs.Library() MGXS Tallies and builds a .json.
-             Is able to read multi statepoint/summary/mgxslibs on 2 cases:
-
-             Case 1: User has 2 mgxs.Library() in 1 file and they want to insert both at the same time,
-             Using the case dict, just add another key with a different statepoint, summary, and mgxslib.
-             (NOTE: NOT TESTED FULLY)
-
-             Case 2: User has a JSON file already created from 1 OpenMC run and wants to append it with another,
-             New function append_to_json() will append an already Moltres formatted JSON File.
-             (NOTE: Tested locally, overwrites are possible under very specific situations, but otherwise works fine)
-
-             mgxs.Library() is the most optimized, efficient, and user-friendly way to generate MGXS Tallies
-             This function requires the user to have a properly setup mgxs.Library()
-
-             Is currently defined for an arbitrary number of domains, materials, energy groups, and delayed groups.
-
-              For JSON File Creation, a dict must be created using the following format and be passed in initialization under cases:
-                dict = {
-                    "dict_name":{
-                        "statepoint": "...",
-                        "summary": "...",
-                        "mgxslib": "..."
-                    }
-                }
-
-            Requirements
-            ----------
-            mgxs.Libary().mgxs_types
-                The types configured in the users mgxs.Library() must at least have the required mgxs_types
-                that are given in the __init__ function.
-            NOTE: It is RECOMMENDED to have mgxs.Library().legendre_order > 0  when generating scattering matrices.
-            Legendre Order = 0 does not include anisotropic scattering and results may differ from reference data.
-            This software can still process legendre_order = 0.
-
-            Parameters
-            ----------
-            stpt_file: str
-                Name of OpenMC Statepoint HDF5 file containing collapsed cross section
-                data
-            summ_file: str
-                Name of OpenMC Summary file associated with the Statepoint file
-            json_path: str
-                Name of .json file and path where the json_store will be dumped.
-            Returns
-            ----------
-            json_store: dict
-                A hierarchical dictionary that stores all MGXS Tallies requested/required.
-                Organized by material and temperature.
-                Contains: BETA_EFF, CHI_T, CHI_D, CHI_P, DECAY_CONSTANT, DIFFCOEF, FISSXS,
-                FISSE, GTRANSFXS, NSF, and RECIPVEL.
-
-        """
         import inspect
         if isinstance(mgxslib, type(sys)): # Ensure to grab openmc.mgxs.Library from the python input file
             found = False
@@ -101,20 +74,17 @@ class openmc_mgxslib:
             "fission",
             "total"]
 
-
-
-
     def process_mgxslib(self, stpt_file, summ_file, mgxslib):
 
         statepoint = openmc.StatePoint(stpt_file, autolink = False)
 
         summary = openmc.Summary(summ_file)
         statepoint.link_with_summary(summary)
-        if not hasattr(mgxslib, "load_from_statepoint"): # changed
+        if not hasattr(mgxslib, "load_from_statepoint"):
             raise TypeError("Passed Library Object invalid, must be mgxs.Library()")
 
         try:
-            mgxslib.load_from_statepoint(statepoint) # MAIN ERROR OCCURING AT THIS LINE WITH TALLY ERRORS
+            mgxslib.load_from_statepoint(statepoint)
         except Exception as e:
             print(f"Error loading statepoint: {e}")
             print("Ensure the statepoint file was generated using the same mgxs.Library definition.")
@@ -191,7 +161,7 @@ class openmc_mgxslib:
 
                                 arr = np.divide(kappa_data, fission_data,
                                                 out = np.zeros_like(kappa_data, dtype = float),
-                                                where = (fission_data != 0)) * 1e-6 #In MeV
+                                                where = (fission_data != 0)) * 1e-6
 
                             if mgxs_type in ("consistent nu-scatter matrix", "total"):
                                 if mgxs_type == "consistent nu-scatter matrix":
@@ -211,7 +181,7 @@ class openmc_mgxslib:
                                     arr = np.zeros_like(arr)
 
                             if mgxs_type == "beta":
-                                arr = arr.sum(axis = 1) # Energy Group Collapse
+                                arr = arr.sum(axis = 1)
 
                             if arr.ndim > 1:
                                 arr = arr.flatten()
@@ -230,24 +200,37 @@ class openmc_mgxslib:
                             self.json_store[mat_name][str(temp)][mgxs_key] = arr.tolist()
                             self.xs_lib[burn_idx][uni_idx][branch_idx][mgxs_key] = arr.tolist()
 
-
                         if "total" in cache and "consistent nu-scatter matrix" in cache:
                           total = cache["total"]
                           nuscatter = cache["consistent nu-scatter matrix"]
-                          nuscatter = nuscatter.sum(axis = 1) # Energy Group Collapse
+                          nuscatter = nuscatter.sum(axis = 1)
 
                           remxs = total - nuscatter
                           self.json_store[mat_name][str(temp)]["REMXS"] = remxs.tolist()
                           self.xs_lib[burn_idx][uni_idx][branch_idx]["REMXS"] = remxs.tolist()
+
                     print(f"Registered Moltres Group Constants for {mat_name} at {temp}K")
         if self.clean:
             try:
                 os.remove("mgxs/mgxs.h5")
-                os.rmdir("mgxs") # This only runs if the folder is empty, safe for other files.
+                os.rmdir("mgxs")
             except FileNotFoundError:
                 pass
 
-    def dump_json(self, json_path: str): # For Advanced Users who wish to bypass the input file.
+    def dump_json(self, json_path: str):
+        """
+        This function is for advanced users who wish to bypass the input file.
+        Dumps the self.json_store dictionary into a JSON File.
+        Organization that matches reference JSON files is not 100% guaranteed.
+
+        Parameters
+        ----------
+        json_path: str
+            Output path for the JSON File.
+        Returns
+        ----------
+        JSON File.
+        """
         if not self.json_store:
             raise ValueError("JSON Store is empty")
 
@@ -256,6 +239,17 @@ class openmc_mgxslib:
             print(f"Successfully Built and Dumped JSON at {json_path}")
 
     def build_json(self):
+        """
+        Runs process_mgxslib() for each case in self.cases
+        self.cases is governed by the input file, which allows for multi-file processing.
+        Works for 1 material, multiple temperatures. Multiple materials at 1 temperature.
+        And multiple materials at multiple temperatures.
+
+        Returns
+        ---------
+        json_store: dict
+            Dictionary containing processed XS Data, this is used to also construct xs_lib.
+        """
         for case in self.cases.values():
             self.process_mgxslib(
                 case["statepoint"],
@@ -264,7 +258,17 @@ class openmc_mgxslib:
             )
         return self.json_store
 
-    def append_to_json(self, existing_json_path): # For Advanced users who wish to append to an existing Moltres JSON File.
+    def append_to_json(self, existing_json_path):
+        """
+        Function for advanced users who wish to append to a previously created JSON File.
+        Works for adding new materials, temperatures, or rewriting old data.
+        NOTE: Has NOT been tested with JSON Files that were created via the parser, only user created.
+
+        Parameters
+        ----------
+        existing_json_path: str
+            Path to the existing JSON File.
+        """
 
         if not self.json_store:
             raise ValueError("Current JSON store is empty. Run build_json() first.")
@@ -302,8 +306,36 @@ class openmc_mgxslib:
             json.dump(existing, f, indent=4)
             print(f"Successfully appended to JSON at {existing_json_path}")
 
-    @staticmethod # made this a staticmethod call to prevent any interference with class call
+    @staticmethod
     def generate_openmc_tallies_xml(energy_groups, delayed_groups: int, domains, geometry, tallies_file):
+        """
+            Generates a preloaded and configured mgxs.Library() to use with Moltres Multigroup Constants.
+            Also exports those tallies to tallies.xml for use with OpenMC Runs. This function must be ran
+            to use the input parser and recieve your JSON File.
+
+            Parameters
+            ----------
+            energy_groups: list
+                Energy groups to be used with OpenMC MGXS Tally creation, must include group edges.
+            delayed_groups: int
+                Delayed groups to be used with OpenMC MGXS Tally creation, must be an integer.
+                NOTE: May add support for lists for backwards compatibility at a later date.
+            domains: list
+                Domains that MGXS tallies will be created over. All domains must be the same type,
+                either openmc.Material or openmc.Cell. For singular domain entries please still use a list.
+                Example: [my_material]
+            geometry: openmc.Geometry()
+                OpenMC Geometry that will be used to gather tallies and construct the mgxs.Library()
+                This is required to construct the library.
+            tallies_file: openmc.Tallies()
+                Tallies object that OpenMC uses for storing tallies. Required to inject tallies from
+                the mgxs.Library()
+
+            Returns
+            ---------
+            mgxs_library: openmc.mgxs.Library()
+                Library object that will be used to set up, construct, and record tallies.
+        """
 
         if all(isinstance(d, openmc.Material) for d in domains):
             domain_type = "material"
