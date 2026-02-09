@@ -83,7 +83,6 @@ class openmc_mgxslib:
                 "mgxslib": mgxslib
             }
         }
-
         self.cases = cases
         self.clean = cleanup_h5
         self.json_store = {}
@@ -100,7 +99,7 @@ class openmc_mgxslib:
             "consistent nu-scatter matrix",
             "nu-fission",
             "inverse-velocity"]
-        
+
 
 
 
@@ -116,7 +115,7 @@ class openmc_mgxslib:
         try:
             mgxslib.load_from_statepoint(statepoint) # MAIN ERROR OCCURING AT THIS LINE WITH TALLY ERRORS
         except Exception as e:
-            print(f"Error loading statepoint: {e}") 
+            print(f"Error loading statepoint: {e}")
             print("Ensure the statepoint file was generated using the same mgxs.Library definition.")
             raise e
 
@@ -151,7 +150,7 @@ class openmc_mgxslib:
                         temps = mat.temperature
                     else:
                         temps = [mat.temperature]
-                    
+
                     # Sort temperatures to map them to branch indices deterministically
                     # Assuming temps are numbers, or convertible to float. None is treated as 294K conceptually or handled separately
                     temps_sorted = sorted(temps, key=lambda x: float(x) if x is not None else 294.0)
@@ -165,9 +164,9 @@ class openmc_mgxslib:
 
                         if str(temp) not in self.json_store[mat_name]:
                             self.json_store[mat_name][str(temp)] = {}
-                        
+
                         # Populate xs_lib for compatibility with read_input
-                        burn_idx = 0 
+                        burn_idx = 0
                         uni_idx = mat_id - 1
                         branch_idx = temp_idx
 
@@ -246,14 +245,6 @@ class openmc_mgxslib:
             )
         return self.json_store
 
-    def dump_json(self, json_path: str):
-        if not self.json_store:
-            raise ValueError("JSON Store is empty")
-
-        with open(json_path, 'w') as f:
-            json.dump(self.json_store , f, indent=4)
-            print(f"Successfully Built and Dumped JSON at {json_path}")
-
     def append_to_json(self, existing_json_path):
 
         if not self.json_store:
@@ -291,18 +282,18 @@ class openmc_mgxslib:
         with open(existing_json_path, "w") as f:
             json.dump(existing, f, indent=4)
             print(f"Successfully appended to JSON at {existing_json_path}")
-            
+
     @staticmethod # made this a staticmethod call to prevent any interference with class call
     def generate_openmc_tallies_xml(energy_groups, delayed_groups: int, domains, geometry, tallies_file):
-        
+
         if all(isinstance(d, openmc.Material) for d in domains):
             domain_type = "material"
         elif all(isinstance(d, openmc.Cell) for d in domains):
             domain_type = "cell"
         else:
             raise TypeError("All domains must be the same type (Material or Cell)")
-        
-        
+
+
         groups = openmc.mgxs.EnergyGroups(group_edges = energy_groups)
         mgxs_library = openmc.mgxs.Library(geometry)
         mgxs_library.energy_groups = groups
@@ -323,11 +314,11 @@ class openmc_mgxslib:
             "inverse-velocity",
             "fission",
             "total"]
-        
+
         mgxs_library.build_library()
         mgxs_library.add_to_tallies_file(tallies_file, merge = True)
         tallies_file.export_to_xml()
-        
+
         return mgxs_library
 
 class openmc_xs:
@@ -993,6 +984,7 @@ if __name__ == '__main__':
                         XS_ref.replace(".py", "")
                     )
                     files[i] = openmc_mgxslib(XS_in, openmc_ref_modules[i], XS_sum)
+                    files[i].build_json()
                 else:
                     raise ValueError(
                         "XS data not understood\n \
