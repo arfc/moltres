@@ -94,11 +94,12 @@ class openmc_mgxslib:
             "chi-delayed",
             "decay-rate",
             "diffusion-coefficient",
-            "fission",
             "kappa-fission",
             "consistent nu-scatter matrix",
             "nu-fission",
-            "inverse-velocity"]
+            "inverse-velocity",
+            "fission",
+            "total"]
 
 
 
@@ -156,7 +157,7 @@ class openmc_mgxslib:
                     temps_sorted = sorted(temps, key=lambda x: float(x) if x is not None else 294.0)
 
                     for temp_idx, temp in enumerate(temps_sorted):
-
+                        cache = {}
                         if temp is None:
                             raise ValueError(f"Material {mat_name} has no set temperature value. If you intended on using room temperature please set material.temperature = 294")
                         else:
@@ -192,11 +193,13 @@ class openmc_mgxslib:
                                                 out = np.zeros_like(kappa_data, dtype = float),
                                                 where = (fission_data != 0)) * 1e-6 #In MeV
 
-                            if mgxs_type == "consistent nu-scatter matrix":
-                                if arr.ndim == 3:
-                                    arr = arr[:, :, 0] # P0 Entry
-                                else:
-                                    print(f"Legendre Order of 0 Detected, Only P0 scattering is available for material: {mat_name} , results may differ from higher-order consistent scattering.")
+                            if mgxs_type in ("consistent nu-scatter matrix", "total"):
+                                if mgxs_type == "consistent nu-scatter matrix":
+                                    if arr.ndim == 3:
+                                        arr = arr[:,:,0]
+                                    else:
+                                        print(f"Legendre Order of 0 Detected, Only P0 scattering is available for material: {mat_name} , results may differ from higher-order consistent scattering.")
+                                cache[mgxs_type] = arr
 
                             if mgxs_type == "chi-delayed":
                                 arr = arr.sum(axis = 0)
@@ -221,6 +224,8 @@ class openmc_mgxslib:
                                 mgxs_key = "FISSE"
                             elif mgxs_type == "nu-fission":
                                 mgxs_key = "NSF" # New OpenMC nu-fission tally already comes flux weighted.
+                            elif mgxs_type == "total":
+                                mgxs_key = "TOTXS"
 
                             self.json_store[mat_name][str(temp)][mgxs_key] = arr.tolist()
                             self.xs_lib[burn_idx][uni_idx][branch_idx][mgxs_key] = arr.tolist()
@@ -228,6 +233,15 @@ class openmc_mgxslib:
                         existing_temps = set(self.json_store[mat_name].get("temps", []))
                         existing_temps.add(temp)
                         self.json_store[mat_name]["temps"] = sorted(existing_temps) # Updating Running Temperatures List
+
+                    if "total" in cache and "consistent nu-scatter matrix" in cache:
+                        total = cache["total"]
+                        nuscatter = cache["consistent nu-scatter matrix"]
+                        nuscatter = nuscatter.sum(axis = 1) # Energy Group Collapse
+
+                        remxs = total - nuscatter
+                        self.json_store[mat_name][str(temp)]["REMXS"] = remxs.tolist()
+                        print("yo gurt")
                     print(f"Registered Moltres Group Constants for {mat_name} at {temp}K")
         if self.clean:
             try:
@@ -235,6 +249,14 @@ class openmc_mgxslib:
                 os.rmdir("mgxs") # This only runs if the folder is empty, safe for other files.
             except FileNotFoundError:
                 pass
+
+    def dump_json(self, json_path: str): # For Advanced Users who wish to bypass the input file.
+        if not self.json_store:
+            raise ValueError("JSON Store is empty")
+
+        with open(json_path, 'w') as f:
+            json.dump(self.json_store , f, indent=4)
+            print(f"Successfully Built and Dumped JSON at {json_path}")
 
     def build_json(self):
         for case in self.cases.values():
@@ -245,7 +267,7 @@ class openmc_mgxslib:
             )
         return self.json_store
 
-    def append_to_json(self, existing_json_path):
+    def append_to_json(self, existing_json_path): # For Advanced users who wish to append to an existing Moltres JSON File.
 
         if not self.json_store:
             raise ValueError("Current JSON store is empty. Run build_json() first.")
