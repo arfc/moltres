@@ -230,18 +230,15 @@ class openmc_mgxslib:
                             self.json_store[mat_name][str(temp)][mgxs_key] = arr.tolist()
                             self.xs_lib[burn_idx][uni_idx][branch_idx][mgxs_key] = arr.tolist()
 
-                        existing_temps = set(self.json_store[mat_name].get("temps", []))
-                        existing_temps.add(temp)
-                        self.json_store[mat_name]["temps"] = sorted(existing_temps) # Updating Running Temperatures List
 
-                    if "total" in cache and "consistent nu-scatter matrix" in cache:
-                        total = cache["total"]
-                        nuscatter = cache["consistent nu-scatter matrix"]
-                        nuscatter = nuscatter.sum(axis = 1) # Energy Group Collapse
+                        if "total" in cache and "consistent nu-scatter matrix" in cache:
+                          total = cache["total"]
+                          nuscatter = cache["consistent nu-scatter matrix"]
+                          nuscatter = nuscatter.sum(axis = 1) # Energy Group Collapse
 
-                        remxs = total - nuscatter
-                        self.json_store[mat_name][str(temp)]["REMXS"] = remxs.tolist()
-                        print("yo gurt")
+                          remxs = total - nuscatter
+                          self.json_store[mat_name][str(temp)]["REMXS"] = remxs.tolist()
+                          self.xs_lib[burn_idx][uni_idx][branch_idx]["REMXS"] = remxs.tolist()
                     print(f"Registered Moltres Group Constants for {mat_name} at {temp}K")
         if self.clean:
             try:
@@ -284,9 +281,9 @@ class openmc_mgxslib:
             for key, value in mat_data.items():
 
                 if key == "temps":
-                    old = set(existing[mat].get("temps", []))
+                    old = set(existing[mat].get("temp", []))
                     new = set(value)
-                    existing[mat]["temps"] = sorted(old.union(new))
+                    existing[mat]["temp"] = sorted(old.union(new))
 
                 elif isinstance(value, dict):
                     if key not in existing[mat]:
@@ -297,9 +294,9 @@ class openmc_mgxslib:
                     existing[mat][key] = value
 
         for mat in existing:
-            if "temps" in existing[mat]:
-                temps = existing[mat].pop("temps")
-                existing[mat]["temps"] = temps
+            if "temp" in existing[mat]:
+                temps = existing[mat].pop("temp")
+                existing[mat]["temp"] = temps
 
         with open(existing_json_path, "w") as f:
             json.dump(existing, f, indent=4)
