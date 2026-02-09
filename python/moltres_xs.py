@@ -5,8 +5,6 @@ import json
 import sys
 import argparse
 import numpy as np
-import h5py
-import openmc
 import importlib
 import os
 
@@ -38,6 +36,15 @@ class openmc_mgxslib:
     """
 
     def __init__(self, stpt_file, mgxslib, summ_file, cleanup_h5: bool = True):
+        import openmc
+        import warnings
+        version = float(openmc.__version__[2:])
+        if version < 13.2:    # Needs testing to preview where it is compatible after
+            raise Exception("moltres_xs.py is compatible with OpenMC " +
+                            "version 0.13.2 or later only.")
+        elif version > 15.3:
+            warnings.warn("moltres_xs.py has not been tested for OpenMC " +
+                          "versions newer than 0.14.0.")
         import inspect
         if isinstance(mgxslib, type(sys)): # Ensure to grab openmc.mgxs.Library from the python input file
             found = False
@@ -75,6 +82,7 @@ class openmc_mgxslib:
             "total"]
 
     def process_mgxslib(self, stpt_file, summ_file, mgxslib):
+        import openmc
 
         statepoint = openmc.StatePoint(stpt_file, autolink = False)
 
@@ -105,7 +113,7 @@ class openmc_mgxslib:
         }
 
         mgxslib.build_hdf5_store()
-
+        import h5py
         with h5py.File("mgxs/mgxs.h5", "r") as f:
             for domain_type in f:
                 for domain_id in f[domain_type]:
@@ -336,6 +344,15 @@ class openmc_mgxslib:
             mgxs_library: openmc.mgxs.Library()
                 Library object that will be used to set up, construct, and record tallies.
         """
+        import openmc
+        import warnings
+        version = float(openmc.__version__[2:])
+        if version < 13.2:
+            raise Exception("moltres_xs.py is compatible with OpenMC " +
+                            "version 0.13.2 or later only.")
+        elif version > 15.3:
+            warnings.warn("moltres_xs.py has not been tested for OpenMC " +
+                          "versions newer than 0.14.0.")
 
         if all(isinstance(d, openmc.Material) for d in domains):
             domain_type = "material"
@@ -367,7 +384,7 @@ class openmc_mgxslib:
             "total"]
 
         mgxs_library.build_library()
-        mgxs_library.add_to_tallies_file(tallies_file, merge = True)
+        mgxs_library.add_to_tallies(tallies_file, merge = True) # Ammended for OpenMC 0.15.3 deprecation warning
         tallies_file.export_to_xml()
 
         return mgxs_library
