@@ -165,11 +165,13 @@ class openmc_mgxslib:
 
                             if mgxs_type in ("consistent nu-scatter matrix", "total"):
                                 if mgxs_type == "consistent nu-scatter matrix":
+                                    raw_nuscatter = np.array(arr, copy = True)
                                     if arr.ndim == 3:
                                         arr = arr[:,:,0]
                                     else:
                                         print(f"Legendre Order of 0 Detected, Only P0 scattering is available for material: {mat_name} , results may differ from higher-order consistent scattering.")
                                 cache[mgxs_type] = arr
+                                cache["SPN"] = raw_nuscatter
 
                             if mgxs_type == "chi-delayed":
                                 arr = arr.sum(axis = 0)
@@ -208,6 +210,20 @@ class openmc_mgxslib:
                           remxs = total - nuscatter
                           self.json_store[mat_name][str(temp)]["REMXS"] = remxs.tolist()
                           self.xs_lib[burn_idx][uni_idx][branch_idx]["REMXS"] = remxs.tolist()
+
+                        if "SPN" in cache:
+                          legendre_order = mgxslib.legendre_order
+                          if legendre_order > 0:
+                            num_energy_groups = len(mgxslib.energy_groups.group_edges) - 1
+                            SPN = cache["SPN"]
+                            num_pn = legendre_order + 1
+
+                            SPN.shape = (num_energy_groups**2, num_pn)
+                            SPN = SPN.T
+                            self.json_store[mat_name][str(temp)]["SPN"] = SPN.tolist()
+                            self.xs_lib[burn_idx][uni_idx][branch_idx]["SPN"] = SPN.tolist()
+                        else:
+                            print("SPN will not be calculated due to the Legendre Order being 0, GTRANSFXS will reflect P0 scattering.")
 
                     print(f"Registered Moltres Group Constants for {mat_name} at {temp}K")
         if self.clean:
