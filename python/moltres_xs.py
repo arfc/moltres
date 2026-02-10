@@ -400,7 +400,7 @@ class openmc_mgxslib:
             "total"]
 
         mgxs_library.build_library()
-        mgxs_library.add_to_tallies(tallies_file, merge = True) # Ammended for OpenMC 0.15.3 deprecation warning
+        mgxs_library.add_to_tallies_file(tallies_file, merge = True) # Ammended for OpenMC 0.15.3 deprecation warning
         tallies_file.export_to_xml()
 
         return mgxs_library
