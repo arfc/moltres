@@ -44,7 +44,7 @@ class openmc_mgxslib:
                             "version 0.13.2 or later only.")
         elif version > 15.3:
             warnings.warn("moltres_xs.py has not been tested for OpenMC " +
-                          "versions newer than 0.14.0.")
+                          "versions newer than 0.15.3.")
         import inspect
         if isinstance(mgxslib, type(sys)): # Ensure to grab openmc.mgxs.Library from the python input file
             found = False
