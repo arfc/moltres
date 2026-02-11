@@ -210,6 +210,10 @@ class openmc_mgxslib:
                             self.json_store[mat_name][str(temp)][mgxs_key] = arr.tolist()
                             self.xs_lib[burn_idx][uni_idx][branch_idx][mgxs_key] = arr.tolist()
 
+                        existing_temps = set(self.json_store[mat_name].get("temp", [])) # Added this so advanced users get the same temp structure if doing multi-file
+                        existing_temps.add(temp)
+                        self.json_store[mat_name]["temp"] = sorted(existing_temps)
+
                         if "total" in cache and "consistent nu-scatter matrix" in cache:
                           total = cache["total"]
                           nuscatter = cache["consistent nu-scatter matrix"]
@@ -221,9 +225,9 @@ class openmc_mgxslib:
 
                         if "SPN" in cache:
                           legendre_order = mgxslib.legendre_order
+                          SPN = cache["SPN"]
                           if legendre_order > 0:
                             num_energy_groups = len(mgxslib.energy_groups.group_edges) - 1
-                            SPN = cache["SPN"]
                             num_pn = legendre_order + 1
 
                             SPN.shape = (num_energy_groups**2, num_pn)
@@ -231,7 +235,10 @@ class openmc_mgxslib:
                             self.json_store[mat_name][str(temp)]["SPN"] = SPN.tolist()
                             self.xs_lib[burn_idx][uni_idx][branch_idx]["SPN"] = SPN.tolist()
                         else:
-                            print("SPN will not be calculated due to the Legendre Order being 0, GTRANSFXS will reflect P0 scattering.")
+                            SPN = SPN[:,:,0]
+                            self.json_store[mat_name][str(temp)]["SPN"] = SPN.tolist()
+                            self.xs_lib[burn_idx][uni_idx][branch_idx]["SPN"] = SPN.tolist()
+                            print("SPN Calculation will only reflect P0 Scattering due to Legendre Order = 0")
 
                     print(f"Registered Moltres Group Constants for {mat_name} at {temp}K")
         if self.clean:
@@ -368,7 +375,7 @@ class openmc_mgxslib:
                             "version 0.13.2 or later only.")
         elif version > 15.3:
             warnings.warn("moltres_xs.py has not been tested for OpenMC " +
-                          "versions newer than 0.14.0.")
+                          "versions newer than 0.15.3.")
 
         if all(isinstance(d, openmc.Material) for d in domains):
             domain_type = "material"
@@ -400,7 +407,7 @@ class openmc_mgxslib:
             "total"]
 
         mgxs_library.build_library()
-        mgxs_library.add_to_tallies_file(tallies_file, merge = True) # Ammended for OpenMC 0.15.3 deprecation warning
+        mgxs_library.add_to_tallies_file(tallies_file, merge = True) # Will change to add_to_tallies when OpenMC deprecates add_to_tallies_file (after 0.15.3)
         tallies_file.export_to_xml()
 
         return mgxs_library
