@@ -377,6 +377,9 @@ class openmc_mgxslib:
             warnings.warn("moltres_xs.py has not been tested for OpenMC " +
                           "versions newer than 0.15.3.")
 
+        if len(domains) == 1 and isinstance(domains[0], (list, tuple)): # if OpenMC.materials is passed (nested list)
+            domains = list(domains[0])
+
         if all(isinstance(d, openmc.Material) for d in domains):
             domain_type = "material"
         elif all(isinstance(d, openmc.Cell) for d in domains):
@@ -384,6 +387,8 @@ class openmc_mgxslib:
         else:
             raise TypeError("All domains must be the same type (Material or Cell)")
 
+        if hasattr(energy_groups, "group_edges"):
+            energy_groups = energy_groups.group_edges
 
         groups = openmc.mgxs.EnergyGroups(group_edges = energy_groups)
         mgxs_library = openmc.mgxs.Library(geometry)
