@@ -6,7 +6,416 @@ import sys
 import argparse
 import numpy as np
 import importlib
+import os
 
+class openmc_mgxslib:
+    """
+        Reads OpenMC Statepoint and Summary Files, and mgxs.Library() to build and organize
+        a dictionary that contains each MGXS Tally. Currently set up to read an arbitrary number of
+        energy groups, delayed groups, temperatures, and materials.
+
+        Parameters
+        ----------
+        stpt_file: str
+            Name of OpenMC Statepoint HDF5 file containing collapsed cross section
+            data
+        mgxslib: openmc.mgxs.Library()
+            MGXS Library that contains the multigroup tallies OpenMC processed through tallies.xml
+        summ_file: str
+            Name of OpenMC Summary file associated with the Statepoint file
+        cleanup_h5: bool
+            Deletes temporary .h5 files created during the process_mgxslib() function,
+            may be turned off for logging/debugging purposes. Defaults to True.
+        Returns
+        ----------
+        xs_lib: dict
+            A hierarchical dictionary, organized by burnup, id, and temperature.
+            Currently stores BETA_EFF, CHI_T, CHI_P, CHI_D, DECAY_CONSTANT, DIFFCOEF,
+            FISSE, GTRANSFXS, NSF, RECIPVEL, FISSXS, TOTXS, and REMXS.
+
+    """
+
+    def __init__(self, stpt_file, mgxslib, summ_file, cleanup_h5: bool = True):
+        import openmc
+        import warnings
+        version = float(openmc.__version__[2:])
+        if version < 13.2:    # Needs testing to preview where it is compatible after
+            raise Exception("moltres_xs.py is compatible with OpenMC " +
+                            "version 0.13.2 or later only.")
+        elif version > 15.3:
+            warnings.warn("moltres_xs.py has not been tested for OpenMC " +
+                          "versions newer than 0.15.3.")
+        import inspect
+        if isinstance(mgxslib, type(sys)): # Ensure to grab openmc.mgxs.Library from the python input file
+            found = False
+            for name, obj in inspect.getmembers(mgxslib):
+                if isinstance(obj, openmc.mgxs.Library):
+                    mgxslib = obj
+                    found = True
+                    break
+            if not found:
+                raise ValueError(f"No mgxs.Library object found in module {mgxslib}")
+
+        cases = {
+            "case": {
+                "statepoint": stpt_file,
+                "summary": summ_file,
+                "mgxslib": mgxslib
+            }
+        }
+        self.cases = cases
+        self.clean = cleanup_h5
+        self.json_store = {}
+        self.xs_lib = {}
+        self.required_mgxs_types = [
+            "beta",
+            "chi",
+            "chi-prompt",
+            "chi-delayed",
+            "decay-rate",
+            "diffusion-coefficient",
+            "kappa-fission",
+            "consistent nu-scatter matrix",
+            "nu-fission",
+            "inverse-velocity",
+            "fission",
+            "total"]
+
+    def process_mgxslib(self, stpt_file, summ_file, mgxslib):
+        import openmc
+
+        statepoint = openmc.StatePoint(stpt_file, autolink = False)
+
+        summary = openmc.Summary(summ_file)
+        statepoint.link_with_summary(summary)
+        if not hasattr(mgxslib, "load_from_statepoint"):
+            raise TypeError("Passed Library Object invalid, must be mgxs.Library()")
+
+        try:
+            mgxslib.load_from_statepoint(statepoint)
+        except Exception as e:
+            print(f"Error loading statepoint: {e}")
+            print("Ensure the statepoint file was generated using the same mgxs.Library definition.")
+            raise e
+
+        material_id_to_name = {mat.id: mat.name for mat in summary.materials}
+        material_id_to_object = {mat.id: mat for mat in summary.materials}
+
+        rename_mgxs = {
+            "beta": "BETA_EFF",
+            "chi": "CHI_T",
+            "chi-prompt": "CHI_P",
+            "chi-delayed": "CHI_D",
+            "decay-rate": "DECAY_CONSTANT",
+            "diffusion-coefficient": "DIFFCOEF",
+            "fission": "FISSXS",
+            "inverse-velocity": "RECIPVEL"
+        }
+
+        mgxslib.build_hdf5_store()
+        import h5py
+        with h5py.File("mgxs/mgxs.h5", "r") as f:
+            for domain_type in f:
+                for domain_id in f[domain_type]:
+
+                    mat_id = int(domain_id)
+                    mat_name = material_id_to_name[mat_id]
+                    mat = material_id_to_object[mat_id]
+
+                    if mat_name not in self.json_store:
+                        self.json_store[mat_name] = {}
+
+                    if isinstance(mat.temperature, list):
+                        temps = mat.temperature
+                    else:
+                        temps = [mat.temperature]
+
+                    # Sort temperatures to map them to branch indices deterministically
+                    # Assuming temps are numbers, or convertible to float. None is treated as 294K conceptually or handled separately
+                    temps_sorted = sorted(temps, key=lambda x: float(x) if x is not None else 294.0)
+
+                    for temp_idx, temp in enumerate(temps_sorted):
+                        cache = {}
+                        if temp is None:
+                            raise ValueError(f"Material {mat_name} has no set temperature value. If you intended on using room temperature please set material.temperature = 294")
+                        else:
+                            temp = float(temp)
+
+                        if str(temp) not in self.json_store[mat_name]:
+                            self.json_store[mat_name][str(temp)] = {}
+
+                        # Populate xs_lib for compatibility with read_input
+                        burn_idx = 0
+                        uni_idx = mat_id - 1
+                        branch_idx = temp_idx
+
+                        if burn_idx not in self.xs_lib:
+                            self.xs_lib[burn_idx] = {}
+                        if uni_idx not in self.xs_lib[burn_idx]:
+                            self.xs_lib[burn_idx][uni_idx] = {}
+                        if branch_idx not in self.xs_lib[burn_idx][uni_idx]:
+                            self.xs_lib[burn_idx][uni_idx][branch_idx] = {}
+
+                        for mgxs_type in self.required_mgxs_types:
+
+                            if mgxs_type not in f[domain_type][domain_id]:
+                                raise KeyError(f"MGXS type '{mgxs_type}' not found for material '{mat_name}'")
+
+                            arr = f[domain_type][domain_id][mgxs_type]["average"][:]
+
+                            if mgxs_type == "kappa-fission":
+                                fission_data = np.array(f[domain_type][domain_id]["fission"]["average"][:])
+                                kappa_data = np.array(arr)
+
+                                arr = np.divide(kappa_data, fission_data,
+                                                out = np.zeros_like(kappa_data, dtype = float),
+                                                where = (fission_data != 0)) * 1e-6
+
+                            if mgxs_type in ("consistent nu-scatter matrix", "total"):
+                                if mgxs_type == "consistent nu-scatter matrix":
+                                    raw_nuscatter = np.array(arr, copy = True)
+                                    if arr.ndim == 3:
+                                        arr = arr[:,:,0]
+                                    else:
+                                        print(f"Legendre Order of 0 Detected, Only P0 scattering is available for material: {mat_name} , results may differ from higher-order consistent scattering.")
+                                cache[mgxs_type] = arr
+                                cache["SPN"] = raw_nuscatter
+
+                            if mgxs_type == "chi-delayed":
+                                arr = arr.sum(axis = 0)
+                                denom = arr.sum()
+
+                                if denom!= 0:
+                                    arr = arr / denom
+                                else:
+                                    arr = np.zeros_like(arr)
+
+                            if mgxs_type == "beta":
+                                arr = arr.sum(axis = 1)
+
+                            if arr.ndim > 1:
+                                arr = arr.flatten()
+
+                            mgxs_key = rename_mgxs.get(mgxs_type, mgxs_type)
+
+                            if mgxs_type == "consistent nu-scatter matrix":
+                                mgxs_key = "GTRANSFXS"
+                            elif mgxs_type == "kappa-fission":
+                                mgxs_key = "FISSE"
+                            elif mgxs_type == "nu-fission":
+                                mgxs_key = "NSF" # New OpenMC nu-fission tally already comes flux weighted.
+                            elif mgxs_type == "total":
+                                mgxs_key = "TOTXS"
+
+                            self.json_store[mat_name][str(temp)][mgxs_key] = arr.tolist()
+                            self.xs_lib[burn_idx][uni_idx][branch_idx][mgxs_key] = arr.tolist()
+
+                        existing_temps = set(self.json_store[mat_name].get("temp", [])) # Added this so advanced users get the same temp structure if doing multi-file
+                        existing_temps.add(temp)
+                        self.json_store[mat_name]["temp"] = sorted(existing_temps)
+
+                        if "total" in cache and "consistent nu-scatter matrix" in cache:
+                          total = cache["total"]
+                          nuscatter = cache["consistent nu-scatter matrix"]
+                          nuscatter = nuscatter.sum(axis = 1)
+
+                          remxs = total - nuscatter
+                          self.json_store[mat_name][str(temp)]["REMXS"] = remxs.tolist()
+                          self.xs_lib[burn_idx][uni_idx][branch_idx]["REMXS"] = remxs.tolist()
+
+                        if "SPN" in cache:
+                          legendre_order = mgxslib.legendre_order
+                          SPN = cache["SPN"]
+                          if legendre_order > 0:
+                            num_energy_groups = len(mgxslib.energy_groups.group_edges) - 1
+                            num_pn = legendre_order + 1
+
+                            SPN.shape = (num_energy_groups**2, num_pn)
+                            SPN = SPN.T
+                            self.json_store[mat_name][str(temp)]["SPN"] = SPN.tolist()
+                            self.xs_lib[burn_idx][uni_idx][branch_idx]["SPN"] = SPN.tolist()
+                        else:
+                            SPN = SPN[:,:,0]
+                            self.json_store[mat_name][str(temp)]["SPN"] = SPN.tolist()
+                            self.xs_lib[burn_idx][uni_idx][branch_idx]["SPN"] = SPN.tolist()
+                            print("SPN Calculation will only reflect P0 Scattering due to Legendre Order = 0")
+
+                    print(f"Registered Moltres Group Constants for {mat_name} at {temp}K")
+        if self.clean:
+            try:
+                os.remove("mgxs/mgxs.h5")
+                os.rmdir("mgxs")
+            except FileNotFoundError:
+                pass
+
+    def dump_json(self, json_path: str):
+        """
+        This function is for advanced users who wish to bypass the input file.
+        Dumps the self.json_store dictionary into a JSON File.
+        Organization that matches reference JSON files is not 100% guaranteed.
+
+        Parameters
+        ----------
+        json_path: str
+            Output path for the JSON File.
+        Returns
+        ----------
+        JSON File.
+        """
+        if not self.json_store:
+            raise ValueError("JSON Store is empty")
+
+        with open(json_path, 'w') as f:
+            json.dump(self.json_store , f, indent=4)
+            print(f"Successfully Built and Dumped JSON at {json_path}")
+
+    def build_json(self):
+        """
+        Runs process_mgxslib() for each case in self.cases
+        self.cases is governed by the input file, which allows for multi-file processing.
+        Works for 1 material, multiple temperatures. Multiple materials at 1 temperature.
+        And multiple materials at multiple temperatures.
+
+        Returns
+        ---------
+        json_store: dict
+            Dictionary containing processed XS Data, this is used to also construct xs_lib.
+        """
+        for case in self.cases.values():
+            self.process_mgxslib(
+                case["statepoint"],
+                case["summary"],
+                case["mgxslib"]
+            )
+        return self.json_store
+
+    def append_to_json(self, existing_json_path):
+        """
+        Function for advanced users who wish to append to a previously created JSON File.
+        Works for adding new materials, temperatures, or rewriting old data.
+        NOTE: Has NOT been tested with JSON Files that were created via the parser, only user created.
+
+        Parameters
+        ----------
+        existing_json_path: str
+            Path to the existing JSON File.
+        """
+
+        if not self.json_store:
+            raise ValueError("Current JSON store is empty. Run build_json() first.")
+
+        with open(existing_json_path, "r") as f:
+            existing = json.load(f)
+
+        for mat, mat_data in self.json_store.items():
+
+            if mat not in existing:
+                existing[mat] = mat_data
+                continue
+
+            for key, value in mat_data.items():
+
+                if key == "temps":
+                    old = set(existing[mat].get("temp", []))
+                    new = set(value)
+                    existing[mat]["temp"] = sorted(old.union(new))
+
+                elif isinstance(value, dict):
+                    if key not in existing[mat]:
+                        existing[mat][key] = value
+                    else:
+                        existing[mat][key].update(value)
+                else:
+                    existing[mat][key] = value
+
+        for mat in existing:
+            if "temp" in existing[mat]:
+                temps = existing[mat].pop("temp")
+                existing[mat]["temp"] = temps
+
+        with open(existing_json_path, "w") as f:
+            json.dump(existing, f, indent=4)
+            print(f"Successfully appended to JSON at {existing_json_path}")
+
+    @staticmethod
+    def generate_openmc_tallies_xml(energy_groups, delayed_groups: int, domains, geometry, tallies_file):
+        """
+            Generates a preloaded and configured mgxs.Library() to use with Moltres Multigroup Constants.
+            Also exports those tallies to tallies.xml for use with OpenMC Runs. This function must be ran
+            to use the input parser and recieve your JSON File.
+
+            Parameters
+            ----------
+            energy_groups: list
+                Energy groups to be used with OpenMC MGXS Tally creation, must include group edges.
+            delayed_groups: int
+                Delayed groups to be used with OpenMC MGXS Tally creation, must be an integer.
+                NOTE: May add support for lists for backwards compatibility at a later date.
+            domains: list
+                Domains that MGXS tallies will be created over. All domains must be the same type,
+                either openmc.Material or openmc.Cell. For singular domain entries please still use a list.
+                Example: [my_material]
+            geometry: openmc.Geometry()
+                OpenMC Geometry that will be used to gather tallies and construct the mgxs.Library()
+                This is required to construct the library.
+            tallies_file: openmc.Tallies()
+                Tallies object that OpenMC uses for storing tallies. Required to inject tallies from
+                the mgxs.Library()
+
+            Returns
+            ---------
+            mgxs_library: openmc.mgxs.Library()
+                Library object that will be used to set up, construct, and record tallies.
+        """
+        import openmc
+        import warnings
+        version = float(openmc.__version__[2:])
+        if version < 13.2:
+            raise Exception("moltres_xs.py is compatible with OpenMC " +
+                            "version 0.13.2 or later only.")
+        elif version > 15.3:
+            warnings.warn("moltres_xs.py has not been tested for OpenMC " +
+                          "versions newer than 0.15.3.")
+
+        if len(domains) == 1 and isinstance(domains[0], (list, tuple)): # if OpenMC.materials is passed (nested list)
+            domains = list(domains[0])
+
+        if all(isinstance(d, openmc.Material) for d in domains):
+            domain_type = "material"
+        elif all(isinstance(d, openmc.Cell) for d in domains):
+            domain_type = "cell"
+        else:
+            raise TypeError("All domains must be the same type (Material or Cell)")
+
+        if hasattr(energy_groups, "group_edges"):
+            energy_groups = energy_groups.group_edges
+
+        groups = openmc.mgxs.EnergyGroups(group_edges = energy_groups)
+        mgxs_library = openmc.mgxs.Library(geometry)
+        mgxs_library.energy_groups = groups
+        mgxs_library.num_delayed_groups = delayed_groups
+        mgxs_library.legendre_order = 3
+        mgxs_library.domain_type = domain_type
+        mgxs_library.domains = domains
+        mgxs_library.mgxs_types = [
+            "beta",
+            "chi",
+            "chi-prompt",
+            "chi-delayed",
+            "decay-rate",
+            "diffusion-coefficient",
+            "kappa-fission",
+            "consistent nu-scatter matrix",
+            "nu-fission",
+            "inverse-velocity",
+            "fission",
+            "total"]
+
+        mgxs_library.build_library()
+        mgxs_library.add_to_tallies_file(tallies_file, merge = True) # Will change to add_to_tallies when OpenMC deprecates add_to_tallies_file (after 0.15.3)
+        tallies_file.export_to_xml()
+
+        return mgxs_library
 
 class openmc_xs:
     """
@@ -670,9 +1079,10 @@ if __name__ == '__main__':
                     openmc_ref_modules[i] = importlib.import_module(
                         XS_ref.replace(".py", "")
                     )
-                    files[i] = openmc_xs(XS_in, i, XS_sum)
+                    files[i] = openmc_mgxslib(XS_in, openmc_ref_modules[i], XS_sum)
+                    files[i].build_json()
                 else:
-                    raise (
+                    raise ValueError(
                         "XS data not understood\n \
                             Please use: scale or serpent, or openmc"
                     )
