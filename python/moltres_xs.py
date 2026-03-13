@@ -216,10 +216,10 @@ class openmc_mgxslib:
 
                         if "total" in cache and "consistent nu-scatter matrix" in cache:
                           total = cache["total"]
-                          nuscatter = cache["consistent nu-scatter matrix"]
-                          nuscatter = nuscatter.sum(axis = 1)
-
-                          remxs = total - nuscatter
+                          scatter = cache["consistent nu-scatter matrix"]
+                          self_scatter = np.diag(scatter)
+                          remxs = total - self_scatter
+                          
                           self.json_store[mat_name][str(temp)]["REMXS"] = remxs.tolist()
                           self.xs_lib[burn_idx][uni_idx][branch_idx]["REMXS"] = remxs.tolist()
 
