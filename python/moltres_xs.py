@@ -215,8 +215,12 @@ class openmc_mgxslib:
                         self.json_store[mat_name]["temp"] = sorted(existing_temps)
 
                         if "total" in cache and "consistent nu-scatter matrix" in cache:
-                          total = cache["total"]
-                          scatter = cache["consistent nu-scatter matrix"]
+                          total = np.array(cache["total"])
+                          scatter = np.array(cache["consistent nu-scatter matrix"])
+                          
+                          if scatter.ndim == 3:
+                            scatter = scatter[:,:,0]
+                        
                           self_scatter = np.diag(scatter)
                           remxs = total - self_scatter
                           
