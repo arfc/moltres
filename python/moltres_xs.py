@@ -217,13 +217,13 @@ class openmc_mgxslib:
                         if "total" in cache and "consistent nu-scatter matrix" in cache:
                           total = np.array(cache["total"])
                           scatter = np.array(cache["consistent nu-scatter matrix"])
-                          
+
                           if scatter.ndim == 3:
                             scatter = scatter[:,:,0]
-                        
+
                           self_scatter = np.diag(scatter)
                           remxs = total - self_scatter
-                          
+
                           self.json_store[mat_name][str(temp)]["REMXS"] = remxs.tolist()
                           self.xs_lib[burn_idx][uni_idx][branch_idx]["REMXS"] = remxs.tolist()
 
