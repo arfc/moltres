@@ -190,8 +190,8 @@ class openmc_mgxslib:
                                 else:
                                     arr = np.zeros_like(arr)
 
-                            if mgxs_type == "beta":
-                                arr = arr.sum(axis = 1)
+                            if mgxs_type in ("beta", "nu-fission"):
+                                cache[mgxs_type] = arr
 
                             if arr.ndim > 1:
                                 arr = arr.flatten()
@@ -202,8 +202,6 @@ class openmc_mgxslib:
                                 mgxs_key = "GTRANSFXS"
                             elif mgxs_type == "kappa-fission":
                                 mgxs_key = "FISSE"
-                            elif mgxs_type == "nu-fission":
-                                mgxs_key = "NSF" # New OpenMC nu-fission tally already comes flux weighted.
                             elif mgxs_type == "total":
                                 mgxs_key = "TOTXS"
 
@@ -243,6 +241,26 @@ class openmc_mgxslib:
                             self.json_store[mat_name][str(temp)]["SPN"] = SPN.tolist()
                             self.xs_lib[burn_idx][uni_idx][branch_idx]["SPN"] = SPN.tolist()
                             print("SPN Calculation will only reflect P0 Scattering due to Legendre Order = 0")
+                        
+                        if "beta" in cache and "nu-fission" in cache:
+                            beta = np.array(cache["beta"])
+                            nu_fission = np.array(cache["nu-fission"])
+                            
+                            num_delayed = beta.shape[0]
+                            num_groups = nu_fission.shape[0]
+                            beta = beta.reshape((num_delayed, num_groups))
+                            
+                            nu_fission_sum = nu_fission.sum()
+                            if nu_fission_sum > 0:
+                                weights = nu_fission / nu_fission.sum()
+                                collapsed_beta = np.sum(beta * weights, axis = 1)
+                            else:
+                                collapsed_beta = np.zeros(num_delayed)
+                            
+                            self.json_store[mat_name][str(temp)]["BETA_EFF"] = collapsed_beta.tolist()
+                            self.xs_lib[burn_idx][uni_idx][branch_idx]["BETA_EFF"] = collapsed_beta.tolist()
+                            self.json_store[mat_name][str(temp)]["NSF"] = nu_fission.tolist()
+                            self.xs_lib[burn_idx][uni_idx][branch_idx]["NSF"] = nu_fission.tolist()
 
                     print(f"Registered Moltres Group Constants for {mat_name} at {temp}K")
         if self.clean:
