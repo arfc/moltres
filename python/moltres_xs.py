@@ -31,7 +31,7 @@ class openmc_mgxslib:
         xs_lib: dict
             A hierarchical dictionary, organized by burnup, id, and temperature.
             Currently stores BETA_EFF, CHI_T, CHI_P, CHI_D, DECAY_CONSTANT, DIFFCOEF,
-            FISSE, GTRANSFXS, NSF, RECIPVEL, FISSXS, TOTXS, and REMXS.
+            FISSE, GTRANSFXS, NSF, RECIPVEL, FISSXS, TOTXS, REMXS, and SPN.
 
     """
 
@@ -82,13 +82,62 @@ class openmc_mgxslib:
             "total"]
 
     def process_mgxslib(self, stpt_file, summ_file, mgxslib):
+        """
+    Loads and processes multigroup cross section (MGXS) data from an OpenMC
+    statepoint and summary file using a provided mgxs.Library, and stores the
+    resulting homogenized group constants in both JSON-compatible and Moltres-
+    compatible dictionary formats.
+
+    This function:
+    - Links the statepoint with the summary file
+    - Loads MGXS tallies from the statepoint into the mgxs.Library
+    - Exports MGXS data to an intermediate HDF5 file
+    - Iterates over all domains (materials or cells) and temperatures
+    - Extracts, reshapes, and renames MGXS data into Moltres conventions
+    - Computes derived quantities such as:
+        * REMXS
+        * BETA_EFF
+        * SPN
+    - Populates both:
+        * self.json_store (for JSON export)
+        * self.xs_lib (for Moltres input compatibility)
+
+    Parameters
+    ----------
+    stpt_file : str
+        Path to the OpenMC statepoint HDF5 file containing MGXS tally results.
+
+    summ_file : str
+        Path to the OpenMC summary file associated with the statepoint.
+
+    mgxslib : openmc.mgxs.Library
+        MGXS Library object defining the multigroup cross sections and tallies.
+        Must match the configuration used to generate the statepoint file.
+
+    Returns
+    -------
+    xs_lib : dict
+        A hierarchical dictionary organized as:
+            [burnup][universe][temperature branch]
+        containing processed group constants, including:
+        BETA_EFF, CHI_T, CHI_P, CHI_D, DECAY_CONSTANT, DIFFCOEF,
+        FISSE, GTRANSFXS, NSF, RECIPVEL, FISSXS, TOTXS, REMXS, and SPN (if applicable).
+
+    Notes
+    -----
+    - Assumes the statepoint file was generated using the same MGXS Library definition.
+    - Temporary HDF5 files are created during processing and removed if cleanup is enabled.
+    - Temperature values are sorted to ensure deterministic indexing in xs_lib.
+    - Only the P0 scattering moment is used for GTRANSFXS, but higher-order moments
+      are stored in SPN when available.
+    """
         import openmc
 
         statepoint = openmc.StatePoint(stpt_file, autolink = False)
 
         summary = openmc.Summary(summ_file)
         statepoint.link_with_summary(summary)
-        if not hasattr(mgxslib, "load_from_statepoint"):
+        if not isinstance(mgxslib, openmc.mgxs.Library):
             raise TypeError("Passed Library Object invalid, must be mgxs.Library()")
 
         try:
@@ -125,10 +174,7 @@ class openmc_mgxslib:
                     if mat_name not in self.json_store:
                         self.json_store[mat_name] = {}
 
-                    if isinstance(mat.temperature, list):
-                        temps = mat.temperature
-                    else:
-                        temps = [mat.temperature]
+                    temps = mat.temperature if isinstance(mat.temperature, list) else [mat.temperature]
 
                     # Sort temperatures to map them to branch indices deterministically
                     # Assuming temps are numbers, or convertible to float. None is treated as 294K conceptually or handled separately
@@ -164,29 +210,37 @@ class openmc_mgxslib:
                             arr = f[domain_type][domain_id][mgxs_type]["average"][:]
 
                             if mgxs_type == "kappa-fission":
-                                fission_data = np.array(f[domain_type][domain_id]["fission"]["average"][:])
-                                kappa_data = np.array(arr)
-
-                                arr = np.divide(kappa_data, fission_data,
-                                                out = np.zeros_like(kappa_data, dtype = float),
-                                                where = (fission_data != 0)) * 1e-6
+                                fission_data = (f[domain_type][domain_id]["fission"]["average"][:])
+                                arr = np.divide(arr, fission_data, out=np.zeros_like(arr), where=fission_data != 0) * 1e-6
 
                             if mgxs_type in ("consistent nu-scatter matrix", "total"):
                                 if mgxs_type == "consistent nu-scatter matrix":
-                                    raw_nuscatter = np.array(arr, copy = True)
-                                    if arr.ndim == 3:
-                                        arr = arr[:,:,0]
+                                    legendre_order = mgxslib.legendre_order
+                                    SPN = arr
+                                    arr = arr[:,:,0] # Extract P0 for GTRANSFXS
+                                    if legendre_order > 0:
+                                        num_energy_groups = len(mgxslib.energy_groups.group_edges) - 1
+                                        num_pn = legendre_order + 1
+
+                                        SPN.shape = (num_energy_groups**2, num_pn)
+                                        SPN = SPN.T
+                                        self.json_store[mat_name][str(temp)]["SPN"] = SPN.tolist()
+                                        self.xs_lib[burn_idx][uni_idx][branch_idx]["SPN"] = SPN.tolist()
                                     else:
-                                        print(f"Legendre Order of 0 Detected, Only P0 scattering is available for material: {mat_name} , results may differ from higher-order consistent scattering.")
+                                        SPN = SPN[:,:,0]
+                                        self.json_store[mat_name][str(temp)]["SPN"] = SPN.tolist()
+                                        self.xs_lib[burn_idx][uni_idx][branch_idx]["SPN"] = SPN.tolist()
+                                        print("SPN Calculation will only reflect P0 Scattering due to Legendre Order = 0")
+
+                                    self.json_store[mat_name][str(temp)]["GTRANSFXS"] = arr.tolist()
+                                    self.xs_lib[burn_idx][uni_idx][branch_idx]["GTRANSFXS"] = arr.tolist()
+
                                 cache[mgxs_type] = arr
-                                cache["SPN"] = raw_nuscatter
 
                             if mgxs_type == "chi-delayed":
                                 arr = arr.sum(axis = 0)
-                                denom = arr.sum()
-
-                                if denom!= 0:
-                                    arr = arr / denom
+                                if arr.sum() != 0:
+                                    arr = arr / arr.sum()
                                 else:
                                     arr = np.zeros_like(arr)
 
@@ -196,14 +250,14 @@ class openmc_mgxslib:
                             if arr.ndim > 1:
                                 arr = arr.flatten()
 
-                            mgxs_key = rename_mgxs.get(mgxs_type, mgxs_type)
+                            rename_mgxs.update({
+                                "consistent nu-scatter matrix": "GTRANSFXS",
+                                "kappa-fission": "FISSE",
+                                "total": "TOTXS",
+                                "nu-fission": "NSF"
+                            })
 
-                            if mgxs_type == "consistent nu-scatter matrix":
-                                mgxs_key = "GTRANSFXS"
-                            elif mgxs_type == "kappa-fission":
-                                mgxs_key = "FISSE"
-                            elif mgxs_type == "total":
-                                mgxs_key = "TOTXS"
+                            mgxs_key = rename_mgxs.get(mgxs_type, mgxs_type)
 
                             self.json_store[mat_name][str(temp)][mgxs_key] = arr.tolist()
                             self.xs_lib[burn_idx][uni_idx][branch_idx][mgxs_key] = arr.tolist()
@@ -213,8 +267,8 @@ class openmc_mgxslib:
                         self.json_store[mat_name]["temp"] = sorted(existing_temps)
 
                         if "total" in cache and "consistent nu-scatter matrix" in cache:
-                          total = np.array(cache["total"])
-                          scatter = np.array(cache["consistent nu-scatter matrix"])
+                          total = (cache["total"])
+                          scatter = (cache["consistent nu-scatter matrix"])
 
                           if scatter.ndim == 3:
                             scatter = scatter[:,:,0]
@@ -225,33 +279,15 @@ class openmc_mgxslib:
                           self.json_store[mat_name][str(temp)]["REMXS"] = remxs.tolist()
                           self.xs_lib[burn_idx][uni_idx][branch_idx]["REMXS"] = remxs.tolist()
 
-                        if "SPN" in cache:
-                          legendre_order = mgxslib.legendre_order
-                          SPN = cache["SPN"]
-                          if legendre_order > 0:
-                            num_energy_groups = len(mgxslib.energy_groups.group_edges) - 1
-                            num_pn = legendre_order + 1
-
-                            SPN.shape = (num_energy_groups**2, num_pn)
-                            SPN = SPN.T
-                            self.json_store[mat_name][str(temp)]["SPN"] = SPN.tolist()
-                            self.xs_lib[burn_idx][uni_idx][branch_idx]["SPN"] = SPN.tolist()
-                        else:
-                            SPN = SPN[:,:,0]
-                            self.json_store[mat_name][str(temp)]["SPN"] = SPN.tolist()
-                            self.xs_lib[burn_idx][uni_idx][branch_idx]["SPN"] = SPN.tolist()
-                            print("SPN Calculation will only reflect P0 Scattering due to Legendre Order = 0")
-
                         if "beta" in cache and "nu-fission" in cache:
-                            beta = np.array(cache["beta"])
-                            nu_fission = np.array(cache["nu-fission"])
+                            beta = (cache["beta"])
+                            nu_fission = (cache["nu-fission"])
 
                             num_delayed = beta.shape[0]
                             num_groups = nu_fission.shape[0]
                             beta = beta.reshape((num_delayed, num_groups))
 
-                            nu_fission_sum = nu_fission.sum()
-                            if nu_fission_sum > 0:
+                            if nu_fission.sum() > 0:
                                 weights = nu_fission / nu_fission.sum()
                                 collapsed_beta = np.sum(beta * weights, axis = 1)
                             else:
@@ -259,10 +295,8 @@ class openmc_mgxslib:
 
                             self.json_store[mat_name][str(temp)]["BETA_EFF"] = collapsed_beta.tolist()
                             self.xs_lib[burn_idx][uni_idx][branch_idx]["BETA_EFF"] = collapsed_beta.tolist()
-                            self.json_store[mat_name][str(temp)]["NSF"] = nu_fission.tolist()
-                            self.xs_lib[burn_idx][uni_idx][branch_idx]["NSF"] = nu_fission.tolist()
-
                     print(f"Registered Moltres Group Constants for {mat_name} at {temp}K")
+
         if self.clean:
             try:
                 os.remove("mgxs/mgxs.h5")
@@ -362,21 +396,20 @@ class openmc_mgxslib:
     @staticmethod
     def generate_openmc_tallies_xml(energy_groups, delayed_groups: int, domains, geometry, tallies_file):
         """
-            Generates a preloaded and configured mgxs.Library() to use with Moltres Multigroup Constants.
-            Also exports those tallies to tallies.xml for use with OpenMC Runs. This function must be ran
-            to use the input parser and recieve your JSON File.
+            Initializes and configures a mgxs.Library() for neutron group constant generation in OpenMC.
+            Exports relevant OpenMC tallies to a tallies.xml for OpenMC simulations.
+            This function must be run in the OpenMC input file prior to the OpenMC simulation.
 
             Parameters
             ----------
-            energy_groups: list
+            energy_groups: list of float
                 Energy groups to be used with OpenMC MGXS Tally creation, must include group edges.
             delayed_groups: int
                 Delayed groups to be used with OpenMC MGXS Tally creation, must be an integer.
                 NOTE: May add support for lists for backwards compatibility at a later date.
-            domains: list
-                Domains that MGXS tallies will be created over. All domains must be the same type,
-                either openmc.Material or openmc.Cell. For singular domain entries please still use a list.
-                Example: [my_material]
+            domains: list of openmc.Material or openmc.Cell
+                Material or Cell domains in which group constants are tallied.
+                All list entries must be the same type, either openmc.Material or openmc.Cell
             geometry: openmc.Geometry()
                 OpenMC Geometry that will be used to gather tallies and construct the mgxs.Library()
                 This is required to construct the library.
@@ -387,7 +420,7 @@ class openmc_mgxslib:
             Returns
             ---------
             mgxs_library: openmc.mgxs.Library()
-                Library object that will be used to set up, construct, and record tallies.
+                MGXS Library used to set up, construct, and parse tallies for group constant generation.
         """
         import openmc
         import warnings
@@ -407,10 +440,7 @@ class openmc_mgxslib:
         elif all(isinstance(d, openmc.Cell) for d in domains):
             domain_type = "cell"
         else:
-            raise TypeError("All domains must be the same type (Material or Cell)")
-
-        if hasattr(energy_groups, "group_edges"):
-            energy_groups = energy_groups.group_edges
+            raise TypeError("All domains must be the same type (openmc.Material or openmc.Cell)")
 
         groups = openmc.mgxs.EnergyGroups(group_edges = energy_groups)
         mgxs_library = openmc.mgxs.Library(geometry)
@@ -434,395 +464,14 @@ class openmc_mgxslib:
             "total"]
 
         mgxs_library.build_library()
-        mgxs_library.add_to_tallies_file(tallies_file, merge = True) # Will change to add_to_tallies when OpenMC deprecates add_to_tallies_file (after 0.15.3)
-        tallies_file.export_to_xml()
 
+        if version >= 15.3:
+            mgxs_library.add_to_tallies(tallies_file, merge = True)
+        else:
+            mgxs_library.add_to_tallies_file(tallies_file, merge = True)
+
+        tallies_file.export_to_xml()
         return mgxs_library
-
-class openmc_xs:
-    """
-    Reads OpenMC h5 statepoint file and organizes the cross section
-    date into a dictionary. Currently set up to read an
-    arbitrary number of energy groups, an arbitrary number of delayed
-    neutron groups, an arbitrary number of identities, and an arbitrary
-    number of temperature branches.
-
-    Parameters
-    ----------
-    xs_filename: str
-        Name of OpenMC Statepoint HDF5 file containing collapsed cross section
-        data
-    file_num: int
-        File number
-    xs_summary: str
-        Name of OpenMC Summary file associated with the Statepoint file
-    Returns
-    ----------
-    xs_lib: dict
-        A hierarchical dictionary, organized by burnup, id, and temperature.
-        Currently stores REMXS, FISSXS, NSF, FISSE, DIFFCOEF, RECIPVEL,
-        CHI, BETA_EFF, DECAY_CONSTANT and GTRANSFXS.
-    """
-
-    def __init__(self, xs_filename, file_num, xs_summary):
-        sp = openmc.StatePoint(xs_filename, autolink=False)
-        summary = openmc.Summary(xs_summary)
-        sp.link_with_summary(summary)
-        domain_dict = openmc_ref_modules[file_num].domain_dict
-        num_burn = 1
-        num_branch = 0
-        num_uni = []
-        for k in sp.filters:
-            v = sp.filters[k]
-            if isinstance(v, openmc.filter.MaterialFilter):
-                num_uni.append(v.bins[0])
-            elif isinstance(v, openmc.filter.CellFilter):
-                num_uni.append(v.bins[0])
-        self.xs_lib = {}
-        for i in range(num_burn):
-            self.xs_lib[i] = {}
-            for j in num_uni:
-                k = num_branch
-                self.xs_lib[i][j - 1] = {}
-                self.xs_lib[i][j - 1][k] = {}
-                self.xs_lib[i][j - 1][k]["BETA_EFF"] = self.mgxs_tallies(
-                    sp, domain_dict[j]["beta"])
-                self.xs_lib[i][j - 1][k]["CHI_T"] = self.mgxs_tallies(
-                    sp, domain_dict[j]["chi"])
-                self.xs_lib[i][j - 1][k]["CHI_P"] = self.mgxs_tallies(
-                    sp, domain_dict[j]["chiprompt"])
-                self.xs_lib[i][j - 1][k]["CHI_D"] = self.mgxs_tallies(
-                    sp, domain_dict[j]["chidelayed"])
-                self.xs_lib[i][j - 1][k]["DECAY_CONSTANT"] = self.mgxs_tallies(
-                    sp, domain_dict[j]["decayrate"])
-                self.xs_lib[i][j - 1][k]["DIFFCOEF"] = self.get_diffcoeff(
-                    sp, domain_dict[j]["diffusioncoefficient"])
-                self.xs_lib[i][j - 1][k]["FISSE"] = self.get_fisse(
-                    sp, domain_dict[j]["fissionxs"],
-                    domain_dict[j]["kappafissionxs"])
-                self.xs_lib[i][j - 1][k]["GTRANSFXS"] = self.get_nu_scatter(
-                    sp, domain_dict[j]["nuscattermatrix"])
-                self.xs_lib[i][j - 1][k]["SPN"] = self.get_scatter_pn(
-                    sp, domain_dict[j]["nuscattermatrix"])
-                self.xs_lib[i][j - 1][k]["NSF"] = self.get_nsf(sp, j)
-                self.xs_lib[i][j - 1][k]["RECIPVEL"] = self.mgxs_tallies(
-                    sp, domain_dict[j]["inversevelocity"])
-                self.xs_lib[i][j - 1][k]["FISSXS"] = self.mgxs_tallies(
-                    sp, domain_dict[j]["fissionxs"])
-                self.xs_lib[i][j - 1][k]["TOTXS"] = self.get_totxs(
-                    sp, domain_dict[j]["totalxs"])
-                self.xs_lib[i][j - 1][k]["REMXS"] = self.get_remxs(
-                    sp,
-                    domain_dict[j]["totalxs"],
-                    domain_dict[j]["nuscattermatrix"])
-        return
-
-    def mgxs_tallies(self, sp, tally):
-        """Returns list of tally values for each energy group
-
-        Parameters
-        ----------
-        sp: openmc.Statepoint
-        tally: OpenMC mgxs tally object
-
-        Returns
-        -------
-        list
-            list of tally values for each energy group
-        """
-
-        tally.load_from_statepoint(sp)
-        return list(tally.get_pandas_dataframe()["mean"])
-
-    def get_diffcoeff(self, sp, diffcoef):
-        """Returns list of diffusion coefficient values for each energy group
-
-        Parameters
-        ----------
-        sp: openmc.Statepoint
-        diffcoef: OpenMC mgxs.DiffusionCoefficient object
-
-        Returns
-        -------
-        list
-            list of diffusion coefficient values for each energy group
-        """
-
-        diffcoef.load_from_statepoint(sp)
-        diffcoef_df = diffcoef.get_pandas_dataframe()
-        return list(diffcoef_df["mean"])
-
-    def get_fisse(self, sp, fissionxs, kappa):
-        """Returns list of average deposited fission energy values for each
-        energy group
-
-        Parameters
-        ----------
-        sp: openmc.Statepoint
-        fissionxs: OpenMC mgxs.FissionXS object
-        kappa: OpenMC mgxs.KappaFissionXS object
-
-        Returns
-        -------
-        list
-            list of average deposited fission energy values for each energy
-            group
-        """
-
-        fissionxs.load_from_statepoint(sp)
-        kappa.load_from_statepoint(sp)
-        fissionxs_df = fissionxs.get_pandas_dataframe()
-        kappa_df = kappa.get_pandas_dataframe()
-        fisse = kappa_df["mean"] / fissionxs_df["mean"] * 1e-6
-        fisse = np.array(fisse)
-        fisse[np.isnan(fisse)] = 0
-        return list(fisse)
-
-    def get_nu_scatter(self, sp, nu_scatter_matrix):
-        """Returns scatter xs matrix values for each energy group.
-        The matrix is flattened into a list. It is taken from the P0 scatter
-        matrix xs with neutron multiplication from (n,xn) reactions.
-
-        Parameters
-        ----------
-        sp: openmc.Statepoint
-        nu_scatter_matrix: OpenMC mgxs.ScatterMatrixXS object
-
-        Returns
-        -------
-        list
-            list of P0 scatter xs matrix values for each energy group
-        """
-
-        nu_scatter_matrix.load_from_statepoint(sp)
-        nu_scatter_matrix_df = nu_scatter_matrix.get_pandas_dataframe()
-        return list(nu_scatter_matrix_df.loc[
-            nu_scatter_matrix_df["legendre"] == "P0"]["mean"])
-
-    def get_scatter_pn(self, sp, nu_scatter_matrix):
-        """Returns PN scatter xs matrix values for each energy group.
-        The matrix is flattened into a list. It is taken from the PN scatter
-        matrix xs with neutron multiplication from (n,xn) reactions.
-
-        Parameters
-        ----------
-        sp: openmc.Statepoint
-        nu_scatter_matrix: OpenMC mgxs.ScatterMatrixXS object
-
-        Returns
-        -------
-        list
-            list of PN scatter xs matrix values for each energy group
-        """
-
-        nu_scatter_matrix.load_from_statepoint(sp)
-        nu_scatter_matrix_df = nu_scatter_matrix.get_pandas_dataframe()
-        num_groups = len(list(nu_scatter_matrix_df.loc[
-            (nu_scatter_matrix_df["group in"] == 1) &
-            (nu_scatter_matrix_df["legendre"] == "P0")]["mean"]))
-        num_pn = len(list(nu_scatter_matrix_df.loc[
-            (nu_scatter_matrix_df["group in"] == 1) &
-            (nu_scatter_matrix_df["group out"] == 1)]["mean"]))
-        final_matrix = np.array(nu_scatter_matrix_df["mean"])
-        final_matrix.shape = (num_groups**2, num_pn)
-        final_matrix = final_matrix.T
-        return final_matrix.tolist()
-
-    def get_nsf(self, sp, index):
-        """Returns fission neutron production xs values for each energy group.
-        It is calculated by dividing OpenMC's nu-fission by flux.
-        dividing
-
-        Parameters
-        ----------
-        sp: openmc.Statepoint
-        index: int
-            file index
-
-        Returns
-        -------
-        list
-            list of fission neutron production xs values for each energy group
-        """
-
-        tally = sp.get_tally(name=str(index) + " tally")
-        df = tally.get_pandas_dataframe()
-        df_flux = np.array(df.loc[df["score"] == "flux"]["mean"])
-        df_nu_fission = df.loc[df["score"] == "nu-fission"]
-        nu_fission = list(np.array(df_nu_fission["mean"]) / df_flux)
-        nu_fission.reverse()
-        return nu_fission
-
-    def get_remxs(self, sp, totalxs, nu_scatter_matrix):
-        """Returns removal xs values for each energy group. It is calculated by
-        subtracting the within-group scatter xs value with neutron
-        multiplication from (n, xn) reactions from the total xs value.
-
-        Parameters
-        ----------
-        sp: openmc.Statepoint
-        totalxs: OpenMC mgxs.TotalXS object
-        nu_scatter_matrix: OpenMC mgxs.ScatterMatrixXS object
-
-        Returns
-        -------
-        list
-            list of total xs values for each energy group
-        """
-
-        totalxs.load_from_statepoint(sp)
-        nu_scatter_matrix.load_from_statepoint(sp)
-        totalxs_df = totalxs.get_pandas_dataframe()
-        nu_scatter_matrix_df = nu_scatter_matrix.get_pandas_dataframe()
-        group_nums = list(totalxs_df["group in"])
-        remxs = []
-        for i in group_nums:
-            totxs = float(
-                totalxs_df.loc[totalxs_df["group in"] == i]["mean"].iloc[0])
-            nu_self_scatter = float(
-                nu_scatter_matrix_df.loc[
-                    (nu_scatter_matrix_df["group in"] == i) &
-                    (nu_scatter_matrix_df["group out"] == i) &
-                    (nu_scatter_matrix_df["legendre"] == "P0")]["mean"].iloc[0]
-                )
-            remxs.append(totxs - nu_self_scatter)
-        return remxs
-
-    def get_totxs(self, sp, totalxs):
-        """Returns total xs values for each energy group.
-
-        Parameters
-        ----------
-        sp: openmc.Statepoint
-        totalxs: OpenMC mgxs.TotalXS object
-
-        Returns
-        -------
-        list
-            list of total xs values for each energy group
-        """
-
-        totalxs.load_from_statepoint(sp)
-        totalxs_df = totalxs.get_pandas_dataframe()
-        return list(totalxs_df["mean"])
-
-    def generate_openmc_tallies_xml(energy_groups, delayed_groups, domains,
-                                    domain_ids, tallies_file):
-        """
-        Users should use this function to generate the OpenMC tallies file
-        for group constant generation.
-
-        Parameters
-        ----------
-        energy_groups: list
-            list of energy group edges (must include all edges)
-        delayed_groups: list
-            list of number of delayed neutron groups
-        domains: list
-            list of openmc domains, these can be openmc.Materials or
-            openmc.Cells
-        domain_ids: list
-            list of openmc domain ids
-        tallies_file: openmc.Tallies
-            an initialized openmc tallies object
-
-        Returns
-        -------
-        domain_dict: dict
-            dictionary containing initialized tallies
-
-        """
-
-        import openmc
-        import warnings
-        import openmc.mgxs as mgxs
-        version = float(openmc.__version__[2:])
-        if version < 13.2:
-            raise Exception("moltres_xs.py is compatible with OpenMC " +
-                            "version 0.13.2 or later only.")
-        elif version > 14.0:
-            warnings.warn("moltres_xs.py has not been tested for OpenMC " +
-                          "versions newer than 0.14.0.")
-
-        groups = mgxs.EnergyGroups(group_edges=energy_groups)
-        big_energy_group = [energy_groups[0], energy_groups[-1]]
-        big_group = mgxs.EnergyGroups(group_edges=big_energy_group)
-        energy_filter = openmc.EnergyFilter(energy_groups)
-        domain_dict = {}
-        for id in domain_ids:
-            domain_dict[id] = {}
-        for domain, id in zip(domains, domain_ids):
-            domain_dict[id]["beta"] = mgxs.Beta(
-                domain=domain,
-                energy_groups=big_group,
-                delayed_groups=delayed_groups,
-                name=str(id) + "_beta")
-            domain_dict[id]["chi"] = mgxs.Chi(
-                domain=domain, energy_groups=groups, name=str(id) + "_chi")
-            domain_dict[id]["chiprompt"] = mgxs.Chi(
-                domain=domain, energy_groups=groups,
-                name=str(id) + "_chiprompt", prompt=True)
-            domain_dict[id]["chidelayed"] = mgxs.ChiDelayed(
-                domain=domain, energy_groups=groups,
-                name=str(id) + "_chidelayed")
-            domain_dict[id]["decayrate"] = mgxs.DecayRate(
-                domain=domain,
-                energy_groups=big_group,
-                delayed_groups=delayed_groups,
-                name=str(id) + "_decayrate")
-            domain_dict[id]["diffusioncoefficient"] = \
-                mgxs.DiffusionCoefficient(
-                    domain=domain,
-                    energy_groups=groups,
-                    name=str(id) +
-                    "_diffusioncoefficient")
-            domain_dict[id]["nuscattermatrix"] = mgxs.ScatterMatrixXS(
-                domain=domain, energy_groups=groups,
-                name=str(id) + "_nuscattermatrix", nu=True)
-            domain_dict[id]["nuscattermatrix"].correction = None
-            domain_dict[id]["nuscattermatrix"].formulation = 'consistent'
-            domain_dict[id]["nuscattermatrix"].legendre_order = 3
-            domain_dict[id]["inversevelocity"] = mgxs.InverseVelocity(
-                domain=domain, energy_groups=groups,
-                name=str(id) + "_inversevelocity")
-            domain_dict[id]["fissionxs"] = mgxs.FissionXS(
-                domain=domain, energy_groups=groups,
-                name=str(id) + "_fissionxs")
-            domain_dict[id]["kappafissionxs"] = mgxs.KappaFissionXS(
-                domain=domain, energy_groups=groups,
-                name=str(id) + "_kappafissionxs")
-            domain_dict[id]["totalxs"] = mgxs.TotalXS(
-                domain=domain, energy_groups=groups,
-                name=str(id) + "_totalxs")
-            domain_dict[id]["tally"] = openmc.Tally(name=str(id) + " tally")
-            if isinstance(domain, openmc.Material):
-                domain_dict[id]["filter"] = openmc.MaterialFilter(domain)
-            elif isinstance(domain, openmc.Cell):
-                domain_dict[id]["filter"] = openmc.CellFilter(domain)
-            else:
-                domain_dict[id]["filter"] = openmc.MeshFilter(domain)
-            domain_dict[id]["tally"].filters = [
-                domain_dict[id]["filter"],
-                energy_filter]
-            domain_dict[id]["tally"].scores = [
-                "nu-fission",
-                "flux"]
-            tallies_file += domain_dict[id]["beta"].tallies.values()
-            tallies_file += domain_dict[id]["chi"].tallies.values()
-            tallies_file += domain_dict[id]["chiprompt"].tallies.values()
-            tallies_file += domain_dict[id]["chidelayed"].tallies.values()
-            tallies_file += domain_dict[id]["decayrate"].tallies.values()
-            tallies_file += domain_dict[id]["diffusioncoefficient"] \
-                .tallies.values()
-            tallies_file += domain_dict[id]["nuscattermatrix"].tallies.values()
-            tallies_file += domain_dict[id]["inversevelocity"].tallies.values()
-            tallies_file += domain_dict[id]["fissionxs"].tallies.values()
-            tallies_file += domain_dict[id]["kappafissionxs"].tallies.values()
-            tallies_file += domain_dict[id]["totalxs"].tallies.values()
-            tallies_file.append(domain_dict[id]["tally"])
-        tallies_file.export_to_xml()
-        return domain_dict
-
 
 class scale_xs:
     """
