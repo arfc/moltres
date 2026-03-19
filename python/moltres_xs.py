@@ -83,53 +83,53 @@ class openmc_mgxslib:
 
     def process_mgxslib(self, stpt_file, summ_file, mgxslib):
         """
-    Loads and processes multigroup cross section (MGXS) data from an OpenMC
-    statepoint and summary file using a provided mgxs.Library, and stores the
-    resulting homogenized group constants in both JSON-compatible and Moltres-
-    compatible dictionary formats.
+        Loads and processes multigroup cross section (MGXS) data from an OpenMC
+        statepoint and summary file using a provided mgxs.Library, and stores the
+        resulting homogenized group constants in both JSON-compatible and Moltres-
+        compatible dictionary formats.
 
-    This function:
-    - Links the statepoint with the summary file
-    - Loads MGXS tallies from the statepoint into the mgxs.Library
-    - Exports MGXS data to an intermediate HDF5 file
-    - Iterates over all domains (materials or cells) and temperatures
-    - Extracts, reshapes, and renames MGXS data into Moltres conventions
-    - Computes derived quantities such as:
-        * REMXS
-        * BETA_EFF
-        * SPN
-    - Populates both:
-        * self.json_store (for JSON export)
-        * self.xs_lib (for Moltres input compatibility)
+        This function:
+        - Links the statepoint with the summary file
+        - Loads MGXS tallies from the statepoint into the mgxs.Library
+        - Exports MGXS data to an intermediate HDF5 file
+        - Iterates over all domains (materials or cells) and temperatures
+        - Extracts, reshapes, and renames MGXS data into Moltres conventions
+        - Computes derived quantities such as:
+            * REMXS
+            * BETA_EFF
+            * SPN
+        - Populates both:
+            * self.json_store (for JSON export)
+            * self.xs_lib (for Moltres input compatibility)
 
-    Parameters
-    ----------
-    stpt_file : str
-        Path to the OpenMC statepoint HDF5 file containing MGXS tally results.
+        Parameters
+        ----------
+        stpt_file : str
+            Path to the OpenMC statepoint HDF5 file containing MGXS tally results.
 
-    summ_file : str
-        Path to the OpenMC summary file associated with the statepoint.
+        summ_file : str
+            Path to the OpenMC summary file associated with the statepoint.
 
-    mgxslib : openmc.mgxs.Library
-        MGXS Library object defining the multigroup cross sections and tallies.
-        Must match the configuration used to generate the statepoint file.
+        mgxslib : openmc.mgxs.Library
+            MGXS Library object defining the multigroup cross sections and tallies.
+            Must match the configuration used to generate the statepoint file.
 
-    Returns
-    -------
-    xs_lib : dict
-        A hierarchical dictionary organized as:
-            [burnup][universe][temperature branch]
-        containing processed group constants, including:
-        BETA_EFF, CHI_T, CHI_P, CHI_D, DECAY_CONSTANT, DIFFCOEF,
-        FISSE, GTRANSFXS, NSF, RECIPVEL, FISSXS, TOTXS, REMXS, and SPN (if applicable).
+        Returns
+        -------
+        xs_lib : dict
+            A hierarchical dictionary organized as:
+                [burnup][universe][temperature branch]
+            containing processed group constants, including:
+            BETA_EFF, CHI_T, CHI_P, CHI_D, DECAY_CONSTANT, DIFFCOEF,
+            FISSE, GTRANSFXS, NSF, RECIPVEL, FISSXS, TOTXS, REMXS, and SPN (if applicable).
 
-    Notes
-    -----
-    - Assumes the statepoint file was generated using the same MGXS Library definition.
-    - Temporary HDF5 files are created during processing and removed if cleanup is enabled.
-    - Temperature values are sorted to ensure deterministic indexing in xs_lib.
-    - Only the P0 scattering moment is used for GTRANSFXS, but higher-order moments
-      are stored in SPN when available.
+        Notes
+        -----
+        - Assumes the statepoint file was generated using the same MGXS Library definition.
+        - Temporary HDF5 files are created during processing and removed if cleanup is enabled.
+        - Temperature values are sorted to ensure deterministic indexing in xs_lib.
+        - Only the P0 scattering moment is used for GTRANSFXS, but higher-order moments
+        are stored in SPN when available.
     """
         import openmc
 
