@@ -301,6 +301,27 @@ class openmc_mgxslib:
             except FileNotFoundError:
                 pass
 
+    def dump_json(self, json_path: str):
+        """
+        This function is for advanced users who wish to bypass the input file.
+        Dumps the self.json_store dictionary into a JSON File.
+        Organization that matches reference JSON files is not 100% guaranteed.
+
+        Parameters
+        ----------
+        json_path: str
+            Output path for the JSON File.
+        Returns
+        ----------
+        JSON File.
+        """
+        if not self.json_store:
+            raise ValueError("JSON Store is empty")
+
+        with open(json_path, 'w') as f:
+            json.dump(self.json_store , f, indent=4)
+            print(f"Successfully Built and Dumped JSON at {json_path}")
+
     def build_json(self):
         """
         Runs process_mgxslib() for each mgxs_Library and organizes the resulting data into a JSON-compatible dictionary format.
