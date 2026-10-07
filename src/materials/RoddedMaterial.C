@@ -30,52 +30,46 @@ RoddedMaterial::computeSplineAbsorbingQpProperties()
 {
   for (decltype(_num_groups) i = 0; i < _num_groups; ++i)
   {
-    _remxs[_qp][i] =
-        _xsec_spline_interpolators["REMXS"][i].sample(_temperature[_qp]) * _absorb_factor;
-    _fissxs[_qp][i] = _xsec_spline_interpolators["FISSXS"][i].sample(_temperature[_qp]);
-    _nsf[_qp][i] = _xsec_spline_interpolators["NSF"][i].sample(_temperature[_qp]);
-    _fisse[_qp][i] = _xsec_spline_interpolators["FISSE"][i].sample(_temperature[_qp]) * 1e6 *
+    _remxs[_qp][i] = (*_spline_interps[REMXS])[i].sample(_temperature[_qp]) * _absorb_factor;
+    _fissxs[_qp][i] = (*_spline_interps[FISSXS])[i].sample(_temperature[_qp]);
+    _nsf[_qp][i] = (*_spline_interps[NSF])[i].sample(_temperature[_qp]);
+    _fisse[_qp][i] = (*_spline_interps[FISSE])[i].sample(_temperature[_qp]) * 1e6 *
                      1.6e-19; // convert from MeV to Joules
-    _diffcoef[_qp][i] = _xsec_spline_interpolators["DIFFCOEF"][i].sample(_temperature[_qp]);
-    _recipvel[_qp][i] = _xsec_spline_interpolators["RECIPVEL"][i].sample(_temperature[_qp]);
-    _chi_t[_qp][i] = _xsec_spline_interpolators["CHI_T"][i].sample(_temperature[_qp]);
-    _chi_p[_qp][i] = _xsec_spline_interpolators["CHI_P"][i].sample(_temperature[_qp]);
+    _diffcoef[_qp][i] = (*_spline_interps[DIFFCOEF])[i].sample(_temperature[_qp]);
+    _recipvel[_qp][i] = (*_spline_interps[RECIPVEL])[i].sample(_temperature[_qp]);
+    _chi_t[_qp][i] = (*_spline_interps[CHI_T])[i].sample(_temperature[_qp]);
+    _chi_p[_qp][i] = (*_spline_interps[CHI_P])[i].sample(_temperature[_qp]);
     _d_remxs_d_temp[_qp][i] =
-        _xsec_spline_interpolators["REMXS"][i].sampleDerivative(_temperature[_qp]) * _absorb_factor;
+        (*_spline_interps[REMXS])[i].sampleDerivative(_temperature[_qp]) * _absorb_factor;
     _d_fissxs_d_temp[_qp][i] = 0.0;
-    _d_nsf_d_temp[_qp][i] =
-        _xsec_spline_interpolators["NSF"][i].sampleDerivative(_temperature[_qp]);
-    _d_fisse_d_temp[_qp][i] =
-        _xsec_spline_interpolators["FISSE"][i].sampleDerivative(_temperature[_qp]) * 1e6 *
-        1.6e-19; // convert from MeV to Joules
+    _d_nsf_d_temp[_qp][i] = (*_spline_interps[NSF])[i].sampleDerivative(_temperature[_qp]);
+    _d_fisse_d_temp[_qp][i] = (*_spline_interps[FISSE])[i].sampleDerivative(_temperature[_qp]) *
+                              1e6 * 1.6e-19; // convert from MeV to Joules
     _d_diffcoef_d_temp[_qp][i] =
-        _xsec_spline_interpolators["DIFFCOEF"][i].sampleDerivative(_temperature[_qp]);
+        (*_spline_interps[DIFFCOEF])[i].sampleDerivative(_temperature[_qp]);
     _d_recipvel_d_temp[_qp][i] =
-        _xsec_spline_interpolators["RECIPVEL"][i].sampleDerivative(_temperature[_qp]);
-    _d_chi_t_d_temp[_qp][i] =
-        _xsec_spline_interpolators["CHI_T"][i].sampleDerivative(_temperature[_qp]);
-    _d_chi_p_d_temp[_qp][i] =
-        _xsec_spline_interpolators["CHI_P"][i].sampleDerivative(_temperature[_qp]);
+        (*_spline_interps[RECIPVEL])[i].sampleDerivative(_temperature[_qp]);
+    _d_chi_t_d_temp[_qp][i] = (*_spline_interps[CHI_T])[i].sampleDerivative(_temperature[_qp]);
+    _d_chi_p_d_temp[_qp][i] = (*_spline_interps[CHI_P])[i].sampleDerivative(_temperature[_qp]);
   }
   for (decltype(_num_groups) i = 0; i < _num_groups * _num_groups; ++i)
   {
-    _gtransfxs[_qp][i] = _xsec_spline_interpolators["GTRANSFXS"][i].sample(_temperature[_qp]);
+    _gtransfxs[_qp][i] = (*_spline_interps[GTRANSFXS])[i].sample(_temperature[_qp]);
     _d_gtransfxs_d_temp[_qp][i] =
-        _xsec_spline_interpolators["GTRANSFXS"][i].sampleDerivative(_temperature[_qp]);
+        (*_spline_interps[GTRANSFXS])[i].sampleDerivative(_temperature[_qp]);
   }
   _beta[_qp] = 0;
   _d_beta_d_temp[_qp] = 0;
   for (decltype(_num_groups) i = 0; i < _num_precursor_groups; ++i)
   {
-    _beta_eff[_qp][i] = _xsec_spline_interpolators["BETA_EFF"][i].sample(_temperature[_qp]);
+    _beta_eff[_qp][i] = (*_spline_interps[BETA_EFF])[i].sample(_temperature[_qp]);
     _d_beta_eff_d_temp[_qp][i] =
-        _xsec_spline_interpolators["BETA_EFF"][i].sampleDerivative(_temperature[_qp]);
+        (*_spline_interps[BETA_EFF])[i].sampleDerivative(_temperature[_qp]);
     _beta[_qp] += _beta_eff[_qp][i];
     _d_beta_d_temp[_qp] += _d_beta_eff_d_temp[_qp][i];
-    _decay_constant[_qp][i] =
-        _xsec_spline_interpolators["DECAY_CONSTANT"][i].sample(_temperature[_qp]);
+    _decay_constant[_qp][i] = (*_spline_interps[DECAY_CONSTANT])[i].sample(_temperature[_qp]);
     _d_decay_constant_d_temp[_qp][i] =
-        _xsec_spline_interpolators["DECAY_CONSTANT"][i].sampleDerivative(_temperature[_qp]);
+        (*_spline_interps[DECAY_CONSTANT])[i].sampleDerivative(_temperature[_qp]);
   }
 }
 
