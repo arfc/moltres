@@ -22,6 +22,12 @@ protected:
   /// Non-rod material key associated with the group constants to be loaded
   std::string _nonrod_material_key;
 
+  /// Non-rod counterparts of the base-class pointers to the map entries, indexed by XsIndex
+  std::vector<std::vector<std::vector<Real>> *> _nonrod_xsec_values;
+  std::vector<std::vector<SplineInterpolation> *> _nonrod_spline_interps;
+  std::vector<std::vector<MonotoneCubicInterpolation> *> _nonrod_monotone_cubic_interps;
+  std::vector<std::vector<LinearInterpolation> *> _nonrod_linear_interps;
+
   /// Rod height function
   const Function & _rod_height;
 
