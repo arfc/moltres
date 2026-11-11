@@ -1,6 +1,5 @@
 # The Developer Workflow 
 
-
 -   [Code of Conduct](#code-of-conduct)
 -   [General Notes](#general-notes)
 -   [Issuing a Pull Request](#issuing-a-pull-request)
@@ -18,7 +17,7 @@
 ## Code of Conduct
 
 -   All contributors to Moltres are expected to follow the 
-    [ARFC Code of Conduct](https://arfc.github.io/manual/coc)
+    [ARFC Code of Conduct](https://arfc.github.io/manual/coc).
 
 ## General Notes
 
