@@ -1,4 +1,4 @@
-# Time-Dependent Simulation with Thermal-Hydraulic Coupling and Precursor Looping
+# Coupled Multiphysics Simulations from the CNRS Benchmark
 
 The input files associated with this tutorial are found in [moltres/problems/2021-cnrs-benchmark](https://github.com/arfc/moltres/blob/devel/problems/2021-cnrs-benchmark). This benchmark is chosen for its demonstration of MSR multiphysics.
 
