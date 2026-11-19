@@ -124,6 +124,31 @@ protected:
   std::map<std::string, std::vector<LinearInterpolation>> _xsec_linear_interpolators;
   std::map<std::string, std::vector<BicubicSplineInterpolation>> _xsec_bicubic_spline_interpolators;
 
+  // Indices into the containers below; must follow the order of _xsec_names
+  enum XsIndex
+  {
+    REMXS,
+    FISSXS,
+    NSF,
+    FISSE,
+    DIFFCOEF,
+    RECIPVEL,
+    CHI_T,
+    CHI_P,
+    CHI_D,
+    GTRANSFXS,
+    BETA_EFF,
+    DECAY_CONSTANT
+  };
+
+  // Pointers to the map entries above, resolved once in the constructor so the per-qp
+  // property loops avoid string-keyed map lookups. std::map never relocates its values, so
+  // these stay valid while derived classes fill the containers.
+  std::vector<std::vector<std::vector<Real>> *> _xsec_values;
+  std::vector<std::vector<SplineInterpolation> *> _spline_interps;
+  std::vector<std::vector<MonotoneCubicInterpolation> *> _monotone_cubic_interps;
+  std::vector<std::vector<LinearInterpolation> *> _linear_interps;
+
   // Map of group constant names to number of neutron/precursor groups
   std::map<std::string, int> _vec_lengths;
 
