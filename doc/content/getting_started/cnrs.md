@@ -22,7 +22,7 @@ This tutorial is created for its demonstration of MSR multiphysics and the varyi
 possible between them. Namely, this benchmark investigates:
 
 - One-way coupling, where one (or more) simulation output(s) serve as the input to another simulation. For example, the
-  static velocity field solved for in step 0.1 serving as the input for steps 0.3, 1.1, and 1.2.
+  static velocity field solved for in step 0.1 serving as the input for steps 1.1 and 1.2.
 - Loose coupling, which utillizes the [MultiApps](https://mooseframework.inl.gov/syntax/MultiApps/index.html) and
   [Transfers](https://mooseframework.inl.gov/syntax/Transfers/index.html) functionalities of MOOSE. This divides the
   physics in a simulation into separate equations that inform one another as in one-way coupling while a solver iterates
@@ -32,7 +32,7 @@ possible between them. Namely, this benchmark investigates:
   simultaneously.
 
 Because there are several instances of one-way coupling and some simulations depend on the outputs of others, the phases
-of this benchmark should be run in order with constant mesh sizing between runs.
+of this benchmark should be run in order with constant mesh sizing between parent and sub-apps as well as between steps.
 
 ## Phase 0 Simulations
 
@@ -99,10 +99,6 @@ The two applications exchange data as follows:
   `from_sub` copies `heat` back into the parent, where `INSADEnergySource` uses it as the source of
   the energy equation.
 
-`MultiAppCopyTransfer` copies degrees of freedom directly, so the parent and the sub-application
-must have identical meshes and matching variable types. If you switch to the 40-by-40 mesh, change
-both files.
-
 The parent uses a `Steady` executioner with `fixed_point_max_its = 10`. Each fixed-point (Picard)
 iteration solves the energy equation, runs the full neutronics eigenvalue solve at
 `execute_on = timestep_end`, and transfers the updated fields. The iterations stop when the
@@ -140,19 +136,11 @@ fission heat source:
 
 Unlike in Step 1.2, the parent uses a `Transient` executioner with `steady_state_detection = true`
 and an `IterationAdaptiveDT` time stepper. This is a pseudo-transient march to the steady state.
-The neutronics sub-application runs once at the end of each time step. The fields are therefore
-exchanged once per time step instead of in fixed-point iterations, and the time stepping stabilizes
-the coupled flow and temperature solution until it stops changing.
-
-The neutronics input, `full-coupling-nts.i`, is a stand-alone eigenvalue problem whose temperature
-and velocity are auxiliary variables filled by the transfers. The executioner normalizes the
-eigenvector to the total fission power with `normalization = 'powernorm'` and
-`normal_factor = 1e7`, so the flux magnitudes correspond to the benchmark power. This matters
-in Phase 2, which starts from these fluxes:
+The neutronics sub-application runs once at the end of each time step. The neutronics input,
+`full-coupling-nts.i`, is a stand-alone eigenvalue problem whose temperature and velocity are
+auxiliary variables filled by the transfers:
 
 !listing problems/2021-cnrs-benchmark/phase-1/full-coupling-nts.i block=Precursors AuxKernels Executioner
-
-The $k_{eff}$ from this step is reused in Phase 2.
 
 ## Phase 2 Simulations
 
@@ -192,8 +180,8 @@ To run other perturbation frequencies, change `freq` at the top of the input and
 it. The time step is set to resolve each period with 200 steps.
 
 +Fission heat.+ `FissionHeatSourceTransientAux` computes the heat source directly from the neutron
-fluxes. In the transient, the flux amplitude itself represents the power level, so this heat source
-is not normalized.
+fluxes. In the transient, the flux amplitude itself represents the power level from the steady-state
+solution in Step 1.4, so this heat source is not normalized.
 
 +Solver settings.+ The coupled system is solved with `NEWTON`, BDF2 time integration, and a fully
 coupled `SMP` preconditioner, so the Jacobian includes the coupling between variables. The fluxes,
@@ -202,17 +190,10 @@ with `scaling_group_variables` computes one scaling factor for each of these gro
 
 !listing problems/2021-cnrs-benchmark/phase-2/transient.i block=Executioner Preconditioning
 
-The simulation takes 5000 time steps. The `Checkpoint` output allows a long run to be resumed with
-`--recover`.
+The simulation takes 5000 time steps. The `checkpoint` block in `Outputs` allows a long run to be
+resumed with `--recover`.
 
-## Outputs
+## Phase READMEs
 
-Each phase directory contains a README that lists the output files of each step. Typical outputs
-are an Exodus file with the solution fields, CSV files with values sampled along the AA' and BB'
-centerlines by `LineValueSampler`, and a CSV file with $k_{eff}$. In Phase 1, the neutronics
-sub-application writes its own outputs with an `_out_ntsApp0` suffix. In Phase 2, the CSV file
-records the total fission power at every time step. The scripts used to compute the gain and phase
-shift from this power history are in the
-[arfc/2021-park-moltres-benchmark](https://github.com/arfc/2021-park-moltres-benchmark) repository.
-The Moltres results are compared with the other benchmark participants in
-[Park and Munk (2022)](http://arfc.github.io/papers/park_verification_2022.pdf).
+Each phase directory contains a README that lists the running instructions, specifics of the phase, and
+input/output files of each step.
