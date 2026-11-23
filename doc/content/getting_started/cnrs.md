@@ -1,79 +1,46 @@
 # Coupled Multiphysics Simulations from the CNRS Benchmark
 
-The input files associated with this tutorial are found in [moltres/problems/2021-cnrs-benchmark](https://github.com/arfc/moltres/blob/devel/problems/2021-cnrs-benchmark). This benchmark is chosen for its demonstration of MSR multiphysics.
+The input files associated with this tutorial are found in
+[moltres/problems/2021-cnrs-benchmark](https://github.com/arfc/moltres/blob/devel/problems/2021-cnrs-benchmark).
 
-The CNRS benchmark aims to facilitate code-to-code comparison of multiphysics simulations of molten salt reactors, particularly fast-spectrum MSRs.
-The benchmark is split into three phases (0, 1, and 2), with eight steps total.
-Each phase investigates increasingly coupled phenomena: phase 0 models single physics (velocity, neutronics, and temperature); phase 1 models fully-coupled steady-state systems (circulating fuel, power feedback, buoyancy, and full-coupled driven-flow); and phase 2 models a transient event (linear perturbations of steady-state solution).
-The benchmark geometry is shown in Figure 1.
+The CNRS benchmark aims to facilitate code-to-code comparison of multiphysics simulations of molten salt
+reactors, particularly fast-spectrum MSRs. The benchmark is split into three phases (0, 1, and 2), with
+eight steps total. Each phase investigates increasingly coupled phenomena: phase 0 models single physics
+(velocity, neutronics, and temperature); phase 1 models fully-coupled steady-state systems (circulating
+fuel, power feedback, buoyancy, and full-coupled driven-flow); and phase 2 models a transient event
+(linear perturbations of steady-state solution). The benchmark geometry is shown in Figure 1.
 
 !media media/cnrs_geo.png
        id=cnrs-geo
        caption=CNRS benchmark geometry, a 2 m by 2 m insulated cavity surrounded by vacuum. AA' and BB' are lines where observables are collected for comparison [Tiberga et al., (2020)](https://doi.org/10.1016/j.anucene.2020.107428).
        style=width:35%;text-align:center;margin-left:auto;margin-right:auto;
 
-More detailed discussion of each phase and results of Moltres simulations of the benchmark can be found in [Verification of Moltres for Multiphysics Simulations of Fast-Spectrum Molten Salt Reactors](http://arfc.github.io/papers/park_verification_2022.pdf).
+More detailed discussion of each phase and published results of Moltres simulations of the benchmark can be found in
+[Verification of Moltres for Multiphysics Simulations of Fast-Spectrum Molten Salt Reactors](http://arfc.github.io/papers/park_verification_2022.pdf).
 
-This tutorial focuses on how the benchmark inputs couple neutronics, fluid flow, and heat transfer.
-The inputs use two coupling strategies:
+This tutorial is created for its demonstration of MSR multiphysics and the varying levels of coupling
+possible between them. Namely, this benchmark investigates:
 
-- +Loose coupling+ (Phase 1): the thermal-hydraulics and the neutronics are solved in separate
-  applications connected through the MOOSE
-  [MultiApps](https://mooseframework.inl.gov/syntax/MultiApps/index.html) and
-  [Transfers](https://mooseframework.inl.gov/syntax/Transfers/index.html) systems. A separate
-  application is needed because the steady-state neutronics is a $k$-eigenvalue problem, which
-  MOOSE solves with a different problem type and executioner than the flow and energy equations.
-- +Full coupling+ (Phase 2): the neutron fluxes, precursors, velocity, pressure, and temperature are
-  variables of a single nonlinear system that is solved with Newton's method at every time step.
+- One-way coupling, where one (or more) simulation output(s) serve as the input to another simulation. For example, the
+  static velocity field solved for in step 0.1 serving as the input for steps 0.3, 1.1, and 1.2.
+- Loose coupling, which utillizes the [MultiApps](https://mooseframework.inl.gov/syntax/MultiApps/index.html) and
+  [Transfers](https://mooseframework.inl.gov/syntax/Transfers/index.html) functionalities of MOOSE. This divides the
+  physics in a simulation into separate equations that inform one another as in one-way coupling while a solver iterates
+  both until convergence. For example, step 1.3 loosely couples velocity, temperature, and neutronics in this manner.
+- Full coupling, where all physics kernels are contained within a single system to be solved for simultaneously. For 
+  example, the final step 2.1 solves all neutronics and thermal hydraulics kernels in one large nonlinear system
+  simultaneously.
 
-This tutorial assumes familiarity with [Tutorial 2a](getting_started/input_syntax.md) and
-[Tutorial 2b](getting_started/eigenvalue.md), which explain the `Nt` and `Precursors` blocks and
-eigenvalue calculations, and with the
-[incompressible Navier-Stokes](https://mooseframework.inl.gov/modules/navier_stokes/ins.html)
-(INSAD) kernels of the MOOSE Navier-Stokes module. Blocks already described in those tutorials are
-not repeated here.
-
-## Setup and Run Order
-
-+Units.+ All inputs use centimeters. The benchmark specifies a 2-D domain with a depth of 1 m and a
-total power of 1 GW. A 2-D Moltres domain in centimeters has an implied depth of 1 cm, so the
-inputs set the power to $10^9 / 100 = 10^7$ W.
-
-+Group constants.+ The six-group cross sections and eight-group precursor data are in
-`property_file_dir/cnrs-benchmark/`. The `DIFFCOEF`, `FISS`, `NSF`, `REMXS`, and `SP0` tables
-already contain values from 900 K to 1500 K, extrapolated from the 900 K data with the
-thermal-expansion feedback model of the benchmark. The `feedback.py` script in that directory
-documents how the extrapolated values were produced; it does not need to be rerun.
-
-+Mesh resolution.+ The inputs use the 200-by-200 mesh from the published results. On a desktop
-computer, switch every input to the commented-out 40-by-40 mesh, and use the ASM/LU preconditioner
-settings suggested in the README of each phase directory (see also the
-[recommended settings](getting_started/recommended.md)). Phase 2 in particular is expensive; the
-published runs used 512 MPI processes. A typical command is:
-
-```
-cd $moltres_root/problems/2021-cnrs-benchmark/phase-1
-mpirun -n 4 ../../../moltres-opt -i full-coupling.i
-```
-
-+Run order.+ Several steps read the output of an earlier step, so run them in this order:
-
-- Step 0.2 (`nts.i`) before Step 0.3 (`temperature.i`), which reads the neutron fluxes from
-  `nts_exodus.e`.
-- Step 0.1 (`vel-field.i`) before Steps 1.1 and 1.2, which read the velocity field from
-  `vel-field_exodus.e`.
-- Step 1.4 (`full-coupling.i`) before Step 2.1 (`transient.i`), which restarts from the Step 1.4
-  solution.
-
-Keep the mesh resolution consistent across these chains, including between each parent input and
-its neutronics sub-application input in Phase 1.
+Because there are several instances of one-way coupling and some simulations depend on the outputs of others, the phases
+of this benchmark should be run in order with constant mesh sizing between runs.
 
 ## Phase 0 Simulations
 
 Phase 0 solves each physics on its own. Each input is a building block that later steps reuse.
 
 +Step 0.1: Velocity field+ (`vel-field.i`). A steady, isothermal, lid-driven cavity flow solved with
-the INSAD kernels and SUPG/PSPG stabilization. The top boundary moves at 50 cm/s, the other walls
+the [INSAD](https://mooseframework.inl.gov/modules/navier_stokes/index.html) (Incompressible Navier-Stokes Automatic
+Differentiation) kernels and SUPG/PSPG stabilization. The top boundary moves at 50 cm/s, the other walls
 are no-slip, and the pressure is pinned at one corner node created with `ExtraNodesetGenerator`.
 
 +Step 0.2: Neutronics+ (`nts.i`). A $k$-eigenvalue calculation with six neutron groups and eight
@@ -148,22 +115,21 @@ Step 1.3 replaces the frozen velocity field with a solved one. The parent, `buoy
 momentum, mass, and energy equations together. All four walls are no-slip, so the flow is driven
 only by buoyancy from the fission heating. The body force follows the Boussinesq approximation,
 $\rho \vec{g} \left[1 - \alpha (T - T_{ref})\right]$, with thermal expansion coefficient
-`t_alpha` and reference temperature `temp_ref`. `INSADGravityForce` adds the constant part,
-$\rho \vec{g}$, and `INSADBoussinesqBodyForce` adds the temperature-dependent part:
+`t_alpha` and reference temperature `temp_ref` defined at 900 K. `INSADGravityForce` adds the
+constant part, $\rho \vec{g}$, and `INSADBoussinesqBodyForce` adds the temperature-dependent part:
 
 !listing problems/2021-cnrs-benchmark/phase-1/buoyancy.i block=Kernels/buoyancy Kernels/gravity
 
-The coupling pattern is the same as in Step 1.2, plus two more transfers. The parent now sends the
-velocity components `velx` and `vely` to the sub-application, where they advect the precursors.
-The parent extracts these components from its vector velocity variable `vel` with
+The coupling pattern is the same as in Step 1.2, plus two more transfers. The parent now also sends
+the velocity components `velx` and `vely` to the sub-application, where they advect the precursors,
+along with 'temp'. The parent extracts these components from its vector velocity variable `vel` with
 `VectorVariableComponentAux`.
 
 ### Step 1.4: Full Coupling
 
-Step 1.4 combines all of the above: the lid drives the flow, the temperature drives buoyancy, the
+Step 1.4 combines all of the above: the lid drives part of the flow, the temperature drives buoyancy, the
 flow carries the precursors, and the temperature changes the cross sections.
-`full-coupling.i` differs from `buoyancy.i` only in the moving-lid boundary condition. Change its
-`values` to run the benchmark cases with other lid velocities:
+`full-coupling.i` differs from `buoyancy.i` only in the moving-lid boundary condition:
 
 !listing problems/2021-cnrs-benchmark/phase-1/full-coupling.i block=BCs
 
