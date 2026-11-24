@@ -35,7 +35,9 @@ the existing tutorials below.
 
 +2b.+ [Eigenvalue Calculation](getting_started/eigenvalue.md)
 
-+2c.+ [Time-Dependent Simulation with Thermal-Hydraulic Coupling and Precursor Looping](getting_started/transient.md)
++2c.+ [Neutronics-CFD Coupling](getting_started/cnrs.md)
+
++2d.+ [Time-Dependent Simulation with Thermal-Hydraulic Coupling and Precursor Looping](getting_started/transient.md)
 
 +Tip:+ [Recommended Executioner and Preconditioning Settings](getting_started/recommended.md)
 
