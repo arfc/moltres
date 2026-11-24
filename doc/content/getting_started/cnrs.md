@@ -46,7 +46,7 @@ are no-slip, and the pressure is pinned at one corner node created with `ExtraNo
 is shown in Figure 2.
 
 !media media/cnrs_01.png
-       id=cnrs-geo
+       id=cnrs-01-vel
        caption=Solved velocity field in Step 0.1 for lid-driven cavity flow.
        style=width:35%;text-align:center;margin-left:auto;margin-right:auto;
 
@@ -59,8 +59,8 @@ is shown in Figure 3.
 !row!
 !col! small=12 medium=6 large=6
 
-!media media/cnrs_02.png
-       id=cnrs-geo
+!media media/cnrs_02_g1.png
+       id=cnrs-02-group1
        caption=Group 1 flux for Step 0.2.
        style=width:70%;text-align:center;margin-left:auto;margin-right:auto;
 
@@ -68,9 +68,9 @@ is shown in Figure 3.
 
 !col! small=12 medium=6 large=6
 
-!media media/cnrs_02.png
-       id=cnrs-geo
-       caption=Group 1 flux for Step 0.2.
+!media media/cnrs_02_p1.png
+       id=cnrs-02-pre1
+       caption=Group 1 precursor concentration for Step 0.2.
        style=width:70%;text-align:center;margin-left:auto;margin-right:auto;
 
 !col-end!
@@ -84,7 +84,7 @@ a uniform sink proportional to the difference between the local temperature and 
 represents the heat exchanger of the benchmark. The temperature field is shown in Figure 4.
 
 !media media/cnrs_03.png
-       id=cnrs-geo
+       id=cnrs-03-temp
        caption=Temperature field for Step 0.3.
        style=width:35%;text-align:center;margin-left:auto;margin-right:auto;
 
