@@ -54,7 +54,7 @@ is shown in Figure 2.
 precursor groups at a uniform 900 K. The fuel is stationary
 (`velocity_type = constant` with zero velocity components), so the precursors decay where they are
 produced. The `Nt` and `Precursors` blocks are set up as in [Tutorial 2b](getting_started/eigenvalue.md). The group 1 flux
-is shown in Figure 3.
+is shown in Figure 3, while the group 1 precursor concentration is shown in Figure 4.
 
 !row!
 !col! small=12 medium=6 large=6
@@ -81,7 +81,7 @@ together while the neutron fluxes are frozen at the Step 0.2 solution. The fluxe
 `SolutionUserObject` and `SolutionAux` objects, and `FissionHeatSourceAux` converts them into a
 volumetric heat source normalized to $10^7$ W. Heat is removed by `INSADEnergyAmbientConvection`,
 a uniform sink proportional to the difference between the local temperature and 900 K, which
-represents the heat exchanger of the benchmark. The temperature field is shown in Figure 4.
+represents the heat exchanger of the benchmark. The temperature field is shown in Figure 5.
 
 !media media/cnrs_03.png
        id=cnrs-03-temp
@@ -111,7 +111,27 @@ precursors with them:
 The precursors use constant monomial (`MONOMIAL`, `CONSTANT`) variables, so `PrecursorAction` adds
 discontinuous Galerkin advection kernels. Setting `outlet_boundaries = ''` and
 `loop_precursors = false` reflects that the cavity is closed: no precursors leave or re-enter the
-domain.
+domain. The resulting group 1 flux and group 1 precursor concentration are shwon in Figures 6 and 7.
+
+!row!
+!col! small=12 medium=6 large=6
+
+!media media/cnrs_11_g1.png
+       id=cnrs-11-group1
+       caption=Group 1 flux for Step 1.1.
+       style=width:70%;text-align:center;margin-left:auto;margin-right:auto;
+
+!col-end!
+
+!col! small=12 medium=6 large=6
+
+!media media/cnrs_11_p1.png
+       id=cnrs-11-pre1
+       caption=Group 1 precursor concentration for Step 1.1.
+       style=width:70%;text-align:center;margin-left:auto;margin-right:auto;
+
+!col-end!
+!row-end!
 
 ### Step 1.2: Power Coupling
 
@@ -136,7 +156,27 @@ The parent uses a `Steady` executioner with `fixed_point_max_its = 10`. Each fix
 iteration solves the energy equation, runs the full neutronics eigenvalue solve at
 `execute_on = timestep_end`, and transfers the updated fields. The iterations stop when the
 fixed-point convergence criteria of the executioner are met or when the iteration limit is
-reached.
+reached. The resulting group 1 flux and temperature field are shown in Figures 8 and 9.
+
+!row!
+!col! small=12 medium=6 large=6
+
+!media media/cnrs_12_g1.png
+       id=cnrs-12-group1
+       caption=Group 1 flux for Step 1.2.
+       style=width:70%;text-align:center;margin-left:auto;margin-right:auto;
+
+!col-end!
+
+!col! small=12 medium=6 large=6
+
+!media media/cnrs_12_t.png
+       id=cnrs-12-temp
+       caption=Temperature field for Step 1.2.
+       style=width:70%;text-align:center;margin-left:auto;margin-right:auto;
+
+!col-end!
+!row-end!
 
 ### Step 1.3: Buoyancy
 
@@ -152,7 +192,37 @@ constant part, $\rho \vec{g}$, and `INSADBoussinesqBodyForce` adds the temperatu
 The coupling pattern is the same as in Step 1.2, plus two more transfers. The parent now also sends
 the velocity components `velx` and `vely` to the sub-application, where they advect the precursors,
 along with 'temp'. The parent extracts these components from its vector velocity variable `vel` with
-`VectorVariableComponentAux`.
+`VectorVariableComponentAux`. The group 1 precursor concentration, temperature field, and velocity field
+are shown in Figures 10, 11, and 12.
+
+!row!
+!col! small=12 medium=4 large=4
+
+!media media/cnrs_13_p1.png
+       id=cnrs-13-pre1
+       caption=Group 1 precursor concentration for Step 1.3.
+       style=width:97.5%;text-align:center;margin-left:auto;margin-right:auto;
+
+!col-end!
+
+!col! small=12 medium=4 large=4
+
+!media media/cnrs_13_t.png
+       id=cnrs-13-temp
+       caption=Temperature field for Step 1.3.
+       style=width:100;text-align:center;margin-left:auto;margin-right:auto;
+
+!col-end!
+
+!col! small=12 medium=4 large=4
+
+!media media/cnrs_13_v.png
+       id=cnrs-13-vel
+       caption=Velocity field for Step 1.3.
+       style=width:100%;text-align:center;margin-left:auto;margin-right:auto;
+
+!col-end!
+!row-end!
 
 ### Step 1.4: Full Coupling
 
@@ -174,6 +244,38 @@ The neutronics sub-application runs once at the end of each time step. The neutr
 auxiliary variables filled by the transfers:
 
 !listing problems/2021-cnrs-benchmark/phase-1/full-coupling-nts.i block=Precursors AuxKernels Executioner
+
+The resulting group 1 precusor concentration, temperature field, and velocity field are shown in Figures 13,
+14, and 15.
+
+!row!
+!col! small=12 medium=4 large=4
+
+!media media/cnrs_14_p1.png
+       id=cnrs-14-pre1
+       caption=Group 1 precursor concentration for Step 1.4.
+       style=width:100%;text-align:center;margin-left:auto;margin-right:auto;
+
+!col-end!
+
+!col! small=12 medium=4 large=4
+
+!media media/cnrs_14_t.png
+       id=cnrs-14-temp
+       caption=Temperature field for Step 1.4.
+       style=width:100;text-align:center;margin-left:auto;margin-right:auto;
+
+!col-end!
+
+!col! small=12 medium=4 large=4
+
+!media media/cnrs_14_v.png
+       id=cnrs-14-vel
+       caption=Velocity field for Step 1.4.
+       style=width:100%;text-align:center;margin-left:auto;margin-right:auto;
+
+!col-end!
+!row-end!
 
 ## Phase 2 Simulations
 
