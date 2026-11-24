@@ -56,10 +56,25 @@ precursor groups at a uniform 900 K. The fuel is stationary
 produced. The `Nt` and `Precursors` blocks are set up as in [Tutorial 2b](getting_started/eigenvalue.md). The group 1 flux
 is shown in Figure 3.
 
+!row!
+!col! small=12 medium=6 large=6
+
 !media media/cnrs_02.png
        id=cnrs-geo
        caption=Group 1 flux for Step 0.2.
-       style=width:35%;text-align:center;margin-left:auto;margin-right:auto;
+       style=width:70%;text-align:center;margin-left:auto;margin-right:auto;
+
+!col-end!
+
+!col! small=12 medium=6 large=6
+
+!media media/cnrs_02.png
+       id=cnrs-geo
+       caption=Group 1 flux for Step 0.2.
+       style=width:70%;text-align:center;margin-left:auto;margin-right:auto;
+
+!col-end!
+!row-end!
 
 +Step 0.3: Temperature+ (`temperature.i`). The lid-driven flow and the energy equation are solved
 together while the neutron fluxes are frozen at the Step 0.2 solution. The fluxes are loaded with a
