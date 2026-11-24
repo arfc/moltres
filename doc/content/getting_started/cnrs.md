@@ -32,7 +32,8 @@ possible between them. Namely, this benchmark investigates:
   simultaneously.
 
 Because there are several instances of one-way coupling and some simulations depend on the outputs of others, the phases
-of this benchmark should be run in order with constant mesh sizing between parent and sub-apps as well as between steps.
+of this benchmark should be run in order with constant mesh sizing between parent and sub-apps as well as between steps. All
+results shown are for the 200x200 mesh.
 
 ## Phase 0 Simulations
 
@@ -41,19 +42,36 @@ Phase 0 solves each physics on its own. Each input is a building block that late
 +Step 0.1: Velocity field+ (`vel-field.i`). A steady, isothermal, lid-driven cavity flow solved with
 the [INSAD](https://mooseframework.inl.gov/modules/navier_stokes/index.html) (Incompressible Navier-Stokes Automatic
 Differentiation) kernels and SUPG/PSPG stabilization. The top boundary moves at 50 cm/s, the other walls
-are no-slip, and the pressure is pinned at one corner node created with `ExtraNodesetGenerator`.
+are no-slip, and the pressure is pinned at one corner node created with `ExtraNodesetGenerator`. The solved velocity field
+is shown in Figure 2.
+
+!media media/cnrs_01.png
+       id=cnrs-geo
+       caption=Solved velocity field in Step 0.1 for lid-driven cavity flow.
+       style=width:35%;text-align:center;margin-left:auto;margin-right:auto;
 
 +Step 0.2: Neutronics+ (`nts.i`). A $k$-eigenvalue calculation with six neutron groups and eight
 precursor groups at a uniform 900 K. The fuel is stationary
 (`velocity_type = constant` with zero velocity components), so the precursors decay where they are
-produced. The `Nt` and `Precursors` blocks are set up as in [Tutorial 2b](getting_started/eigenvalue.md).
+produced. The `Nt` and `Precursors` blocks are set up as in [Tutorial 2b](getting_started/eigenvalue.md). The group 1 flux
+is shown in Figure 3.
+
+!media media/cnrs_02.png
+       id=cnrs-geo
+       caption=Group 1 flux for Step 0.2.
+       style=width:35%;text-align:center;margin-left:auto;margin-right:auto;
 
 +Step 0.3: Temperature+ (`temperature.i`). The lid-driven flow and the energy equation are solved
 together while the neutron fluxes are frozen at the Step 0.2 solution. The fluxes are loaded with a
 `SolutionUserObject` and `SolutionAux` objects, and `FissionHeatSourceAux` converts them into a
 volumetric heat source normalized to $10^7$ W. Heat is removed by `INSADEnergyAmbientConvection`,
 a uniform sink proportional to the difference between the local temperature and 900 K, which
-represents the heat exchanger of the benchmark.
+represents the heat exchanger of the benchmark. The temperature field is shown in Figure 4.
+
+!media media/cnrs_03.png
+       id=cnrs-geo
+       caption=Temperature field for Step 0.3.
+       style=width:35%;text-align:center;margin-left:auto;margin-right:auto;
 
 ## Phase 1 Simulations
 
