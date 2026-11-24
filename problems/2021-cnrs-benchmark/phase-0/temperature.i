@@ -13,7 +13,6 @@ alpha = 1 # INS SUPG and PSPG stabilization parameter
   num_precursor_groups = 8
   group_fluxes = 'group1 group2 group3 group4 group5 group6'
   sss2_input = true
-  integrate_p_by_parts = true
 []
 
 [Mesh]
@@ -51,14 +50,6 @@ alpha = 1 # INS SUPG and PSPG stabilization parameter
     order = FIRST
     initial_condition = 900
   []
-  [vel]
-    family = LAGRANGE_VEC
-    order = FIRST
-  []
-  [p]
-    family = LAGRANGE
-    order = FIRST
-  []
 []
 
 [AuxVariables]
@@ -90,6 +81,22 @@ alpha = 1 # INS SUPG and PSPG stabilization parameter
     family = MONOMIAL
     order = FIRST
   []
+  [velx]
+    family = LAGRANGE
+    order = FIRST
+  []
+  [vely]
+    family = LAGRANGE
+    order = FIRST
+  []
+  [vel]
+    family = LAGRANGE_VEC
+    order = FIRST
+  []
+  [p]
+    family = LAGRANGE
+    order = FIRST
+  []
 []
 
 [UserObjects]
@@ -100,40 +107,16 @@ alpha = 1 # INS SUPG and PSPG stabilization parameter
     timestep = LATEST
     execute_on = INITIAL
   []
+  [velocities]
+    type = SolutionUserObject
+    mesh = 'vel-field_exodus.e'
+    system_variables = 'vel_x vel_y p'
+    timestep = LATEST
+    execute_on = INITIAL
+  []
 []
 
 [Kernels]
-  # Incompressible Navier-Stokes
-  [vel_mass]
-    type = INSADMass
-    variable = p
-  []
-  [vel_pspg]
-    type = INSADMassPSPG
-    variable = p
-    rho_name = 'ad_rho'
-  []
-  [vel_advection]
-    type = INSADMomentumAdvection
-    variable = vel
-  []
-  [vel_viscous]
-    type = INSADMomentumViscous
-    variable = vel
-    mu_name = 'ad_mu'
-  []
-  [vel_pressure]
-    type = INSADMomentumPressure
-    variable = vel
-    pressure = p
-  []
-  [vel_supg]
-    type = INSADMomentumSUPG
-    variable = vel
-    velocity = vel
-  []
-
-  # Temperature
   [temp_source]
     type = INSADEnergySource
     variable = temp
@@ -204,35 +187,45 @@ alpha = 1 # INS SUPG and PSPG stabilization parameter
     tot_fission_heat = 1e7
     power = 1e7
   []
+  [ux]
+    type = SolutionAux
+    variable = velx
+    from_variable = vel_x
+    solution = velocities
+  []
+  [uy]
+    type = SolutionAux
+    variable = vely
+    from_variable = vel_y
+    solution = velocities
+  []
+  [p]
+    type = SolutionAux
+    variable = p
+    from_variable = p
+    solution = velocities
+  []
+[]
+
+[Functions]
+  [velxf]
+    type = SolutionFunction
+    from_variable = vel_x
+    solution = velocities
+  []
+  [velyf]
+    type = SolutionFunction
+    from_variable = vel_y
+    solution = velocities
+  []
 []
 
 [ICs]
-  [velocity]
-    type = VectorConstantIC
-    x_value = 1e-15
-    y_value = 1e-15
+  [vel_ic]
+    type = VectorFunctionIC
     variable = vel
-  []
-[]
-
-[BCs]
-  [no_slip]
-    type = VectorDirichletBC
-    variable = vel
-    boundary = 'bottom left right'
-    values = '0 0 0'
-  []
-  [lid]
-    type = VectorDirichletBC
-    variable = vel
-    boundary = 'top'
-    values = '50 0 0'
-  []
-  [pressure_pin]
-    type = DirichletBC
-    variable = p
-    boundary = 'pinned_node'
-    value = 0
+    function_x = velxf
+    function_y = velyf
   []
 []
 

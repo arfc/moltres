@@ -12,7 +12,8 @@ fuel, power feedback, buoyancy, and full-coupled driven-flow); and phase 2 model
 
 !media media/cnrs_geo.png
        id=cnrs-geo
-       caption=CNRS benchmark geometry, a 2 m by 2 m insulated cavity surrounded by vacuum. AA' and BB' are lines where observables are collected for comparison [Tiberga et al., (2020)](https://doi.org/10.1016/j.anucene.2020.107428).
+       caption=CNRS benchmark geometry, a 2 m by 2 m insulated cavity surrounded by vacuum. AA' and BB' are lines where
+       observables are collected for comparison [Tiberga et al., (2020)](https://doi.org/10.1016/j.anucene.2020.107428).
        style=width:35%;text-align:center;margin-left:auto;margin-right:auto;
 
 More detailed discussion of each phase and published results of Moltres simulations of the benchmark can be found in
@@ -76,12 +77,12 @@ is shown in Figure 3, while the group 1 precursor concentration is shown in Figu
 !col-end!
 !row-end!
 
-+Step 0.3: Temperature+ (`temperature.i`). The lid-driven flow and the energy equation are solved
-together while the neutron fluxes are frozen at the Step 0.2 solution. The fluxes are loaded with a
-`SolutionUserObject` and `SolutionAux` objects, and `FissionHeatSourceAux` converts them into a
-volumetric heat source normalized to $10^7$ W. Heat is removed by `INSADEnergyAmbientConvection`,
-a uniform sink proportional to the difference between the local temperature and 900 K, which
-represents the heat exchanger of the benchmark. The temperature field is shown in Figure 5.
++Step 0.3: Temperature+ (`temperature.i`). The energy equation is solved alone while the velocity
+field and fluxes are loaded in with `SolutionUserObject` and `SolutionAux` objects. `FissionHeatSourceAux`
+converts the flux into a volumetric heat source normalized to $10^7$ W. Heat is removed by
+`INSADEnergyAmbientConvection`, a uniform sink proportional to the difference between the local
+temperature and 900 K, which represents the heat exchanger of the benchmark. The temperature
+field is shown in Figure 5.
 
 !media media/cnrs_03.png
        id=cnrs-03-temp
